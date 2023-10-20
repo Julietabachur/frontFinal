@@ -83,7 +83,7 @@ const HomePage = () => {
     setLoading(true);
     const getProducts = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/public/api/v1/products`, {
+        const response = await axios.get(`${baseUrl}/api/v1/public/products`, {
           headers: {
             "Content-Type": "application/json",
           },
