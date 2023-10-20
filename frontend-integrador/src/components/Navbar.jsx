@@ -1,59 +1,66 @@
-import React from 'react';
+import React from "react";
+import { Button } from "@chakra-ui/react";
 
 const Navbar = () => {
   return (
     <header
       style={{
-        width: '100%',
-        position: 'fixed',
+        width: "100%",
+        height: "100px",
+        position: "fixed",
         top: 0,
-        backgroundColor: '#333',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px 20px', 
-        zIndex: 1000, 
+        backgroundColor: "#000",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "10px 20px",
+        zIndex: 1000,
       }}
     >
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
         }}
       >
         <a
-          href="/" 
+          href="/"
           style={{
-            textDecoration: 'none',
-            color: 'white',
-            marginRight: '20px', 
+            textDecoration: "none",
+            color: "white",
+            marginRight: "20px",
           }}
         >
           <img
-            src="/HOME" 
+            src="/HOME"
             alt="Logo"
             style={{
-              height: '30px', 
+              height: "30px",
             }}
           />
         </a>
         <span
           style={{
-            color: 'white',
+            color: "white",
           }}
         >
           Lema de la Empresa
         </span>
       </div>
       <div>
-        <button
+        <Button
           style={{
-            marginRight: '10px',
+            marginRight: "10px",
           }}
+          colorScheme="whatsapp"
+          borderRadius={20}
+          variant={"outline"}
         >
+          Iniciar sesión
+        </Button>
+        <Button colorScheme="whatsapp" variant={"outline"} borderRadius={20}>
           Crear cuenta
-        </button>
-        <button>Iniciar sesión</button>
+        </Button>
       </div>
     </header>
   );

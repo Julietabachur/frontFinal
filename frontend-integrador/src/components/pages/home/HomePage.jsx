@@ -9,6 +9,8 @@ import {
   SimpleGrid,
   Image,
   Text,
+  Button,
+  Center,
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
@@ -24,7 +26,7 @@ const HomePage = () => {
   const [isLoading, setLoading] = useState(false);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  const getProductsByType = async (type) => {
+  /*   const getProductsByType = async (type) => {
     try {
       const response = await axios.get(`${baseUrl}/api/v1/products/byType/${type}`, {
         headers: {
@@ -45,9 +47,9 @@ const HomePage = () => {
       setLista(data);
     }
     setLoading(false);
-  };
+  }; */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const getUserData = async (username) => {
       try {
         const response = await axios.get(
@@ -75,16 +77,15 @@ const HomePage = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     setLoading(true);
     const getProducts = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/v1/products/gallery`, {
+        const response = await axios.get(`${baseUrl}/public/api/v1/products`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         });
         if (response.data) {
@@ -106,7 +107,6 @@ const HomePage = () => {
 
     fetchProductsData();
   }, []);
-
 
   const categoriesData = [
     {
@@ -132,43 +132,66 @@ const HomePage = () => {
   ];
 
   return (
-    <VStack
-      bg={"brandColor"}
-      h="100vh"
-    >
-      <Box
-        p={4}
-        color={"white"}
-        w="100%"
-        bg="teal.500"
-        mt={50}
+    <VStack bg={"brandColor"} p={3} w={"70vw"} margin={"88px auto"}>
+      <HStack
+        color={"blackAlpha.900"}
+        w={"100%"}
+        bg="#34C412"
+        justify={"center"}
       >
+        <Text fontSize={"1.5rem"}>Que Buscas?</Text>
         <Input
-          color="teal"
+          w={"50%"}
+          bg={"whiteAlpha.900"}
           placeholder="Buscar productos"
           _placeholder={{ color: "inherit" }}
+          borderRadius={"15px"}
+          m={10}
         />
-      </Box>
-
-      <HStack p={4} spacing={4}>
-        {/* Muestra las tarjetas de categorías */}
-        {categoriesData.map((category) => (
-          <Box key={category.id} textAlign="center"
-          onClick={() => handleCategoryClick(category.type)}
-          >
-            <Image
-              src={'https://via.placeholder.com/600'}
-              alt={category.name}
-              h="400px"
-              w="400px"
-            />
-            <Text>{category.name}</Text>
-          </Box>
-        ))}
+        <Button
+          p={"10px 40px"}
+          color={"#34C412"}
+          borderRadius={20}
+          bg={"blackAlpha.900"}
+        >
+          Buscar
+        </Button>
       </HStack>
+      <VStack w={"100%"}>
+        <Box w={"100%"} bg={"green"} alignSelf={"flex-start"}>
+          <Text fontSize={26} p={3}>
+            Categorias
+          </Text>
+        </Box>
+
+        <HStack
+          p={4}
+          spacing={4}
+          bg={"green.500"}
+          w={"100%"}
+          justify={"Center"}
+        >
+          {/* Muestra las tarjetas de categorías */}
+          {categoriesData.map((category) => (
+            <Box
+              key={category.id}
+              textAlign="center"
+              onClick={() => handleCategoryClick(category.type)}
+            >
+              <Image
+                src={category.imageSrc}
+                fallbackSrc="https://via.placeholder.com/600"
+                alt={category.name}
+                w="20vw"
+              />
+              <Text>{category.name}</Text>
+            </Box>
+          ))}
+        </HStack>
+      </VStack>
 
       <SimpleGrid
-        columns={{ sm: 1, md: 2 /*,  lg: 4, xl: 5 */}}
+        columns={{ sm: 1, md: 2 /*,  lg: 4, xl: 5 */ }}
         padding={1}
         spacing={3}
       >
