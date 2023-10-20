@@ -5,7 +5,7 @@ import { Box, Input, Button, Stack, Flex } from '@chakra-ui/react';
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const LoginRegister = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('usuario');
@@ -82,4 +82,4 @@ const LoginRegister = () => {
   );
 };
 
-export default LoginRegister;
+export default LoginPage;
