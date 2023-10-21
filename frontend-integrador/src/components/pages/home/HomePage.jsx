@@ -28,7 +28,7 @@ const HomePage = () => {
     setLoading(true);
     const getProducts = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/v1/public/products`, {
+        const response = await axios.get(`${baseUrl}/api/v1/public/products/random`, {
           headers: {
             "Content-Type": "application/json",
           },
