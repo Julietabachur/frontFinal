@@ -28,11 +28,14 @@ const HomePage = () => {
     setLoading(true);
     const getProducts = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/v1/public/products/random`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get(
+          `${baseUrl}/api/v1/public/products/random`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (response.data) {
           setLista(response.data);
           setLoading(false);
@@ -150,7 +153,7 @@ const HomePage = () => {
                 onClick={() => handleCategoryClick(category.type)}
               >
                 <Image
-                  boxSize={'sm'}
+                  boxSize={"sm"}
                   src={category.imageSrc}
                   fallbackSrc="https://via.placeholder.com/600"
                   alt={category.name}
