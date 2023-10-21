@@ -1,10 +1,17 @@
 import React from "react";
-import { Button } from "@chakra-ui/react";
+import { Button, HStack,VStack,Image } from "@chakra-ui/react";
 
 const Navbar = () => {
   return (
-    <header
-      style={{
+    <HStack
+    bg={'#000'}
+    p={10}
+    justify={'space-between'}
+    position={"fixed"}
+    top={0}
+    w={'100vw'}
+    zIndex={1000}
+      /* style={{
         width: "100%",
         height: "100px",
         position: "fixed",
@@ -15,7 +22,7 @@ const Navbar = () => {
         alignItems: "center",
         padding: "10px 20px",
         zIndex: 1000,
-      }}
+      }} */
     >
       <div
         style={{
@@ -24,15 +31,15 @@ const Navbar = () => {
         }}
       >
         <a
-          href="/"
+          href="/home"
           style={{
             textDecoration: "none",
             color: "white",
             marginRight: "20px",
           }}
         >
-          <img
-            src="/HOME"
+          <Image
+            src="https://images-g3.s3.amazonaws.com/RISKKO-Logo-Wh.png"
             alt="Logo"
             style={{
               height: "30px",
@@ -47,7 +54,7 @@ const Navbar = () => {
           Lema de la Empresa
         </span>
       </div>
-      <div>
+      <HStack>
         <Button
           style={{
             marginRight: "10px",
@@ -61,8 +68,8 @@ const Navbar = () => {
         <Button colorScheme="whatsapp" variant={"outline"} borderRadius={20}>
           Crear cuenta
         </Button>
-      </div>
-    </header>
+      </HStack>
+    </HStack>
   );
 };
 
