@@ -5,7 +5,7 @@ const ProductCardSkeleton = () => {
 
   return (
     <Card >
-            <Skeleton height="50%" />
+            <Skeleton height="300px" />
             <CardBody>
                 <SkeletonText />
             </CardBody>
