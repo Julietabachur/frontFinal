@@ -132,7 +132,7 @@ const HomePage = () => {
   ];
 
   return (
-    <VStack bg={"brandColor"} p={3} w={"70vw"} margin={"88px auto"}>
+    <VStack bg={"brandColor"} p={3} w={"70vw"} >
       <HStack
         color={"blackAlpha.900"}
         w={"100%"}
