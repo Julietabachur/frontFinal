@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  Grid,
   VStack,
   Box,
   HStack,
   Input,
-  GridItem,
   SimpleGrid,
+  Image,
+  Text,
+  Button,
+  Center,
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
@@ -24,7 +26,30 @@ const HomePage = () => {
   const [isLoading, setLoading] = useState(false);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  useEffect(() => {
+  /*   const getProductsByType = async (type) => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v1/products/byType/${type}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCategoryClick = async (type) => {
+    setLoading(true);
+    const data = await getProductsByType(type);
+    if (data) {
+      setLista(data);
+    }
+    setLoading(false);
+  }; */
+
+  /* useEffect(() => {
     const getUserData = async (username) => {
       try {
         const response = await axios.get(
@@ -52,16 +77,15 @@ const HomePage = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     setLoading(true);
     const getProducts = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/api/v1/products/gallery`, {
+        const response = await axios.get(`${baseUrl}/api/v1/public/products`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         });
         if (response.data) {
@@ -84,18 +108,90 @@ const HomePage = () => {
     fetchProductsData();
   }, []);
 
+  const categoriesData = [
+    {
+      id: 1,
+      name: "Categoría 1",
+      imageSrc: "imagen_categoria_1.jpg",
+    },
+    {
+      id: 2,
+      name: "Categoría 2",
+      imageSrc: "imagen_categoria_2.jpg",
+    },
+    {
+      id: 3,
+      name: "Categoría 3",
+      imageSrc: "imagen_categoria_3.jpg",
+    },
+    {
+      id: 4,
+      name: "Categoría 4",
+      imageSrc: "imagen_categoria_4.jpg",
+    },
+  ];
+
   return (
-    <VStack bg={"blackAlpha.900"}>
-      <Box h={"200px"} color={"whiteAlpha.700"} p={10}>
+    <VStack bg={"brandColor"} p={3} w={"70vw"} margin={"88px auto"}>
+      <HStack
+        color={"blackAlpha.900"}
+        w={"100%"}
+        bg="#34C412"
+        justify={"center"}
+      >
+        <Text fontSize={"1.5rem"}>Que Buscas?</Text>
         <Input
-          color="teal"
-          placeholder="custom placeholder"
+          w={"50%"}
+          bg={"whiteAlpha.900"}
+          placeholder="Buscar productos"
           _placeholder={{ color: "inherit" }}
+          borderRadius={"15px"}
+          m={10}
         />
-        Filter and searchbar
-      </Box>
+        <Button
+          p={"10px 40px"}
+          color={"#34C412"}
+          borderRadius={20}
+          bg={"blackAlpha.900"}
+        >
+          Buscar
+        </Button>
+      </HStack>
+      <VStack w={"100%"}>
+        <Box w={"100%"} bg={"green"} alignSelf={"flex-start"}>
+          <Text fontSize={26} p={3}>
+            Categorias
+          </Text>
+        </Box>
+
+        <HStack
+          p={4}
+          spacing={4}
+          bg={"green.500"}
+          w={"100%"}
+          justify={"Center"}
+        >
+          {/* Muestra las tarjetas de categorías */}
+          {categoriesData.map((category) => (
+            <Box
+              key={category.id}
+              textAlign="center"
+              onClick={() => handleCategoryClick(category.type)}
+            >
+              <Image
+                src={category.imageSrc}
+                fallbackSrc="https://via.placeholder.com/600"
+                alt={category.name}
+                w="20vw"
+              />
+              <Text>{category.name}</Text>
+            </Box>
+          ))}
+        </HStack>
+      </VStack>
+
       <SimpleGrid
-        columns={{ sm: 1, md: 2 /*,  lg: 4, xl: 5 */}}
+        columns={{ sm: 1, md: 2 /*,  lg: 4, xl: 5 */ }}
         padding={1}
         spacing={3}
       >
