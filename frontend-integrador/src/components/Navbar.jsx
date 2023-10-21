@@ -11,18 +11,6 @@ const Navbar = () => {
     top={0}
     w={'100vw'}
     zIndex={1000}
-      /* style={{
-        width: "100%",
-        height: "100px",
-        position: "fixed",
-        top: 0,
-        backgroundColor: "#000",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px 20px",
-        zIndex: 1000,
-      }} */
     >
       <div
         style={{
