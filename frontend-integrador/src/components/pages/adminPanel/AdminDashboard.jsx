@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Box } from '@chakra-ui/react';
 import AddProduct from './AddProduct';
+import ListAdminProduct from './ListAdminProduct';
 
 const AdminDashboard = () => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Estado para mostrar el listado de productos cuando se clickea en el botón
+  const [showList, setShowList] = useState(false);
 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -38,6 +41,10 @@ const AdminDashboard = () => {
 
       {/* Componente del modal para agregar producto */}
       <AddProduct isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Componente para listar productos (y eliminar y editar)*/}
+      <Button onClick={() => setShowList(true)}>Listar Productos</Button>
+      {showList && <ListAdminProduct isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (
