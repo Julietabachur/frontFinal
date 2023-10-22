@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
@@ -14,12 +14,48 @@ const initialProductState = {
 };
 
 const AddProduct = ({ isOpen, onClose }) => {
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI"
+  //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
+  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5NDUwNzgsImV4cCI6MTY5ODU0OTg3OH0.douNB-2uDgKoKK0IcjRsQqsr2_QW6hK1e8bZRacFMWw"
   const [productData, setProductData] = useState(initialProductState);
+  const [inputValue, setInputValue] = useState('');
+  const [nombreValido,setNombreValido] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProductData({ ...productData, [name]: value.trim() });
+    setInputValue(value); // Actualiza inputValue en lugar de productData.productName
+    setProductData({ ...productData, [name]: value });
+  };
+
+  useEffect(() => {
+    const checkProductName = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/admin/products/productName?productName=${inputValue}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setNombreValido(!response.data); //CAMBIE ACA A NEGADO
+      } catch (error) {
+        console.error('Error al hacer la solicitud GET:', error);
+        setNombreValido(false);
+      }
+    };
+
+    if (inputValue) {
+      checkProductName();
+    } else {
+      setNombreValido(false);
+    }
+  }, [inputValue, token]);
+
+  const handleAddGalleryImage = (e) => {
+    const { value } = e.target;
+    if (value) {
+      setProductData(prevState => ({
+        ...prevState,
+        gallery: [...prevState.gallery, value]
+      }));
+    }
   };
 
   const handleAddProduct = () => {
@@ -53,7 +89,21 @@ const AddProduct = ({ isOpen, onClose }) => {
         <ModalCloseButton />
         <ModalBody>
           {/* Formulario para agregar producto */}
-          <Input name="productName" mb={3} placeholder="Nombre del producto" value={productData.productName} onChange={handleInputChange} />
+
+          <Input 
+            name="productName" 
+            mb={3} 
+            placeholder="Nombre del producto" 
+            defaultValue={productData.productName} //CAMBIE DE VALUE A DEFAULT VALUE ESO TE SACA EL ERROR
+            onBlur={handleInputChange} 
+          />
+
+          {nombreValido && (
+            <Text color="red" fontSize="sm" mt={1}>
+              ¡El nombre del producto ya existe en la base de datos!
+            </Text>
+          )}
+
           <Select name="size" mb={3} placeholder="Selecciona una talla" value={productData.size} onChange={handleInputChange}>
             <option value="S">S</option>
             <option value="M">M</option>
@@ -66,10 +116,10 @@ const AddProduct = ({ isOpen, onClose }) => {
             <option value="JACKET">JACKET</option>
             <option value="PANT">PANT</option>
           </Select>
-          <Input name="productionTime" mb={3} placeholder="Fecha de producción YYYY-MM-DD" value={productData.productionTime} onChange={handleInputChange} />
+          <Input name="productionTime" mb={3} placeholder="Fecha de producción in days" value={productData.productionTime} onChange={handleInputChange} />
           <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
           <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
-          <Input placeholder="Enlace de la imagen de la galería" onChange={handleInputChange} />
+          <Input placeholder="Enlace de la imagen de la galería" onBlur={handleAddGalleryImage} />
           <Box mb={3}>
             <Text fontSize="sm" fontWeight="bold">Galería de Imágenes:</Text>
             <List>
