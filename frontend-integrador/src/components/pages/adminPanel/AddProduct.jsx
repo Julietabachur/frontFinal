@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
+import { NumberInput,NumberInputField,Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
 const initialProductState = {
   productName: '',
@@ -9,6 +9,7 @@ const initialProductState = {
   productionTime: '',
   collection: '',
   thumbnail: '',
+  detail: '',
   gallery: [],
 };
 
@@ -39,7 +40,6 @@ const AddProduct = ({ isOpen, onClose }) => {
         setNombreValido(false);
       }
     };
-
     if (inputValue) {
       checkProductName();
     } else {
@@ -93,7 +93,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             name="productName" 
             mb={3} 
             placeholder="Nombre del producto" 
-            defaultValue={productData.productName} //CAMBIE DE VALUE A DEFAULT VALUE ESO TE SACA EL ERROR
+            defaultValue={productData.productName} 
             onBlur={handleInputChange} 
           />
 
@@ -114,8 +114,17 @@ const AddProduct = ({ isOpen, onClose }) => {
             <option value="SKIRT">SKIRT</option>
             <option value="JACKET">JACKET</option>
             <option value="PANT">PANT</option>
+            <option value="ACCESORY">ACCESORY</option>
           </Select>
-          <Input name="productionTime" mb={3} placeholder="Fecha de producción in days" value={productData.productionTime} onChange={handleInputChange} />
+          <NumberInput>
+            <NumberInputField name="productionTime" mb={3}
+            placeholder="Cantidad de días para la fábricación"
+            value={productData.productionTime}
+            onChange={(valueString) => {
+              // Convierte el valor de cadena a número antes de pasarlo a handleInputChange
+              handleInputChange({ target: { name: 'productionTime', value: parseInt(valueString, 10) } }); //10 base decimal
+            }}/>
+          </NumberInput>
           <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
           <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
           <Flex align="center" mb={3}>
@@ -142,6 +151,8 @@ const AddProduct = ({ isOpen, onClose }) => {
               ))}
             </List>
           </Box>
+
+          <Input name="detail" mb={3} placeholder="Detalle:\nprimer renglón\nsegundo renglón" value={productData.detail} onChange={handleInputChange} />
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={handleAddProduct}>
