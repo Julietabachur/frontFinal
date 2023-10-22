@@ -4,25 +4,24 @@ import LoginPage from "./components/pages/login/LoginPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AdminDashboard from "./components/pages/adminPanel/adminDashboard";
-import { HStack,Box } from "@chakra-ui/react";
+import { HStack, Box } from "@chakra-ui/react";
 
 function App() {
   return (
     <HStack>
-      <Navbar />
-      <Box position={"relative"} top={'100px'} >
+      <Box position={"relative"} top={"100px"}>
         <Router>
+          <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
+          <Footer />
         </Router>
       </Box>
-
-      <Footer />
     </HStack>
   );
 }
 
-export default App;
+export default App;
