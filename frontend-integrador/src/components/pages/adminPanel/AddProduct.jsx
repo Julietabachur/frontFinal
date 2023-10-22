@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
@@ -17,6 +16,7 @@ const AddProduct = ({ isOpen, onClose }) => {
   const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI"
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState('');
+  const [galleryUrl, setGalleryUrl] = useState('');
   const [nombreValido,setNombreValido] = useState(false);
 
   const handleInputChange = (e) => {
@@ -33,7 +33,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             Authorization: `Bearer ${token}`
           }
         });
-        setNombreValido(response.data);
+        setNombreValido(!response.data); 
       } catch (error) {
         console.error('Error al hacer la solicitud GET:', error);
         setNombreValido(false);
@@ -93,7 +93,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             name="productName" 
             mb={3} 
             placeholder="Nombre del producto" 
-            value={productData.productName} 
+            defaultValue={productData.productName} //CAMBIE DE VALUE A DEFAULT VALUE ESO TE SACA EL ERROR
             onBlur={handleInputChange} 
           />
 
@@ -115,10 +115,11 @@ const AddProduct = ({ isOpen, onClose }) => {
             <option value="JACKET">JACKET</option>
             <option value="PANT">PANT</option>
           </Select>
-          <Input name="productionTime" mb={3} placeholder="Fecha de producción YYYY-MM-DD" value={productData.productionTime} onChange={handleInputChange} />
+          <Input name="productionTime" mb={3} placeholder="Fecha de producción in days" value={productData.productionTime} onChange={handleInputChange} />
           <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
           <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
           <Input placeholder="Enlace de la imagen de la galería" onBlur={handleAddGalleryImage} />
+          
           <Box mb={3}>
             <Text fontSize="sm" fontWeight="bold">Galería de Imágenes:</Text>
             <List>
@@ -141,4 +142,4 @@ const AddProduct = ({ isOpen, onClose }) => {
   );
 };
 
-export default AddProduct;
+export default AddProduct;
