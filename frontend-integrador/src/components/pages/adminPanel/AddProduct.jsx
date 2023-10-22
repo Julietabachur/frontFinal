@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
+import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
 const initialProductState = {
   productName: '',
@@ -47,13 +47,13 @@ const AddProduct = ({ isOpen, onClose }) => {
     }
   }, [inputValue, token]);
 
-  const handleAddGalleryImage = (e) => {
-    const { value } = e.target;
-    if (value) {
+  const handleAddGalleryImage = () => {
+    if (galleryUrl) {
       setProductData(prevState => ({
         ...prevState,
-        gallery: [...prevState.gallery, value]
+        gallery: [...prevState.gallery, galleryUrl]
       }));
+      setGalleryUrl('');
     }
   };
 
@@ -81,9 +81,9 @@ const AddProduct = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent mt={200}>
         <ModalHeader>Agregar Producto</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -118,8 +118,20 @@ const AddProduct = ({ isOpen, onClose }) => {
           <Input name="productionTime" mb={3} placeholder="Fecha de producción in days" value={productData.productionTime} onChange={handleInputChange} />
           <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
           <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
-          <Input placeholder="Enlace de la imagen de la galería" onBlur={handleAddGalleryImage} />
-          
+          <Flex align="center" mb={3}>
+            <Input 
+              flex="1" 
+              placeholder="Enlace de la imagen de la galería" 
+              value={galleryUrl} 
+              onChange={(e) => setGalleryUrl(e.target.value)} 
+              marginRight={2}
+            />
+            <Button 
+              onClick={handleAddGalleryImage}
+            >
+              +
+            </Button>
+          </Flex>
           <Box mb={3}>
             <Text fontSize="sm" fontWeight="bold">Galería de Imágenes:</Text>
             <List>
