@@ -112,7 +112,7 @@ const HomePage = () => {
 
   return (
     <Box w={"100vw"} bg={"gray.300"}>
-      <VStack p={3} w={"70vw"} margin={"88px auto"}>
+      <VStack p={3} w={"70vw"} margin={"0px auto"}>
         <HStack
           color={"blackAlpha.900"}
           w={"100%"}
