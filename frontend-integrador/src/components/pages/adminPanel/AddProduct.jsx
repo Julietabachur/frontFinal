@@ -19,11 +19,14 @@ const AddProduct = ({ isOpen, onClose }) => {
   const [inputValue, setInputValue] = useState('');
   const [galleryUrl, setGalleryUrl] = useState('');
   const [nombreValido,setNombreValido] = useState(false);
+  const [formDisabled, setFormDisabled] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputValue(value); // Actualiza inputValue en lugar de productData.productName
     setProductData({ ...productData, [name]: value });
+    setShowError(!nombreValido || (showError && name === 'productName' && !nombreValido));
   };
 
   useEffect(() => {
@@ -38,14 +41,20 @@ const AddProduct = ({ isOpen, onClose }) => {
       } catch (error) {
         console.error('Error al hacer la solicitud GET:', error);
         setNombreValido(false);
+        setShowError(true);
       }
     };
     if (inputValue) {
       checkProductName();
     } else {
       setNombreValido(false);
+      setShowError(true);
     }
   }, [inputValue, token]);
+
+  useEffect(() => {
+    setFormDisabled(!nombreValido);
+  }, [nombreValido]);
 
   const handleAddGalleryImage = () => {
     if (galleryUrl) {
@@ -57,6 +66,12 @@ const AddProduct = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleRemoveGalleryImage = (index) => {
+    const updatedGallery = [...productData.gallery];
+    updatedGallery.splice(index, 1);
+    setProductData({ ...productData, gallery: updatedGallery });
+  };
+
   const handleAddProduct = () => {
     // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
     axios.post('http://localhost:8080/api/v1/admin/products', productData,{headers:{Authorization:`Bearer ${token}`}})
@@ -66,6 +81,9 @@ const AddProduct = ({ isOpen, onClose }) => {
         // Cierra el modal y resetea el formulario
         onClose();
         setProductData(initialProductState);
+        setInputValue(''); // Reinicia el valor del input
+        setNombreValido(false); // Reinicia la validación del nombre
+        setShowError(false); // Reinicia el estado de error
       })
       .catch((error) => {
         // Maneja el error de la solicitud POST aquí
@@ -78,10 +96,13 @@ const AddProduct = ({ isOpen, onClose }) => {
     // Cierra el modal y resetea el formulario
     onClose();
     setProductData(initialProductState);
+    setInputValue(''); // Reinicia el valor del input
+    setNombreValido(false); // Reinicia la validación del nombre
+    setShowError(false); // Reinicia el estado de error
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} >
+    <Modal isOpen={isOpen} onClose={handleCancel} >
       <ModalOverlay />
       <ModalContent mt={200}>
         <ModalHeader>Agregar Producto</ModalHeader>
@@ -95,20 +116,21 @@ const AddProduct = ({ isOpen, onClose }) => {
             placeholder="Nombre del producto" 
             defaultValue={productData.productName} 
             onBlur={handleInputChange} 
+            //isDisabled={formDisabled}
           />
 
-          {nombreValido && (
+          {showError  && (
             <Text color="red" fontSize="sm" mt={1}>
               ¡El nombre del producto ya existe en la base de datos!
             </Text>
           )}
 
-          <Select name="size" mb={3} placeholder="Selecciona una talla" value={productData.size} onChange={handleInputChange}>
+          <Select name="size" mb={3} placeholder="Selecciona una talla" value={productData.size} isDisabled={!nombreValido} onChange={handleInputChange}>
             <option value="S">S</option>
             <option value="M">M</option>
             <option value="L">L</option>
           </Select>
-          <Select name="type" mb={3} placeholder="Selecciona un tipo" value={productData.type} onChange={handleInputChange}>
+          <Select name="type" mb={3} placeholder="Selecciona un tipo" value={productData.type} isDisabled={!nombreValido} onChange={handleInputChange}>
             <option value="T_SHIRT">T_SHIRT</option>
             <option value="SHIRT">SHIRT</option>
             <option value="SKIRT">SKIRT</option>
@@ -118,6 +140,7 @@ const AddProduct = ({ isOpen, onClose }) => {
           </Select>
           <NumberInput>
             <NumberInputField name="productionTime" mb={3}
+            isDisabled={!nombreValido}
             placeholder="Cantidad de días para la fábricación"
             value={productData.productionTime}
             onChange={(valueString) => {
@@ -125,13 +148,14 @@ const AddProduct = ({ isOpen, onClose }) => {
               handleInputChange({ target: { name: 'productionTime', value: parseInt(valueString, 10) } }); //10 base decimal
             }}/>
           </NumberInput>
-          <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
-          <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
+          <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} isDisabled={!nombreValido} onChange={handleInputChange} />
+          <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} isDisabled={!nombreValido} onChange={handleInputChange} />
           <Flex align="center" mb={3}>
             <Input 
               flex="1" 
               placeholder="Enlace de la imagen de la galería" 
               value={galleryUrl} 
+              isDisabled={!nombreValido}
               onChange={(e) => setGalleryUrl(e.target.value)} 
               marginRight={2}
             />
@@ -145,9 +169,14 @@ const AddProduct = ({ isOpen, onClose }) => {
             <Text fontSize="sm" fontWeight="bold">Galería de Imágenes:</Text>
             <List>
               {productData.gallery.map((image, index) => (
-                <ListItem key={index}>
-                  <a href={image} target="_blank" rel="noopener noreferrer">{image}</a>
-                </ListItem>
+                <Flex key={index} align="center">
+                  <ListItem flex="1">
+                    <a href={image} target="_blank" rel="noopener noreferrer">{image}</a>
+                  </ListItem>
+                  <Button size="sm" colorScheme="blue" variant="outline" borderColor="red.500" onClick={() => handleRemoveGalleryImage(index)}>
+                    -
+                  </Button>
+                </Flex>
               ))}
             </List>
           </Box>
@@ -155,10 +184,10 @@ const AddProduct = ({ isOpen, onClose }) => {
           <Input name="detail" mb={3} placeholder="Detalle:\nprimer renglón\nsegundo renglón" value={productData.detail} onChange={handleInputChange} />
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleAddProduct}>
+          <Button colorScheme="blue" mr={3} onClick={handleAddProduct} isDisabled={formDisabled}>
             Agregar
           </Button>
-          <Button onClick={handleCancel}>Cancelar</Button>
+          <Button onClick={handleCancel} isDisabled={formDisabled}>Cancelar</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
