@@ -1,16 +1,20 @@
 import React from "react";
-import { Button, HStack,VStack,Image } from "@chakra-ui/react";
+import { Button, HStack, VStack, Image, theme } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     <HStack
-    bg={'#000'}
-    p={10}
-    justify={'space-between'}
-    position={"fixed"}
-    top={0}
-    w={'100vw'}
-    zIndex={1000}
+      bg={"negro"}
+      p={10}
+      justify={"space-between"}
+      position={"fixed"}
+      top={0}
+      w={"100vw"}
+      h={"120px"}
+      zIndex={1000}
     >
       <div
         style={{
@@ -39,21 +43,22 @@ const Navbar = () => {
             color: "white",
           }}
         >
-          Lema de la Empresa
+          Vestite con estilo
         </span>
       </div>
       <HStack>
         <Button
+          onClick={()=>{navigate('/login')}}
           style={{
             marginRight: "10px",
           }}
-          colorScheme="whatsapp"
+          colorScheme={"verde2"} color={'verde2'}
           borderRadius={20}
           variant={"outline"}
         >
           Iniciar sesión
         </Button>
-        <Button colorScheme="whatsapp" variant={"outline"} borderRadius={20}>
+        <Button onClick={()=>{navigate('/register')}} colorScheme={"verde2"} color={'verde2'} variant={"outline"} borderRadius={20}>
           Crear cuenta
         </Button>
       </HStack>
