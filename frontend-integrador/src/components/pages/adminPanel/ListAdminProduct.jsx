@@ -1,14 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
     Box,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
+    Table, Thead, Tbody, Tr, Th, Td,
     Img,
+    AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter,
     HStack, Input, SimpleGrid, Image, Text, Button, Center
 } from "@chakra-ui/react";
 
@@ -21,9 +17,19 @@ const ListAdminProduct = () => {
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MzA3MzUsImV4cCI6MTY5ODUzNTUzNX0.7a0pr2R8c11sJ8j_TL1io8Ph3JaNl8WWQbf6LRIlRbE"
     const [lista, setLista] = useState([]);
+    const [page, setPage] = useState(0);
+    const pageSize = 15; // cantidad de items en el listado
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
+
+
+    // constantes del Alert Box
+    
+    const cancelRef = useRef();  // permite cancelar en el box de alerta
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);  // controla estado del AlertBox
+    const [itemToDelete, setItemToDelete] = useState(null); // pasa la variable del item a eliminar
+
 
 console.log(isModalOpen, productToEdit);
 
@@ -31,7 +37,7 @@ console.log(isModalOpen, productToEdit);
     const getProducts = async () => {
         try {
             const response = await axios.get(  //Petición GET a la api del listado de productos
-                `${baseUrl}/api/v1/admin/products`,
+             `${baseUrl}/api/v1/admin/products?page=${page}&size=${pageSize}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -47,11 +53,28 @@ console.log(isModalOpen, productToEdit);
         }
     };
 
+    const handlePageChange = (newPage) => {
+        if(newPage < 0) {newPage = 0};
+        setPage(newPage); // Actualiza el número de página
+    };
+
     useEffect(() => {
         getProducts();
-    }, []);
+    }, [page]); // Agrega 'page' como dependencia para que se actualice cuando cambie el número de página
 
 
+
+
+    
+    const openDeleteDialog = (item) => {
+        setIsDeleteDialogOpen(true);
+        setItemToDelete(item);
+    };
+    
+    const closeDeleteDialog = () => {
+        setIsDeleteDialogOpen(false);
+    };
+    
 
     const handleDelete = async (id) => {
         try {
@@ -86,6 +109,18 @@ console.log(isModalOpen, productToEdit);
     return (
         <> 
             <Box>
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+                    <Button
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page === 0}
+                    >
+                        &lt;&lt;&lt;
+                    </Button>
+                    <Text>- {page + 1} -</Text>
+                    <Button onClick={() => handlePageChange(page + 1)}>
+                        &gt;&gt;&gt;
+                    </Button>
+                </div>
                 <Table variant="simple">
                     <Thead>
                         <Tr>
@@ -111,7 +146,7 @@ console.log(isModalOpen, productToEdit);
                                     <Button
                                         colorScheme="red"
                                         size="sm"
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => openDeleteDialog(item)}
                                     >
                                         Eliminar
                                     </Button>
@@ -121,6 +156,38 @@ console.log(isModalOpen, productToEdit);
                     </Tbody>
                 </Table>
             </Box>
+            <AlertDialog
+                isOpen={isDeleteDialogOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={closeDeleteDialog}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Confirmación
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            ¿Seguro que quiere eliminar el item?
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={closeDeleteDialog}>
+                                Cancelar
+                            </Button>
+                            <Button
+                                colorScheme="red"
+                                onClick={() => {
+                                    handleDelete(itemToDelete.id); // Aquí deberías llamar a tu función de eliminación
+                                    closeDeleteDialog(); // Cierra la caja de diálogo después de eliminar
+                                }}
+                                ml={3}
+                            >
+                                Eliminar
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
             {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
             {productToEdit !== null && (<EditProduct productToEdit={productToEdit} isOpen={isModalOpen} onClose={() => {setProductToEdit(null); setIsModalOpen(false);}} getProducts={getProducts}/>)}
             {console.log("ProductToEditReturn:", productToEdit)}
