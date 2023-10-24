@@ -3,7 +3,7 @@ import HomePage from "./components/pages/home/HomePage";
 import LoginPage from "./components/pages/login/LoginPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import AdminDashboard from "./components/pages/adminPanel/adminDashboard";
+import AdminDashboard from "./components/pages/adminPanel/AdminDashboard";
 import { HStack, Box } from "@chakra-ui/react";
 
 function App() {

@@ -23,6 +23,7 @@ const HomePage = () => {
 
   const [lista, setLista] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [pageData, setPageData] = useState(null)
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   useEffect(() => {
@@ -75,7 +76,8 @@ const HomePage = () => {
     setLoading(true);
     const data = await getProductsByType(type);
     if (data) {
-      setLista(data);
+      setPageData(data)
+      setLista(data.content);
     }
     setLoading(false);
   };
