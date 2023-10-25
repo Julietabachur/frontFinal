@@ -121,19 +121,23 @@ const HomePage = () => {
   ];
 
   return (
-    <Box w={"100vw"} bg={"blanco"} mt={9}>
-      <VStack  /* w={"70vw"}  */margin={"0px auto"}>
+    <Box w={"100vw"} bg={"blanco"} /*p={9}*/>
+      <VStack  /* w={"70vw"}  */margin={"0px auto"} rowGap={0}>
+        
+        {/* buscador */}
         <HStack
           color={"negro"}
           w={"100%"}
-          bg="blanco"
+          bg={'#444444'}
           justify={"center"}
           h={"75px"}
           align={'Center'}
+          /*p={9}*/
+          mt={2}
         >
           <Text fontSize={"1.5rem"}>¿Que buscás?</Text>
           <Input
-            bg={"gris2"}
+            bg={"blanco"}
             w={"30%"}
             h={7}
             placeholder="Buscar productos"
@@ -146,6 +150,7 @@ const HomePage = () => {
           </Button>
         </HStack>
 
+        {/* categorias */}
         <HStack justify={"space-around"} h={35} w={"100%"} bg={'negro'} >
           {/* Muestra las tarjetas de categorías */}
           {categoriesData.map((category) => (
