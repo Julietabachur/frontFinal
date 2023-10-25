@@ -13,12 +13,12 @@ import {
   ModalBody,
   ModalCloseButton,
   Input,
+  Text,
   Select,
+  Box,
   List,
   ListItem,
-  Text,
-  Box,
-} from "@chakra-ui/react";
+ } from "@chakra-ui/react";
 
 const initialProductState = {
   productName: "",
@@ -31,10 +31,9 @@ const initialProductState = {
   gallery: [],
 };
 
-const AddProduct = ({ isOpen, onClose }) => {
-  //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
+const AddProduct = ({ isOpen, onClose, updateProductList }) => {
   const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5OTI0ODMsImV4cCI6MTY5ODU5NzI4M30.C3DUv3nMnin0NJXBKo9bWh5_PZaUSAgg7YcAbFGlc5Q";
+    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI";
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
@@ -44,12 +43,10 @@ const AddProduct = ({ isOpen, onClose }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setInputValue(value); // Actualiza inputValue en lugar de productData.productName
+    setInputValue(value);
     setProductData({ ...productData, [name]: value });
-    /*  setShowError(!nombreValido || (showError && name === 'productName' && !nombreValido )); */
   };
 
-  //metodo que atrasa la ejecucion de la funcion una medida de tiempo 'delay'
   function debounce(func, delay) {
     let timer;
     return function (...args) {
@@ -71,9 +68,9 @@ const AddProduct = ({ isOpen, onClose }) => {
         }
       );
       setNombreValido(response.data);
-      if(response.data){
+      if (response.data) {
         const { name, value } = e.target;
-        setInputValue(value); // Actualiza inputValue en lugar de productData.productName
+        setInputValue(value);
         setProductData({ ...productData, [name]: value });
       }
     } catch (error) {
@@ -83,13 +80,8 @@ const AddProduct = ({ isOpen, onClose }) => {
     }
   };
 
-  //version demorada de del metodo checkName
-  const debouncedCheckProductName = debounce(checkProductName, 2000); //2 segundos en millisegundos
+  const debouncedCheckProductName = debounce(checkProductName, 2000);
 
-  /* en el input , onChange le pasamos handleName pero
-   la demoramos 2 segundos para que no este haciendo el
-   llamado en cada dato ingresado sino  despues de una demora
-    de 2 segundos sin ingresar dato */
   const handleName = (e) => {
     const productName = e.target.value;
     debouncedCheckProductName(productName, e);
@@ -121,37 +113,31 @@ const AddProduct = ({ isOpen, onClose }) => {
     setProductData({ ...productData, gallery: updatedGallery });
   };
 
-  const handleAddProduct = () => {
-    console.log(productData);
-    // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
+  const handleAddProduct = (updateProductList) => {
     axios
       .post("http://localhost:8080/api/v1/admin/products", productData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         console.log("Producto agregado con éxito:", response.data);
-
-        // Cierra el modal y resetea el formulario
+        updateProductList(); // Actualiza la lista de productos
         onClose();
         setProductData(initialProductState);
-        setInputValue(""); // Reinicia el valor del input
-        setNombreValido(true); // Reinicia la validación del nombre
-        setShowError(false); // Reinicia el estado de error
+        setInputValue("");
+        setNombreValido(true);
+        setShowError(false);
       })
       .catch((error) => {
-        // Maneja el error de la solicitud POST aquí
         console.error("Error al agregar el producto:", error);
-        // Muestra un mensaje de error al usuario
       });
   };
 
   const handleCancel = () => {
-    // Cierra el modal y resetea el formulario
     onClose();
     setProductData(initialProductState);
-    setInputValue(""); // Reinicia el valor del input
-    setNombreValido(true); // Reinicia la validación del nombre
-    setShowError(false); // Reinicia el estado de error
+    setInputValue("");
+    setNombreValido(true);
+    setShowError(false);
   };
 
   return (
@@ -286,14 +272,14 @@ const AddProduct = ({ isOpen, onClose }) => {
           />
         </ModalBody>
         <ModalFooter>
-          <Button
+        <Button
             colorScheme="blue"
             mr={3}
-            onClick={handleAddProduct}
+            onClick={() => handleAddProduct(updateProductList)} 
             isDisabled={formDisabled}
           >
             Agregar
-          </Button>
+        </Button>
           <Button onClick={handleCancel}>Cancelar</Button>
         </ModalFooter>
       </ModalContent>
