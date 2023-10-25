@@ -5,7 +5,7 @@ import { FaFacebook,FaInstagram,FaWhatsapp } from 'react-icons/fa';
 const Footer = () => {
   return (
 
-        <Box bg="gray.600" p={4} textAlign="center">         
+        <Box bg={'#444444'} p={4} textAlign="center">         
           <HStack>
             <VStack
               spacing={4}
