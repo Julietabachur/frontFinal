@@ -22,6 +22,14 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
+        <Image
+            src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
+            alt="Logo dibujo"
+            style={{
+              height: "60px",
+            }}
+            mr={3}
+          />
         <a
           href="/"
           style={{
@@ -31,7 +39,7 @@ const Navbar = () => {
           }}
         >
           <Image
-            src="https://images-g3.s3.amazonaws.com/RISKKO-Logo-Wh.png"
+            src="https://images-g3.s3.amazonaws.com/logoHeader.png"
             alt="Logo"
             style={{
               height: "30px",
