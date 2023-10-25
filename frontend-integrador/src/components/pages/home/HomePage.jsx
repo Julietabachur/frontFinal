@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  Link as ReactRouterLink,
+} from "react-router-dom";
 import {
   VStack,
   Box,
@@ -12,7 +16,7 @@ import {
   Text,
   Button,
   Center,
-  Link
+  Link,
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
@@ -23,23 +27,27 @@ const HomePage = () => {
 
   const [lista, setLista] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState(null)
+  const [pageData, setPageData] = useState(null);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 
   useEffect(() => {
     setLoading(true);
+    console.log(baseUrl);
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          `${baseUrl}/api/v1/public/products/random`,
+          `${baseUrl}/api/v1/public/products`,
           {
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
-        if (response.data) {
-          setLista(response.data);
+        if (response) {
+          
+          setPageData(response.data)
+          setLista(response.data.content);
           setLoading(false);
         }
       } catch (error) {
@@ -49,8 +57,8 @@ const HomePage = () => {
     const fetchProductsData = async () => {
       const data = await getProducts();
       if (data) {
-        console.log(data);
-        setLista(data);
+        console.log(data.content);
+        setLista(data.content);
       }
     };
     fetchProductsData();
@@ -76,7 +84,8 @@ const HomePage = () => {
     setLoading(true);
     const data = await getProductsByType(type);
     if (data) {
-      setPageData(data)
+      console.log(data);
+      setPageData(data);
       setLista(data.content);
     }
     setLoading(false);
@@ -112,7 +121,7 @@ const HomePage = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0sPITbCRoSjdOfkj6lHADCA4a69eywtSDdw&usqp=CAU",
     },
     {
-      id: 4,
+      id: 5,
       name: "Accesorios",
       type: "ACCESSORY",
       imageSrc:
@@ -122,16 +131,15 @@ const HomePage = () => {
 
   return (
     <Box w={"100vw"} bg={"blanco"} /*p={9}*/>
-      <VStack  /* w={"70vw"}  */margin={"0px auto"} rowGap={0}>
-        
+      <VStack /* w={"70vw"}  */ margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
           color={"negro"}
           w={"100%"}
-          bg={'#444444'}
+          bg={"#444444"}
           justify={"center"}
           h={"75px"}
-          align={'Center'}
+          align={"Center"}
           /*p={9}*/
           mt={2}
         >
@@ -151,7 +159,7 @@ const HomePage = () => {
         </HStack>
 
         {/* categorias */}
-        <HStack justify={"space-around"} h={35} w={"100%"} bg={'negro'} >
+        <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
           {/* Muestra las tarjetas de categorías */}
           {categoriesData.map((category) => (
             <Box
@@ -160,13 +168,13 @@ const HomePage = () => {
               onClick={() => handleCategoryClick(category.type)}
             >
               {" "}
-              <Link fontFamily={'podkova'} color={'verde2'} fontSize={17} p={3}>
+              <Link fontFamily={"podkova"} color={"verde2"} fontSize={17} p={3}>
                 {category.name}
               </Link>
             </Box>
           ))}
         </HStack>
-   
+
         <SimpleGrid columns={{ sm: 1, md: 2 }} padding={20} spacing={40}>
           {isLoading &&
             Skeletons.map((Skeleton) => {
@@ -177,9 +185,11 @@ const HomePage = () => {
               );
             })}
           {lista.map((item) => (
-            <ProductCardContainer key={item.id}>
-              <ProductCard item={item} />
-            </ProductCardContainer>
+            <Link key={item.id} as={ReactRouterLink} to={`/detalle/${item.id}`}>
+              <ProductCardContainer key={item.id}>
+                <ProductCard item={item} />
+              </ProductCardContainer>
+            </Link>
           ))}
         </SimpleGrid>
       </VStack>
