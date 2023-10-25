@@ -23,7 +23,7 @@ const Navbar = () => {
         }}
       >
         <a
-          href="/home"
+          href="/"
           style={{
             textDecoration: "none",
             color: "white",
@@ -52,13 +52,13 @@ const Navbar = () => {
           style={{
             marginRight: "10px",
           }}
-          colorScheme={"verde2"} color={'verde2'}
+          colorScheme={"whatsapp"} color={'verde2'}
           borderRadius={20}
           variant={"outline"}
         >
           Iniciar sesión
         </Button>
-        <Button onClick={()=>{navigate('/register')}} colorScheme={"verde2"} color={'verde2'} variant={"outline"} borderRadius={20}>
+        <Button onClick={()=>{navigate('/register')}} colorScheme={"whatsapp"}  color={'verde2'}  variant={"outline"} borderRadius={20}>
           Crear cuenta
         </Button>
       </HStack>
