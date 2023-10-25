@@ -34,7 +34,7 @@ const initialProductState = {
 const AddProduct = ({ isOpen, onClose }) => {
   //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
   const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5NDUwNzgsImV4cCI6MTY5ODU0OTg3OH0.douNB-2uDgKoKK0IcjRsQqsr2_QW6hK1e8bZRacFMWw";
+    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5OTI0ODMsImV4cCI6MTY5ODU5NzI4M30.C3DUv3nMnin0NJXBKo9bWh5_PZaUSAgg7YcAbFGlc5Q";
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
@@ -60,7 +60,7 @@ const AddProduct = ({ isOpen, onClose }) => {
     };
   }
 
-  const checkProductName = async (name) => {
+  const checkProductName = async (name, e) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/v1/admin/products/productName?productName=${name}`,
@@ -71,6 +71,11 @@ const AddProduct = ({ isOpen, onClose }) => {
         }
       );
       setNombreValido(response.data);
+      if(response.data){
+        const { name, value } = e.target;
+        setInputValue(value); // Actualiza inputValue en lugar de productData.productName
+        setProductData({ ...productData, [name]: value });
+      }
     } catch (error) {
       console.error("Error al hacer la solicitud GET:", error);
       setNombreValido(false);
@@ -87,7 +92,7 @@ const AddProduct = ({ isOpen, onClose }) => {
     de 2 segundos sin ingresar dato */
   const handleName = (e) => {
     const productName = e.target.value;
-    debouncedCheckProductName(productName);
+    debouncedCheckProductName(productName, e);
   };
 
   useEffect(() => {
@@ -117,6 +122,7 @@ const AddProduct = ({ isOpen, onClose }) => {
   };
 
   const handleAddProduct = () => {
+    console.log(productData);
     // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
     axios
       .post("http://localhost:8080/api/v1/admin/products", productData, {
@@ -176,7 +182,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Selecciona una talla"
             value={productData.size}
-            isDisabled={!nombreValido}
+            isDisabled={formDisabled}
             onChange={handleInputChange}
           >
             <option value="S">S</option>
@@ -188,7 +194,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Selecciona un tipo"
             value={productData.type}
-            isDisabled={!nombreValido}
+            isDisabled={formDisabled}
             onChange={handleInputChange}
           >
             <option value="T_SHIRT">T_SHIRT</option>
@@ -221,7 +227,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Colección"
             value={productData.collection}
-            isDisabled={!nombreValido}
+            isDisabled={formDisabled}
             onChange={handleInputChange}
           />
           <Input
@@ -229,7 +235,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Enlace de la miniatura"
             value={productData.thumbnail}
-            isDisabled={!nombreValido}
+            isDisabled={formDisabled}
             onChange={handleInputChange}
           />
           <Flex align="center" mb={3}>
@@ -241,7 +247,7 @@ const AddProduct = ({ isOpen, onClose }) => {
               onChange={(e) => setGalleryUrl(e.target.value)}
               marginRight={2}
             />
-            <Button onClick={handleAddGalleryImage}>+</Button>
+            <Button isDisabled={formDisabled} onClick={handleAddGalleryImage}>+</Button>
           </Flex>
           <Box mb={3}>
             <Text fontSize="sm" fontWeight="bold">
@@ -261,6 +267,7 @@ const AddProduct = ({ isOpen, onClose }) => {
                     variant="outline"
                     borderColor="red.500"
                     onClick={() => handleRemoveGalleryImage(index)}
+                    isDisabled={formDisabled}
                   >
                     -
                   </Button>
@@ -272,7 +279,7 @@ const AddProduct = ({ isOpen, onClose }) => {
           <Input
             name="detail"
             mb={3}
-            isDisabled={formDisabled}
+            iisDisabled={formDisabled}
             placeholder="Detalle:\nprimer renglón\nsegundo renglón"
             value={productData.detail}
             onChange={handleInputChange}
