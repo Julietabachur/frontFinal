@@ -16,7 +16,7 @@ import {
 import EditProduct from "./EditProduct";
 import AddProduct from "./AddProduct"; // Asegúrate de importar el componente AddProduct
 
-const ListAdminProduct = () => {
+const ListAdminProduct = ({setListaOn}) => {
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const token =
         "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI";
@@ -24,7 +24,8 @@ const ListAdminProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
 
-    const getProducts = async (updateProductList) => {
+    const getProducts = async () => {
+        
         try {
         const response = await axios.get(`${baseUrl}/api/v1/admin/products`, {
             headers: {
@@ -33,6 +34,7 @@ const ListAdminProduct = () => {
             },
         });
         if (response.data && response.data.content) {
+            setListaOn(true)
             setLista(response.data.content);
             console.log("Datos recibidos:", response.data.content);
         }
@@ -104,7 +106,7 @@ const ListAdminProduct = () => {
         {productToEdit !== null && (
             <EditProduct productToEdit={productToEdit} isOpen={isModalOpen} onClose={() => { setProductToEdit(null); setIsModalOpen(false); }} getProducts={getProducts} />
         )}
-        <AddProduct isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} updateProductList={getProducts} />
+       
 
         </>
     );

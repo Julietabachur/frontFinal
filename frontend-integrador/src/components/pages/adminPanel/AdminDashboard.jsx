@@ -8,7 +8,8 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Estado para mostrar el listado de productos cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
-
+  const [listaOn, setListaOn] = useState(false)
+ 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
 
@@ -40,11 +41,11 @@ const AdminDashboard = () => {
       {window.innerWidth >= MIN_DESKTOP_WIDTH && <Button onClick={() => setIsModalOpen(true)}>Agregar Producto</Button>}
 
       {/* Componente del modal para agregar producto */}
-      <AddProduct isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AddProduct isOpen={isModalOpen} onClose={() => setIsModalOpen(false) } listaOn={listaOn}/>
 
       {/* Componente para listar productos (y eliminar y editar)*/}
       <Button onClick={() => setShowList(true)}>Listar Productos</Button>
-      {showList && <ListAdminProduct isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+      {showList && <ListAdminProduct setListaOn={setListaOn} isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (

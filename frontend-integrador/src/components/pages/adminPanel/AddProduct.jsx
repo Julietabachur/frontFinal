@@ -31,7 +31,7 @@ const initialProductState = {
   gallery: [],
 };
 
-const AddProduct = ({ isOpen, onClose, updateProductList }) => {
+const AddProduct = ({ isOpen, onClose, listaOn }) => {
   const token =
     "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI";
   const [productData, setProductData] = useState(initialProductState);
@@ -113,14 +113,17 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
     setProductData({ ...productData, gallery: updatedGallery });
   };
 
-  const handleAddProduct = (updateProductList) => {
+  const handleAddProduct = () => {
     axios
       .post("http://localhost:8080/api/v1/admin/products", productData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         console.log("Producto agregado con éxito:", response.data);
-        updateProductList(); // Actualiza la lista de productos
+        // Actualiza la lista de productos
+        if(listaOn){
+
+        }
         onClose();
         setProductData(initialProductState);
         setInputValue("");
@@ -275,7 +278,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
         <Button
             colorScheme="blue"
             mr={3}
-            onClick={() => handleAddProduct(updateProductList)} 
+            onClick={() => handleAddProduct()} 
             isDisabled={formDisabled}
           >
             Agregar
