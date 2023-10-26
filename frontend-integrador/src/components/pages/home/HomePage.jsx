@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
+import RenderPagination from "./RenderPagination";
 
 const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
@@ -28,16 +29,16 @@ const HomePage = () => {
   const [lista, setLista] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [pageData, setPageData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
 
   useEffect(() => {
     setLoading(true);
-    console.log(baseUrl);
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          `${baseUrl}/api/v1/public/products`,
+          `${baseUrl}/api/v1/public/products?page=${currentPage}&size=${10}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -45,8 +46,7 @@ const HomePage = () => {
           }
         );
         if (response) {
-          
-          setPageData(response.data)
+          setPageData(response.data);
           setLista(response.data.content);
           setLoading(false);
         }
@@ -62,7 +62,7 @@ const HomePage = () => {
       }
     };
     fetchProductsData();
-  }, []);
+  }, [currentPage]);
 
   const getProductsByType = async (type) => {
     try {
@@ -80,11 +80,16 @@ const HomePage = () => {
     }
   };
 
+  useEffect(() => {
+    if (pageData) {
+      setTotalPages(pageData.totalPages);
+    }
+  }, [pageData]);
+
   const handleCategoryClick = async (type) => {
     setLoading(true);
     const data = await getProductsByType(type);
     if (data) {
-      console.log(data);
       setPageData(data);
       setLista(data.content);
     }
@@ -192,6 +197,13 @@ const HomePage = () => {
             </Link>
           ))}
         </SimpleGrid>
+        {pageData && (
+          <RenderPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </VStack>
     </Box>
   );
