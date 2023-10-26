@@ -10,15 +10,47 @@ import {
 } from "@chakra-ui/react";
 
 const ProductCard = ({ item }) => {
-  
   return (
-    <Card h={'600px'} bg={"blackAlpha.600"} color={"whiteAlpha.700"} borderRadius={10} overflow='hidden' >
-      
-      <CardBody display={"flex"} justifyContent={"center"} >
-        <Image src={item?.thumbnail} fallbackSrc='https://via.placeholder.com/600' object-fit={"cover"} w={'100%'} ></Image>
+    <Card
+      h={"500px"}
+      color={"blanco"}
+    >
+      <CardBody
+      _hover={{
+        transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
+        boxShadow: "md", // Agrega una sombra al hacer hover
+        cursor: "pointer", // Cambia el cursor al pasar por encima
+      }}
+        border={"5px solid black"}
+        boxShadow={"5px 5px 5px gray"}
+        display={"flex"}
+        justifyContent={"center"}
+        h={"80%"}
+      >
+        <Image
+        
+          src={item?.thumbnail}
+          /* fallbackSrc='https://via.placeholder.com/600' */ object-fit={
+            "cover"
+          }
+        ></Image>
       </CardBody>
-{/*       <CardHeader>{item?.name}</CardHeader>
-      <CardFooter>{item?.set}</CardFooter> */}
+      <CardFooter
+        fontSize={26}
+        color={"negro"}
+        alignContent={"center"}
+        justify={"center"}
+      >
+        <Text
+          fontFamily={"Saira"}
+          color={"gris1"}
+          fontSize={"24px"}
+          textShadow={"5px 5px 5px gray"}
+        >
+          {" "}
+          {item.productName}
+        </Text>
+      </CardFooter>
     </Card>
   );
 };
