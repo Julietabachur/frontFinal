@@ -35,8 +35,17 @@ const HomePage = () => {
 
   useEffect(() => {
     setLoading(true);
+
     const getProducts = async () => {
-      try {
+       try {const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+
+     
         const response = await axios.get(
           `${baseUrl}/api/v1/public/products?page=${currentPage}`,
           {
@@ -47,7 +56,7 @@ const HomePage = () => {
         );
         if (response) {
           setPageData(response.data);
-          setLista(response.data.content);
+          setLista(shuffleArray(response.data.content));
           setLoading(false);
         }
       } catch (error) {
@@ -74,6 +83,7 @@ const HomePage = () => {
           },
         }
       );
+
       return response.data;
     } catch (error) {
       console.error(error);
@@ -87,7 +97,7 @@ const HomePage = () => {
   }, [pageData]);
 
   const handleCategoryClick = async (type) => {
-    setCurrentPage(1)
+    setCurrentPage(1);
     setLoading(true);
     const data = await getProductsByType(type);
     if (data) {
