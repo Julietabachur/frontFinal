@@ -2,19 +2,22 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
+import { useDisclosure } from "@chakra-ui/react";
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   HStack,
   VStack,
   Image,
   Text,
   Box,
   Button,
-  Grid,
-  GridItem,
+  Stack,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  SimpleGrid 
 } from "@chakra-ui/react";
 import ProductGallery from "./ProductGallery";
 
@@ -24,6 +27,11 @@ const DetailPage = () => {
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleGallery = () => {
+    onOpen();
+  };
 
   const getDetail = async () => {
     const response = await axios.get(
@@ -44,9 +52,9 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <Box m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20} maxH={'80vh'} overflowY={'auto'}>
+    <VStack m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20}>
       {detail && (
-        <VStack color={"blanco"} w={"70vw"} justifySelf={"center"} >
+        <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
           <HStack
             justify={"space-between"}
             w={"100%"}
@@ -56,7 +64,7 @@ const DetailPage = () => {
             alignContent={"center"}
             justifyContent={"space-between"}
             padding={"10px"}
-            minW={'300px'}
+            minW={"300px"}
           >
             <Text fontFamily={"Saira"} color={"black"} fontSize={"1rem"}>
               {detail.productName}
@@ -64,13 +72,13 @@ const DetailPage = () => {
             <Button onClick={() => navigate(-1)}> atras </Button>
           </HStack>
 
-          <Box h={"1030px"} border={"2px solid black"}>
+          <Stack border={"2px solid black"}>
             <VStack border={"1px solid black"} p={20}>
-              <Box
+              <Stack
                 h={"30px"}
                 border={"1px solid black"}
                 w={"30%"}
-                minW={'300px'}
+                minW={"300px"}
                 textAlign="center"
               >
                 <Text
@@ -81,7 +89,7 @@ const DetailPage = () => {
                 >
                   DESCRIPCION DEL PRODUCTO
                 </Text>
-              </Box>
+              </Stack>
               <Text
                 fontFamily={"Podkova"}
                 color={"black"}
@@ -91,11 +99,43 @@ const DetailPage = () => {
                 {detail.detail}
               </Text>
             </VStack>
-          <ProductGallery gallery={detail.gallery} />
-          </Box>
+            <Stack p={2}>
+              <ProductGallery gallery={detail.gallery} />
+            </Stack>
+            {Array.isArray(detail.gallery) && detail.gallery.length > 2 && (
+              <>
+                <Button
+                  onClick={handleGallery}
+                  bg={"verde2"}
+                  alignSelf={"flex-end"}
+                  w={20}
+                  mr={5}
+                  mb={5}
+                >
+                  Ver Mas
+                </Button>
+                <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader>{`Galeria de Imagenes`}</DrawerHeader>
+                    <DrawerBody>
+                    <SimpleGrid minChildWidth='400px' spacing='20px'>
+                        {detail.gallery.map((img) => (
+                          <Box>
+                            <Image src={img} alt="photo" />
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </DrawerBody>
+                  </DrawerContent>
+                </Drawer>
+              </>
+            )}
+          </Stack>
         </VStack>
       )}
-    </Box>
+    </VStack>
   );
 };
 

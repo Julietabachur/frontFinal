@@ -21,14 +21,12 @@ const Navbar = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < MIN_DESKTOP_WIDTH) {
-      
         setMedia(true);
       } else {
         setMedia(false);
       }
     };
     if (window.innerWidth < MIN_DESKTOP_WIDTH) {
-      
       setMedia(true);
     } else {
       setMedia(false);
@@ -60,41 +58,77 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
-        
-          <Image
-            src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
-            alt="Logo dibujo"
+        {media ? (
+          <a
+            href="/"
             style={{
-              height: "60px",
-            }}
-            mr={3}
-          />
-      
-        <a
-          href="/"
-          style={{
-            textDecoration: "none",
-            color: "white",
-            marginRight: "20px",
-          }}
-        >
-          <Image
-            src="https://images-g3.s3.amazonaws.com/logoHeader.png"
-            alt="Logo"
-            style={{
-              height: "30px",
-            }}
-          />
-        </a>
-        
-          <span
-            style={{
+              textDecoration: "none",
               color: "white",
+              marginRight: "20px",
             }}
           >
-            Vestite con estilo
-          </span>
-        
+            <Image
+              src="https://images-g3.s3.amazonaws.com/logoHeader.png"
+              alt="Logo"
+              style={{
+                height: "30px",
+              }}
+            />
+          </a>
+        ) : (
+          <>
+            <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "20px",
+              }}
+            >
+              <Image
+                src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
+                alt="Logo dibujo"
+                style={{
+                  height: "60px",
+                }}
+                mr={3}
+              />
+            </a>
+
+            <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "20px",
+              }}
+            >
+              <Image
+                src="https://images-g3.s3.amazonaws.com/logoHeader.png"
+                alt="Logo"
+                style={{
+                  height: "30px",
+                }}
+              />
+            </a>
+            <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "20px",
+              }}
+            >
+              <span
+                style={{
+                  color: "white",
+                }}
+              >
+                Vestite con estilo
+              </span>
+            </a>
+          </>
+        )}
       </div>
       {media ? (
         <Menu>
