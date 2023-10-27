@@ -1,9 +1,39 @@
-import React from "react";
-import { Button, HStack, VStack, Image, theme } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  HStack,
+  Image,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const [media, setMedia] = useState(false);
+
   const navigate = useNavigate();
+  const MIN_DESKTOP_WIDTH = 600;
+
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+        setMedia(true);
+      } else {
+        setMedia(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Limpieza del event listener cuando el componente se desmonta
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <HStack
@@ -12,7 +42,7 @@ const Navbar = () => {
       justify={"space-between"}
       position={"fixed"}
       top={0}
-      w={"100vw"}
+      w={"100%"}
       h={"120px"}
       zIndex={1000}
     >
@@ -22,7 +52,8 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
-        <Image
+        {!media && (
+          <Image
             src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
             alt="Logo dibujo"
             style={{
@@ -30,6 +61,7 @@ const Navbar = () => {
             }}
             mr={3}
           />
+        )}
         <a
           href="/"
           style={{
@@ -46,30 +78,80 @@ const Navbar = () => {
             }}
           />
         </a>
-        <span
-          style={{
-            color: "white",
-          }}
-        >
-          Vestite con estilo
-        </span>
+        {!media && (
+          <span
+            style={{
+              color: "white",
+            }}
+          >
+            Vestite con estilo
+          </span>
+        )}
       </div>
-      <HStack>
-        <Button
-          onClick={()=>{navigate('/login')}}
-          style={{
-            marginRight: "10px",
-          }}
-          colorScheme={"whatsapp"} color={'verde2'}
-          borderRadius={20}
-          variant={"outline"}
-        >
-          Iniciar sesión
-        </Button>
-        <Button onClick={()=>{navigate('/register')}} colorScheme={"whatsapp"}  color={'verde2'}  variant={"outline"} borderRadius={20}>
-          Crear cuenta
-        </Button>
-      </HStack>
+      {media && (
+        <Menu>
+          <MenuButton>
+            <Button
+              colorScheme={"whatsapp"}
+              color={"verde2"}
+              variant={"outline"}
+              borderRadius={20}
+            >
+              Ingresar
+            </Button>
+          </MenuButton>
+          <MenuList bg={"negro"}>
+            <MenuItem
+              bg={"negro"}
+              as="a"
+              href="#"
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              <Text color={"verde2"}>Loguearse</Text>
+            </MenuItem>
+            <MenuItem
+              bg={"negro"}
+              as="a"
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              <Text color={"verde2"}>Registrarse</Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      )}
+      {!media && (
+        <HStack>
+          <Button
+            onClick={() => {
+              navigate("/login");
+            }}
+            style={{
+              marginRight: "10px",
+            }}
+            colorScheme={"whatsapp"}
+            color={"verde2"}
+            borderRadius={20}
+            variant={"outline"}
+          >
+            Iniciar sesión
+          </Button>
+          <Button
+            onClick={() => {
+              navigate("/register");
+            }}
+            colorScheme={"whatsapp"}
+            color={"verde2"}
+            variant={"outline"}
+            borderRadius={20}
+          >
+            Crear cuenta
+          </Button>
+        </HStack>
+      )}
     </HStack>
   );
 };
