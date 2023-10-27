@@ -15,17 +15,24 @@ const Navbar = () => {
   const [media, setMedia] = useState(false);
 
   const navigate = useNavigate();
-  const MIN_DESKTOP_WIDTH = 600;
+  const MIN_DESKTOP_WIDTH = 500;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+      
         setMedia(true);
       } else {
         setMedia(false);
       }
     };
+    if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+      
+      setMedia(true);
+    } else {
+      setMedia(false);
+    }
 
     window.addEventListener("resize", handleResize);
 
@@ -33,7 +40,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [window.innerWidth]);
 
   return (
     <HStack
@@ -42,6 +49,7 @@ const Navbar = () => {
       justify={"space-between"}
       position={"fixed"}
       top={0}
+      minW={400}
       w={"100%"}
       h={"120px"}
       zIndex={1000}
@@ -52,7 +60,7 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
-        {!media && (
+        
           <Image
             src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
             alt="Logo dibujo"
@@ -61,7 +69,7 @@ const Navbar = () => {
             }}
             mr={3}
           />
-        )}
+      
         <a
           href="/"
           style={{
@@ -78,7 +86,7 @@ const Navbar = () => {
             }}
           />
         </a>
-        {!media && (
+        
           <span
             style={{
               color: "white",
@@ -86,20 +94,21 @@ const Navbar = () => {
           >
             Vestite con estilo
           </span>
-        )}
+        
       </div>
-      {media && (
+      {media ? (
         <Menu>
-          <MenuButton>
-            <Button
-              colorScheme={"whatsapp"}
-              color={"verde2"}
-              variant={"outline"}
-              borderRadius={20}
-            >
-              Ingresar
-            </Button>
+          <MenuButton
+            color={"verde2"}
+            p={3}
+            pl={5}
+            pr={5}
+            borderRadius={25}
+            border={"1px solid green"}
+          >
+            Ingresar
           </MenuButton>
+
           <MenuList bg={"negro"}>
             <MenuItem
               bg={"negro"}
@@ -122,8 +131,7 @@ const Navbar = () => {
             </MenuItem>
           </MenuList>
         </Menu>
-      )}
-      {!media && (
+      ) : (
         <HStack>
           <Button
             onClick={() => {

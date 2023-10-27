@@ -191,8 +191,8 @@ const HomePage = () => {
         {/* categorias */}
         {media && (
           <Menu>
-            <MenuButton>
-              <Button minW={600} bg={"negro"}>
+            <MenuButton minW={600} bg={"negro"}>
+              
                 <Text
                   fontFamily={"podkova"}
                   color={"verde2"}
@@ -201,7 +201,6 @@ const HomePage = () => {
                 >
                   Categorias
                 </Text>
-              </Button>
             </MenuButton>
             <MenuList bg={"negro"}>
               {categoriesData.map((category) => (

@@ -16,6 +16,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
+import ProductGallery from "./ProductGallery";
 
 import axios from "axios";
 const DetailPage = () => {
@@ -43,9 +44,9 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <Box w={"100vw"} display={"flex"} justifyContent={"center"} p={20}>
+    <Box m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20} maxH={'80vh'} overflowY={'auto'}>
       {detail && (
-        <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
+        <VStack color={"blanco"} w={"70vw"} justifySelf={"center"} >
           <HStack
             justify={"space-between"}
             w={"100%"}
@@ -55,25 +56,27 @@ const DetailPage = () => {
             alignContent={"center"}
             justifyContent={"space-between"}
             padding={"10px"}
+            minW={'300px'}
           >
-            <Text fontFamily={"Saira"} color={"black"} fontSize={"24px"}>
+            <Text fontFamily={"Saira"} color={"black"} fontSize={"1rem"}>
               {detail.productName}
             </Text>
             <Button onClick={() => navigate(-1)}> atras </Button>
           </HStack>
 
           <Box h={"1030px"} border={"2px solid black"}>
-            <VStack h={"300px"} border={"1px solid black"} p={20}>
+            <VStack border={"1px solid black"} p={20}>
               <Box
                 h={"30px"}
                 border={"1px solid black"}
                 w={"30%"}
+                minW={'300px'}
                 textAlign="center"
               >
                 <Text
                   fontFamily={"Saira"}
                   color={"black"}
-                  fontSize={"14px"}
+                  fontSize={"1rem"}
                   p={1}
                 >
                   DESCRIPCION DEL PRODUCTO
@@ -88,22 +91,7 @@ const DetailPage = () => {
                 {detail.detail}
               </Text>
             </VStack>
-
-            <Grid
-              h={["auto", "500px"]}
-              w={["auto", "100%"]}
-              templateRows={["repeat(2, 1fr)", "repeat(2, 1fr)"]}
-              templateColumns={["repeat(2, 1fr)", "repeat(4, 1fr)"]}
-              gap={2}
-            >
-              <GridItem rowSpan={2} colSpan={2}>
-                <Image objectFit="cover" src={detail.thumbnail} alt="photo" />
-              </GridItem>
-              <GridItem rowSpan={1} colSpan={1} ><Image objectFit="cover" src={detail.thumbnail} alt="photo" /></GridItem>
-              <GridItem rowSpan={1} colSpan={1} ><Image objectFit="cover" src={detail.thumbnail} alt="photo" /></GridItem>
-              <GridItem rowSpan={1} colSpan={1} ><Image objectFit="cover" src={detail.thumbnail} alt="photo" /></GridItem>
-              <GridItem rowSpan={1} colSpan={1} ><Image objectFit="cover" src={detail.thumbnail} alt="photo" /></GridItem>
-            </Grid>
+          <ProductGallery gallery={detail.gallery} />
           </Box>
         </VStack>
       )}
