@@ -100,7 +100,7 @@ const DetailPage = () => {
               </Text>
             </VStack>
             <Stack p={2}>
-              <ProductGallery gallery={detail.gallery} />
+              <ProductGallery thumbnail={detail.thumbnail} gallery={detail.gallery} />
             </Stack>
             {Array.isArray(detail.gallery) && detail.gallery.length > 2 && (
               <>
@@ -121,8 +121,8 @@ const DetailPage = () => {
                     <DrawerHeader>{`Galeria de Imagenes`}</DrawerHeader>
                     <DrawerBody>
                     <SimpleGrid minChildWidth='400px' spacing='20px'>
-                        {detail.gallery.map((img) => (
-                          <Box>
+                        {detail.gallery.map((img,index) => (
+                          <Box key={index}>
                             <Image src={img} alt="photo" />
                           </Box>
                         ))}

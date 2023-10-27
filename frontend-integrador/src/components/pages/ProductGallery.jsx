@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -16,9 +16,16 @@ import {
 
 const ProductGallery = ({ ...gallery }) => {
   const lista = gallery.gallery;
+  const [main, setMain] = useState(0);
+
+  useEffect(() => {
+    if (Array.isArray(lista)) {
+      setMain(lista[0]);
+    }
+  }, []);
 
   return (
-    lista && (
+    Array.isArray(lista) && (
       <Grid
         h={["auto"]}
         w={["auto", "100%"]}
@@ -28,27 +35,29 @@ const ProductGallery = ({ ...gallery }) => {
       >
         {lista[0] && (
           <GridItem rowSpan={2} colSpan={2}>
-            <Image src={lista[0]} alt="photo" />
+            <Image h={'100%'} objectFit={'cover'}  src={lista[0]} alt="photo" />
           </GridItem>
         )}
         {lista[1] && (
           <GridItem rowSpan={1} colSpan={1}>
-            <Image src={lista[1]} alt="photo" />
+            <Image h={'100%'} objectFit={'cover'}  src={lista[1]} alt="photo" />
           </GridItem>
         )}
         {lista[2] && (
           <GridItem rowSpan={1} colSpan={1}>
-            <Image src={lista[2]} alt="photo" />
+            <Image h={'100%'} objectFit={'cover'}  src={lista[2]} alt="photo" />
           </GridItem>
         )}
         {lista[3] && (
           <GridItem rowSpan={1} colSpan={1}>
-            <Image src={lista[3]} alt="photo" />
+            <Image h={'100%'} objectFit={'cover'}  src={lista[3]} alt="photo" />
           </GridItem>
         )}
         {lista[4] && (
           <GridItem rowSpan={1} colSpan={1}>
-            <Image src={lista[4]} alt="photo" />
+           
+              <Image h={'100%'} objectFit={'cover'}  src={lista[4]} alt="photo" />
+            
           </GridItem>
         )}
       </Grid>
