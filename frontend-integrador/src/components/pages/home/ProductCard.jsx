@@ -11,29 +11,21 @@ import {
 
 const ProductCard = ({ item }) => {
   return (
-    <Card
-      h={"500px"}
-      color={"blanco"}
-    >
+    <Card h={"500px"} color={"blanco"}>
       <CardBody
-      _hover={{
-        transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
-        boxShadow: "md", // Agrega una sombra al hacer hover
-        cursor: "pointer", // Cambia el cursor al pasar por encima
-      }}
+        _hover={{
+          transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
+          boxShadow: "md", // Agrega una sombra al hacer hover
+          cursor: "pointer", // Cambia el cursor al pasar por encima
+        }}
         border={"5px solid black"}
         boxShadow={"5px 5px 5px gray"}
         display={"flex"}
         justifyContent={"center"}
         h={"80%"}
+        p={0}
       >
-        <Image
-        
-          src={item?.thumbnail}
-          /* fallbackSrc='https://via.placeholder.com/600' */ object-fit={
-            "cover"
-          }
-        ></Image>
+        <Image src={item?.thumbnail} h={'100%'} w={'100%'} objectFit={'cover'} ></Image>
       </CardBody>
       <CardFooter
         fontSize={26}

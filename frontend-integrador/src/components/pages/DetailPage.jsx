@@ -123,7 +123,7 @@ const DetailPage = () => {
                     <SimpleGrid minChildWidth='400px' spacing='20px'>
                         {detail.gallery.map((img,index) => (
                           <Box key={index}>
-                            <Image src={img} alt="photo" />
+                            <Image w={'100%'} h={'100%'} objectFit={'cover'} src={img} alt="photo" />
                           </Box>
                         ))}
                       </SimpleGrid>
