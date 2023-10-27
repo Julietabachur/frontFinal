@@ -20,6 +20,8 @@ import {
   Box,
 } from "@chakra-ui/react";
 
+import ListAdminProduct from "./ListAdminProduct";
+
 const initialProductState = {
   productName: "",
   size: "",
@@ -31,7 +33,7 @@ const initialProductState = {
   gallery: [],
 };
 
-const AddProduct = ({ isOpen, onClose }) => {
+const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
   //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
   const token =
     "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5OTI0ODMsImV4cCI6MTY5ODU5NzI4M30.C3DUv3nMnin0NJXBKo9bWh5_PZaUSAgg7YcAbFGlc5Q";
@@ -121,30 +123,30 @@ const AddProduct = ({ isOpen, onClose }) => {
     setProductData({ ...productData, gallery: updatedGallery });
   };
 
-  const handleAddProduct = () => {
-    console.log(productData);
-    // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
-    axios
-      .post("http://localhost:8080/api/v1/admin/products", productData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        console.log("Producto agregado con éxito:", response.data);
+  // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
+  const handleProductForm = () => {
+    console.log("Datos Formulario:", productData);
 
-        // Cierra el modal y resetea el formulario
-        onClose();
-        setProductData(initialProductState);
-        setInputValue(""); // Reinicia el valor del input
-        setNombreValido(true); // Reinicia la validación del nombre
-        setShowError(false); // Reinicia el estado de error
-      })
-      .catch((error) => {
-        // Maneja el error de la solicitud POST aquí
-        console.error("Error al agregar el producto:", error);
-        // Muestra un mensaje de error al usuario
-      });
+
+    console.log('Props before adding a product:', isOpen, onClose, lista, isModalOpen, page);
+    addProduct(productData);
+    getProducts();
+    console.log('Props after adding a product:', isOpen, onClose, lista, isModalOpen, page);
+    
+
+     // Cierra el modal y resetea el formulario
+     setIsModalOpen(false);
+     onClose();
+     setProductData(initialProductState);
+     setInputValue(""); // Reinicia el valor del input
+     setNombreValido(true); // Reinicia la validación del nombre
+     setShowError(false); // Reinicia el estado de error
+    
   };
-
+  useEffect(() => {
+    console.log('Component re-rendered');
+  }, [lista]);
+  
   const handleCancel = () => {
     // Cierra el modal y resetea el formulario
     onClose();
@@ -155,6 +157,7 @@ const AddProduct = ({ isOpen, onClose }) => {
   };
 
   return (
+    <>
     <Modal isOpen={isOpen} onClose={handleCancel}>
       <ModalOverlay />
       <ModalContent mt={200}>
@@ -182,7 +185,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Selecciona una talla"
             value={productData.size}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           >
             <option value="S">S</option>
@@ -194,7 +197,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Selecciona un tipo"
             value={productData.type}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           >
             <option value="T_SHIRT">T_SHIRT</option>
@@ -208,7 +211,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             <NumberInputField
               name="productionTime"
               mb={3}
-              isDisabled={formDisabled}
+              disabled={formDisabled}
               placeholder="Cantidad de días para la fábricación"
               value={productData.productionTime}
               onChange={(valueString) => {
@@ -227,7 +230,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Colección"
             value={productData.collection}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           />
           <Input
@@ -235,7 +238,7 @@ const AddProduct = ({ isOpen, onClose }) => {
             mb={3}
             placeholder="Enlace de la miniatura"
             value={productData.thumbnail}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           />
           <Flex align="center" mb={3}>
@@ -243,11 +246,11 @@ const AddProduct = ({ isOpen, onClose }) => {
               flex="1"
               placeholder="Enlace de la imagen de la galería"
               value={galleryUrl}
-              isDisabled={formDisabled}
+              disabled={formDisabled}
               onChange={(e) => setGalleryUrl(e.target.value)}
               marginRight={2}
             />
-            <Button isDisabled={formDisabled} onClick={handleAddGalleryImage}>+</Button>
+            <Button disabled={formDisabled} onClick={handleAddGalleryImage}>+</Button>
           </Flex>
           <Box mb={3}>
             <Text fontSize="sm" fontWeight="bold">
@@ -267,7 +270,7 @@ const AddProduct = ({ isOpen, onClose }) => {
                     variant="outline"
                     borderColor="red.500"
                     onClick={() => handleRemoveGalleryImage(index)}
-                    isDisabled={formDisabled}
+                    disabled={formDisabled}
                   >
                     -
                   </Button>
@@ -279,7 +282,7 @@ const AddProduct = ({ isOpen, onClose }) => {
           <Input
             name="detail"
             mb={3}
-            iisDisabled={formDisabled}
+            disabled={formDisabled}
             placeholder="Detalle:\nprimer renglón\nsegundo renglón"
             value={productData.detail}
             onChange={handleInputChange}
@@ -289,8 +292,8 @@ const AddProduct = ({ isOpen, onClose }) => {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={handleAddProduct}
-            isDisabled={formDisabled}
+            onClick={handleProductForm}
+            disabled={formDisabled}
           >
             Agregar
           </Button>
@@ -298,7 +301,10 @@ const AddProduct = ({ isOpen, onClose }) => {
         </ModalFooter>
       </ModalContent>
     </Modal>
+    {console.log("isModalOpen:",isModalOpen)}
+    {lista && !isModalOpen && <ListAdminProduct isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
+    </>
   );
 };
 
-export default AddProduct;
+export default ProductForm;
