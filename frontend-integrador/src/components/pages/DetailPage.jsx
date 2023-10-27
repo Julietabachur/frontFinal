@@ -1,26 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import ProductGallery from './ProductGallery';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ProductGallery from "./ProductGallery";
+import axios from "axios";
 
-const Detail = () => {
+const DetailPage = () => {
   const [product, setProduct] = useState({});
-  const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { id } = useParams();
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/v1/public/products/${id}`);
-      const data = await response.json();
-      setProduct(data);
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data) {
+        console.log(response.data);
+        setProduct(response.data);
+      }
     } catch (error) {
-      console.error('Error al obtener datos:', error);
+      console.error("Error al obtener datos:", error);
     }
   };
 
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, []);
 
   return (
     <>
@@ -28,13 +37,14 @@ const Detail = () => {
         {product && (
           <div key={product.id} data={product}>
             <figure className="container-img">
-              <img src={product.image} alt={product.title} />
+              <img src={product.thumbnail} alt={product.productName} />
               <div>
-                <ProductGallery productImages={product.images} />
-                <h3>{product.title}</h3>
-                <p>{product.description}</p>
-                <h4>{product.price}</h4>
-
+                {Array.isArray(product.gallery) && (
+                  <ProductGallery productImages={product.gallery} />
+                )}
+                <h3>{product.productName}</h3>
+                <p>{product.detail}</p>
+                <h4>{product.collection}</h4>
               </div>
             </figure>
           </div>
@@ -44,4 +54,4 @@ const Detail = () => {
   );
 };
 
-export default Detail;
+export default DetailPage;
