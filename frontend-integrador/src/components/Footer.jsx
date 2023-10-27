@@ -14,6 +14,7 @@ const Footer = () => {
               justifyContent="center"
               alignItems="start"
               my={5}
+              marginLeft={"2%"}
             >
               <Box h='40px' d='flex' justifyContent="center" alignItems="start">
                 <Image ml={2} src="https://images-g3.s3.amazonaws.com/logoFooter.png" alt="Logo"/>
@@ -25,16 +26,16 @@ const Footer = () => {
               </Box>
             </VStack>
             <Spacer />
-            <Box>
+            <Box marginRight={"2%"}>
               <HStack spacing='16px'>
                 <Box w='60px' h='60px'>
-                  <FaFacebook size={56} color={'#EDF2F7'}/>
+                  <FaFacebook size={30} color={'#EDF2F7'}/>
                 </Box>
                 <Box w='60px' h='60px'>
-                  <FaInstagram size={56} color={'#EDF2F7'}/>
+                  <FaInstagram size={30} color={'#EDF2F7'}/>
                 </Box>
                 <Box w='60px' h='60px'>
-                  <FaWhatsapp size={56} color={'#EDF2F7'}/>
+                  <FaWhatsapp size={30} color={'#EDF2F7'}/>
                 </Box>
               </HStack>
             </Box>
