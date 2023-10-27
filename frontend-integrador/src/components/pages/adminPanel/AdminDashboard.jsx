@@ -35,7 +35,7 @@ const AdminDashboard = () => {
 
   // Renderizado del componente
   return (
-    <Box pos={'relative'} top={100}>
+    <Box pos={'relative'} top={100} w={'100vw'} h={'100vh'}>
       {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
       {window.innerWidth >= MIN_DESKTOP_WIDTH && <Button onClick={() => setIsModalOpen(true)}>Agregar Producto</Button>}
 

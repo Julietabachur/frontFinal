@@ -17,6 +17,10 @@ import {
   Button,
   Center,
   Link,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
@@ -31,21 +35,41 @@ const HomePage = () => {
   const [pageData, setPageData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [media, setMedia] = useState(false);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const MIN_DESKTOP_WIDTH = 600;
+
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+        setMedia(true);
+      } else {
+        setMedia(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Limpieza del event listener cuando el componente se desmonta
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     setLoading(true);
 
     const getProducts = async () => {
-       try {const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-      };
+      try {
+        const shuffleArray = (array) => {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        };
 
-     
         const response = await axios.get(
           `${baseUrl}/api/v1/public/products?page=${currentPage}`,
           {
@@ -136,8 +160,8 @@ const HomePage = () => {
   ];
 
   return (
-    <Box w={"100vw"} bg={"blanco"} /*p={9}*/>
-      <VStack /* w={"70vw"}  */ margin={"0px auto"} rowGap={0}>
+    <Box w={media ? "100%" : "100vw"} bg={"blanco"} /*p={9}*/>
+      <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
           color={"negro"}
@@ -149,10 +173,10 @@ const HomePage = () => {
           /*p={9}*/
           mt={2}
         >
-          <Text fontSize={"1.5rem"}>¿Que buscás?</Text>
+          {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
           <Input
             bg={"blanco"}
-            w={"30%"}
+            w={media ? "50%" : "30%"}
             h={7}
             placeholder="Buscar productos"
             _placeholder={{ color: "inherit" }}
@@ -165,21 +189,62 @@ const HomePage = () => {
         </HStack>
 
         {/* categorias */}
-        <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
-          {/* Muestra las tarjetas de categorías */}
-          {categoriesData.map((category) => (
-            <Box
-              key={category.id}
-              textAlign="center"
-              onClick={() => handleCategoryClick(category.type)}
-            >
-              {" "}
-              <Link fontFamily={"podkova"} color={"verde2"} fontSize={17} p={3}>
-                {category.name}
-              </Link>
-            </Box>
-          ))}
-        </HStack>
+        {media && (
+          <Menu>
+            <MenuButton minW={600} bg={"negro"}>
+              
+                <Text
+                  fontFamily={"podkova"}
+                  color={"verde2"}
+                  fontSize={17}
+                  p={3}
+                >
+                  Categorias
+                </Text>
+            </MenuButton>
+            <MenuList bg={"negro"}>
+              {categoriesData.map((category) => (
+                <MenuItem
+                  bg={"negro"}
+                  key={category.id}
+                  textAlign="center"
+                  onClick={() => handleCategoryClick(category.type)}
+                >
+                  <Link
+                    fontFamily={"podkova"}
+                    color={"verde2"}
+                    fontSize={17}
+                    p={3}
+                  >
+                    {category.name}
+                  </Link>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        )}
+        {!media && (
+          <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
+            {/* Muestra las tarjetas de categorías */}
+            {categoriesData.map((category) => (
+              <Box
+                key={category.id}
+                textAlign="center"
+                onClick={() => handleCategoryClick(category.type)}
+              >
+                {" "}
+                <Link
+                  fontFamily={"podkova"}
+                  color={"verde2"}
+                  fontSize={17}
+                  p={3}
+                >
+                  {category.name}
+                </Link>
+              </Box>
+            ))}
+          </HStack>
+        )}
 
         <SimpleGrid columns={{ sm: 1, md: 2 }} padding={20} spacing={40}>
           {isLoading &&

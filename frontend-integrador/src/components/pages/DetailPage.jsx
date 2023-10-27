@@ -1,56 +1,141 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useDisclosure } from "@chakra-ui/react";
+import {
+  HStack,
+  VStack,
+  Image,
+  Text,
+  Box,
+  Button,
+  Stack,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  SimpleGrid 
+} from "@chakra-ui/react";
 import ProductGallery from "./ProductGallery";
-import axios from "axios";
 
+import axios from "axios";
 const DetailPage = () => {
-  const [product, setProduct] = useState({});
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { id } = useParams();
+  const [detail, setDetail] = useState({});
+  const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const fetchProduct = async () => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/${id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data) {
-        console.log(response.data);
-        setProduct(response.data);
+  const handleGallery = () => {
+    onOpen();
+  };
+
+  const getDetail = async () => {
+    const response = await axios.get(
+      `${baseUrl}/api/v1/public/products/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      console.error("Error al obtener datos:", error);
+    );
+    if (response) {
+      setDetail(response.data);
     }
   };
 
   useEffect(() => {
-    fetchProduct();
+    getDetail();
   }, []);
 
   return (
-    <>
-      <div className="conteiner-product">
-        {product && (
-          <div key={product.id} data={product}>
-            <figure className="container-img">
-              <img src={product.thumbnail} alt={product.productName} />
-              <div>
-                {Array.isArray(product.gallery) && (
-                  <ProductGallery productImages={product.gallery} />
-                )}
-                <h3>{product.productName}</h3>
-                <p>{product.detail}</p>
-                <h4>{product.collection}</h4>
-              </div>
-            </figure>
-          </div>
-        )}
-      </div>
-    </>
+    <VStack m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20}>
+      {detail && (
+        <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
+          <HStack
+            justify={"space-between"}
+            w={"100%"}
+            h={"60px"}
+            color={"blanco"}
+            border={"1px solid black"}
+            alignContent={"center"}
+            justifyContent={"space-between"}
+            padding={"10px"}
+            minW={"300px"}
+          >
+            <Text fontFamily={"Saira"} color={"black"} fontSize={"1rem"}>
+              {detail.productName}
+            </Text>
+            <Button onClick={() => navigate(-1)}> atras </Button>
+          </HStack>
+
+          <Stack border={"2px solid black"}>
+            <VStack border={"1px solid black"} p={20}>
+              <Stack
+                h={"30px"}
+                border={"1px solid black"}
+                w={"30%"}
+                minW={"300px"}
+                textAlign="center"
+              >
+                <Text
+                  fontFamily={"Saira"}
+                  color={"black"}
+                  fontSize={"1rem"}
+                  p={1}
+                >
+                  DESCRIPCION DEL PRODUCTO
+                </Text>
+              </Stack>
+              <Text
+                fontFamily={"Podkova"}
+                color={"black"}
+                fontSize={"23px"}
+                marginTop={"20px"}
+              >
+                {detail.detail}
+              </Text>
+            </VStack>
+            <Stack p={2}>
+              <ProductGallery thumbnail={detail.thumbnail} gallery={detail.gallery} />
+            </Stack>
+            {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
+              <>
+                <Button
+                  onClick={handleGallery}
+                  bg={"verde2"}
+                  alignSelf={"flex-end"}
+                  w={20}
+                  mr={5}
+                  mb={5}
+                >
+                  Ver Mas
+                </Button>
+                <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader>{`Galeria de Imagenes`}</DrawerHeader>
+                    <DrawerBody>
+                    <SimpleGrid minChildWidth='400px' spacing='20px'>
+                        {detail.gallery.map((img,index) => (
+                          <Box key={index}>
+                            <Image w={'100%'} h={'100%'} objectFit={'cover'} src={img} alt="photo" />
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </DrawerBody>
+                  </DrawerContent>
+                </Drawer>
+              </>
+            )}
+          </Stack>
+        </VStack>
+      )}
+    </VStack>
   );
 };
 
