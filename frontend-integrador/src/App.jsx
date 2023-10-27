@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import AdminDashboard from "./components/pages/adminPanel/AdminDashboard";
 import AdminPanel from "./components/pages/adminPanel/AdminPanel";
 import { HStack, Box } from "@chakra-ui/react";
+import DetailPage from "./components/pages/DetailPage";
 
 function App() {
   return (
@@ -16,7 +17,9 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin" element={<AdminDashboard />} /> 
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/detalle/:id" element={<DetailPage />} />
+
           </Routes>
           {<Footer />}
         </Router>
