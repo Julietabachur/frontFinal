@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { Link, useParams } from "react-router-dom"
+import {useParams } from "react-router-dom"
 import {
   Card,
   CardHeader,
@@ -16,6 +16,8 @@ import {
 } from "@chakra-ui/react";
 
 const DetailPage = () => {
+
+
 
   const [details, setDetails] = useState ({
     productName: "CAMPERA JEAN BLACK",
