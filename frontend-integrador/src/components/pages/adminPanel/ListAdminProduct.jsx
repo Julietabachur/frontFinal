@@ -123,7 +123,7 @@ console.log(isModalOpen, productToEdit);
             </Box>
             {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
             {productToEdit !== null && (<EditProduct productToEdit={productToEdit} isOpen={isModalOpen} onClose={() => {setProductToEdit(null); setIsModalOpen(false);}} getProducts={getProducts}/>)}
-            {console.log("ProductToEditReturn:", productToEdit)}
+            
         </>
     );
 };

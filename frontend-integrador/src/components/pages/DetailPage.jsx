@@ -1,91 +1,142 @@
-import React from 'react'
-import { useEffect, useState } from "react"
-import { useNavigate } from 'react-router-dom';
-import {useParams } from "react-router-dom"
+import React from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useDisclosure } from "@chakra-ui/react";
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   HStack,
   VStack,
   Image,
   Text,
   Box,
   Button,
+  Stack,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  SimpleGrid 
 } from "@chakra-ui/react";
+import ProductGallery from "./ProductGallery";
 
+import axios from "axios";
 const DetailPage = () => {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
+  const { id } = useParams();
+  const [detail, setDetail] = useState({});
+  const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  
+  const handleGallery = () => {
+    onOpen();
+  };
 
+  const getDetail = async () => {
+    const response = await axios.get(
+      `${baseUrl}/api/v1/public/products/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response) {
+      setDetail(response.data);
+    }
+  };
 
-
-  const [details, setDetails] = useState ({
-    productName: "CAMPERA JEAN BLACK",
-    size: "L",
-    type: "JACKET",
-    productionTime: 20,
-    collection: "VERANO",
-    thumbnail: "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-231-d78a1139211823445c16940343745727-1024-1024.png",
-    detail: "Campera de jean negro de 10 oz. Amplia estilo oversize.\nBolsillos delanteros inferiores y superiores.\nTiene un proceso de lavado y suavizado dandole mejor calidad y acabado.\nCierre delantero con botones metálicos.",
-    gallery: ["https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-11-94ef454443a9f3569416939378158959-1024-1024.png" ,
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-21-7f4f3635487336570b16939378159297-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-41-f78b4d10a96d8e624c16939378159959-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-51-0aefc87d0f6a7d5ef216939378159030-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-101-eab28669eda616d84c16939507892020-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-231-d78a1139211823445c16940343745727-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-91-d6dae675ec0016ef5c16939507890258-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-27-11-229e81fb1b892c01c216939507887581-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-27-21-c9574950a6a0f1c36316939507892518-1024-1024.png"]
-  })
-
+  useEffect(() => {
+    getDetail();
+  }, []);
 
   return (
-
-    <Card w={"80%"} color={"blanco"}>
-      <CardHeader h={"60px"} color={"blanco"} border={"1px solid black"} alignContent={"center"} justifyContent={'space-between'}
-      padding={"10px"}
-      >
-        <Text
-          fontFamily={"Saira"}
-          color={"black"}
-          fontSize={"24px"}
-        >
-          {details.productName}
-        </Text>
-        <Button onClick={() => navigate(-1)} > Atras </Button>
-      </CardHeader>
-
-      <CardBody w={"1100px"} h={"1030px"} color={"blanco"} border={"1px solid black"}>
-
-        <Box h={"300px"} bg={"blanco"} border={"1px solid black"} >
-          <Box h={"30px"} bg={"blanco"} border={"1px solid black"}  textAlign="center" marginTop={"40px"} >
-            <Text fontFamily={"Saira"} color={"black"} fontSize={"14px"}>
-              DESCRIPCION DEL PRODUCTO
+    <VStack m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20}>
+      {detail && (
+        <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
+          <HStack
+            justify={"space-between"}
+            w={"100%"}
+            h={"60px"}
+            color={"blanco"}
+            border={"1px solid black"}
+            alignContent={"center"}
+            justifyContent={"space-between"}
+            padding={"10px"}
+            minW={"300px"}
+          >
+            <Text fontFamily={"Saira"} color={"black"} fontSize={"1rem"}>
+              {detail.productName}
             </Text>
-          </Box>
-          <Text fontFamily={"Podkova"} color={"black"} fontSize={"13px"} marginTop={"20px"}>
-            {details.detail}
-          </Text>
-        </Box>
-    
-        
-        <Box>
-          <Box w={"560px"} h={"730px"} border={"1px solid black"}>
-            <Image w={"560px"} h={"730px"}>
-              {details.thumbnail}
-            </Image>
-          </Box>
+            <Button onClick={() => navigate(-1)}> atras </Button>
+          </HStack>
 
-          <Box> Aca van las otras 4 imaganes
-          </Box>
-        </Box>
-        
-      </CardBody>
+          <Stack border={"2px solid black"}>
+            <VStack border={"1px solid black"} p={20}>
+              <Stack
+                h={"30px"}
+                border={"1px solid black"}
+                w={"30%"}
+                minW={"300px"}
+                textAlign="center"
+              >
+                <Text
+                  fontFamily={"Saira"}
+                  color={"black"}
+                  fontSize={"1rem"}
+                  p={1}
+                >
+                  DESCRIPCION DEL PRODUCTO
+                </Text>
+              </Stack>
+              <Text
+                fontFamily={"Podkova"}
+                color={"black"}
+                fontSize={"23px"}
+                marginTop={"20px"}
+              >
+                {detail.detail}
+              </Text>
+            </VStack>
+            <Stack p={2}>
+              <ProductGallery thumbnail={detail.thumbnail} gallery={detail.gallery} />
+            </Stack>
+            {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
+              <>
+                <Button
+                  onClick={handleGallery}
+                  bg={"verde2"}
+                  alignSelf={"flex-end"}
+                  w={20}
+                  mr={5}
+                  mb={5}
+                >
+                  Ver Mas
+                </Button>
+                <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader>{`Galeria de Imagenes`}</DrawerHeader>
+                    <DrawerBody>
+                    <SimpleGrid minChildWidth='400px' spacing='20px'>
+                        {detail.gallery.map((img,index) => (
+                          <Box key={index}>
+                            <Image src={img} alt="photo" />
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </DrawerBody>
+                  </DrawerContent>
+                </Drawer>
+              </>
+            )}
+          </Stack>
+        </VStack>
+      )}
+    </VStack>
+  );
+};
 
-     
-
-    </Card>
-    )
-  }
-
-export default DetailPage
+export default DetailPage;
