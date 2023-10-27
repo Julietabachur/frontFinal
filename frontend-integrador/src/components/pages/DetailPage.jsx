@@ -102,7 +102,7 @@ const DetailPage = () => {
             <Stack p={2}>
               <ProductGallery thumbnail={detail.thumbnail} gallery={detail.gallery} />
             </Stack>
-            {Array.isArray(detail.gallery) && detail.gallery.length > 2 && (
+            {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
               <>
                 <Button
                   onClick={handleGallery}
