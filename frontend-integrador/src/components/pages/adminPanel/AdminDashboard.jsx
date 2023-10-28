@@ -19,7 +19,7 @@ const AdminDashboard = ({productToEdit, productData}) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MzA3MzUsImV4cCI6MTY5ODUzNTUzNX0.7a0pr2R8c11sJ8j_TL1io8Ph3JaNl8WWQbf6LRIlRbE"
   const [page, setPage] = useState(0);
-  const pageSize = 15; // cantidad de items en el listado
+  const pageSize = 10; // cantidad de items en el listado
   const [lista, setLista] = useState([]);
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -94,7 +94,7 @@ const addProduct = (productData) => {
 
   // Renderizado del componente
   return (
-    <Box pos={'relative'} top={100} w={'100vw'} h={'100vh'}>
+    <Box pos={'relative'} top={100} w={'99vw'} h={'100vh'}>
       {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
       {window.innerWidth >= MIN_DESKTOP_WIDTH && <Button onClick={() => setIsModalOpen(true) }>Agregar Producto</Button>}
 
