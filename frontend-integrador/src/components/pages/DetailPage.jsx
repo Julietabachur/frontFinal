@@ -52,7 +52,7 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <VStack m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20}>
+    <VStack m={1} w={"98vw"} display={"flex"} justifyContent={"center"} p={20}>
       {detail && (
         <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
           <HStack
