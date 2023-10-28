@@ -9,6 +9,8 @@ const AdminDashboard = ({productToEdit, productData}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Estado para mostrar el listado de productos cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
+  const [listaOn, setListaOn] = useState(false)
+ 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   // Valor mínimo de ancho para considerar como versión de computadora
