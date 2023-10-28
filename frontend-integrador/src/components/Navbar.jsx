@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import {
   Button,
   HStack,
@@ -8,13 +8,14 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Avatar,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({username}) => {
   const [media, setMedia] = useState(false);
-
   const navigate = useNavigate();
+  const GETME_URL = import.meta.env.VITE_GETME_URL
   const MIN_DESKTOP_WIDTH = 500;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -48,7 +49,7 @@ const Navbar = () => {
       position={"fixed"}
       top={0}
       minW={400}
-      w={"100%"}
+      w={"99vw"}
       h={"120px"}
       zIndex={1000}
     >
@@ -130,7 +131,9 @@ const Navbar = () => {
           </>
         )}
       </div>
+      {/**botones o nombre */}
       {media ? (
+        username? <Avatar name={username} /> :
         <Menu>
           <MenuButton
             color={"verde2"}
@@ -166,6 +169,7 @@ const Navbar = () => {
           </MenuList>
         </Menu>
       ) : (
+        username?<HStack><Text mr={3} color={'verde2'} fontSize={20} fontFamily={'saira'}>{username}</Text> <Avatar name={username} /></HStack> :
         <HStack>
           <Button
             onClick={() => {

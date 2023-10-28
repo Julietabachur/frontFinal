@@ -160,7 +160,7 @@ const HomePage = () => {
   ];
 
   return (
-    <Box w={media ? "100%" : "100vw"} bg={"blanco"} /*p={9}*/>
+    <Box w={'99vw'} bg={"blanco"} /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
