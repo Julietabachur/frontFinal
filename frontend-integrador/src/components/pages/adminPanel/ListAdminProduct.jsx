@@ -65,47 +65,46 @@ const ListAdminProduct = () => {
     };
 
     return (
-        <>
-        <Box>
-            <Table variant="simple">
-            <Thead>
-                <Tr>
-                <Th>ID</Th>
-                <Th>Nombre</Th>
-                <Th>Imagen</Th>
-                <Th>Editar</Th>
-                <Th>Eliminar</Th>
-                </Tr>
-            </Thead>
-            <Tbody>
-                {lista &&
-                lista.map((item) => (
-                    <Tr key={item.id}>
-                    <Td>{item.productId}</Td>
-                    <Td>{item.productName}</Td>
-                    <Td>
-                        <Img src={item.thumbnail} alt={item.productName} w={100} h={100} />
-                    </Td>
-                    <Td>
-                        <Button colorScheme="blue" onClick={() => handleEdit(item)}>
-                        Editar
-                        </Button>
-                    </Td>
-                    <Td>
-                        <Button colorScheme="red" size="sm" onClick={() => handleDelete(item.id)}>
-                        Eliminar
-                        </Button>
-                    </Td>
-                    </Tr>
-                ))}
-            </Tbody>
-            </Table>
-        </Box>
-        {productToEdit !== null && (
-            <EditProduct productToEdit={productToEdit} isOpen={isModalOpen} onClose={() => { setProductToEdit(null); setIsModalOpen(false); }} getProducts={getProducts} />
-        )}
-        <AddProduct isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} updateProductList={getProducts} />
-
+        <> 
+            <Box>
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th>ID</Th>
+                            <Th>Nombre</Th>
+                            <Th>Imagen</Th>
+                            <Th>Editar</Th>
+                            <Th>Eliminar</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {lista && lista.map((item) => (
+                            <Tr key={item.id}>
+                                <Td>{item.productId}</Td>
+                                <Td>{item.productName}</Td>
+                                <Td>
+                                    <Img src={item.thumbnail} alt={item.productName} w={100} h={100} />
+                                </Td>
+                                <Td>
+                                    <Button colorScheme="blue" onClick={() => handleEdit(item)}>Editar</Button>
+                                </Td>
+                                <Td>
+                                    <Button
+                                        colorScheme="red"
+                                        size="sm"
+                                        onClick={() => handleDelete(item.id)}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                </Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Box>
+            {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
+            {productToEdit !== null && (<EditProduct productToEdit={productToEdit} isOpen={isModalOpen} onClose={() => {setProductToEdit(null); setIsModalOpen(false);}} getProducts={getProducts}/>)}
+            
         </>
     );
 };
