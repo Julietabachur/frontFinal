@@ -36,13 +36,13 @@ function App() {
     if (token) {
       getUsername(token);
     }
-  }, [token]);
+  }, []);
 
   return (
     <HStack>
       <Box position={"relative"} top={"100px"}>
         <Router>
-          <Navbar username={username? username : null} />
+          <Navbar username={username? username : null} setUsername={setUsername} />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

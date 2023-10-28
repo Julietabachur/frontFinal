@@ -11,8 +11,9 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import NavbarMenu from "./NavbarMenu";
 
-const Navbar = ({ username }) => {
+const Navbar = ({ username, setUserName }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
@@ -134,7 +135,7 @@ const Navbar = ({ username }) => {
       {/**botones o nombre */}
       {media ? (
         username ? (
-          <Avatar name={username} />
+          <NavbarMenu name={username} />
         ) : (
           <Menu>
             <MenuButton
@@ -176,7 +177,7 @@ const Navbar = ({ username }) => {
           <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
             {username}
           </Text>{" "}
-          <Avatar name={username} />
+          <NavbarMenu username={username} />
         </HStack>
       ) : (
         <HStack>
