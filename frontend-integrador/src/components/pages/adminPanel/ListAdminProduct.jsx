@@ -105,24 +105,24 @@ useEffect(() => {
                     </Thead>
                     <Tbody>
                         {lista && lista.map((item) => (
-                            <Tr key={item.id}>
+                            <Tr key={item.id} h="10px"> {/* Establece la altura deseada aquí */}
                                 <Td>{item.productId}</Td>
                                 <Td>{item.productName}</Td>
                                 <Td>
-                                    <Img src={item.thumbnail} alt={item.productName} w={100} h={100} />
+                                    <Img src={item.thumbnail} alt={item.productName} w={50} h={50} /> {/*achique la imagen*/}
                                 </Td>
                                 <Td>
                                     <Button colorScheme="blue" onClick={() => handleEdit(item)}>Editar</Button>
                                 </Td>
                                 <Td>
                                     <Button
-                                        colorScheme="red"
-                                        size="sm"
-                                        onClick={() => openDeleteDialog(item)}
+                                    colorScheme="red"
+                                    size="sm"
+                                    onClick={() => openDeleteDialog(item)}
                                     >
-                                        Eliminar
+                                    Eliminar
                                     </Button>
-                                </Td>
+                                </Td>     
                             </Tr>
                         ))}
                     </Tbody>
