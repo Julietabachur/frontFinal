@@ -1,4 +1,4 @@
-import { useEffect, useState,useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Button,
   HStack,
@@ -12,10 +12,10 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = ({username}) => {
+const Navbar = ({ username }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
-  const GETME_URL = import.meta.env.VITE_GETME_URL
+  const GETME_URL = import.meta.env.VITE_GETME_URL;
   const MIN_DESKTOP_WIDTH = 500;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -133,43 +133,52 @@ const Navbar = ({username}) => {
       </div>
       {/**botones o nombre */}
       {media ? (
-        username? <Avatar name={username} /> :
-        <Menu>
-          <MenuButton
-            color={"verde2"}
-            p={3}
-            pl={5}
-            pr={5}
-            borderRadius={25}
-            border={"1px solid green"}
-          >
-            Ingresar
-          </MenuButton>
+        username ? (
+          <Avatar name={username} />
+        ) : (
+          <Menu>
+            <MenuButton
+              color={"verde2"}
+              p={3}
+              pl={5}
+              pr={5}
+              borderRadius={25}
+              border={"1px solid green"}
+            >
+              Ingresar
+            </MenuButton>
 
-          <MenuList bg={"negro"}>
-            <MenuItem
-              bg={"negro"}
-              as="a"
-              href="#"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              <Text color={"verde2"}>Loguearse</Text>
-            </MenuItem>
-            <MenuItem
-              bg={"negro"}
-              as="a"
-              onClick={() => {
-                navigate("/register");
-              }}
-            >
-              <Text color={"verde2"}>Registrarse</Text>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+            <MenuList bg={"negro"}>
+              <MenuItem
+                bg={"negro"}
+                as="a"
+                href="#"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                <Text color={"verde2"}>Loguearse</Text>
+              </MenuItem>
+              <MenuItem
+                bg={"negro"}
+                as="a"
+                onClick={() => {
+                  navigate("/register");
+                }}
+              >
+                <Text color={"verde2"}>Registrarse</Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )
+      ) : username ? (
+        <HStack>
+          <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
+            {username}
+          </Text>{" "}
+          <Avatar name={username} />
+        </HStack>
       ) : (
-        username?<HStack><Text mr={3} color={'verde2'} fontSize={20} fontFamily={'saira'}>{username}</Text> <Avatar name={username} /></HStack> :
         <HStack>
           <Button
             onClick={() => {

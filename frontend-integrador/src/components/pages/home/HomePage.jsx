@@ -246,7 +246,7 @@ const HomePage = () => {
           </HStack>
         )}
 
-        <SimpleGrid columns={{ sm: 1, md: 2 }} padding={20} spacing={40}>
+        <SimpleGrid columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
           {isLoading &&
             Skeletons.map((Skeleton) => {
               return (
