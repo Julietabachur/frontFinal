@@ -8,6 +8,7 @@ import { HStack, Box } from "@chakra-ui/react";
 import DetailPage from "./components/pages/DetailPage";
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import Perfil from "./components/Perfil";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -48,6 +49,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/detalle/:id" element={<DetailPage />} />
+            <Route path="/perfil/:name" element={<Perfil />} />
+
           </Routes>
           <Footer />
         </Router>

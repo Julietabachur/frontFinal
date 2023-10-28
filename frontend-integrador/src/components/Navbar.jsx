@@ -135,7 +135,7 @@ const Navbar = ({ username, setUserName }) => {
       {/**botones o nombre */}
       {media ? (
         username ? (
-          <NavbarMenu name={username} />
+          <NavbarMenu name={username} token={token} />
         ) : (
           <Menu>
             <MenuButton
@@ -177,7 +177,7 @@ const Navbar = ({ username, setUserName }) => {
           <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
             {username}
           </Text>{" "}
-          <NavbarMenu username={username} />
+          <NavbarMenu username={username} token={token} />
         </HStack>
       ) : (
         <HStack>
