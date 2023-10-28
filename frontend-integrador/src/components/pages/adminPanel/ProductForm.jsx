@@ -13,12 +13,14 @@ import {
   ModalBody,
   ModalCloseButton,
   Input,
-  Text,
   Select,
-  Box,
   List,
   ListItem,
- } from "@chakra-ui/react";
+  Text,
+  Box,
+} from "@chakra-ui/react";
+
+import ListAdminProduct from "./ListAdminProduct";
 
 const initialProductState = {
   productName: "",
@@ -31,9 +33,10 @@ const initialProductState = {
   gallery: [],
 };
 
-const AddProduct = ({ isOpen, onClose, updateProductList }) => {
+const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
+  //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
   const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI";
+    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5OTI0ODMsImV4cCI6MTY5ODU5NzI4M30.C3DUv3nMnin0NJXBKo9bWh5_PZaUSAgg7YcAbFGlc5Q";
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
@@ -43,10 +46,12 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setInputValue(value);
+    setInputValue(value); // Actualiza inputValue en lugar de productData.productName
     setProductData({ ...productData, [name]: value });
+    /*  setShowError(!nombreValido || (showError && name === 'productName' && !nombreValido )); */
   };
 
+  //metodo que atrasa la ejecucion de la funcion una medida de tiempo 'delay'
   function debounce(func, delay) {
     let timer;
     return function (...args) {
@@ -68,9 +73,9 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
         }
       );
       setNombreValido(response.data);
-      if (response.data) {
+      if(response.data){
         const { name, value } = e.target;
-        setInputValue(value);
+        setInputValue(value); // Actualiza inputValue en lugar de productData.productName
         setProductData({ ...productData, [name]: value });
       }
     } catch (error) {
@@ -80,8 +85,13 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
     }
   };
 
-  const debouncedCheckProductName = debounce(checkProductName, 2000);
+  //version demorada de del metodo checkName
+  const debouncedCheckProductName = debounce(checkProductName, 2000); //2 segundos en millisegundos
 
+  /* en el input , onChange le pasamos handleName pero
+  la demoramos 2 segundos para que no este haciendo el
+  llamado en cada dato ingresado sino  despues de una demora
+    de 2 segundos sin ingresar dato */
   const handleName = (e) => {
     const productName = e.target.value;
     debouncedCheckProductName(productName, e);
@@ -113,34 +123,41 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
     setProductData({ ...productData, gallery: updatedGallery });
   };
 
-  const handleAddProduct = (updateProductList) => {
-    axios
-      .post("http://localhost:8080/api/v1/admin/products", productData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        console.log("Producto agregado con éxito:", response.data);
-        updateProductList(); // Actualiza la lista de productos
-        onClose();
-        setProductData(initialProductState);
-        setInputValue("");
-        setNombreValido(true);
-        setShowError(false);
-      })
-      .catch((error) => {
-        console.error("Error al agregar el producto:", error);
-      });
-  };
+  // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
+  const handleProductForm = () => {
+    console.log("Datos Formulario:", productData);
 
+
+    console.log('Props before adding a product:', isOpen, onClose, lista, isModalOpen, page);
+    addProduct(productData);
+    getProducts();
+    console.log('Props after adding a product:', isOpen, onClose, lista, isModalOpen, page);
+    
+
+     // Cierra el modal y resetea el formulario
+     setIsModalOpen(false);
+     onClose();
+     setProductData(initialProductState);
+     setInputValue(""); // Reinicia el valor del input
+     setNombreValido(true); // Reinicia la validación del nombre
+     setShowError(false); // Reinicia el estado de error
+    
+  };
+  useEffect(() => {
+    console.log('Component re-rendered');
+  }, [lista]);
+  
   const handleCancel = () => {
+    // Cierra el modal y resetea el formulario
     onClose();
     setProductData(initialProductState);
-    setInputValue("");
-    setNombreValido(true);
-    setShowError(false);
+    setInputValue(""); // Reinicia el valor del input
+    setNombreValido(true); // Reinicia la validación del nombre
+    setShowError(false); // Reinicia el estado de error
   };
 
   return (
+    <>
     <Modal isOpen={isOpen} onClose={handleCancel}>
       <ModalOverlay />
       <ModalContent mt={200}>
@@ -168,7 +185,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
             mb={3}
             placeholder="Selecciona una talla"
             value={productData.size}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           >
             <option value="S">S</option>
@@ -180,7 +197,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
             mb={3}
             placeholder="Selecciona un tipo"
             value={productData.type}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           >
             <option value="T_SHIRT">T_SHIRT</option>
@@ -194,7 +211,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
             <NumberInputField
               name="productionTime"
               mb={3}
-              isDisabled={formDisabled}
+              disabled={formDisabled}
               placeholder="Cantidad de días para la fábricación"
               value={productData.productionTime}
               onChange={(valueString) => {
@@ -213,7 +230,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
             mb={3}
             placeholder="Colección"
             value={productData.collection}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           />
           <Input
@@ -221,7 +238,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
             mb={3}
             placeholder="Enlace de la miniatura"
             value={productData.thumbnail}
-            isDisabled={formDisabled}
+            disabled={formDisabled}
             onChange={handleInputChange}
           />
           <Flex align="center" mb={3}>
@@ -229,11 +246,11 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
               flex="1"
               placeholder="Enlace de la imagen de la galería"
               value={galleryUrl}
-              isDisabled={formDisabled}
+              disabled={formDisabled}
               onChange={(e) => setGalleryUrl(e.target.value)}
               marginRight={2}
             />
-            <Button isDisabled={formDisabled} onClick={handleAddGalleryImage}>+</Button>
+            <Button disabled={formDisabled} onClick={handleAddGalleryImage}>+</Button>
           </Flex>
           <Box mb={3}>
             <Text fontSize="sm" fontWeight="bold">
@@ -253,7 +270,7 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
                     variant="outline"
                     borderColor="red.500"
                     onClick={() => handleRemoveGalleryImage(index)}
-                    isDisabled={formDisabled}
+                    disabled={formDisabled}
                   >
                     -
                   </Button>
@@ -265,26 +282,29 @@ const AddProduct = ({ isOpen, onClose, updateProductList }) => {
           <Input
             name="detail"
             mb={3}
-            iisDisabled={formDisabled}
+            disabled={formDisabled}
             placeholder="Detalle:\nprimer renglón\nsegundo renglón"
             value={productData.detail}
             onChange={handleInputChange}
           />
         </ModalBody>
         <ModalFooter>
-        <Button
+          <Button
             colorScheme="blue"
             mr={3}
-            onClick={() => handleAddProduct(updateProductList)} 
-            isDisabled={formDisabled}
+            onClick={handleProductForm}
+            disabled={formDisabled}
           >
             Agregar
-        </Button>
+          </Button>
           <Button onClick={handleCancel}>Cancelar</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
+    {console.log("isModalOpen:",isModalOpen)}
+    {lista && !isModalOpen && <ListAdminProduct isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
+    </>
   );
 };
 
-export default AddProduct;
+export default ProductForm;
