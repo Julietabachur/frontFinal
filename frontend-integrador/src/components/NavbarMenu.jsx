@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const NavbarMenu = ({ username }) => {
+const NavbarMenu = ({ username, token }) => {
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
