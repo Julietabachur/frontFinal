@@ -25,21 +25,24 @@ const ProductCard = ({ item }) => {
         h={"80%"}
         p={0}
       >
-        <Image src={item?.thumbnail} h={'100%'} w={'100%'} objectFit={'cover'} ></Image>
+        <Image
+          src={item?.thumbnail}
+          h={"100%"}
+          w={"100%"}
+          objectFit={"cover"}
+        ></Image>
       </CardBody>
-      <CardFooter
-        fontSize={26}
-        color={"negro"}
-        alignContent={"center"}
-        justify={"center"}
-      >
+      <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
         <Text
           fontFamily={"Saira"}
           color={"gris1"}
-          fontSize={"24px"}
+          fontSize={"1.5rem"}
           textShadow={"5px 5px 5px gray"}
+          whiteSpace="nowrap"
+          overflow="hidden"
+          textOverflow="ellipsis"
+          maxWidth="100%"
         >
-          {" "}
           {item.productName}
         </Text>
       </CardFooter>
