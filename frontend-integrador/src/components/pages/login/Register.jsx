@@ -24,6 +24,8 @@ const Register = () => {
     });
     
     const navigate = useNavigate();
+
+    
     
     const handleBlur = (field) => {
         switch (field) {
