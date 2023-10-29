@@ -49,7 +49,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/detalle/:id" element={<DetailPage />} />
-            <Route path="/perfil/:username" element={<Perfil token={token? token : ''} />} />
+            <Route path="/perfil" element={<Perfil username={username} token={token? token : ''} />} />
           </Routes>
           <Footer />
         </Router>

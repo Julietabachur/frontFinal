@@ -10,6 +10,8 @@ import {
   MenuDivider,
   Avatar,
   Button,
+  Link,
+  border,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,7 +30,9 @@ const NavbarMenu = ({ username, token }) => {
       </MenuButton>
       <MenuList>
         <MenuGroup title="Perfil">
-          <MenuItem>Mi perfil</MenuItem>
+          <MenuItem as={Button} onClick={()=>{navigate(`/perfil`)}} >
+            Mi perfil
+          </MenuItem>
           <MenuItem>Mis reservas </MenuItem>
         </MenuGroup>
         <MenuDivider />

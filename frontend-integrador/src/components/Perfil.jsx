@@ -20,10 +20,10 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 
-const Perfil = ({ token }) => {
+const Perfil = ({username, token }) => {
   const USER_URL = import.meta.env.VITE_USER_URL;
   const [user, setUser] = useState({});
-  const { username } = useParams();
+  
   const getUser = async (username) => {
     const response = await axios.get(`${USER_URL}username=${username}`, {
       headers: {
