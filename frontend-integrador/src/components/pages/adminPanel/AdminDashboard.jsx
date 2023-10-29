@@ -77,8 +77,8 @@ const handlePageChange = (newPage) => {
     setPage(newPage); // Actualiza el número de página
   }
 };
-
-// LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
+  
+{/*LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.*/}
 const addProduct = (productData) => {
 
   // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
@@ -103,19 +103,20 @@ const addProduct = (productData) => {
 
   // Renderizado del componente
   return (
-    <Box pos={'relative'} top={100} w={'99vw'} h={'100vh'}>
-      {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
-      {window.innerWidth >= MIN_DESKTOP_WIDTH && <Button onClick={() => setIsModalOpen(true) }>Agregar Producto</Button>}
+    <Box pos={'relative'} top={100} w={'99vw'} h={'170vh'}>
+       {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
+       {window.innerWidth >= MIN_DESKTOP_WIDTH && (
+        <Button ml={4} onClick={() => setIsModalOpen(true)}>
+          Agregar Producto
+        </Button>
+      )}
 
+      {/* Botón para listar productos (y eliminar y editar) */}
+      <Button ml={4} onClick={() => setShowList(true)}>
+        Listar Productos
+      </Button>
 
-      {/* Componente del modal para agregar producto */}
-      {isModalOpen && <ProductForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista} productToEdit={productToEdit} addProduct={addProduct} productData={productData} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>}
-
-
-      {/* Botón para listar productos (y eliminar y editar)*/}
-      <Button onClick={() => setShowList(true)}>Listar Productos</Button>
-
-      {console.log("HASTA ACA RENDEREA - ShowList", showList)}
+      {/*console.log("HASTA ACA RENDEREA - ShowList", showList)*/}
       {showList == true && <ListAdminProduct getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
@@ -135,7 +136,7 @@ const addProduct = (productData) => {
             fontSize: '24px',
           }}
         >
-          Por favor, utiliza un dispositivo con una pantalla más grande para acceder a esta funcionalidad.
+          Utilice un dispositivo desktop para acceder a la página de administración.
         </div>
       )}
     </Box>

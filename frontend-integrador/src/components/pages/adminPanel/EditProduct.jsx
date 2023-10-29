@@ -142,7 +142,7 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts }) => {
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleEditProduct}>
+          <Button colorScheme="green" mr={3} onClick={handleEditProduct}>
             Guardar Cambios
           </Button>
           <Button onClick={handleCancel}>Cancelar</Button>

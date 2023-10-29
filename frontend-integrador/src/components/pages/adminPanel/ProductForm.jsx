@@ -234,6 +234,14 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
             onChange={handleInputChange}
           />
           <Input
+            name="detail"
+            mb={3}
+            disabled={formDisabled}
+            placeholder="Detalle:\nprimer renglón\nsegundo renglón"
+            value={productData.detail}
+            onChange={handleInputChange}
+          />
+          <Input
             name="thumbnail"
             mb={3}
             placeholder="Enlace de la miniatura"
@@ -279,18 +287,10 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
             </List>
           </Box>
 
-          <Input
-            name="detail"
-            mb={3}
-            disabled={formDisabled}
-            placeholder="Detalle:\nprimer renglón\nsegundo renglón"
-            value={productData.detail}
-            onChange={handleInputChange}
-          />
-        </ModalBody>
+         </ModalBody>
         <ModalFooter>
           <Button
-            colorScheme="blue"
+            colorScheme="green"
             mr={3}
             onClick={handleProductForm}
             disabled={formDisabled}

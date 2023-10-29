@@ -69,7 +69,7 @@ const DetailPage = () => {
             <Text fontFamily={"Saira"} color={"black"} fontSize={"1rem"}>
               {detail.productName}
             </Text>
-            <Button onClick={() => navigate(-1)}> atras </Button>
+            <Button onClick={() => navigate(-1)}> Atrás </Button>
           </HStack>
 
           <Stack border={"2px solid black"}>
@@ -87,7 +87,7 @@ const DetailPage = () => {
                   fontSize={"1rem"}
                   p={1}
                 >
-                  DESCRIPCION DEL PRODUCTO
+                  DESCRIPCIÓN DEL PRODUCTO
                 </Text>
               </Stack>
               <Text
@@ -112,13 +112,13 @@ const DetailPage = () => {
                   mr={5}
                   mb={5}
                 >
-                  Ver Mas
+                  Ver más
                 </Button>
                 <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
                   <DrawerOverlay />
                   <DrawerContent>
                     <DrawerCloseButton />
-                    <DrawerHeader>{`Galeria de Imagenes`}</DrawerHeader>
+                    <DrawerHeader>{`Galería de Imágenes`}</DrawerHeader>
                     <DrawerBody>
                     <SimpleGrid minChildWidth='400px' spacing='20px'>
                         {detail.gallery.map((img,index) => (
