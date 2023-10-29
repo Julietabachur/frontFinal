@@ -24,6 +24,7 @@ function App() {
         },
       });
       if (response) {
+        console.log(response.data);
         setUsername(response.data.username);
       } else {
         localStorage.removeItem("riskkojwt");
@@ -38,6 +39,8 @@ function App() {
       getUsername(token);
     }
   }, [token]);
+
+  
 
   return (
     <HStack>

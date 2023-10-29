@@ -19,10 +19,17 @@ import {
   Divider,
   SimpleGrid,
 } from "@chakra-ui/react";
+import LogoutButton from "./LogoutButton";
 
 const Perfil = ({username, token }) => {
   const USER_URL = import.meta.env.VITE_USER_URL;
   const [user, setUser] = useState({});
+
+  const logoutHandle = () => {
+    localStorage.removeItem("riskkojwt");
+    navigate("/");
+    window.location.reload();
+  };
   
   const getUser = async (username) => {
     const response = await axios.get(`${USER_URL}username=${username}`, {
@@ -74,14 +81,13 @@ const Perfil = ({username, token }) => {
             {user?.clientName}
           </Text>
           <Text textAlign={"center"}>{user?.email}</Text>
-          <Button
-            justifySelf={"center"}
+          <LogoutButton
+            /* justifySelf={"center"}
             w={"130px"}
             bg={"red.400"}
             color={"blanco"}
-          >
-            Desconectar
-          </Button>
+            onClick={logoutHandle} */
+          />
           <UnorderedList
             direction={{ base: "row", md: "column" }}
             listStyleType={"none"}
