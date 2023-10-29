@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
 
-const EditProduct = ({ isOpen, onClose, productToEdit, getProducts }) => {
-  const token ="eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
+const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token }) => {
   const [productData, setProductData] = useState(productToEdit);
   const [inputValue, setInputValue] = useState('');
   const [galleryUrl, setGalleryUrl] = useState('');

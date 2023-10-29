@@ -4,7 +4,7 @@ import { Button, Box } from '@chakra-ui/react';
 import ListAdminProduct from './ListAdminProduct';
 import ProductForm from './ProductForm';
 
-const AdminDashboard = ({productToEdit, productData}) => {
+const AdminDashboard = ({productToEdit, productData, token}) => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Estado para mostrar el listado de productos cuando se clickea en el botón
@@ -19,7 +19,6 @@ const AdminDashboard = ({productToEdit, productData}) => {
 
   // Constantes para getPruducts
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
   const [page, setPage] = useState(1);
   const[totalPages, setTotalPages]= useState(1)
   const pageSize = 10; // cantidad de items en el listado
@@ -117,7 +116,7 @@ const addProduct = (productData) => {
       </Button>
 
       {/*console.log("HASTA ACA RENDEREA - ShowList", showList)*/}
-      {showList == true && <ListAdminProduct getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
+      {showList == true && <ListAdminProduct token={token} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (
