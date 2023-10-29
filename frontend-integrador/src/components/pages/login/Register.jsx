@@ -25,7 +25,7 @@ const Register = () => {
     
     const navigate = useNavigate();
 
-    
+
     
     const handleBlur = (field) => {
         switch (field) {
@@ -51,6 +51,7 @@ const Register = () => {
 
     //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
     const token = JSON.parse(localStorage.getItem("riskkojwt"));
+    console.log(token)
     
     const GETME_URL = import.meta.env.VITE_GETME_URL;
 
@@ -72,11 +73,11 @@ const Register = () => {
         }
     };
 
-    useEffect(() => {
+   /* useEffect(() => {
         if (token) {
         getUsername(token);
         }
-    }, []);
+    }, []);*/
 
     //Logica para el handle register
 
