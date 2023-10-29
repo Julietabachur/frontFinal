@@ -52,7 +52,7 @@ const DetailPage = () => {
   }, []);
 
   return (
-    <VStack m={1} w={"100vw"} display={"flex"} justifyContent={"center"} p={20}>
+    <VStack m={1} w={"98vw"} display={"flex"} justifyContent={"center"} p={20}>
       {detail && (
         <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
           <HStack
@@ -123,7 +123,7 @@ const DetailPage = () => {
                     <SimpleGrid minChildWidth='400px' spacing='20px'>
                         {detail.gallery.map((img,index) => (
                           <Box key={index}>
-                            <Image src={img} alt="photo" />
+                            <Image w={'100%'} h={'100%'} objectFit={'cover'} src={img} alt="photo" />
                           </Box>
                         ))}
                       </SimpleGrid>
