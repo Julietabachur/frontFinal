@@ -38,7 +38,7 @@ function App() {
     if (token) {
       getUsername(token);
     }
-  }, []);
+  }, [token]);
 
   return (
     <HStack>
@@ -51,8 +51,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/detalle/:id" element={<DetailPage />} />
-            <Route path="/perfil/:name" element={<Perfil />} />
-
+            <Route path="/perfil/:username" element={<Perfil token={token? token : ''} />} />
           </Routes>
           <Footer />
         </Router>
