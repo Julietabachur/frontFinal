@@ -24,7 +24,7 @@ const Register = () => {
     });
     
     const navigate = useNavigate();
-
+    
     const handleBlur = (field) => {
         switch (field) {
             case 'firstName':
@@ -46,6 +46,37 @@ const Register = () => {
                 break;
         }
     };
+
+    //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
+    const token = JSON.parse(localStorage.getItem("riskkojwt"));
+    
+    const GETME_URL = import.meta.env.VITE_GETME_URL;
+
+    const getUsername = async (token) => {
+        try {
+        const response = await axios.get(GETME_URL, {
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+        });
+        if (response) {
+            navigate("/")
+        } else {
+            localStorage.removeItem("riskkojwt");
+        }
+        } catch (error) {
+        console.error("Fetch error:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (token) {
+        getUsername(token);
+        }
+    }, []);
+
+    //Logica para el handle register
 
     const handleRegister = async (e) => {
         e.preventDefault();
