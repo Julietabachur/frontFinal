@@ -36,7 +36,7 @@ const initialProductState = {
 const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
   //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
   const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5OTI0ODMsImV4cCI6MTY5ODU5NzI4M30.C3DUv3nMnin0NJXBKo9bWh5_PZaUSAgg7YcAbFGlc5Q";
+  "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE";
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
@@ -234,6 +234,14 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
             onChange={handleInputChange}
           />
           <Input
+            name="detail"
+            mb={3}
+            disabled={formDisabled}
+            placeholder="Detalle:\nprimer renglón\nsegundo renglón"
+            value={productData.detail}
+            onChange={handleInputChange}
+          />
+          <Input
             name="thumbnail"
             mb={3}
             placeholder="Enlace de la miniatura"
@@ -279,18 +287,10 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
             </List>
           </Box>
 
-          <Input
-            name="detail"
-            mb={3}
-            disabled={formDisabled}
-            placeholder="Detalle:\nprimer renglón\nsegundo renglón"
-            value={productData.detail}
-            onChange={handleInputChange}
-          />
-        </ModalBody>
+         </ModalBody>
         <ModalFooter>
           <Button
-            colorScheme="blue"
+            colorScheme="green"
             mr={3}
             onClick={handleProductForm}
             disabled={formDisabled}

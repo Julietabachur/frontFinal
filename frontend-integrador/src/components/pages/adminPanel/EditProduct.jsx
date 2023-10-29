@@ -4,7 +4,7 @@ import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFoot
 
 
 const EditProduct = ({ isOpen, onClose, productToEdit, getProducts }) => {
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI"
+  const token ="eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
   const [productData, setProductData] = useState(productToEdit);
   const [inputValue, setInputValue] = useState('');
   const [galleryUrl, setGalleryUrl] = useState('');
@@ -142,7 +142,7 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts }) => {
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleEditProduct}>
+          <Button colorScheme="green" mr={3} onClick={handleEditProduct}>
             Guardar Cambios
           </Button>
           <Button onClick={handleCancel}>Cancelar</Button>
