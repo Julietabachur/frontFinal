@@ -19,7 +19,7 @@ const AdminDashboard = ({productToEdit, productData}) => {
 
   // Constantes para getPruducts
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MzA3MzUsImV4cCI6MTY5ODUzNTUzNX0.7a0pr2R8c11sJ8j_TL1io8Ph3JaNl8WWQbf6LRIlRbE"
+  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
   const [page, setPage] = useState(0);
   const pageSize = 10; // cantidad de items en el listado
   const [lista, setLista] = useState([]);
@@ -47,8 +47,8 @@ const AdminDashboard = ({productToEdit, productData}) => {
 const getProducts = async () => {
   console.log("Inicia geProducts");
   try {
-      const response = await axios.get(  //Petición GET a la api del listado de productos
-        `${baseUrl}/api/v1/admin/products?page=${page}&size=${pageSize}`,
+      const response = await axios.get(  //Petición GET a la api del listado de productos 
+        `${baseUrl}/api/v1/public/products?page=${page}&size=${pageSize}`,
           {
               headers: {
                   "Content-Type": "application/json",

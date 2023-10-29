@@ -17,7 +17,7 @@ const ListAdminProduct = ({getProducts, page, handlePageChange, lista}) => {
     console.log("COMIENZA LISTADMIN");
     
     const baseUrl = import.meta.env.VITE_SERVER_URL;
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MzA3MzUsImV4cCI6MTY5ODUzNTUzNX0.7a0pr2R8c11sJ8j_TL1io8Ph3JaNl8WWQbf6LRIlRbE"
+    const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
@@ -83,7 +83,7 @@ useEffect(() => {
             <Box>
                 <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
                     <Button
-                        onClick={() => handlePageChange(page - 1)}
+                        onClick={() => handlePageChange(page>1? page - 1:page)}
                         disabled={page === 0}
                     >
                         &lt;&lt;&lt;
