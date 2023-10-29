@@ -20,7 +20,8 @@ const AdminDashboard = ({productToEdit, productData}) => {
   // Constantes para getPruducts
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const[totalPages, setTotalPages]= useState(1)
   const pageSize = 10; // cantidad de items en el listado
   const [lista, setLista] = useState([]);
 
@@ -57,7 +58,9 @@ const getProducts = async () => {
           });
       if (response.data && response.data.content) {  // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
           setLista(response.data.content);
-          console.log("Datos recibidos:", response.data.content);
+          setTotalPages(response.data.last)
+          setPage(response.data.current)
+          console.log("Datos recibidos:", response.data);
       }
   } catch (error) { //Manejo de errores
       console.error(error);
@@ -67,8 +70,12 @@ const getProducts = async () => {
 
 // Control de Paginación
 const handlePageChange = (newPage) => {
-  if(newPage < 0) {newPage = 0};
-  setPage(newPage); // Actualiza el número de página
+  console.log(newPage);
+  if(newPage <= totalPages && newPage >= 1){
+
+    console.log(totalPages);
+    setPage(newPage); // Actualiza el número de página
+  }
 };
 
 // LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
