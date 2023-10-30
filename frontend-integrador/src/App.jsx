@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import AdminDashboard from "./components/pages/adminPanel/AdminDashboard";
 import { HStack, Box } from "@chakra-ui/react";
 import DetailPage from "./components/pages/DetailPage";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Perfil from "./components/Perfil";
 
@@ -28,7 +28,6 @@ function App() {
       if (response) {
         setUsername(response.data.username);
         setRoles(response.data.roles);
-        console.log(response.data.roles);
       } else {
         localStorage.removeItem("riskkojwt");
       }

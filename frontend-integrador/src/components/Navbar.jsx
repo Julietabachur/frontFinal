@@ -135,7 +135,7 @@ const Navbar = ({ username, setUserName, roles }) => {
       {/**botones o nombre */}
       {media ? (
         username ? (
-          <NavbarMenu name={username} roles={roles} />
+          <NavbarMenu username={username} roles={roles} />
         ) : (
           <Menu>
             <MenuButton
