@@ -13,7 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
 
-const Navbar = ({ username, setUserName }) => {
+const Navbar = ({ username, setUserName, roles }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
@@ -135,7 +135,7 @@ const Navbar = ({ username, setUserName }) => {
       {/**botones o nombre */}
       {media ? (
         username ? (
-          <NavbarMenu name={username} />
+          <NavbarMenu name={username} roles={roles} />
         ) : (
           <Menu>
             <MenuButton
@@ -177,7 +177,7 @@ const Navbar = ({ username, setUserName }) => {
           <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
             {username}
           </Text>
-          <NavbarMenu username={username} />
+          <NavbarMenu username={username} roles={roles} />
         </HStack>
       ) : (
         <HStack>
