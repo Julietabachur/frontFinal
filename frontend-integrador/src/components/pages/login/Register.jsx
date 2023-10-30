@@ -106,6 +106,7 @@ const Register = () => {
                 window.alert('Registro exitoso. Serás redirigido a la página de inicio.');
                 setTimeout(() => {
                     navigate("/");
+                    window.location.reload()
                 }, 2000);
             } else {
                 alert("Fallo el registro, recargue la pagina y pruebe nuevamente")
