@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
 
-const EditProduct = ({ isOpen, onClose, productToEdit, getProducts }) => {
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MTE1MDgsImV4cCI6MTY5ODUxNjMwOH0.Ui4Z3777Fcka5v172FHNurtZ7zNRcolHXPib81cgnWI"
+const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token }) => {
   const [productData, setProductData] = useState(productToEdit);
   const [inputValue, setInputValue] = useState('');
   const [galleryUrl, setGalleryUrl] = useState('');
@@ -142,7 +141,7 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts }) => {
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleEditProduct}>
+          <Button colorScheme="green" mr={3} onClick={handleEditProduct}>
             Guardar Cambios
           </Button>
           <Button onClick={handleCancel}>Cancelar</Button>

@@ -4,11 +4,13 @@ import { Button, Box } from '@chakra-ui/react';
 import ListAdminProduct from './ListAdminProduct';
 import ProductForm from './ProductForm';
 
-const AdminDashboard = ({productToEdit, productData}) => {
+const AdminDashboard = ({productToEdit, productData, token}) => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Estado para mostrar el listado de productos cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
+  const [listaOn, setListaOn] = useState(false)
+ 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   // Valor mínimo de ancho para considerar como versión de computadora
@@ -17,9 +19,9 @@ const AdminDashboard = ({productToEdit, productData}) => {
 
   // Constantes para getPruducts
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5MzA3MzUsImV4cCI6MTY5ODUzNTUzNX0.7a0pr2R8c11sJ8j_TL1io8Ph3JaNl8WWQbf6LRIlRbE"
-  const [page, setPage] = useState(0);
-  const pageSize = 15; // cantidad de items en el listado
+  const [page, setPage] = useState(1);
+  const[totalPages, setTotalPages]= useState(1)
+  const pageSize = 10; // cantidad de items en el listado
   const [lista, setLista] = useState([]);
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -45,8 +47,8 @@ const AdminDashboard = ({productToEdit, productData}) => {
 const getProducts = async () => {
   console.log("Inicia geProducts");
   try {
-      const response = await axios.get(  //Petición GET a la api del listado de productos
-       `${baseUrl}/api/v1/admin/products?page=${page}&size=${pageSize}`,
+      const response = await axios.get(  //Petición GET a la api del listado de productos 
+        `${baseUrl}/api/v1/public/products?page=${page}&size=${pageSize}`,
           {
               headers: {
                   "Content-Type": "application/json",
@@ -55,7 +57,9 @@ const getProducts = async () => {
           });
       if (response.data && response.data.content) {  // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
           setLista(response.data.content);
-          console.log("Datos recibidos:", response.data.content);
+          setTotalPages(response.data.last)
+          setPage(response.data.current)
+          console.log("Datos recibidos:", response.data);
       }
   } catch (error) { //Manejo de errores
       console.error(error);
@@ -65,11 +69,15 @@ const getProducts = async () => {
 
 // Control de Paginación
 const handlePageChange = (newPage) => {
-  if(newPage < 0) {newPage = 0};
-  setPage(newPage); // Actualiza el número de página
-};
+  console.log(newPage);
+  if(newPage <= totalPages && newPage >= 1){
 
-// LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
+    console.log(totalPages);
+    setPage(newPage); // Actualiza el número de página
+  }
+};
+  
+{/*LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.*/}
 const addProduct = (productData) => {
 
   // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
@@ -94,20 +102,21 @@ const addProduct = (productData) => {
 
   // Renderizado del componente
   return (
-    <Box pos={'relative'} top={100} w={'100vw'} h={'100vh'}>
-      {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
-      {window.innerWidth >= MIN_DESKTOP_WIDTH && <Button onClick={() => setIsModalOpen(true) }>Agregar Producto</Button>}
+    <Box pos={'relative'} top={100} w={'99vw'} h={'170vh'}>
+       {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
+       {window.innerWidth >= MIN_DESKTOP_WIDTH && (
+        <Button ml={4} onClick={() => setIsModalOpen(true)}>
+          Agregar Producto
+        </Button>
+      )}
 
+      {/* Botón para listar productos (y eliminar y editar) */}
+      <Button ml={4} onClick={() => setShowList(true)}>
+        Listar Productos
+      </Button>
 
-      {/* Componente del modal para agregar producto */}
-      {isModalOpen && <ProductForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista} productToEdit={productToEdit} addProduct={addProduct} productData={productData} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>}
-
-
-      {/* Botón para listar productos (y eliminar y editar)*/}
-      <Button onClick={() => setShowList(true)}>Listar Productos</Button>
-
-      {console.log("HASTA ACA RENDEREA - ShowList", showList)}
-      {showList == true && <ListAdminProduct getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
+      {/*console.log("HASTA ACA RENDEREA - ShowList", showList)*/}
+      {showList == true && <ListAdminProduct token={token} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (
@@ -126,7 +135,7 @@ const addProduct = (productData) => {
             fontSize: '24px',
           }}
         >
-          Por favor, utiliza un dispositivo con una pantalla más grande para acceder a esta funcionalidad.
+          Utilice un dispositivo desktop para acceder a la página de administración.
         </div>
       )}
     </Box>
