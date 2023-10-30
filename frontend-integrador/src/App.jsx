@@ -5,7 +5,6 @@ import Register from "./components/pages/login/Register";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AdminDashboard from "./components/pages/adminPanel/AdminDashboard";
-import AdminPanel from "./components/pages/adminPanel/AdminPanel";
 import { HStack, Box } from "@chakra-ui/react";
 import DetailPage from "./components/pages/DetailPage";
 import { useState, useEffect, useCallback } from "react";
