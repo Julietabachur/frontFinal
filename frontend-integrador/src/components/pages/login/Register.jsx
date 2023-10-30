@@ -101,6 +101,8 @@ const Register = () => {
             });
 
             if (response.status === 200) {
+                console.log(response.data);
+                localStorage.setItem('riskkojwt', JSON.stringify(response.data.token))
                 window.alert('Registro exitoso. Serás redirigido a la página de inicio.');
                 setTimeout(() => {
                     navigate("/");

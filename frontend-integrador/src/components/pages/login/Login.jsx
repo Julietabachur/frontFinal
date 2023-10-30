@@ -24,8 +24,11 @@ const Login = () => {
             if (response.status === 200) {
                 // Inicio de sesión exitoso, redirección a la página home
                 console.log("logueado")
-                console.log(response.status)
+
+                console.log(response.data)
+                localStorage.setItem('riskkojwt', JSON.stringify(response.data.token))
                 navigate("/");
+                window.location.reload()
             } else {
                 // Maneja otros escenarios de respuesta según tu API
                 console.error("Inicio de sesión fallido");
