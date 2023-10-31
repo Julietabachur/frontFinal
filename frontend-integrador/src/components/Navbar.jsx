@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Button,
   HStack,
@@ -8,13 +8,15 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Avatar,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import NavbarMenu from "./NavbarMenu";
 
-const Navbar = () => {
+const Navbar = ({ username, setUserName, roles }) => {
   const [media, setMedia] = useState(false);
-
   const navigate = useNavigate();
+  const GETME_URL = import.meta.env.VITE_GETME_URL;
   const MIN_DESKTOP_WIDTH = 500;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -48,7 +50,7 @@ const Navbar = () => {
       position={"fixed"}
       top={0}
       minW={400}
-      w={"100%"}
+      w={"99vw"}
       h={"120px"}
       zIndex={1000}
     >
@@ -130,41 +132,53 @@ const Navbar = () => {
           </>
         )}
       </div>
+      {/**botones o nombre */}
       {media ? (
-        <Menu>
-          <MenuButton
-            color={"verde2"}
-            p={3}
-            pl={5}
-            pr={5}
-            borderRadius={25}
-            border={"1px solid green"}
-          >
-            Ingresar
-          </MenuButton>
+        username ? (
+          <NavbarMenu username={username} roles={roles} />
+        ) : (
+          <Menu>
+            <MenuButton
+              color={"verde2"}
+              p={3}
+              pl={5}
+              pr={5}
+              borderRadius={25}
+              border={"1px solid green"}
+            >
+              Ingresar
+            </MenuButton>
 
-          <MenuList bg={"negro"}>
-            <MenuItem
-              bg={"negro"}
-              as="a"
-              href="#"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              <Text color={"verde2"}>Loguearse</Text>
-            </MenuItem>
-            <MenuItem
-              bg={"negro"}
-              as="a"
-              onClick={() => {
-                navigate("/register");
-              }}
-            >
-              <Text color={"verde2"}>Registrarse</Text>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+            <MenuList bg={"negro"}>
+              <MenuItem
+                bg={"negro"}
+                as="a"
+                href="#"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                <Text color={"verde2"}>Loguearse</Text>
+              </MenuItem>
+              <MenuItem
+                bg={"negro"}
+                as="a"
+                onClick={() => {
+                  navigate("/register");
+                }}
+              >
+                <Text color={"verde2"}>Registrarse</Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )
+      ) : username ? (
+        <HStack>
+          <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
+            {username}
+          </Text>
+          <NavbarMenu username={username} roles={roles} />
+        </HStack>
       ) : (
         <HStack>
           <Button
