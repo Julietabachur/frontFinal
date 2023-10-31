@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Box } from '@chakra-ui/react';
+import { Button, Box, Alert, AlertIcon, AlertTitle, CloseButton } from '@chakra-ui/react';
 import ListAdminProduct from './ListAdminProduct';
 import ProductForm from './ProductForm';
 
@@ -10,7 +10,8 @@ const AdminDashboard = ({productToEdit, productData, token}) => {
   // Estado para mostrar el listado de productos cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
   const [listaOn, setListaOn] = useState(false)
- 
+  const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
+
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   // Valor mínimo de ancho para considerar como versión de computadora
@@ -76,10 +77,12 @@ const handlePageChange = (newPage) => {
     setPage(newPage); // Actualiza el número de página
   }
 };
-  
-{/*LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.*/}
+
+
+//LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
 const addProduct = (productData) => {
 
+  console.log("TOKEN ADD PRODUCT",token);
   // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
   axios
     .post("http://localhost:8080/api/v1/admin/products", productData, {
@@ -88,11 +91,17 @@ const addProduct = (productData) => {
     .then((response) => {
 
       console.log("Producto agregado con éxito:", response.data);
-      //setShowList(true);
+      setShowSuccess(true);
+
+      // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 1500);
 
     })
     .catch((error) => {
-      // Maneja el error de la solicitud POST aquí
+      // Maneja el error de la solicitud POST aquí - VERIFICAR.
+      alert("Error al agregar producto!");
       console.error("Error al agregar el producto:", error);
       // Muestra un mensaje de error al usuario
     });
@@ -103,12 +112,26 @@ const addProduct = (productData) => {
   // Renderizado del componente
   return (
     <Box pos={'relative'} top={100} w={'99vw'} h={'170vh'}>
+
+      {console.log("AlertSuccess:", showSuccess)}
+
+      {showSuccess && (
+        <Alert status='success' variant='subtle'>
+          <AlertIcon boxSize='20px'/>
+            Producto agregado con éxito!
+        </Alert>
+      )}
+
+
        {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
        {window.innerWidth >= MIN_DESKTOP_WIDTH && (
         <Button ml={4} onClick={() => setIsModalOpen(true)}>
           Agregar Producto
         </Button>
       )}
+
+      {/* Componente del modal para agregar producto */}
+      <ProductForm isOpen={isModalOpen} token={token} addProduct={addProduct} getProducts={getProducts} setIsModalOpen={setIsModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {/* Botón para listar productos (y eliminar y editar) */}
       <Button ml={4} onClick={() => setShowList(true)}>
