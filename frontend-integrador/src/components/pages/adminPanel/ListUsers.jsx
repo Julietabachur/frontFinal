@@ -95,6 +95,7 @@ const ListUsers = ({
                     <Td>{user.clientName}</Td>
                     <Td>
                       <Checkbox
+                      isDisabled={user.clientName === 'admin1'}
                         isChecked={user.roles[1] === "ADMIN"}
                         onChange={() => adminHandle(user)}
                         onClick={() => adminHandle(user)}
