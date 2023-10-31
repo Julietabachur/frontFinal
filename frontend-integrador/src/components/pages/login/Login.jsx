@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Box, Input, Button, Stack, Flex, Alert, AlertIcon } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,36 @@ const Login = () => {
     const [invalidCredentials, setInvalidCredentials] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const navigate = useNavigate();
+
+     //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
+    const token = JSON.parse(localStorage.getItem("riskkojwt"));
+    console.log(token)
+     
+    const GETME_URL = import.meta.env.VITE_GETME_URL;
+ 
+    const getUsername = async (token) => {
+        try {
+        const response = await axios.get(GETME_URL, {
+            headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+        });
+        if (response) {
+            navigate("/")
+        } else {
+            localStorage.removeItem("riskkojwt");
+        }
+        } catch (error) {
+        console.error("Fetch error:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (token) {
+        getUsername(token);
+        }
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();

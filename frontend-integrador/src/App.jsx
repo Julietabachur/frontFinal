@@ -72,7 +72,7 @@ function App() {
               }
             />
           </Routes>
-          <Footer />
+          {<Footer />}
         </Router>
       </Box>
     </HStack>
