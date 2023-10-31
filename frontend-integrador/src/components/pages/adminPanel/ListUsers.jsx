@@ -31,16 +31,13 @@ const ListUsers = () => {
               <Text fontWeight="bold">ID</Text>
             </Th>
             <Th>
-              <Text fontWeight="bold">Nombre</Text>
+              <Text fontWeight="bold">Nombre de usuario</Text>
             </Th>
             <Th>
-              <Text fontWeight="bold">Imagen</Text>
+              <Text fontWeight="bold">Roles</Text>
             </Th>
             <Th>
               <Text fontWeight="bold">Editar</Text>
-            </Th>
-            <Th>
-              <Text fontWeight="bold">Eliminar</Text>
             </Th>
           </Tr>
         </Thead>
