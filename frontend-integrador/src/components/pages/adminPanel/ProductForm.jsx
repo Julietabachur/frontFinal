@@ -35,6 +35,7 @@ const initialProductState = {
 
 const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
 
+  console.log("TOKEN:", token);
   //const token ="eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
 
   const [productData, setProductData] = useState(initialProductState);
@@ -43,6 +44,8 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
   const [nombreValido, setNombreValido] = useState(true);
   const [formDisabled, setFormDisabled] = useState(false);
   const [showError, setShowError] = useState(false);
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -128,12 +131,9 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
     console.log("Datos Formulario:", productData);
 
 
-    console.log('Props before adding a product:', isOpen, onClose, lista, isModalOpen, page);
     addProduct(productData);
-    getProducts();
-    console.log('Props after adding a product:', isOpen, onClose, lista, isModalOpen, page);
-    
 
+   
      // Cierra el modal y resetea el formulario
      setIsModalOpen(false);
      onClose();
@@ -141,8 +141,11 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
      setInputValue(""); // Reinicia el valor del input
      setNombreValido(true); // Reinicia la validación del nombre
      setShowError(false); // Reinicia el estado de error
+
     
   };
+
+
   useEffect(() => {
     console.log('Component re-rendered');
   }, [lista]);
@@ -300,8 +303,10 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
           <Button onClick={handleCancel}>Cancelar</Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal>        
+
     {console.log("isModalOpen:",isModalOpen)}
+    {console.log("Lista?:",lista)}
     {lista && !isModalOpen && <ListAdminProduct isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
     </>
   );
