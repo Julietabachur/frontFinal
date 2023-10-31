@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Box, Input, Button, Stack, Flex } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/; 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 const REGISTER_URL = "http://localhost:8080/auth/register";
 
@@ -73,11 +73,11 @@ const Register = () => {
         }
     };
 
-   /* useEffect(() => {
+   useEffect(() => {
         if (token) {
         getUsername(token);
         }
-    }, []);*/
+    }, []);
 
     //Logica para el handle register
 
@@ -107,7 +107,7 @@ const Register = () => {
                 setTimeout(() => {
                     navigate("/");
                     window.location.reload()
-                }, 2000);
+                }, 1000);
             } else {
                 alert("Fallo el registro, recargue la pagina y pruebe nuevamente")
             }
@@ -164,7 +164,7 @@ const Register = () => {
 
                     <Input 
                         w="500px" 
-                        placeholder="Contraseña" 
+                        placeholder="Inserte contraseña" 
                         type="password" 
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)}
