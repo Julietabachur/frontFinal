@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 
 
-const ListUsers = () => {
+const ListUsers = ({token}) => {
+  const [userList,setUserList] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  
   return (
     <>
     <Box>
@@ -35,9 +40,6 @@ const ListUsers = () => {
             </Th>
             <Th>
               <Text fontWeight="bold">Roles</Text>
-            </Th>
-            <Th>
-              <Text fontWeight="bold">Editar</Text>
             </Th>
           </Tr>
         </Thead>
