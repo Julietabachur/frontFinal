@@ -192,7 +192,7 @@ const HomePage = () => {
         {/* categorias */}
         {media && (
           <Menu>
-            <MenuButton minW={600} bg={"negro"}>
+            <MenuButton minW={'99vh'} bg={"negro"}>
               
                 <Text
                   fontFamily={"podkova"}
