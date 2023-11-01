@@ -33,6 +33,17 @@ const Register = () => {
 
     const navigate = useNavigate();
 
+     //metodo que atrasa la ejecucion de la funcion una medida de tiempo 'delay'
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+        };
+    }
+
     //Funciones de cada validación
     const validateName = (name) => {
         return !nameRegex.test(name) ? 'El nombre debe contener solo letras, mínimo 4 y no tener espacios al inicio.' : '';
@@ -206,7 +217,6 @@ const Register = () => {
                         onChange={(e) => setFirstName(e.target.value)}
                         onBlur={handleFirstNameBlur}
                     />
-                    {showClientNameDuplicatedError && <Box color="red">El nombre de usuario ya está en uso. Por favor, elige otro.</Box>}
                     {firstNameError && <Box color="red">{firstNameError}</Box>}
 
                     <Input
@@ -226,6 +236,7 @@ const Register = () => {
                         onBlur={handleClientNameBlur}
                     />
                     {clientNameError && <Box color="red">{clientNameError}</Box>}
+                    {showClientNameDuplicatedError && <Box color="red">El nombre de usuario ya está en uso. Por favor, elige otro.</Box>}
                     
 
                     <Input
