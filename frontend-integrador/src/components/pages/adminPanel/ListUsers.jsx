@@ -1,132 +1,114 @@
-import React from 'react'
+import { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Text,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Flex,
+  HStack,
+  Checkbox,
+  CheckboxGroup,
+} from "@chakra-ui/react";
+import { FaEdit } from "react-icons/fa";
+import axios from "axios";
 
+const ListUsers = ({
+  token,
+  getUsers,
+  userPage,
+  handlePageChange,
+  userList,
+}) => {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
+  useEffect(() => {
+    getUsers();
+  }, [userPage]);
 
+  const adminHandle = async (user) => {
+    const updatedUser = { ...user };
+    const response = await axios.put(
+      `${baseUrl}/api/v1/admin/clients/${updatedUser.id}`,
+      updatedUser,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data) {
+      getUsers()
+    } 
+  };
 
-const ListUsers = () => {
   return (
-    <>
-    <Box>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
-          disabled={page === 0}
+    <Flex justify={"center"}>
+      <Box>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
         >
-          &lt;&lt;&lt;
-        </Button>
-        <Text>- {page} -</Text>
-        <Button onClick={() => handlePageChange(page + 1)}>
-          &gt;&gt;&gt;
-        </Button>
-      </div>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>
-              <Text fontWeight="bold">ID</Text>
-            </Th>
-            <Th>
-              <Text fontWeight="bold">Nombre de usuario</Text>
-            </Th>
-            <Th>
-              <Text fontWeight="bold">Roles</Text>
-            </Th>
-            <Th>
-              <Text fontWeight="bold">Editar</Text>
-            </Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {lista &&
-            lista.map((item) => (
-              <Tr key={item.id} h="10px">
-                <Td>{item.productId}</Td>
-                <Td>{item.productName}</Td>
-                <Td>
-                  <Img
-                    src={item.thumbnail}
-                    alt={item.productName}
-                    w={50}
-                    h={50}
-                  />
-                </Td>
-                <Td>
-                  <FaEdit
-                    style={{
-                      cursor: "pointer",
-                      color: "green",
-                      fontSize: "1.2em",
-                    }}
-                    onClick={() => handleEdit(item)}
-                  />
-                </Td>
-                <Td>
-                  <FaTrash
-                    style={{
-                      cursor: "pointer",
-                      color: "red",
-                      fontSize: "1.2em",
-                    }}
-                    onClick={() => openDeleteDialog(item)}
-                  />
-                </Td>
+          <Button
+            onClick={() =>
+              handlePageChange(userPage > 1 ? userPage - 1 : userPage)
+            }
+            disabled={userPage === 0}
+          >
+            &lt;&lt;&lt;
+          </Button>
+          <Text>- {userPage} -</Text>
+          <Button onClick={() => handlePageChange(userPage + 1)}>
+            &gt;&gt;&gt;
+          </Button>
+        </div>
+        <Box w={830}>
+          <Table variant="striped" colorScheme="blue">
+            <Thead>
+              <Tr>
+                <Th>
+                  <Text fontWeight="bold">ID</Text>
+                </Th>
+                <Th>
+                  <Text fontWeight="bold">Nombre de usuario</Text>
+                </Th>
+                <Th>
+                  <Text fontWeight="bold">Admin</Text>
+                </Th>
               </Tr>
-            ))}
-        </Tbody>
-      </Table>
-    </Box>
-    <AlertDialog
-      isOpen={isDeleteDialogOpen}
-      leastDestructiveRef={cancelRef}
-      onClose={closeDeleteDialog}
-    >
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Confirmación
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            ¿Seguro que quiere eliminar el item?
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={closeDeleteDialog}>
-              Cancelar
-            </Button>
-            <Button
-              colorScheme="red"
-              onClick={() => {
-                handleDelete(itemToDelete.id);
-                closeDeleteDialog();
-              }}
-              ml={3}
-            >
-              Eliminar
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+            </Thead>
+            <Tbody>
+              {userList &&
+                userList.map((user) => (
+                  <Tr key={user.id} h="10px">
+                    <Td>{user.id}</Td>
+                    <Td>{user.clientName}</Td>
+                    <Td>
+                      <Checkbox
+                      isDisabled={user.clientName === 'admin1'}
+                        isChecked={user.roles[1] === "ADMIN"}
+                        onChange={() => adminHandle(user)}
+                        onClick={() => adminHandle(user)}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </Box>
+    </Flex>
+  );
+};
 
-    {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
-    {productToEdit !== null && (
-      <EditProduct
-        token={token}
-        productToEdit={productToEdit}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setProductToEdit(null);
-          setIsModalOpen(false);
-        }}
-        getProducts={getProducts}
-      />
-    )}
-  </>
-  )
-}
-
-export default ListUsers
+export default ListUsers;

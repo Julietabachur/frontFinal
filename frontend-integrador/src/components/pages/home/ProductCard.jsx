@@ -11,7 +11,7 @@ import {
 
 const ProductCard = ({ item }) => {
   return (
-    <Card h={"500px"} color={"blanco"}>
+    <Card  h={"500px"} color={"blanco"}>
       <CardBody
         _hover={{
           transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
