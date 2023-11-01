@@ -17,7 +17,7 @@ const Navbar = ({ username, setUserName, roles }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const MIN_DESKTOP_WIDTH = 500;
+  const MIN_DESKTOP_WIDTH = 768;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
