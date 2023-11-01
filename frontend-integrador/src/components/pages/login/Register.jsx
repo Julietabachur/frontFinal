@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { Box, Input, Button, Stack, Flex } from '@chakra-ui/react';
+import { Box, Input, Button, Stack, Flex, Text } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,10 +22,33 @@ const Register = () => {
         password: '',
         confirmPassword: ''
     });
+    const [media, setMedia] = useState(false);
+    const MIN_DESKTOP_WIDTH = 768;
+
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+    useEffect(() => {
+        const handleResize = () => {
+        if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+            setMedia(true);
+        } else {
+            setMedia(false);
+        }
+        };
+        if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+        setMedia(true);
+        } else {
+        setMedia(false);
+        }
+
+        window.addEventListener("resize", handleResize);
+
+        // Limpieza del event listener cuando el componente se desmonta
+        return () => {
+        window.removeEventListener("resize", handleResize);
+        };
+    }, [window.innerWidth]);
     
     const navigate = useNavigate();
-
-
     
     const handleBlur = (field) => {
         switch (field) {
@@ -118,14 +141,83 @@ const Register = () => {
     };
 
     return (
-        <Flex
+        
+            <Flex
             direction="column"
             align="center"
             justify="center"
             minH="100vh"
             p={4}
-        >
-            <Box pos={'relative'} top={100} w={'97vw'} h={'100vh'}>
+            
+            >
+                {media ? 
+            (
+                <Box pos={'relative'} top={10} bottom={100} mb={'250px'} w={'97vw'} h={'100vh'}>
+                <Text fontSize='2xl' align='center' py={3}>Crear cuenta</Text>
+                <Stack spacing={4} align="center" justify="center">
+                    <Input 
+                        w="250px" 
+                        placeholder="Nombre" 
+                        value={firstName} 
+                        onChange={(e) => setFirstName(e.target.value)}
+                        onBlur={() => handleBlur('firstName')}
+                    />
+                    {errors.firstName && <Box color="red" w="250px" align='center'>{errors.firstName}</Box>}
+                    
+                    <Input 
+                        w="250px" 
+                        placeholder="Apellido" 
+                        value={lastName} 
+                        onChange={(e) => setLastName(e.target.value)}
+                        onBlur={() => handleBlur('lastName')}
+                    />
+                    {errors.lastName && <Box color="red" w="250px" align='center'>{errors.lastName}</Box>}
+
+                    <Input 
+                        w="250px" 
+                        placeholder="Nombre de usuario" 
+                        value={clientName} 
+                        onChange={(e) => setClientName(e.target.value)}
+                    />
+                    {/* Validaciones y mensajes de error para otros campos */}
+
+                    <Input 
+                        w="250px" 
+                        placeholder="Email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                        onBlur={() => handleBlur('email')}
+                    />
+                    {errors.email && <Box color="red" w="250px" align='center'>{errors.email}</Box>}
+
+                    <Input 
+                        w="250px" 
+                        placeholder="Inserte contraseña" 
+                        type="password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)}
+                        onBlur={() => handleBlur('password')}
+                    />
+                    {errors.password && <Box color="red" w="250px" align='center'>{errors.password}</Box>}
+
+                    <Input 
+                        w="250px" 
+                        placeholder="Confirmar Contraseña" 
+                        type="password" 
+                        value={confirmPassword} 
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        onBlur={() => handleBlur('confirmPassword')}
+                    />
+                    {errors.confirmPassword && <Box color="red" w="250px" align='center'>{errors.confirmPassword}</Box>}
+
+                    <Button w="200px" bg={"verde2"} onClick={handleRegister}>Crear cuenta</Button>
+                </Stack>
+            </Box>
+            )
+            :
+            ( 
+            <Box pos={'relative'} top={5} bottom={100}  mb={'200px'} w={'97vw'} h={'100vh'}>
+                <Text fontSize='4xl' align='center' py={3}>Crear cuenta</Text>
                 <Stack spacing={4} align="center" justify="center">
                     <Input 
                         w="500px" 
@@ -134,7 +226,7 @@ const Register = () => {
                         onChange={(e) => setFirstName(e.target.value)}
                         onBlur={() => handleBlur('firstName')}
                     />
-                    {errors.firstName && <Box color="red">{errors.firstName}</Box>}
+                    {errors.firstName && <Box color="red" w={'500px'}>{errors.firstName}</Box>}
                     
                     <Input 
                         w="500px" 
@@ -143,7 +235,7 @@ const Register = () => {
                         onChange={(e) => setLastName(e.target.value)}
                         onBlur={() => handleBlur('lastName')}
                     />
-                    {errors.lastName && <Box color="red">{errors.lastName}</Box>}
+                    {errors.lastName && <Box color="red" w={'500px'}>{errors.lastName}</Box>}
 
                     <Input 
                         w="500px" 
@@ -160,7 +252,7 @@ const Register = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onBlur={() => handleBlur('email')}
                     />
-                    {errors.email && <Box color="red">{errors.email}</Box>}
+                    {errors.email && <Box color="red" w={'500px'}>{errors.email}</Box>}
 
                     <Input 
                         w="500px" 
@@ -170,7 +262,7 @@ const Register = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         onBlur={() => handleBlur('password')}
                     />
-                    {errors.password && <Box color="red">{errors.password}</Box>}
+                    {errors.password && <Box color="red" w={'500px'}>{errors.password}</Box>}
 
                     <Input 
                         w="500px" 
@@ -180,12 +272,14 @@ const Register = () => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         onBlur={() => handleBlur('confirmPassword')}
                     />
-                    {errors.confirmPassword && <Box color="red">{errors.confirmPassword}</Box>}
+                    {errors.confirmPassword && <Box color="red" w={'500px'}>{errors.confirmPassword}</Box>}
 
-                    <Button w="500px" colorScheme="green" onClick={handleRegister}>Registrarse</Button>
+                    <Button w="500px" bg={"verde2"} onClick={handleRegister}>Crear cuenta</Button>
                 </Stack>
             </Box>
+            )}
         </Flex>
+       
     );
 };
 

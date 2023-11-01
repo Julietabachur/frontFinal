@@ -158,7 +158,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                   navigate("/login");
                 }}
               >
-                <Text color={"verde2"}>Loguearse</Text>
+                <Text color={"verde2"}>Iniciar sesión</Text>
               </MenuItem>
               <MenuItem
                 bg={"negro"}
@@ -167,7 +167,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                   navigate("/register");
                 }}
               >
-                <Text color={"verde2"}>Registrarse</Text>
+                <Text color={"verde2"}>Crear cuenta</Text>
               </MenuItem>
             </MenuList>
           </Menu>

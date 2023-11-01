@@ -115,10 +115,10 @@ const Login = () => {
             { media ?
             (
             <Box pos={'relative'} top={10} w={'97vw'} h={'100vh'}>
-                <Text fontSize='4xl' align='center' py={3}>Iniciar sesión</Text>
+                <Text fontSize='2xl' align='center' py={3}>Iniciar sesión</Text>
                 <Stack spacing={4} align="center" justify="center">
-                    <Input w="300px" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <Input w="300px" placeholder="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Input w="250px" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <Input w="250px" placeholder="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <Button w="200px" bg={"verde2"} onClick={handleLogin}>Iniciar Sesión</Button>
                     {showAlert && invalidCredentials && ( 
                         <Alert status="error" w="300px" mt={4}>
