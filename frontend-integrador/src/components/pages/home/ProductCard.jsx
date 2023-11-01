@@ -9,6 +9,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+//me lamo esteban 
+
 const ProductCard = ({ item }) => {
   return (
     <Card  h={"500px"} color={"blanco"}>
