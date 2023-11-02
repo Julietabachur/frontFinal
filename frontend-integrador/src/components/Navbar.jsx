@@ -17,7 +17,7 @@ const Navbar = ({ username, setUserName, roles }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const MIN_DESKTOP_WIDTH = 500;
+  const MIN_DESKTOP_WIDTH = 768;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -158,7 +158,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                   navigate("/login");
                 }}
               >
-                <Text color={"verde2"}>Loguearse</Text>
+                <Text color={"verde2"}>Iniciar sesión</Text>
               </MenuItem>
               <MenuItem
                 bg={"negro"}
@@ -167,7 +167,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                   navigate("/register");
                 }}
               >
-                <Text color={"verde2"}>Registrarse</Text>
+                <Text color={"verde2"}>Crear cuenta</Text>
               </MenuItem>
             </MenuList>
           </Menu>
