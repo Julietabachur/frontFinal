@@ -192,7 +192,7 @@ const HomePage = () => {
         {/* categorias */}
         {media && (
           <Menu>
-            <MenuButton minW={600} bg={"negro"}>
+            <MenuButton minW={'99vh'} bg={"negro"}>
               
                 <Text
                   fontFamily={"podkova"}
@@ -203,7 +203,7 @@ const HomePage = () => {
                   Categorias
                 </Text>
             </MenuButton>
-            <UnorderedList bg={"negro"}>
+            <MenuList bg={"negro"}>
               {categoriesData.map((category) => (
                 <MenuItem
                   bg={"negro"}
@@ -221,7 +221,7 @@ const HomePage = () => {
                   </Link>
                 </MenuItem>
               ))}
-            </UnorderedList>
+            </MenuList>
           </Menu>
         )}
         {!media && (
