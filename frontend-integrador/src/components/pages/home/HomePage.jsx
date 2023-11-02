@@ -203,7 +203,7 @@ const HomePage = () => {
                   Categorias
                 </Text>
             </MenuButton>
-            <MenuList bg={"negro"}>
+            <UnorderedList bg={"negro"}>
               {categoriesData.map((category) => (
                 <MenuItem
                   bg={"negro"}
@@ -221,7 +221,7 @@ const HomePage = () => {
                   </Link>
                 </MenuItem>
               ))}
-            </MenuList>
+            </UnorderedList>
           </Menu>
         )}
         {!media && (
