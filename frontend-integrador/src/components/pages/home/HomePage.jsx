@@ -51,7 +51,7 @@ const HomePage = () => {
 
     window.addEventListener("resize", handleResize);
 
-    // Limpieza del event listener cuando el componente se desmonta
+    // Limpieza del event listener cuando el componente se desmonta.
     return () => {
       window.removeEventListener("resize", handleResize);
     };
