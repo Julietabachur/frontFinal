@@ -25,9 +25,13 @@ import {
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
 import RenderPagination from "./RenderPagination";
+import VerifiedUser from "./VerifiedUser";
 
 const HomePage = () => {
-  const token = import.meta.env.VITE_TOKEN;
+  //const token = import.meta.env.VITE_TOKEN;
+  
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
+
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [lista, setLista] = useState([]);
@@ -87,6 +91,7 @@ const HomePage = () => {
         console.error(error);
       }
     };
+
     const fetchProductsData = async () => {
       const data = await getProducts();
       if (data) {
@@ -158,6 +163,8 @@ const HomePage = () => {
       type: "ACCESSORY",
     },
   ];
+
+
 
   return (
     <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
@@ -247,6 +254,9 @@ const HomePage = () => {
           </HStack>
         )}
 
+        {/* Verifica si existe un token, es decir un usuario registrado y llama al componente VerifiedUser*/}
+        { token && (<VerifiedUser/>)}
+        
         <SimpleGrid minH={'100vh'} columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
           {isLoading &&
             Skeletons.map((Skeleton) => {
