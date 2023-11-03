@@ -49,6 +49,7 @@ const Register = () => {
   //metodo que atrasa la ejecucion de la funcion una medida de tiempo 'delay'
   function debounce(func, delay) {
     let timer;
+    // Acá esta cargando todos los argumentos de la función que voy a demorar CheckClientNameAndEmail
     return function (...args) {
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -90,31 +91,33 @@ const Register = () => {
 
   //Funciones para el manejo de errores en dependencia de las validaciones
 
-  const handleFirstNameBlur = (firstName) => {
+  const handleFirstNameChange = (firstName) => {
     setFirstName(firstName);
     setFirstNameError(validateName(firstName));
   };
 
-  const handleLastNameBlur = (lastName) => {
+  const handleLastNameChange = (lastName) => {
     setLastName(lastName);
     setLastNameError(validateLastName(lastName));
   };
 
-  const handleClientNameBlur = (clientName) => {
+  const handleClientNameChange = (clientName) => {
     setClientName(clientName);
     setClientNameError(validateClientName(clientName));
   };
 
-  const handleEmailBlur = (email) => {
+  const handleEmailChange = (email) => {
     setEmail(email);
     setEmailError(validateEmail(email));
   };
-
-  const handlePasswordBlur = () => {
+ 
+  const handlePasswordChange = (password) => {
+    setPassword(password);
     setPasswordError(validatePassword(password));
   };
 
-  const handleConfirmPasswordBlur = () => {
+  const handleConfirmPasswordChange = (confirmPassword) => {
+    setConfirmPassword(confirmPassword);
     setConfirmPasswordError(
       password !== confirmPassword ? "Las contraseñas no coinciden." : ""
     );
@@ -149,35 +152,60 @@ const Register = () => {
     }
   }, [token]);
 
-  //función para revisar si el clientName existe en el BE
-  const CheckClientNameAndEmail = async (value, endpoint) => {
-    endpoint === "clientName" &&
-      (setIsNameLoading(true), handleClientNameBlur(value));
+  // Función para revisar si el clientName o el email existe en el Backend (BE)
+const CheckClientNameAndEmail = async (value, endpoint) => {
+  if (endpoint === "clientName") {
+    // Activar la bandera de carga y manejar el cambio en el nombre del cliente
+    //setIsNameLoading(true);
+    handleClientNameChange(value);
+  }
+  else if (endpoint === "email") {
+    // Activar la bandera de carga y manejar el cambio en la dirección de correo electrónico del cliente
+    //setIsEmailLoading(true);
+    handleEmailChange(value);
+  }
 
-    endpoint === "email" &&
-     (setIsEmailLoading(true), handleEmailBlur(value));
+  // Verificar si el valor no es undefined
+  if (value !== undefined) {
+    // Realizar una solicitud GET a la API con el valor del endpoint y el valor proporcionado
+    const response = await axios.get(
+      `http://localhost:8080/auth/${endpoint}?${endpoint}=${value}`
+    );
 
-    if (value != undefined) {
-      const response = await axios.get(
-        `http://localhost:8080/auth/${endpoint}?${endpoint}=${value}`
-      );
-      if (response) {
-        endpoint === "clientName" && setIsNameLoading(false);
-        endpoint === "email" && setIsEmailLoading(false);
+    // Verificar si hay una respuesta del servidor
+    if (response) {
+      // Desactivar las banderas de carga basándose en el endpoint
+      if (endpoint === "clientName") {
+        //setIsNameLoading(false);
+      } else if (endpoint === "email") {
+        //setIsEmailLoading(false);
+      }
 
-        if (response.data && endpoint === "clientName") {
-          setShowClientNameDuplicatedError(false);
-          setClientName(value);
-        } else if (response.data && endpoint === "email") {
-          setShowEmailDuplicatedError(false);
-          setEmail(value);
-        } else if (!response.data) {
-          endpoint === "clientName" && setShowClientNameDuplicatedError(true);
-          endpoint === "email" && setShowEmailDuplicatedError(true);
+      // Si el nombre no existe en la BD la response sería True y el endpoint es "clientName"
+      if (response.data && endpoint === "clientName") {
+        // Ocultar el error de nombre duplicado y establecer el nombre del cliente
+        setShowClientNameDuplicatedError(false);
+        setClientName(value);
+      }
+      // Si el email no existe en la BD la response sería True y el endpoint es "email"
+      else if (response.data && endpoint === "email") {
+        // Ocultar el error de correo electrónico duplicado y establecer la dirección de correo electrónico del cliente
+        setShowEmailDuplicatedError(false);
+        setEmail(value);
+      }
+      // Si existe el ClientName o el email existen la BD entonce la response es false
+      else if (!response.data) {
+        // Mostrar el error de nombre o correo electrónico duplicado basándose en el endpoint
+        if (endpoint === "clientName") {
+          setShowClientNameDuplicatedError(true);
+        } else if (endpoint === "email") {
+          setShowEmailDuplicatedError(true);
         }
       }
     }
-  };
+  }
+};
+
 
   //version demorada de del metodo checkName
   const debouncedCheckClientNameAndEmail = debounce(CheckClientNameAndEmail, 2000);
@@ -187,7 +215,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Validar campos antes de continuar
+    //Validar campos antes de continuar
     setFirstNameError(validateName(firstName));
     setLastNameError(validateLastName(lastName));
     setClientNameError(validateClientName(clientName));
@@ -200,21 +228,12 @@ const Register = () => {
     if (
       firstNameError ||
       lastNameError ||
-      clientName ||
+      clientNameError ||
       emailError ||
       passwordError ||
       confirmPasswordError
     ) {
-      //esto es para mostrar en consola el error en que campo es
-      if (firstNameError) console.error(`- Nombre: ${firstNameError}`);
-      if (lastNameError) console.error(`- Apellido: ${lastNameError}`);
-      if (clientNameError)
-        console.error(`- Nombre de cliente: ${clientNameError}`);
-      if (emailError) console.error(`- Email: ${emailError}`);
-      if (passwordError) console.error(`- Contraseña: ${passwordError}`);
-      if (confirmPasswordError)
-        console.error(`- Confirmación de contraseña: ${confirmPasswordError}`);
-      // Evitar que el formulario se envíe
+      // Evitar que el formulario se envíe*/
       return;
     }
 
@@ -284,7 +303,7 @@ const Register = () => {
               style={inputStyle}
               type="text"
               value={firstName}
-              onChange={(e) => handleFirstNameBlur(e.target.value)}
+              onChange={(e) => handleFirstNameChange(e.target.value)}
               required
               autoComplete="off"
             />
@@ -303,7 +322,7 @@ const Register = () => {
               type="text"
               style={inputStyle}
               value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={(e) => handleLastNameChange(e.target.value)}
               required
               autoComplete="off"
             />
@@ -406,7 +425,8 @@ const Register = () => {
               style={inputStyle}
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              //onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handlePasswordChange(e.target.value)}
               required
               autoComplete="off"
             />
@@ -424,7 +444,8 @@ const Register = () => {
               style={inputStyle}
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              //onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => handleConfirmPasswordChange(e.target.value)}
               required
               autoComplete="off"
             />
