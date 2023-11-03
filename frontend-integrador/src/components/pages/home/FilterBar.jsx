@@ -1,4 +1,4 @@
-import { Checkbox, Text, VStack } from '@chakra-ui/react';
+import { Checkbox, Text, VStack, Button } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 
 const FilterBar = ({ categories }) => {
@@ -10,6 +10,14 @@ const FilterBar = ({ categories }) => {
   const countFilteredProducts = () => {
     const filteredCount = categories.filter((category) => category.isChecked).length;
     setFilteredProductCount(filteredCount);
+  };
+
+  // Función para limpiar los filtros
+  const clearFilters = () => {
+    categories.forEach((category) => {
+      category.isChecked = false;
+    });
+    setFilteredProductCount(0);
   };
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -46,10 +54,10 @@ const FilterBar = ({ categories }) => {
         <Checkbox
           key={category.id}
           size="md"
+          isChecked={category.isChecked}
           onChange={() => {
-            // Actualiza el estado de isChecked en función del cambio del checkbox
             category.isChecked = !category.isChecked;
-            countFilteredProducts(); // Recuenta los productos filtrados
+            countFilteredProducts();
           }}
         >
           <Text fontSize="md" color="verde2">
@@ -57,6 +65,15 @@ const FilterBar = ({ categories }) => {
           </Text>
         </Checkbox>
       ))}
+
+      <Button
+        size="md"
+        colorScheme="red" // Puedes elegir el color que desees
+        onClick={clearFilters}
+        mt={4} // Margen superior para separar el botón de los checkboxes
+      >
+        Limpiar Filtro
+      </Button>
     </VStack>
   );
 };
