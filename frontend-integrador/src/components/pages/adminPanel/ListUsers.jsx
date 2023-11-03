@@ -45,8 +45,8 @@ const ListUsers = ({
       }
     );
     if (response.data) {
-      getUsers()
-    } 
+      getUsers();
+    }
   };
 
   return (
@@ -80,7 +80,13 @@ const ListUsers = ({
                   <Text fontWeight="bold">ID</Text>
                 </Th>
                 <Th>
-                  <Text fontWeight="bold">Nombre de usuario</Text>
+                  <Text fontWeight="bold">Nombre y apellido</Text>
+                </Th>
+                <Th>
+                  <Text fontWeight="bold">Username</Text>
+                </Th>
+                <Th>
+                  <Text fontWeight="bold">email</Text>
                 </Th>
                 <Th>
                   <Text fontWeight="bold">Admin</Text>
@@ -92,13 +98,15 @@ const ListUsers = ({
                 userList.map((user) => (
                   <Tr key={user.id} h="10px">
                     <Td>{user.id}</Td>
+                    <Td>{user.firstName + " " + user.lastName}</Td>
                     <Td>{user.clientName}</Td>
+                    <Td>{user.email}</Td>
                     <Td>
                       <Checkbox
-                      isDisabled={user.clientName === 'admin1'}
+                      size='lg'
+                        isDisabled={user.clientName === "admin1"}
                         isChecked={user.roles[1] === "ADMIN"}
                         onChange={() => adminHandle(user)}
-                        onClick={() => adminHandle(user)}
                       />
                     </Td>
                   </Tr>
