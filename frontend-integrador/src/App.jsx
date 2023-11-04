@@ -14,7 +14,7 @@ import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
-  
+
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
@@ -29,7 +29,8 @@ function App() {
       });
       if (response) {
         setUsername(response.data.username);
-        setRoles(response.data.roles);console.log(response.data.roles);
+        setRoles(response.data.roles);
+        console.log(response.data.roles);
       } else {
         localStorage.removeItem("riskkojwt");
       }
@@ -53,6 +54,7 @@ function App() {
             username={username ? username : null}
             setUsername={setUsername}
           />
+
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
