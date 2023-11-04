@@ -1,50 +1,26 @@
 import React from 'react'
+import { useEffect, useState } from 'react';
 import {
   Editable,
   EditableInput,
   EditableTextarea,
   EditablePreview,
+  Text
 } from '@chakra-ui/react'
 
 
-const AdminFeatures = ({getProducts, token,featuresEdit}) => {
+const AdminFeatures = ({getFeatures, token, listFeatures, pageFeatures, handlePageChange}) => {
 
-  function CustomControlsExample() {
-    /* Here's a custom control */
-    function EditableControls() {
-      const {
-        isEditing,
-        getSubmitButtonProps,
-        getCancelButtonProps,
-        getEditButtonProps,
-      } = useEditableControls()
-  
-      return isEditing ? (
-        <ButtonGroup justifyContent='center' size='sm'>
-          <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
-          <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
-        </ButtonGroup>
-      ) : (
-        <Flex justifyContent='center'>
-          <IconButton size='sm' icon={<EditIcon />} {...getEditButtonProps()} />
-        </Flex>
-      )
-    }
-  
+
+  useEffect(() => {
+    getFeatures();
+  }, [pageFeatures]); // Agrega 'page' como dependencia para que se actualice cuando cambie el número de página
+
+
+
     return (
-      <Editable
-        textAlign='center'
-        defaultValue='Rasengan ⚡️'
-        fontSize='2xl'
-        isPreviewFocusable={false}
-      >
-        <EditablePreview />
-        {/* Here is the custom input */}
-        <Input as={EditableInput} />
-        <EditableControls />
-      </Editable>
+      <Text> Listado de caracteristicas</Text>
+      
     )
   }
-}
-
 export default AdminFeatures

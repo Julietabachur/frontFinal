@@ -27,8 +27,6 @@ import {
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import FeaturesProduct from "./FeaturesProduct";
-import AdminFeatures from "./AdminFeatures";
-import {Link as ReactRouterLink} from "react-router-dom";
 
 const ListAdminProduct = ({
   getProducts,
@@ -92,15 +90,10 @@ const ListAdminProduct = ({
 
   const handleFeatures = (feature) => {
     setFeaturesEdit(feature); // pasa el array features a traves del prop
+    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
     console.log("Caracteristica para editar:", featuresEdit);
     console.log("Modal", isModalOpen);
   };
-
-  const handleAdminFeatures = (id) => {
-    setFeaturesEdit([])
-
-    console.log(featuresEdit)
-  }
 
   return (
     <>
@@ -167,8 +160,7 @@ const ListAdminProduct = ({
                         color: "blue",
                         fontSize: "1em",
                       }}
-                      /*onClick={() => handleFeatures(item)}*/
-                      onClick={()=> handleAdminFeatures(item.id )}
+                      onClick={() => handleFeatures(item)}
                     > Administrar Caracteristicas</Button>
                   </Td>
                   <Td>
@@ -243,7 +235,7 @@ const ListAdminProduct = ({
       )}
 
       {/* Render condicional, solo se llama a FeaturesProduct si la variable featuresEdit es distinta de null*/}
-      {/*featuresEdit !== null && (
+      {featuresEdit !== null && (
         <FeaturesProduct
           token={token}
           featuresEdit={featuresEdit}
@@ -253,20 +245,7 @@ const ListAdminProduct = ({
             setIsModalOpen(false);
           }}
         />
-        )*/}
-
-      {/* Render condicional, solo se llama a FeaturesProduct si la variable featuresEdit es distinta de null*/}
-      {featuresEdit !== null && (
-        <Link  key={item.id}  as={ReactRouterLink} to={`/caracteristicas/${item.id}`}>
-        <AdminFeatures
-          token={token}
-          getProducts={getProducts}
-          featuresEdit={featuresEdit}
-        />
-        </Link>
-
-      )}
-
+        )}
     </>
   );
 };

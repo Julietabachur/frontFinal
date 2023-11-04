@@ -11,6 +11,7 @@ import {
 import ListAdminProduct from "./ListAdminProduct";
 import ProductForm from "./ProductForm";
 import ListUsers from "./ListUsers";
+import AdminFeatures from "./AdminFeatures";
 
 const AdminDashboard = ({ productToEdit, productData, token }) => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
@@ -20,6 +21,12 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   const [showUserList, setShowUserList] = useState(false);
   const [listaOn, setListaOn] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
+  // Estado para mostrar el panel Administrar caracteristicas
+  const [showAdminFeatures, setShowAdminFeatures] = useState(false)
+  const [listFeatures, setListFeatures] = useState([])
+  const [pageFeatures, setFeaturesPage] = useState(1)
+  const [totalFeaturesPages, setTotalFeaturesPages] = useState(1)
+  
 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
@@ -56,7 +63,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
 
   // LOGICA DE getProducts - LISTAR
   const getProducts = async () => {
-    console.log("Inicia geProducts");
+    console.log("Inicia getProducts");
     try {
       const response = await axios.get(
         //Petición GET a la api del listado de productos
@@ -105,6 +112,29 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     }
   };
 
+  //Logica de getFeatures. Listado de todas las caracteristicas que estan en la base de datos.
+  const getFeatures = async () => {
+    console.log("Inicia getFeatures");
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de caracteristicas
+        `${baseUrl}/api/v1/public/char?page=${pageFeatures}`,
+      );
+      if (response.data && response.data.content) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setListFeatures(response.data.content);
+        setTotalFeaturesPages(response.data.last);
+        setFeaturesPage(response.data.current);
+        console.log("Datos recibidos:", response.data);
+        console.log("Datos recibidos:", response.data.content);
+        console.log(listFeatures)
+      }
+    } catch (error) {
+      //Manejo de errores
+      console.error(error);
+    }
+  };
+
   // Control de Paginación
   const handlePageChange = (newPage) => {
     console.log(newPage);
@@ -117,6 +147,12 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   const handleUserPageChange = (newPage) => {
     if (newPage <= totalUserPages && newPage >= 1) {
       setUserPage(newPage); // Actualiza el número de página
+    }
+  };
+
+  const handleFeaturesPageChange = (newPage) => {
+    if (newPage <= totalFeaturesPages && newPage >= 1) {
+      setFeaturesPage(newPage); // Actualiza el número de página
     }
   };
 
@@ -149,9 +185,15 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     if (origin === "user") {
       setShowUserList(true);
       setShowList(false);
+      setShowAdminFeatures(false)
+    } if(origin === "feature") {
+      setShowUserList(false);
+      setShowList(false);
+      setShowAdminFeatures(true)   
     } else if (origin === "item") {
       setShowUserList(false);
       setShowList(true);
+      setShowAdminFeatures(false)
     }
   };
 
@@ -182,6 +224,13 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         Listar Usuarios
       </Button>
       {/* Componente del modal para agregar producto */}
+
+      <Button ml={4} onClick={() => handleShow("feature")}>
+        Administrar Caracteristicas
+      </Button>
+      {/* Componente del modal para agregar producto */}
+
+
       <ProductForm
         isOpen={isModalOpen}
         token={token}
@@ -215,6 +264,18 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           userList={userList}
         />
       )}
+
+      {showAdminFeatures == true && (
+        <AdminFeatures
+          token={token}
+          getFeatures={getFeatures}       
+          listFeatures={listFeatures}
+          pageFeatures={pageFeatures}
+          handlePageChange={handleFeaturesPageChange}
+        />
+      )}
+
+
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (
         <div
