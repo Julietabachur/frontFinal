@@ -31,6 +31,7 @@ const initialProductState = {
   thumbnail: "",
   detail: "",
   gallery: [],
+  //features: []
 };
 
 const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
@@ -167,6 +168,14 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
         <ModalHeader>Agregar Producto</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+        <Flex
+              flexDirection="column"
+              p={1}
+              gap={5}
+              my={1}
+              maxHeight="45vh"
+              overflowY="scroll"
+            >
           {/* Formulario para agregar producto */}
 
           <Input
@@ -289,6 +298,7 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
               ))}
             </List>
           </Box>
+          </Flex>
 
          </ModalBody>
         <ModalFooter>
