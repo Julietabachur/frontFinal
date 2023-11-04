@@ -160,7 +160,7 @@ const HomePage = () => {
   ];
 
   return (
-    <Box w={'99vw'} bg={"blanco"} /*p={9}*/>
+    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
@@ -172,6 +172,7 @@ const HomePage = () => {
           align={"Center"}
           /*p={9}*/
           mt={2}
+          
         >
           {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
           <Input
@@ -191,7 +192,7 @@ const HomePage = () => {
         {/* categorias */}
         {media && (
           <Menu>
-            <MenuButton minW={600} bg={"negro"}>
+            <MenuButton minW={'99vh'} bg={"negro"}>
               
                 <Text
                   fontFamily={"podkova"}
@@ -246,7 +247,7 @@ const HomePage = () => {
           </HStack>
         )}
 
-        <SimpleGrid columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
+        <SimpleGrid minH={'100vh'} columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
           {isLoading &&
             Skeletons.map((Skeleton) => {
               return (

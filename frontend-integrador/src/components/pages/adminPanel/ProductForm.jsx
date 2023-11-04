@@ -31,18 +31,22 @@ const initialProductState = {
   thumbnail: "",
   detail: "",
   gallery: [],
+  //features: []
 };
 
-const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
-  //CAMBIE AL TOKEN MIO CAMBIALO CUANDO PRUEBES VOS
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJhZG1pbjEiLCJpYXQiOjE2OTc5OTI0ODMsImV4cCI6MTY5ODU5NzI4M30.C3DUv3nMnin0NJXBKo9bWh5_PZaUSAgg7YcAbFGlc5Q";
+const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
+
+  console.log("TOKEN:", token);
+  //const token ="eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
+
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
   const [nombreValido, setNombreValido] = useState(true);
   const [formDisabled, setFormDisabled] = useState(false);
   const [showError, setShowError] = useState(false);
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -128,12 +132,9 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
     console.log("Datos Formulario:", productData);
 
 
-    console.log('Props before adding a product:', isOpen, onClose, lista, isModalOpen, page);
     addProduct(productData);
-    getProducts();
-    console.log('Props after adding a product:', isOpen, onClose, lista, isModalOpen, page);
-    
 
+   
      // Cierra el modal y resetea el formulario
      setIsModalOpen(false);
      onClose();
@@ -141,8 +142,11 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
      setInputValue(""); // Reinicia el valor del input
      setNombreValido(true); // Reinicia la validación del nombre
      setShowError(false); // Reinicia el estado de error
+
     
   };
+
+
   useEffect(() => {
     console.log('Component re-rendered');
   }, [lista]);
@@ -164,6 +168,14 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
         <ModalHeader>Agregar Producto</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+        <Flex
+              flexDirection="column"
+              p={1}
+              gap={5}
+              my={1}
+              maxHeight="45vh"
+              overflowY="scroll"
+            >
           {/* Formulario para agregar producto */}
 
           <Input
@@ -234,6 +246,14 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
             onChange={handleInputChange}
           />
           <Input
+            name="detail"
+            mb={3}
+            disabled={formDisabled}
+            placeholder="Detalle:\nprimer renglón\nsegundo renglón"
+            value={productData.detail}
+            onChange={handleInputChange}
+          />
+          <Input
             name="thumbnail"
             mb={3}
             placeholder="Enlace de la miniatura"
@@ -278,19 +298,12 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
               ))}
             </List>
           </Box>
+          </Flex>
 
-          <Input
-            name="detail"
-            mb={3}
-            disabled={formDisabled}
-            placeholder="Detalle:\nprimer renglón\nsegundo renglón"
-            value={productData.detail}
-            onChange={handleInputChange}
-          />
-        </ModalBody>
+         </ModalBody>
         <ModalFooter>
           <Button
-            colorScheme="blue"
+            colorScheme="green"
             mr={3}
             onClick={handleProductForm}
             disabled={formDisabled}
@@ -300,8 +313,10 @@ const ProductForm = ({ isOpen, onClose, productToEdit, addProduct, getProducts, 
           <Button onClick={handleCancel}>Cancelar</Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal>        
+
     {console.log("isModalOpen:",isModalOpen)}
+    {console.log("Lista?:",lista)}
     {lista && !isModalOpen && <ListAdminProduct isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} getProducts={getProducts} page={page} handlePageChange={handlePageChange} lista={lista}/>}
     </>
   );

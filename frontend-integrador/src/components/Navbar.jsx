@@ -13,11 +13,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
 
-const Navbar = ({ username, setUserName }) => {
+const Navbar = ({ username, setUserName, roles }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const MIN_DESKTOP_WIDTH = 500;
+  const MIN_DESKTOP_WIDTH = 768;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -135,7 +135,7 @@ const Navbar = ({ username, setUserName }) => {
       {/**botones o nombre */}
       {media ? (
         username ? (
-          <NavbarMenu name={username} token={token} />
+          <NavbarMenu username={username} roles={roles} />
         ) : (
           <Menu>
             <MenuButton
@@ -158,7 +158,7 @@ const Navbar = ({ username, setUserName }) => {
                   navigate("/login");
                 }}
               >
-                <Text color={"verde2"}>Loguearse</Text>
+                <Text color={"verde2"}>Iniciar sesión</Text>
               </MenuItem>
               <MenuItem
                 bg={"negro"}
@@ -167,7 +167,7 @@ const Navbar = ({ username, setUserName }) => {
                   navigate("/register");
                 }}
               >
-                <Text color={"verde2"}>Registrarse</Text>
+                <Text color={"verde2"}>Crear cuenta</Text>
               </MenuItem>
             </MenuList>
           </Menu>
@@ -176,8 +176,8 @@ const Navbar = ({ username, setUserName }) => {
         <HStack>
           <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
             {username}
-          </Text>{" "}
-          <NavbarMenu username={username} token={token} />
+          </Text>
+          <NavbarMenu username={username} roles={roles} />
         </HStack>
       ) : (
         <HStack>

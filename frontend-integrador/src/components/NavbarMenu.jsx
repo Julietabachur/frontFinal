@@ -10,16 +10,30 @@ import {
   MenuDivider,
   Avatar,
   Button,
+  Link,
+  border,
 } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const NavbarMenu = ({ username, token }) => {
+const NavbarMenu = ({ username, token, roles }) => {
+ const [admin,setAdmin] =useState(false)
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
     navigate("/");
     window.location.reload();
   };
+
+  useEffect(()=> {
+    if(roles.some(role => role.authority == 'ROLE_ADMIN')){
+      console.log('yes');
+      setAdmin(true)
+    }else{
+      console.log('no');
+      setAdmin(false)
+    }
+  },[])
 
   return (
     <Menu>
@@ -28,7 +42,12 @@ const NavbarMenu = ({ username, token }) => {
       </MenuButton>
       <MenuList>
         <MenuGroup title="Perfil">
-          <MenuItem>Mi perfil</MenuItem>
+          <MenuItem as={Button} onClick={()=>{navigate(`/perfil`)}} >
+            Mi perfil
+          </MenuItem>
+          {admin && <MenuItem as={Button} onClick={()=>{navigate(`/admin`)}} >
+            Panel administrador
+          </MenuItem>}
           <MenuItem>Mis reservas </MenuItem>
         </MenuGroup>
         <MenuDivider />
