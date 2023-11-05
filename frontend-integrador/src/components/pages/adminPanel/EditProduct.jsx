@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
 
-const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token }) => {
+const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token, getCategoriesAll, categoryListAll }) => {
   const [productData, setProductData] = useState(productToEdit);
   const [inputValue, setInputValue] = useState('');
   const [galleryUrl, setGalleryUrl] = useState('');
@@ -108,19 +108,34 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token }) => {
             </Text>
           )}
 
-          <Select name="size" mb={3} placeholder="Selecciona una talla" value={productData.size} onChange={handleInputChange}>
+          <Select name="productSize" mb={3} placeholder="Selecciona una talla" value={productData.productSize} onChange={handleInputChange}>
             <option value="S">S</option>
             <option value="M">M</option>
             <option value="L">L</option>
           </Select>
-          <Select name="type" mb={3} placeholder="Selecciona un tipo" value={productData.type} onChange={handleInputChange}>
-            <option value="T_SHIRT">T_SHIRT</option>
-            <option value="SHIRT">SHIRT</option>
-            <option value="SKIRT">SKIRT</option>
-            <option value="JACKET">JACKET</option>
-            <option value="PANT">PANT</option>
-          </Select>
-          <Input name="productionTime" mb={3} placeholder="Fecha de producción in days" value={productData.productionTime} onChange={handleInputChange} />
+          <Select
+              name="category"
+              mb={3}
+              placeholder="Selecciona una categoría"
+              value={productData.category}
+              onChange={handleInputChange}
+            >
+              {categoryListAll.map((category) => (
+                <option key={category.id} value={category.categoryName}>
+                  {category.categoryName}
+                </option>
+              ))}
+            </Select> 
+          <Input 
+          name="productionTime" 
+          mb={3} placeholder="Fecha de producción in days" 
+          value={productData.productionTime} 
+          onChange={(valueString) => handleInputChange({
+                  target: {
+                    name: "productionTime",
+                    value: parseInt(valueString, 10),
+                  },
+                })}/>
           <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
           <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
           <Flex align="center" mb={3}>
