@@ -10,6 +10,7 @@ import DetailPage from "./components/pages/DetailPage";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Perfil from "./components/Perfil";
+import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -63,6 +64,8 @@ function App() {
               element={<AdminDashboard token={token ? token : ""} />}
             />
             <Route path="/detalle/:id" element={<DetailPage />} />
+            <Route path="/caracteristica/:id" element={<AdminFeatures />} />
+
             <Route
               path="/perfil"
               element={

@@ -85,6 +85,14 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token }) => {
         <ModalHeader>Editar Producto</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+        <Flex
+              flexDirection="column"
+              p={1}
+              gap={5}
+              my={1}
+              maxHeight="45vh"
+              overflowY="scroll"
+            >
           {/* Formulario para Editar producto */}
 
           <Input
@@ -139,6 +147,7 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token }) => {
               ))}
             </List>
           </Box>
+          </Flex>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="green" mr={3} onClick={handleEditProduct}>

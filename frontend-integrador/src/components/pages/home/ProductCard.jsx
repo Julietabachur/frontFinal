@@ -12,7 +12,7 @@ import {
 const ProductCard = ({ item }) => {
   return (
     <Card  
-    h={['350px','300px',"300px"]}
+    h={['350px','300px', "300px"]}
     w={['300px','300px',"300px"]} 
     color={"blanco"}>
       <CardBody
