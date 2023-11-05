@@ -5,12 +5,11 @@ import {
   Box,
   Alert,
   AlertIcon,
-  AlertTitle,
-  CloseButton,
 } from "@chakra-ui/react";
 import ListAdminProduct from "./ListAdminProduct";
 import ProductForm from "./ProductForm";
 import ListUsers from "./ListUsers";
+import ListCategories from "./ListCategories"
 
 const AdminDashboard = ({ productToEdit, productData, token }) => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
@@ -18,9 +17,8 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   // Estado para mostrar el listado de productos cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
-  const [listaOn, setListaOn] = useState(false);
+  const [showCategoryList,setShowCategoyList] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
-
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   // Valor mínimo de ancho para considerar como versión de computadora
@@ -31,10 +29,14 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 10; // cantidad de items en el listado
-  const [lista, setLista] = useState([]);
-  const [userList, setUserList] = useState([]);
+  const [lista, setLista] = useState([]); // array de lista de productos
+  const [userList, setUserList] = useState([]); // array de lista de usuarios
+  const [categoryList, setCategoryList] = useState([]); // array de lista de categorias
   const [totalUserPages, setTotalUserPages] = useState(1);
+  const [totalCategoryPages, setTotalCategoryPages] = useState (1);
   const [userPage, setUserPage] = useState(1);
+  const [categoryPage, setCategoryPage] =useState (1);
+  
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -45,9 +47,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         setShowErrorMessage(false);
       }
     };
-
     window.addEventListener("resize", handleResize);
-
     // Limpieza del event listener cuando el componente se desmonta
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -80,7 +80,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       console.error(error);
     }
   };
-
+// LOGICA DE getUsers- LISTAR usuarios
   const getUsers = async () => {
     try {
       const response = await axios.get(
@@ -105,7 +105,32 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     }
   };
 
-  // Control de Paginación
+  // LOGICA DE getCategories- LISTAR categorias
+  const getCategories = async () => {
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de productos
+        `${baseUrl}/api/v1/public/category?page=${categoryPage}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data && response.data.content) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setCategoryList(response.data.content);
+        setTotalCategoryPages(response.data.last);
+        setCategoryPage(response.data.current);
+        console.log("Datos recibidos:", response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Control de Paginación en los productos
   const handlePageChange = (newPage) => {
     console.log(newPage);
     if (newPage <= totalPages && newPage >= 1) {
@@ -113,10 +138,17 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       setPage(newPage); // Actualiza el número de página
     }
   };
-
+// Control de Paginación en los usuarios
   const handleUserPageChange = (newPage) => {
     if (newPage <= totalUserPages && newPage >= 1) {
       setUserPage(newPage); // Actualiza el número de página
+    }
+  };
+
+  // Control de Paginación en las categrias
+  const handleCategoryPageChange = (newPage) => {
+    if (newPage <= totalCategoryPages && newPage >= 1) {
+      setCategoryPage(newPage); // Actualiza el número de página
     }
   };
 
@@ -149,9 +181,15 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     if (origin === "user") {
       setShowUserList(true);
       setShowList(false);
+      setShowCategoyList(false);
     } else if (origin === "item") {
       setShowUserList(false);
+      setShowCategoyList(false);
       setShowList(true);
+    } else if (origin === "category"){
+      setShowCategoyList(true);
+      setShowUserList(false);
+      setShowList(false);
     }
   };
 
@@ -169,18 +207,23 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
 
       {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
       {window.innerWidth >= MIN_DESKTOP_WIDTH && (
-        <Button ml={4} onClick={() => setIsModalOpen(true)}>
+        <Button colorScheme="green" ml={4} onClick={() => setIsModalOpen(true)}>
           Agregar Producto
         </Button>
       )}
 
-      <Button ml={4} onClick={() => handleShow("item")}>
+      <Button colorScheme="green" ml={4} onClick={() => handleShow("item")}>
         Listar Productos
       </Button>
 
-      <Button ml={4} onClick={() => handleShow("user")}>
+      <Button colorScheme="green" ml={4} onClick={() => handleShow("user")}>
         Listar Usuarios
       </Button>
+
+      <Button colorScheme="green" ml={4} onClick={() => handleShow("category")}>
+        Listar Categorías
+      </Button>
+
       {/* Componente del modal para agregar producto */}
       <ProductForm
         isOpen={isModalOpen}
@@ -191,9 +234,8 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         onClose={() => setIsModalOpen(false)}
       />
 
-      {/* Botón para listar productos (y eliminar y editar) */}
-
-      {/*console.log("HASTA ACA RENDEREA - ShowList", showList)*/}
+       {/* Logicas para mostrar las listas Productos Usuarios Categorias */}
+            
       {showList == true && (
         <ListAdminProduct
           token={token}
@@ -204,8 +246,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         />
       )}
 
-      {/* Botón para listar productos (y eliminar y editar) */}
-
+      
       {showUserList == true && (
         <ListUsers
           token={token}
@@ -215,6 +256,17 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           userList={userList}
         />
       )}
+
+      {showCategoryList == true && (
+        <ListCategories
+          token={token}
+          getCategories={getCategories}
+          categoryPage={categoryPage}
+          handlePageChange={handleCategoryPageChange}
+          categoryList={categoryList}
+        />
+      )}
+      
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (
         <div
