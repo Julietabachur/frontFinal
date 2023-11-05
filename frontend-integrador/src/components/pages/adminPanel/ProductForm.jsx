@@ -221,15 +221,7 @@ const ProductForm = ({ isOpen, onClose, token, categoryListAll, addProduct, getP
               disabled={formDisabled}
               placeholder="Cantidad de días para la fábricación"
               value={productData.productionTime}
-              onChange={(valueString) => {
-                // Convierte el valor de cadena a número antes de pasarlo a handleInputChange
-                handleInputChange({
-                  target: {
-                    name: "productionTime",
-                    value: parseInt(valueString, 10),
-                  },
-                }); //10 base decimal
-              }}
+              onChange={handleInputChange}
             />
           </NumberInput>
           <Input
