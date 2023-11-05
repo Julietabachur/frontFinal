@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
+import { Button, Flex, Modal, ModalOverlay,NumberInput, NumberInputField, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
 
 
 const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token, getCategoriesAll, categoryListAll }) => {
@@ -9,10 +9,7 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token, getCat
   const [galleryUrl, setGalleryUrl] = useState('');
   const [nombreRepetido, setNombreRepetido] = useState(false);
 
-
-  console.log("ProductToEdit:", productToEdit);
-  console.log("productData:", productData);
-
+console.log(productData);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInputValue(value); // Actualiza inputValue en lugar de productData.productName
@@ -126,16 +123,20 @@ const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token, getCat
                 </option>
               ))}
             </Select> 
-          <Input 
+            {/* <NumberInput>
+            <NumberInputField
+              name="productionTime"
+              mb={3}
+              placeholder="Cantidad de días para la fábricación"
+              value={productData.productionTime}
+              onChange={handleInputChange}
+            />
+          </NumberInput> */}
+         <Input 
           name="productionTime" 
-          mb={3} placeholder="Fecha de producción in days" 
+          mb={3} placeholder="Fecha de producción in dias" 
           value={productData.productionTime} 
-          onChange={(valueString) => handleInputChange({
-                  target: {
-                    name: "productionTime",
-                    value: parseInt(valueString, 10),
-                  },
-                })}/>
+          onChange={handleInputChange}/>
           <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
           <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
           <Flex align="center" mb={3}>

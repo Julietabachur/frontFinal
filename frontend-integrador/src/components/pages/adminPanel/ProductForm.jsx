@@ -26,7 +26,7 @@ const initialProductState = {
   productName: "",
   productSize:"",
   category: "",
-  productionTime:0,
+  productionTime: 0,
   collection: "",
   thumbnail: "",
   detail: "",
