@@ -14,11 +14,11 @@ const MIN_DESKTOP_WIDTH = 768;
 
 useEffect( () => {
     const urlCategories = `${baseUrl}/api/v1/public/category/all`
-        axios.get(urlCategories)
+      axios
+      .get(urlCategories)
       .then((response) => {
         // La respuesta exitosa se encuentra en response.data
         setCategories(response.data)
-        console.log('Categorías:', categories);
       })
       .catch((error) => {
         console.error('Error al obtener las categorías:', error);
@@ -28,16 +28,26 @@ useEffect( () => {
 ,[])
 
 // funcion para agregar categoria a categoriesSelected
-const addCategory=(cat)=>{
-  setSelectedCategories([...selectedCategories, cat]);
-    console.log('catSelected: ', selectedCategories);
-    countFilteredProducts()
-}
-  // Función para contar la cantidad de productos filtrados
-  const countFilteredProducts = () => {
-    const filteredCount = categories.filter((category) => category.isChecked).length;
-    setFilteredProductCount(filteredCount);
-  };
+const handleCategoryClick = (category) => {
+  const index = selectedCategories.indexOf(category);
+
+  if (index === -1) {
+    // La categoría no estaba seleccionada, agrégala
+    setSelectedCategories([...selectedCategories, category]);
+  } else {
+    // La categoría ya estaba seleccionada, deseléctala
+    const newSelectedCategories = [...selectedCategories];
+    newSelectedCategories.splice(index, 1);
+    setSelectedCategories(newSelectedCategories);
+  }
+
+  countFilteredProducts();
+};
+ // Función para contar la cantidad de productos filtrados
+ const countFilteredProducts = () => {
+  const filteredCount = selectedCategories.length; // Usa selectedCategories para contar
+  setFilteredProductCount(filteredCount);
+};
 
   // Función para limpiar los filtros
   const clearFilters = () => {
@@ -75,7 +85,7 @@ const addCategory=(cat)=>{
                     <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'} bg={"#444444"}>
                     {/* //    Muestra las tarjetas de categorías  */}
                     {categories.map((category) => (                    
-                        <ProductCardContainer key={category.id} onClick={addCategory(category)}>
+                        <ProductCardContainer key={category.id} onClick={handleCategoryClick(category)}>
                             <Card  
                             _hover={{
                                 transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
@@ -107,8 +117,8 @@ const addCategory=(cat)=>{
                     </HStack>
                     <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'} bg={"#444444"}>
                     {/* //    Muestra las tarjetas de categorías  */}
-                    <Text>Cantidad de productos: {categoriesSelected.le}</Text>
-                    {categoriesSelected.map((category) => (                    
+                    <Text>Cantidad de productos: {filteredProductCount}</Text>
+                    {selectedCategories.map((category) => (                    
                         <Checkbox
                         fontFamily={"Saira"}
                         color={"gris1"}
@@ -129,7 +139,7 @@ const addCategory=(cat)=>{
                 (
                     <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'}>
                         {categories.map((category) => (
-                        <ProductCardContainer key={category.id} onClick={addCategory(category)}>
+                        <ProductCardContainer key={category.id} onClick={handleCategoryClick(category)}>
                             <Card  
                             _hover={{
                                 transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
