@@ -10,7 +10,7 @@ function Specs({ detail }) {
 
   useEffect(() => {
     const handleResize = () => {
-      // Cambiar el estado de isCollapsed según el ancho de la ventana
+   
       if (window.innerWidth >= 768) {
         setIsCollapsed(false);
       } else {
@@ -18,10 +18,10 @@ function Specs({ detail }) {
       }
     };
 
-    // Agregar un evento de cambio de tamaño para detectar cambios en el ancho de la ventana
+ 
     window.addEventListener('resize', handleResize);
 
-    // Limpieza del evento al desmontar el componente
+    
     return () => {
       window.removeEventListener('resize', handleResize);
     };

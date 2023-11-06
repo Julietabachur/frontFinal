@@ -1,10 +1,6 @@
-<<<<<<< Updated upstream
-import React from 'react'
-=======
 import { useEffect, useState } from 'react'
 import { Box, Text, Image, VStack, Spacer, HStack  } from '@chakra-ui/react';
 import { FaFacebook,FaInstagram,FaWhatsapp } from 'react-icons/fa';
->>>>>>> Stashed changes
 
 const Footer = () => {
 
@@ -35,9 +31,6 @@ const Footer = () => {
   }, [window.innerWidth]);
 
   return (
-<<<<<<< Updated upstream
-    <div>Footer</div>
-=======
 
           <>
             {media ? (
@@ -114,7 +107,6 @@ const Footer = () => {
             </>
         
 
->>>>>>> Stashed changes
   )
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, } from "react";
 import axios from "axios";
 import {
   Box,
@@ -22,22 +22,19 @@ import {
   Text,
   Button,
   Center,
+  Link,
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import FeaturesProduct from "./FeaturesProduct";
 
-const ListAdminProduct = ({
-  getProducts,
-  page,
-  handlePageChange,
-  lista,
-  token,
-}) => {
+const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCategoriesAll,categoryListAll}) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+  const [featuresEdit, setFeaturesEdit] = useState(null);
 
   // constantes del Alert Box
 
@@ -50,6 +47,10 @@ const ListAdminProduct = ({
   useEffect(() => {
     getProducts();
   }, [page]); // Agrega 'page' como dependencia para que se actualice cuando cambie el número de página
+
+  useEffect(() => {
+    getCategoriesAll();
+}, []);
 
   const openDeleteDialog = (item) => {
     setIsDeleteDialogOpen(true);
@@ -85,6 +86,13 @@ const ListAdminProduct = ({
     console.log("Modal", isModalOpen);
   };
 
+  const handleFeatures = (feature) => {
+    setFeaturesEdit(feature); // pasa el array features a traves del prop
+    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
+    console.log("Caracteristica para editar:", featuresEdit);
+    console.log("Modal", isModalOpen);
+  };
+
   return (
     <>
       <Box>
@@ -95,18 +103,18 @@ const ListAdminProduct = ({
             alignItems: "center",
           }}
         >
-          <Button
+          <Button colorScheme="green"
             onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
             disabled={page === 0}
           >
             &lt;&lt;&lt;
           </Button>
           <Text>- {page} -</Text>
-          <Button onClick={() => handlePageChange(page + 1)}>
+          <Button colorScheme="green" onClick={() => handlePageChange(page + 1)}>
             &gt;&gt;&gt;
           </Button>
         </div>
-        <Table variant="simple">
+        <Table variant="striped" colorScheme="green">
           <Thead>
             <Tr>
               <Th>
@@ -119,11 +127,13 @@ const ListAdminProduct = ({
                 <Text fontWeight="bold">Imagen</Text>
               </Th>
               <Th>
-                <Text fontWeight="bold">Editar</Text>
+                <Text fontWeight="bold">Caracteristicas</Text>
               </Th>
-              <Th>
-                <Text fontWeight="bold">Eliminar</Text>
-              </Th>
+              <Th >
+                <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
+                  Editar / Eliminar
+                </Text>
+              </Th >
             </Tr>
           </Thead>
           <Tbody>
@@ -141,16 +151,26 @@ const ListAdminProduct = ({
                     />
                   </Td>
                   <Td>
+                    <Button
+                      style={{
+                        cursor: "pointer",
+                        color: "blue",
+                        fontSize: "1em",
+                      }}
+                      onClick={() => handleFeatures(item)}
+                    > Administrar Caracteristicas</Button>
+                  </Td>
+                  <Td>
                     <FaEdit
                       style={{
                         cursor: "pointer",
                         color: "green",
                         fontSize: "1.2em",
+                        marginBottom: "10px"
                       }}
                       onClick={() => handleEdit(item)}
                     />
-                  </Td>
-                  <Td>
+                  
                     <FaTrash
                       style={{
                         cursor: "pointer",
@@ -208,8 +228,23 @@ const ListAdminProduct = ({
             setIsModalOpen(false);
           }}
           getProducts={getProducts}
+          getCategoriesAll = {getCategoriesAll}
+          categoryListAll ={categoryListAll}
         />
       )}
+
+      {/* Render condicional, solo se llama a FeaturesProduct si la variable featuresEdit es distinta de null*/}
+      {featuresEdit !== null && (
+        <FeaturesProduct
+          token={token}
+          featuresEdit={featuresEdit}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setFeaturesEdit(null);
+            setIsModalOpen(false);
+          }}
+        />
+        )}
     </>
   );
 };

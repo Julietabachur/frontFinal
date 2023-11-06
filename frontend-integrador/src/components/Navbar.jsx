@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-import React from "react";
-import { Button } from "@chakra-ui/react";
-=======
 import { useEffect, useState, useCallback } from "react";
 import {
   Button,
@@ -45,23 +41,18 @@ const Navbar = ({ username, setUserName, roles }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, [window.innerWidth]);
->>>>>>> Stashed changes
 
-const Navbar = () => {
   return (
-    <header
-      style={{
-        width: "100%",
-        height: "100px",
-        position: "fixed",
-        top: 0,
-        backgroundColor: "#000",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px 20px",
-        zIndex: 1000,
-      }}
+    <HStack
+      bg={"negro"}
+      p={10}
+      justify={"space-between"}
+      position={"fixed"}
+      top={0}
+      minW={400}
+      w={"99vw"}
+      h={"120px"}
+      zIndex={1000}
     >
       <div
         style={{
@@ -69,48 +60,78 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
-        <a
-          href="/"
-          style={{
-            textDecoration: "none",
-            color: "white",
-            marginRight: "20px",
-          }}
-        >
-          <img
-            src="/HOME"
-            alt="Logo"
+        {media ? (
+          <a
+            href="/"
             style={{
-              height: "30px",
+              textDecoration: "none",
+              color: "white",
+              marginRight: "20px",
             }}
-          />
-        </a>
-        <span
-          style={{
-            color: "white",
-          }}
-        >
-          Lema de la Empresa
-        </span>
+          >
+            <Image
+              src="https://images-g3.s3.amazonaws.com/logoHeader.png"
+              alt="Logo"
+              style={{
+                height: "30px",
+              }}
+            />
+          </a>
+        ) : (
+          <>
+            <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "20px",
+              }}
+            >
+              <Image
+                src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
+                alt="Logo dibujo"
+                style={{
+                  height: "60px",
+                }}
+                mr={3}
+              />
+            </a>
+
+            <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "20px",
+              }}
+            >
+              <Image
+                src="https://images-g3.s3.amazonaws.com/logoHeader.png"
+                alt="Logo"
+                style={{
+                  height: "30px",
+                }}
+              />
+            </a>
+            <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                color: "white",
+                marginRight: "20px",
+              }}
+            >
+              <span
+                style={{
+                  color: "white",
+                }}
+              >
+                Vestite con estilo
+              </span>
+            </a>
+          </>
+        )}
       </div>
-<<<<<<< Updated upstream
-      <div>
-        <Button
-          style={{
-            marginRight: "10px",
-          }}
-          colorScheme="whatsapp"
-          borderRadius={20}
-          variant={"outline"}
-        >
-          Iniciar sesión
-        </Button>
-        <Button colorScheme="whatsapp" variant={"outline"} borderRadius={20}>
-          Crear cuenta
-        </Button>
-      </div>
-    </header>
-=======
       {/**botones o nombre */}
       {media ? (
         username ? (
@@ -188,7 +209,6 @@ const Navbar = () => {
         </HStack>
       )}
     </HStack>
->>>>>>> Stashed changes
   );
 };
 

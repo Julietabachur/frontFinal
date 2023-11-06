@@ -136,8 +136,9 @@ const DetailPage = () => {
           </Stack>
         </VStack>
       )}
-      <Specs detail={detail} />
+      <Specs detail={detail}></Specs>
     </VStack>
+    
   );
 };
 

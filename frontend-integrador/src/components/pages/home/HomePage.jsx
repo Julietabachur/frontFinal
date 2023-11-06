@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  Link as ReactRouterLink,
+} from "react-router-dom";
 import {
   VStack,
   Box,
@@ -11,150 +16,150 @@ import {
   Text,
   Button,
   Center,
+  Link,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
+import RenderPagination from "./RenderPagination";
 
 const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [lista, setLista] = useState([]);
-  const [user, setUser] = useState({});
-  const { username } = useParams();
-  const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
+  const [pageData, setPageData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [media, setMedia] = useState(false);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const MIN_DESKTOP_WIDTH = 600;
 
-  /*   const getProductsByType = async (type) => {
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+        setMedia(true);
+      } else {
+        setMedia(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Limpieza del event listener cuando el componente se desmonta
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+
+    const getProducts = async () => {
+      try {
+        const shuffleArray = (array) => {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        };
+
+        const response = await axios.get(
+          `${baseUrl}/api/v1/public/products?page=${currentPage}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response) {
+          setPageData(response.data);
+          setLista(shuffleArray(response.data.content));
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchProductsData = async () => {
+      const data = await getProducts();
+      if (data) {
+        console.log(data.content);
+        setLista(data.content);
+      }
+    };
+    fetchProductsData();
+  }, [currentPage]);
+
+  const getProductsByType = async (type) => {
     try {
-      const response = await axios.get(`${baseUrl}/api/v1/products/byType/${type}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/byType?type=${type}&page=${currentPage}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       return response.data;
     } catch (error) {
       console.error(error);
     }
   };
 
+  useEffect(() => {
+    if (pageData) {
+      setTotalPages(pageData.last);
+    }
+  }, [pageData]);
+
   const handleCategoryClick = async (type) => {
+    setCurrentPage(1);
     setLoading(true);
     const data = await getProductsByType(type);
     if (data) {
-      setLista(data);
+      setPageData(data);
+      setLista(data.content);
+      setLoading(false);
     }
-    setLoading(false);
-  }; */
-
-  /* useEffect(() => {
-    const getUserData = async (username) => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/api/v1/clients/search?username=${username}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.status === 403) {
-          navigate("/login");
-        }
-        return response.data;
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchUserData = async () => {
-      const data = await getUserData(username);
-      if (data) {
-        setUser(data);
-      }
-    };
-
-    fetchUserData();
-  }, []); */
-
-  useEffect(() => {
-    setLoading(true);
-    const getProducts = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/public/api/v1/products`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.data) {
-          setLista(response.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
-      }
-    };
-    const fetchProductsData = async () => {
-      const data = await getProducts();
-      if (data) {
-        console.log(data);
-        setLista(data);
-      }
-    };
-
-    fetchProductsData();
-  }, []);
+  };
 
   const categoriesData = [
     {
       id: 1,
-      name: "Categoría 1",
-      imageSrc: "imagen_categoria_1.jpg",
+      name: "Remeras",
+      type: "T_SHIRT",
     },
     {
       id: 2,
-      name: "Categoría 2",
-      imageSrc: "imagen_categoria_2.jpg",
+      name: "Camisas",
+      type: "SHIRT",
     },
     {
       id: 3,
-      name: "Categoría 3",
-      imageSrc: "imagen_categoria_3.jpg",
+      name: "Pantalones",
+      type: "PANT",
     },
     {
       id: 4,
-      name: "Categoría 4",
-      imageSrc: "imagen_categoria_4.jpg",
+      name: "Abrigos",
+      type: "JACKET",
+    },
+    {
+      id: 5,
+      name: "Accesorios",
+      type: "ACCESSORY",
     },
   ];
 
   return (
-<<<<<<< Updated upstream
-    <VStack bg={"brandColor"} p={3} w={"70vw"} margin={"88px auto"}>
-      <HStack
-        color={"blackAlpha.900"}
-        w={"100%"}
-        bg="#34C412"
-        justify={"center"}
-      >
-        <Text fontSize={"1.5rem"}>Que Buscas?</Text>
-        <Input
-          w={"50%"}
-          bg={"whiteAlpha.900"}
-          placeholder="Buscar productos"
-          _placeholder={{ color: "inherit" }}
-          borderRadius={"15px"}
-          m={10}
-        />
-        <Button
-          p={"10px 40px"}
-          color={"#34C412"}
-          borderRadius={20}
-          bg={"blackAlpha.900"}
-=======
     <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
@@ -168,42 +173,22 @@ const HomePage = () => {
           /*p={9}*/
           mt={2}
           
->>>>>>> Stashed changes
         >
-          Buscar
-        </Button>
-      </HStack>
-      <VStack w={"100%"}>
-        <Box w={"100%"} bg={"green"} alignSelf={"flex-start"}>
-          <Text fontSize={26} p={3}>
-            Categorias
-          </Text>
-        </Box>
+          {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
+          <Input
+            bg={"blanco"}
+            w={media ? "50%" : "30%"}
+            h={7}
+            placeholder="Buscar productos"
+            _placeholder={{ color: "inherit" }}
+            borderRadius={"15px"}
+            m={10}
+          />
+          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
+            Buscar
+          </Button>
+        </HStack>
 
-<<<<<<< Updated upstream
-        <HStack
-          p={4}
-          spacing={4}
-          bg={"green.500"}
-          w={"100%"}
-          justify={"Center"}
-        >
-          {/* Muestra las tarjetas de categorías */}
-          {categoriesData.map((category) => (
-            <Box
-              key={category.id}
-              textAlign="center"
-              onClick={() => handleCategoryClick(category.type)}
-            >
-              <Image
-                src={category.imageSrc}
-                fallbackSrc="https://via.placeholder.com/600"
-                alt={category.name}
-                w="20vw"
-              />
-              <Text>{category.name}</Text>
-            </Box>
-=======
         {/* categorias */}
         {media && (
           <Menu>
@@ -277,31 +262,17 @@ const HomePage = () => {
                 <ProductCard item={item} />
               </ProductCardContainer>
             </Link>
->>>>>>> Stashed changes
           ))}
-        </HStack>
+        </SimpleGrid>
+        {pageData && (
+          <RenderPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </VStack>
-
-      <SimpleGrid
-        columns={{ sm: 1, md: 2 /*,  lg: 4, xl: 5 */ }}
-        padding={1}
-        spacing={3}
-      >
-        {isLoading &&
-          Skeletons.map((Skeleton) => {
-            return (
-              <ProductCardContainer key={Skeleton}>
-                <ProductCard />
-              </ProductCardContainer>
-            );
-          })}
-        {lista.map((item) => (
-          <ProductCardContainer key={item.id}>
-            <ProductCard item={item} />
-          </ProductCardContainer>
-        ))}
-      </SimpleGrid>
-    </VStack>
+    </Box>
   );
 };
 
