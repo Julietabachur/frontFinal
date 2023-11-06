@@ -105,18 +105,18 @@ const ListAdminProduct = ({
             alignItems: "center",
           }}
         >
-          <Button
+          <Button colorScheme="green"
             onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
             disabled={page === 0}
           >
             &lt;&lt;&lt;
           </Button>
           <Text>- {page} -</Text>
-          <Button onClick={() => handlePageChange(page + 1)}>
+          <Button colorScheme="green" onClick={() => handlePageChange(page + 1)}>
             &gt;&gt;&gt;
           </Button>
         </div>
-        <Table variant="simple">
+        <Table variant="striped" colorScheme="green">
           <Thead>
             <Tr>
               <Th>
