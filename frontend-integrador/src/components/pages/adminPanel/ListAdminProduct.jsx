@@ -15,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Flex,
   HStack,
   Input,
   SimpleGrid,
@@ -26,7 +27,6 @@ import {
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import FeaturesProduct from "./FeaturesProduct";
 
 const ListAdminProduct = ({
   getProducts,
@@ -40,7 +40,6 @@ const ListAdminProduct = ({
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
-  const [featuresEdit, setFeaturesEdit] = useState(null);
 
   // constantes del Alert Box
 
@@ -88,16 +87,10 @@ const ListAdminProduct = ({
     console.log("Modal", isModalOpen);
   };
 
-  const handleFeatures = (feature) => {
-    setFeaturesEdit(feature); // pasa el array features a traves del prop
-    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
-    console.log("Caracteristica para editar:", featuresEdit);
-    console.log("Modal", isModalOpen);
-  };
-
   return (
     <>
-      <Box>
+    <Flex justify={"center"}>
+      <Box mt={10}>
         <div
           style={{
             display: "flex",
@@ -116,6 +109,8 @@ const ListAdminProduct = ({
             &gt;&gt;&gt;
           </Button>
         </div>
+
+        <Box w={830} mt={3}>
         <Table variant="striped" colorScheme="green">
           <Thead>
             <Tr>
@@ -127,9 +122,6 @@ const ListAdminProduct = ({
               </Th>
               <Th>
                 <Text fontWeight="bold">Imagen</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Caracteristicas</Text>
               </Th>
               <Th>
                 <Text fontWeight="bold">Editar</Text>
@@ -152,16 +144,6 @@ const ListAdminProduct = ({
                       w={50}
                       h={50}
                     />
-                  </Td>
-                  <Td>
-                    <Button
-                      style={{
-                        cursor: "pointer",
-                        color: "blue",
-                        fontSize: "1em",
-                      }}
-                      onClick={() => handleFeatures(item)}
-                    > Administrar Caracteristicas</Button>
                   </Td>
                   <Td>
                     <FaEdit
@@ -188,6 +170,8 @@ const ListAdminProduct = ({
           </Tbody>
         </Table>
       </Box>
+      </Box>
+      </Flex>
       <AlertDialog
         isOpen={isDeleteDialogOpen}
         leastDestructiveRef={cancelRef}
@@ -233,19 +217,6 @@ const ListAdminProduct = ({
           getProducts={getProducts}
         />
       )}
-
-      {/* Render condicional, solo se llama a FeaturesProduct si la variable featuresEdit es distinta de null*/}
-      {featuresEdit !== null && (
-        <FeaturesProduct
-          token={token}
-          featuresEdit={featuresEdit}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setFeaturesEdit(null);
-            setIsModalOpen(false);
-          }}
-        />
-        )}
     </>
   );
 };

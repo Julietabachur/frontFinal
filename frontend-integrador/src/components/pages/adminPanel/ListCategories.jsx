@@ -31,7 +31,7 @@ import {
   
     return (
         <Flex justify={"center"}>
-        <Box>
+        <Box mt={10}>
             <div
                 style={{
                     display: "flex",
@@ -52,7 +52,7 @@ import {
                     &gt;&gt;&gt;
                 </Button>
             </div>
-            <Box w={830}>
+            <Box w={830} mt={3}>
                 <Table variant="striped" colorScheme="green">
                     <Thead>
                         <Tr>

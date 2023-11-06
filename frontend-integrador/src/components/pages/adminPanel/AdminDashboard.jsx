@@ -15,34 +15,36 @@ import ListCategories from "./ListCategories"
 const AdminDashboard = ({ productToEdit, productData, token }) => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Estado para mostrar el listado de productos cuando se clickea en el botón
+  // Estado para mostrar el listado de productos, categorias, usuarios y caracteristicas cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
   const [showCategoryList,setShowCategoyList] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
-  // Estado para mostrar el panel Administrar caracteristicas
   const [showAdminFeatures, setShowAdminFeatures] = useState(false)
-  const [listFeatures, setListFeatures] = useState([])
-  
 
+  const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
+  
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   // Valor mínimo de ancho para considerar como versión de computadora
   const MIN_DESKTOP_WIDTH = 768;
 
-  // Constantes para getPruducts
+  // Constantes para getPruducts, getUsers, getFeatures y getCategories
   const baseUrl = import.meta.env.VITE_SERVER_URL;
+
+  const pageSize = 10; // cantidad de items en el listado
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 10; // cantidad de items en el listado
+  const [userPage, setUserPage] = useState(1);
+  const [totalUserPages, setTotalUserPages] = useState(1);
+  const [categoryPage, setCategoryPage] =useState (1);
+  const [totalCategoryPages, setTotalCategoryPages] = useState (1);
+  const [featurePage, setFeaturePage] =useState (1);
+  const [totalFeaturePages, setTotalFeaturePages] = useState (1);
+
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de categorias
-  const [totalUserPages, setTotalUserPages] = useState(1);
-  const [totalCategoryPages, setTotalCategoryPages] = useState (1);
-  const [userPage, setUserPage] = useState(1);
-  const [categoryPage, setCategoryPage] =useState (1);
-  
+  const [featuresList, setFeaturesList] = useState([]); // array de lista de caracteristicas  
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -60,7 +62,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     };
   }, []); // La dependencia vacía [] asegura que el efecto solo se ejecute una vez, al montar el componente
 
-  // LOGICA DE getProducts - LISTAR
+  // LOGICA DE getProducts - LISTAR Productos
   const getProducts = async () => {
     console.log("Inicia getProducts");
     try {
@@ -90,7 +92,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   const getUsers = async () => {
     try {
       const response = await axios.get(
-        //Petición GET a la api del listado de productos
+        //Petición GET a la api del listado de usuarios
         `${baseUrl}/api/v1/admin/clients?page=${userPage}`,
         {
           headers: {
@@ -111,34 +113,38 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     }
   };
 
-  //Logica de getFeatures. Listado de todas las caracteristicas que estan en la base de datos.
+    // LOGICA DE getCategories- LISTAR categorias
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          //Petición GET a la api del listado de categorias
+          `${baseUrl}/api/v1/public/category?page=${categoryPage}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data && response.data.content) {
+          // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+          setCategoryList(response.data.content);
+          setTotalCategoryPages(response.data.last);
+          setCategoryPage(response.data.current);
+          console.log("Datos recibidos:", response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+  //LOGICA de getFeatures. Listar Caracteristicas.
   const getFeatures = async () => {
     console.log("Inicia getFeatures");
     try {
       const response = await axios.get(
         //Petición GET a la api del listado de caracteristicas
-        `${baseUrl}/api/v1/public/char`,
-      );
-      if (response.data && response.data.content) {
-        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-        setListFeatures(response.data.content);
-        console.log("Datos recibidos:", response.data);
-        console.log("Datos recibidos:", response.data.content);
-        console.log(listFeatures)
-      }
-    } catch (error) {
-      //Manejo de errores
-      console.error(error);
-    }
-  };
-
-  // Control de Paginación
-  // LOGICA DE getCategories- LISTAR categorias
-  const getCategories = async () => {
-    try {
-      const response = await axios.get(
-        //Petición GET a la api del listado de productos
-        `${baseUrl}/api/v1/public/category?page=${categoryPage}`,
+        `${baseUrl}/api/v1/public/char?page=${featurePage}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -148,16 +154,18 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       );
       if (response.data && response.data.content) {
         // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-        setCategoryList(response.data.content);
-        setTotalCategoryPages(response.data.last);
-        setCategoryPage(response.data.current);
+        setFeaturesList(response.data.content);
+        setTotalFeaturePages(response.data.last);
+        setFeaturePage(response.data.current);
         console.log("Datos recibidos:", response.data);
       }
     } catch (error) {
-      console.log(error);
+      //Manejo de errores
+      console.error(error);
     }
   };
 
+  // CONTROL DE PAGINACION.
   // Control de Paginación en los productos
   const handlePageChange = (newPage) => {
     console.log(newPage);
@@ -166,19 +174,25 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       setPage(newPage); // Actualiza el número de página
     }
   };
-// Control de Paginación en los usuarios
+  // Control de Paginación en los usuarios
   const handleUserPageChange = (newPage) => {
     if (newPage <= totalUserPages && newPage >= 1) {
       setUserPage(newPage); // Actualiza el número de página
     }
   };
-  
-  // Control de Paginación en las categrias
+  // Control de Paginación en las categorias
   const handleCategoryPageChange = (newPage) => {
     if (newPage <= totalCategoryPages && newPage >= 1) {
       setCategoryPage(newPage); // Actualiza el número de página
     }
   };
+  // Control de Paginación en las caracteristicas
+  const handleFeaturePageChange = (newPage) => {
+    if (newPage <= totalFeaturePages && newPage >= 1) {
+      setFeaturePage(newPage); // Actualiza el número de página
+    }
+  };
+
   //LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
   const addProduct = (productData) => {
     console.log("TOKEN ADD PRODUCT", token);
@@ -251,24 +265,18 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       <Button colorScheme="green" ml={4} onClick={() => handleShow("item")}>
         Listar Productos
       </Button>
-
       <Button colorScheme="green" ml={4} onClick={() => handleShow("user")}>
         Listar Usuarios
       </Button>
-
       <Button colorScheme="green" ml={4} onClick={() => handleShow("category")}>
         Listar Categorías
       </Button>
-
-      {/* Componente del modal para agregar producto */}
-
-      <Button ml={4} onClick={() => handleShow("feature")}>
+      <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
         Administrar Caracteristicas
       </Button>
+
       {/* Componente del modal para agregar producto */}
       </Box>
-
-
       <ProductForm
         isOpen={isModalOpen}
         token={token}
@@ -278,7 +286,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         onClose={() => setIsModalOpen(false)}
       />
 
-       {/* Logicas para mostrar las listas Productos Usuarios Categorias */}
+      {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
             
       {showList == true && (
         <ListAdminProduct
@@ -289,8 +297,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           lista={lista}
         />
       )}
-
-      
+  
       {showUserList == true && (
         <ListUsers
           token={token}
@@ -304,11 +311,12 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       {showAdminFeatures == true && (
         <AdminFeatures
           token={token}
-          getFeatures={getFeatures}       
-          listFeatures={listFeatures}
+          getFeatures={getFeatures}   
+          featurePage={featurePage}
+          handlePageChange={handleFeaturePageChange}    
+          featuresList={featuresList}
         />
       )}
-
 
       {showCategoryList == true && (
         <ListCategories

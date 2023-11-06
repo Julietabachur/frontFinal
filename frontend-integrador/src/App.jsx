@@ -64,8 +64,6 @@ function App() {
               element={<AdminDashboard token={token ? token : ""} />}
             />
             <Route path="/detalle/:id" element={<DetailPage />} />
-            <Route path="/caracteristica/:id" element={<AdminFeatures />} />
-
             <Route
               path="/perfil"
               element={

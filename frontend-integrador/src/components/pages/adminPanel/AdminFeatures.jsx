@@ -19,42 +19,29 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  Alert,
-  AlertIcon
   } from '@chakra-ui/react'
 import { FaEdit, FaTrash } from "react-icons/fa";
+import FeatureForm from './FeatureForm';
+import EditFeature from './EditFeature';
 
 
-const AdminFeatures = ({getFeatures, listFeatures, token}) => {
+const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList, token}) => {
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const cancelRef = useRef(); // permite cancelar en el box de alerta
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
   const [featureToDelete, setFeatureToDelete] = useState(null); // pasa la variable del item a eliminar
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [ newFeature, setNewFeature] = useState( {charName:"", charIcon:""})
-  const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito. NO IMPLEMENTADO
-  const [showError, setShowError] = useState(false); // Variable para controlar el mensaje de error. NO IMPLEMENTADO
-
-  // VER LA LISTA DE CARACTERISTICA QUE NO SEA UN ARRAY DE 10. QUE TRAIGA TODAS. CAMBIAR BACK.
+  const [featureToEdit, setFeatureToEdit] = useState(null);
+  
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const {isOpen, onOpen, onClose} = useDisclosure()
 
   useEffect(() => {
     getFeatures();
-  }, []);
+  }, [featurePage]);
 
+  //LOGICA para eliminar una caracteristica
   const openDeleteDialog = (feature) => {
     setIsDeleteDialogOpen(true);
     setFeatureToDelete(feature);
@@ -64,44 +51,7 @@ const AdminFeatures = ({getFeatures, listFeatures, token}) => {
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
   };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewFeature({ ...newFeature, [name]: value });
-    console.log(newFeature)
-  };
-
-  //LOGICA DE AGREGAR NUEVA CARACTERISTICA - Solo llamado a API y manejo de respuesta.
-  const addFeature = (newFeature) => {
-    axios.post("http://localhost:8080/api/v1/admin/char", newFeature, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        console.log("Caracteristica agregada con éxito:", response.data);
-        // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 1500);
-        getFeatures();
-      })
-      
-      .catch((error) => {
-        // Maneja el error de la solicitud POST aquí - VERIFICAR.
-        alert("Error al agregar la caracteristica, la misma ya existe en la base de datos. Verifiquelo o elija otro nombre");
-        console.error("Error al agregar la caracteristica:", error);
-        // Muestra un mensaje de error al usuario
-      });
-  };
-
-  const handleNewFeature = () => {
-    console.log("Datos Formulario:", newFeature);
-    addFeature(newFeature);
-     // Cierra el modal y resetea el formulario
-     onClose();
-     setNewFeature({});   
-  };
-
+  
   const handleDelete = async (id) => {
     try {
       // Realiza una solicitud DELETE a la API para eliminar la caracteristica
@@ -117,21 +67,55 @@ const AdminFeatures = ({getFeatures, listFeatures, token}) => {
     }
   };
 
+  //LOGICA para editar una caracteristica
+  const handleEdit = (feature) => {
+    setIsOpenModal(true);
+    setFeatureToEdit(feature); // pasa el objeto feature a traves del prop
+    console.log("Caracteristica para editar:", featureToEdit);
+  };
+
+  // renderizado del componente
     return (
       <Flex justify={"center"}>
         <Box mt={10} >
-            <Button border="2px" bg={"verde2"} onClick={onOpen}>
-              Nueva Caracteristica
+          
+          <Box display= {"flex"} justifyContent ={"space-between"}>
+          {/* Componente del modal para agregar caracteristica */}
+          <FeatureForm
+            token={token}
+            getFeatures={getFeatures}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <Button colorScheme="green"
+              onClick={() => handlePageChange(featurePage > 1 ? featurePage - 1 : featurePage)
+              }
+              disabled={featurePage === 0}
+            >
+              &lt;&lt;&lt;
+            </Button >
+            <Text>- {featurePage} -</Text>
+            <Button colorScheme="green"  onClick={() => handlePageChange(featurePage + 1)}
+            > &gt;&gt;&gt;
             </Button>
-          <TableContainer w={830} mt={3} border="2px" boxShadow='lg' bg='white'
+          </div>
+          </Box>
+        
+
+          <TableContainer w={830} mt={3} /*border="2px" boxShadow='lg' bg='white'
               flexDirection="column"
               p={1}
               gap={5}
               overflowY="scroll"
-              maxHeight="50vh"
+              maxHeight="50vh"*/
             >
             <Table variant="striped" colorScheme="green">
-              <Thead borderBottom="2px" >
+              <Thead /*borderBottom="2px"*/ >
                 <Tr >
                   <Th>
                     <Text fontWeight="bold">Nombre</Text>
@@ -148,8 +132,8 @@ const AdminFeatures = ({getFeatures, listFeatures, token}) => {
                 </Tr>
               </Thead>
               <Tbody fontSize="0.9em">
-                {listFeatures &&
-                  listFeatures.map((feature) => (
+                {featuresList &&
+                  featuresList.map((feature) => (
                     <Tr key={feature.id} h="10px">
                       <Td>{feature.charName}</Td>
                       <Td>{feature.charIcon}</Td>
@@ -157,10 +141,10 @@ const AdminFeatures = ({getFeatures, listFeatures, token}) => {
                         <FaEdit
                         style={{
                         cursor: "pointer",
-                        color: "blue",
+                        color: "green",
                         fontSize: "1.2em",
                         }}
-                        /*onClick={() => handleEdit(item)}*/
+                        onClick={() => handleEdit(feature)}
                         />
                       </Td>
                       <Td>
@@ -179,6 +163,7 @@ const AdminFeatures = ({getFeatures, listFeatures, token}) => {
             </Table>
           </TableContainer>
         </Box>
+
         <AlertDialog
         isOpen={isDeleteDialogOpen}
         leastDestructiveRef={cancelRef}
@@ -210,39 +195,20 @@ const AdminFeatures = ({getFeatures, listFeatures, token}) => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-      
-      
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Nueva Caracteristica</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel> Nombre de la caracteristica</FormLabel>
-              <Input
-                name="charName"
-                mb={3}
-                value={newFeature.charName}
-                onChange={handleInputChange}
-              />
-              <FormLabel> Icono representativo </FormLabel>
-              <Input
-                name="charIcon"
-                mb={3}
-                value={newFeature.charIcon}
-                onChange={handleInputChange}
-              />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Cerrar
-            </Button>
-            <Button variant='ghost' onClick={handleNewFeature} >Guardar</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+
+       {/* Render condicional, solo se llama a Editfeature si la variable featureToEdit es valida */}
+       {featureToEdit !== null && (
+        <EditFeature
+          token={token}
+          featureToEdit={featureToEdit}
+          isOpen={isOpenModal}
+          onClose={() => {
+            setFeatureToEdit(null);
+            setIsOpenModal(false)
+          }}
+          getFeatures={getFeatures}
+        />
+      )} 
 
      </Flex>
     );
