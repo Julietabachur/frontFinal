@@ -132,6 +132,7 @@ const HomePage = () => {
   ];
 
   return (
+<<<<<<< Updated upstream
     <VStack bg={"brandColor"} p={3} w={"70vw"} margin={"88px auto"}>
       <HStack
         color={"blackAlpha.900"}
@@ -153,6 +154,21 @@ const HomePage = () => {
           color={"#34C412"}
           borderRadius={20}
           bg={"blackAlpha.900"}
+=======
+    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
+      <VStack margin={"0px auto"} rowGap={0}>
+        {/* buscador */}
+        <HStack
+          color={"negro"}
+          w={"100%"}
+          bg={"#444444"}
+          justify={"center"}
+          h={"75px"}
+          align={"Center"}
+          /*p={9}*/
+          mt={2}
+          
+>>>>>>> Stashed changes
         >
           Buscar
         </Button>
@@ -164,6 +180,7 @@ const HomePage = () => {
           </Text>
         </Box>
 
+<<<<<<< Updated upstream
         <HStack
           p={4}
           spacing={4}
@@ -186,6 +203,81 @@ const HomePage = () => {
               />
               <Text>{category.name}</Text>
             </Box>
+=======
+        {/* categorias */}
+        {media && (
+          <Menu>
+            <MenuButton minW={'99vh'} bg={"negro"}>
+              
+                <Text
+                  fontFamily={"podkova"}
+                  color={"verde2"}
+                  fontSize={17}
+                  p={3}
+                >
+                  Categorias
+                </Text>
+            </MenuButton>
+            <MenuList bg={"negro"}>
+              {categoriesData.map((category) => (
+                <MenuItem
+                  bg={"negro"}
+                  key={category.id}
+                  textAlign="center"
+                  onClick={() => handleCategoryClick(category.type)}
+                >
+                  <Link
+                    fontFamily={"podkova"}
+                    color={"verde2"}
+                    fontSize={17}
+                    p={3}
+                  >
+                    {category.name}
+                  </Link>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        )}
+        {!media && (
+          <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
+            {/* Muestra las tarjetas de categorías */}
+            {categoriesData.map((category) => (
+              <Box
+                key={category.id}
+                textAlign="center"
+                onClick={() => handleCategoryClick(category.type)}
+              >
+                {" "}
+                <Link
+                  fontFamily={"podkova"}
+                  color={"verde2"}
+                  fontSize={17}
+                  p={3}
+                >
+                  {category.name}
+                </Link>
+              </Box>
+            ))}
+          </HStack>
+        )}
+
+        <SimpleGrid minH={'100vh'} columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
+          {isLoading &&
+            Skeletons.map((Skeleton) => {
+              return (
+                <ProductCardContainer key={Skeleton}>
+                  <ProductCardSkeleton />
+                </ProductCardContainer>
+              );
+            })}
+          {lista.map((item) => (
+            <Link key={item.id} as={ReactRouterLink} to={`/detalle/${item.id}`}>
+              <ProductCardContainer key={item.id}>
+                <ProductCard item={item} />
+              </ProductCardContainer>
+            </Link>
+>>>>>>> Stashed changes
           ))}
         </HStack>
       </VStack>
