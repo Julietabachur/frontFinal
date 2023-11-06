@@ -13,22 +13,56 @@ import {
     Flex,
     } from "@chakra-ui/react";
     import CategoryForm from "./CategoryForm";
-    
-    const ListCategories = ({
-    getCategories,
-    categoryPage,
-    handleCategoryPageChange,
-    categoryList,
-    token,
-    }) => {   
+    import axios from "axios";
+
+       
+    const ListCategories = ({token}) => {   
 
     const [isModalCategoriaOpen, setIsModalCategoriaOpen] = useState(false);
+    const [categoryPage, setCategoryPage] =useState (1);
+    const [totalCategoryPages, setTotalCategoryPages] = useState (1);
+    const [categoryList, setCategoryList] = useState([]);
+    const baseUrl = import.meta.env.VITE_SERVER_URL;
 
     useEffect(() => {
         getCategories();
     }, [categoryPage]);
 
-  
+    
+    // LOGICA DE getCategories- LISTAR categorias con paginación
+    const getCategories = async () => {
+        try {
+        const response = await axios.get(
+            //Petición GET a la api del listado de productos
+            `${baseUrl}/api/v1/public/category?page=${categoryPage}`,
+            {
+            headers: {
+                "Content-Type": "application/json",
+                },
+            }
+        );
+        if (response.data && response.data.content) {
+            // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+            console.log("se cumple");
+            setCategoryList(response.data.content);
+            setTotalCategoryPages(response.data.last);
+            setCategoryPage(response.data.current);
+            console.log("Datos recibidos:", response.data);
+        }
+        } catch (error) {
+        console.log(error);
+        }
+    };
+
+    // Control de Paginación en las categorías
+    const handleCategoryPageChange = (newPage) => {
+        if (newPage <= totalCategoryPages && newPage >= 1) {
+        setCategoryPage(newPage); // Actualiza el número de página
+        }
+    };
+
+ 
+    
     return (
         <Flex justify={"center"}>
         <Box mt={10}>
@@ -48,7 +82,7 @@ import {
                     &lt;&lt;&lt;
                 </Button >
                 <Text>- {categoryPage} -</Text>
-                <Button colorScheme="green"  onClick={() => handleCategoryPageChange(userPage + 1)}>
+                <Button colorScheme="green"  onClick={() => handleCategoryPageChange(categoryPage + 1)}>
                     &gt;&gt;&gt;
                 </Button>
             </div>

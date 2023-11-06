@@ -28,13 +28,7 @@ import {
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ListAdminProduct = ({
-  getProducts,
-  page,
-  handlePageChange,
-  lista,
-  token,
-}) => {
+const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCategoriesAll,categoryListAll}) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -52,6 +46,10 @@ const ListAdminProduct = ({
   useEffect(() => {
     getProducts();
   }, [page]); // Agrega 'page' como dependencia para que se actualice cuando cambie el número de página
+
+  useEffect(() => {
+    getCategoriesAll();
+}, []);
 
   const openDeleteDialog = (item) => {
     setIsDeleteDialogOpen(true);
@@ -124,11 +122,21 @@ const ListAdminProduct = ({
                 <Text fontWeight="bold">Imagen</Text>
               </Th>
               <Th>
+<<<<<<< HEAD
                 <Text fontWeight="bold">Editar</Text>
               </Th>
               <Th>
                 <Text fontWeight="bold">Eliminar</Text>
               </Th>
+=======
+                <Text fontWeight="bold">Caracteristicas</Text>
+              </Th>
+              <Th >
+                <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
+                  Editar / Eliminar
+                </Text>
+              </Th >
+>>>>>>> 33e335cb871a10fc4b83d59b43f560cfa5b5fa93
             </Tr>
           </Thead>
           <Tbody>
@@ -151,11 +159,11 @@ const ListAdminProduct = ({
                         cursor: "pointer",
                         color: "green",
                         fontSize: "1.2em",
+                        marginBottom: "10px"
                       }}
                       onClick={() => handleEdit(item)}
                     />
-                  </Td>
-                  <Td>
+                  
                     <FaTrash
                       style={{
                         cursor: "pointer",
@@ -215,6 +223,8 @@ const ListAdminProduct = ({
             setIsModalOpen(false);
           }}
           getProducts={getProducts}
+          getCategoriesAll = {getCategoriesAll}
+          categoryListAll ={categoryListAll}
         />
       )}
     </>
