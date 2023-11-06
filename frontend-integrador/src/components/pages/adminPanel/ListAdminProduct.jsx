@@ -15,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Flex,
   HStack,
   Input,
   SimpleGrid,
@@ -26,7 +27,6 @@ import {
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import FeaturesProduct from "./FeaturesProduct";
 
 const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCategoriesAll,categoryListAll}) => {
   console.log("COMIENZA LISTADMIN");
@@ -34,7 +34,6 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
-  const [featuresEdit, setFeaturesEdit] = useState(null);
 
   // constantes del Alert Box
 
@@ -86,16 +85,10 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
     console.log("Modal", isModalOpen);
   };
 
-  const handleFeatures = (feature) => {
-    setFeaturesEdit(feature); // pasa el array features a traves del prop
-    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
-    console.log("Caracteristica para editar:", featuresEdit);
-    console.log("Modal", isModalOpen);
-  };
-
   return (
     <>
-      <Box>
+    <Flex justify={"center"}>
+      <Box mt={10}>
         <div
           style={{
             display: "flex",
@@ -114,6 +107,8 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
             &gt;&gt;&gt;
           </Button>
         </div>
+
+        <Box w={830} mt={3}>
         <Table variant="striped" colorScheme="green">
           <Thead>
             <Tr>
@@ -151,16 +146,6 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
                     />
                   </Td>
                   <Td>
-                    <Button
-                      style={{
-                        cursor: "pointer",
-                        color: "blue",
-                        fontSize: "1em",
-                      }}
-                      onClick={() => handleFeatures(item)}
-                    > Administrar Caracteristicas</Button>
-                  </Td>
-                  <Td>
                     <FaEdit
                       style={{
                         cursor: "pointer",
@@ -185,6 +170,8 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
           </Tbody>
         </Table>
       </Box>
+      </Box>
+      </Flex>
       <AlertDialog
         isOpen={isDeleteDialogOpen}
         leastDestructiveRef={cancelRef}
@@ -232,19 +219,6 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
           categoryListAll ={categoryListAll}
         />
       )}
-
-      {/* Render condicional, solo se llama a FeaturesProduct si la variable featuresEdit es distinta de null*/}
-      {featuresEdit !== null && (
-        <FeaturesProduct
-          token={token}
-          featuresEdit={featuresEdit}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setFeaturesEdit(null);
-            setIsModalOpen(false);
-          }}
-        />
-        )}
     </>
   );
 };
