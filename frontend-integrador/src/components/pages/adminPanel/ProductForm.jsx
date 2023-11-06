@@ -130,11 +130,7 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
   // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
   const handleProductForm = () => {
     console.log("Datos Formulario:", productData);
-
-
     addProduct(productData);
-
-   
      // Cierra el modal y resetea el formulario
      setIsModalOpen(false);
      onClose();

@@ -24,8 +24,6 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   // Estado para mostrar el panel Administrar caracteristicas
   const [showAdminFeatures, setShowAdminFeatures] = useState(false)
   const [listFeatures, setListFeatures] = useState([])
-  const [pageFeatures, setFeaturesPage] = useState(1)
-  const [totalFeaturesPages, setTotalFeaturesPages] = useState(1)
   
 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
@@ -118,13 +116,11 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     try {
       const response = await axios.get(
         //Petición GET a la api del listado de caracteristicas
-        `${baseUrl}/api/v1/public/char?page=${pageFeatures}`,
+        `${baseUrl}/api/v1/public/char`,
       );
       if (response.data && response.data.content) {
         // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
         setListFeatures(response.data.content);
-        setTotalFeaturesPages(response.data.last);
-        setFeaturesPage(response.data.current);
         console.log("Datos recibidos:", response.data);
         console.log("Datos recibidos:", response.data.content);
         console.log(listFeatures)
@@ -147,12 +143,6 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   const handleUserPageChange = (newPage) => {
     if (newPage <= totalUserPages && newPage >= 1) {
       setUserPage(newPage); // Actualiza el número de página
-    }
-  };
-
-  const handleFeaturesPageChange = (newPage) => {
-    if (newPage <= totalFeaturesPages && newPage >= 1) {
-      setFeaturesPage(newPage); // Actualiza el número de página
     }
   };
 
@@ -209,7 +199,8 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         </Alert>
       )}
 
-      {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
+      <Box borderBottom="2px" p="10px" bg={"white"}  >
+        {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
       {window.innerWidth >= MIN_DESKTOP_WIDTH && (
         <Button ml={4} onClick={() => setIsModalOpen(true)}>
           Agregar Producto
@@ -229,6 +220,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         Administrar Caracteristicas
       </Button>
       {/* Componente del modal para agregar producto */}
+      </Box>
 
 
       <ProductForm
@@ -270,8 +262,6 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           token={token}
           getFeatures={getFeatures}       
           listFeatures={listFeatures}
-          pageFeatures={pageFeatures}
-          handlePageChange={handleFeaturesPageChange}
         />
       )}
 
