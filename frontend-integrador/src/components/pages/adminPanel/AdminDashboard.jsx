@@ -39,11 +39,9 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
   const pageSize = 10; // cantidad de items en el listado
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
-  const [categoryList, setCategoryList] = useState([]); // array de lista de categorias
+  const [categoryListAll, setCategoryListAll] = useState([]); // array de lista de categorias
   const [totalUserPages, setTotalUserPages] = useState(1);
-  const [totalCategoryPages, setTotalCategoryPages] = useState (1);
   const [userPage, setUserPage] = useState(1);
-  const [categoryPage, setCategoryPage] =useState (1);
   
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -61,6 +59,31 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []); // La dependencia vacía [] asegura que el efecto solo se ejecute una vez, al montar el componente
+
+
+    // LOGICA DE getCategoriesAll- LISTAR todas las categorias sin paginacion para usarlas en el select de productForm y EditProduct
+    //no se precisa el token porque es publico
+    const getCategoriesAll = async () => {
+      try {
+      const response = await axios.get(
+          //Petición GET a la api del listado de productos
+          `${baseUrl}/api/v1/public/category/all`,
+          {
+          headers: {
+              "Content-Type": "application/json",
+          },
+          }
+      );
+      if (response.data ) {
+          // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+          setCategoryListAll(response.data);
+          console.log("Datos recibidos:", response.data);
+      }
+      } catch (error) {
+      console.log(error);
+      }
+  };
+
 
   // LOGICA DE getProducts - LISTAR
   const getProducts = async () => {
@@ -113,7 +136,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     }
   };
 
-  //Logica de getFeatures. Listado de todas las caracteristicas que estan en la base de datos.
+  //LOGICA de getFeatures. Listar todas las caracteristicas que estan en la base de datos.
   const getFeatures = async () => {
     console.log("Inicia getFeatures");
     try {
@@ -136,31 +159,36 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     }
   };
 
-  // Control de Paginación
-  // LOGICA DE getCategories- LISTAR categorias
-  const getCategories = async () => {
-    try {
-      const response = await axios.get(
-        //Petición GET a la api del listado de productos
-        `${baseUrl}/api/v1/public/category?page=${categoryPage}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data && response.data.content) {
-        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-        setCategoryList(response.data.content);
-        setTotalCategoryPages(response.data.last);
-        setCategoryPage(response.data.current);
-        console.log("Datos recibidos:", response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+   //LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
+   const addProduct = (productData) => {
+    //console.log("TOKEN ADD PRODUCT", token);
+    // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
+    axios
+      .post("http://localhost:8080/api/v1/admin/products", productData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log("Producto agregado con éxito:", response.data);
+        getProducts();
+        setShowSuccess(true);
+
+        // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        // Maneja el error de la solicitud POST aquí - VERIFICAR.
+        alert("Error al agregar producto!");
+        console.error("Error al agregar el producto:", error);
+        // Muestra un mensaje de error al usuario
+      });
   };
+
+  //para llamar a todas las categorias
+  useEffect(() => {
+    getCategoriesAll();
+}, []);
 
   // Control de Paginación en los productos
   const handlePageChange = (newPage) => {
@@ -176,44 +204,14 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       setUserPage(newPage); // Actualiza el número de página
     }
   };
-
+// Control de Paginación en las feautures
   const handleFeaturesPageChange = (newPage) => {
     if (newPage <= totalFeaturesPages && newPage >= 1) {
       setFeaturesPage(newPage); // Actualiza el número de página
     }
   };
-  // Control de Paginación en las categrias
-  const handleCategoryPageChange = (newPage) => {
-    if (newPage <= totalCategoryPages && newPage >= 1) {
-      setCategoryPage(newPage); // Actualiza el número de página
-    }
-  };
-
-
-  //LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
-  const addProduct = (productData) => {
-    console.log("TOKEN ADD PRODUCT", token);
-    // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
-    axios
-      .post("http://localhost:8080/api/v1/admin/products", productData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        console.log("Producto agregado con éxito:", response.data);
-        setShowSuccess(true);
-
-        // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 1500);
-      })
-      .catch((error) => {
-        // Maneja el error de la solicitud POST aquí - VERIFICAR.
-        alert("Error al agregar producto!");
-        console.error("Error al agregar el producto:", error);
-        // Muestra un mensaje de error al usuario
-      });
-  };
+  
+ //Manejo de lo que se va amostrar en el DASHBOARD
 
   const handleShow = (origin) => {
     if (origin === "user") {
@@ -272,8 +270,8 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
 
       {/* Componente del modal para agregar producto */}
 
-      <Button ml={4} onClick={() => handleShow("feature")}>
-        Administrar Caracteristicas
+      <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
+        Administrar Características
       </Button>
       {/* Componente del modal para agregar producto */}
 
@@ -285,9 +283,10 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         getProducts={getProducts}
         setIsModalOpen={setIsModalOpen}
         onClose={() => setIsModalOpen(false)}
+        categoryListAll = {categoryListAll} 
       />
 
-       {/* Logicas para mostrar las listas Productos Usuarios Categorias */}
+       {/* Logicas para mostrar las listas Productos  */}
             
       {showList == true && (
         <ListAdminProduct
@@ -296,9 +295,13 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           page={page}
           handlePageChange={handlePageChange}
           lista={lista}
+          categoryListAll = {categoryListAll} 
+          getCategoriesAll={getCategoriesAll}
+          
         />
       )}
 
+      {/* Logicas para mostrar las listas Usuarios  */}
       
       {showUserList == true && (
         <ListUsers
@@ -310,6 +313,8 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         />
       )}
 
+      {/* Logicas para mostrar las listas Features  */}
+
       {showAdminFeatures == true && (
         <AdminFeatures
           token={token}
@@ -320,14 +325,11 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         />
       )}
 
+{/* Logicas para mostrar las listas Categorias */}
 
       {showCategoryList == true && (
         <ListCategories
           token={token}
-          getCategories={getCategories}
-          categoryPage={categoryPage}
-          handlePageChange={handleCategoryPageChange}
-          categoryList={categoryList}
         />
       )}
       

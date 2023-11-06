@@ -27,27 +27,34 @@ import {
         setCategoryData({ ...categoryData, [name]: value });
     };
 
-    const handleAddCategory = () => {
-        // Enviar la solicitud para agregar la categoría
-        axios
-        .post("http://localhost:8080/api/v1/admin/category", categoryData, {headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
+    const handleAddCategory = async () => {
+        try{
+        const response =await axios.post(
+            "http://localhost:8080/api/v1/admin/category",
+            categoryData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             console.log("Categoría agregada con éxito:", response.data);
             // Actualizar la lista de categorías después de agregar una nueva
             getCategories();
             // Cerrar el modal y resetear el formulario
             onClose();
             setCategoryData(initialCategoryState);
-        })
-        .catch((error) => {
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+            // Si el error es 400, muestra una alerta con el mensaje de error del servidor
+            window.alert(error.response.data.error);
+            } else {
+            // Para otros errores, muestra un mensaje de error genérico
             console.error("Error al agregar la categoría:", error);
-            // Puedes manejar errores aquí si es necesario
-        });
+            }
+            // Puedes manejar otros errores aquí si es necesario
+        }
     };
-
     const handleCancel = () => {
         // Cerrar el modal y resetear el formulario
         onClose();
