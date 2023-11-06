@@ -22,6 +22,7 @@ import {
 import ProductGallery from "./ProductGallery";
 
 import axios from "axios";
+import Specs from "./Specs";
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { id } = useParams();
@@ -135,7 +136,9 @@ const DetailPage = () => {
           </Stack>
         </VStack>
       )}
+      <Specs detail={detail}></Specs>
     </VStack>
+    
   );
 };
 
