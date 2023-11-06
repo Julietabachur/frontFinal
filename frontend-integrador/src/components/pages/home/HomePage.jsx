@@ -191,69 +191,17 @@ const HomePage = () => {
             Buscar
           </Button>
         </HStack>
-      </VStack>
         {/* categorias */}
-        <HStack>
-        {/* {media && (
-          // <Menu>
-          //   <MenuButton minW={'99vh'} bg={"negro"}>
-              
-          //       <Text
-          //         fontFamily={"podkova"}
-          //         color={"verde2"}
-          //         fontSize={17}
-          //         p={3}
-          //       >
-          //         Categorias
-          //       </Text>
-          //   </MenuButton>
-          //   <MenuList bg={"negro"}>
-          //     {categoriesData.map((category) => (
-          //       <MenuItem
-          //         bg={"negro"}
-          //         key={category.id}
-          //         textAlign="center"
-          //         onClick={() => handleCategoryClick(category.type)}
-          //       >
-          //         <Link
-          //           fontFamily={"podkova"}
-          //           color={"verde2"}
-          //           fontSize={17}
-          //           p={3}
-          //         >
-          //           {category.name}
-          //         </Link>
-          //       </MenuItem>
-          //     ))}
-          //   </MenuList>
-          // </Menu>
-          )} */}
-          <Flex justifyContent={'start'} h={'100vh'}>
-            <FilterBar categories={categoriesData} />
-          </Flex>
+        <HStack >     
+            <Flex position={'relative'} h={'10px'}>
+              <FilterBar/>
+            </Flex>
+        </HStack>
+      </VStack>
+        
+          
 {/*         
-        {!media && (
-          <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
-            {/* Muestra las tarjetas de categorías */}
-           {/* {categoriesData.map((category) => (
-              <Box
-                key={category.id}
-                textAlign="center"
-                onClick={() => handleCategoryClick(category.type)}
-              >
-                {" "}
-                <Link
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  {category.name}
-                </Link>
-              </Box>
-            ))}
-          </HStack>
-        )} */}
+        
 
         {/* //productos */}
           <VStack>
@@ -282,7 +230,7 @@ const HomePage = () => {
               />
             )}
           </VStack>
-        </HStack>
+
      
     </Box>
   );
