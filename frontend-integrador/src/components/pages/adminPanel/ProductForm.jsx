@@ -128,11 +128,8 @@ const ProductForm = ({ isOpen, onClose, token, categoryListAll, addProduct, getP
   const handleProductForm = () => {
     console.log("Datos Formulario:", productData);
     addProduct(productData);
-<<<<<<< HEAD
-=======
 
   
->>>>>>> 33e335cb871a10fc4b83d59b43f560cfa5b5fa93
      // Cierra el modal y resetea el formulario
     setIsModalOpen(false);
     onClose();

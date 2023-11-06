@@ -122,13 +122,6 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
                 <Text fontWeight="bold">Imagen</Text>
               </Th>
               <Th>
-<<<<<<< HEAD
-                <Text fontWeight="bold">Editar</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Eliminar</Text>
-              </Th>
-=======
                 <Text fontWeight="bold">Caracteristicas</Text>
               </Th>
               <Th >
@@ -136,7 +129,6 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
                   Editar / Eliminar
                 </Text>
               </Th >
->>>>>>> 33e335cb871a10fc4b83d59b43f560cfa5b5fa93
             </Tr>
           </Thead>
           <Tbody>
