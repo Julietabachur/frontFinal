@@ -133,10 +133,10 @@ const DetailPage = () => {
                 </Drawer>
               </>
             )}
-          </Stack>
+          </Stack><Specs detail={detail}></Specs>
         </VStack>
       )}
-      <Specs detail={detail}></Specs>
+      
     </VStack>
     
   );
