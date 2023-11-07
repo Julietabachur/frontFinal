@@ -8,7 +8,7 @@ import {
 
 const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
   const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
+  for (let i = 1; i <= totalPages -1; i++) {
     pageNumbers.push(i);
   }
 

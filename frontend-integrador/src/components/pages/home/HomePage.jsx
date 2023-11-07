@@ -33,9 +33,11 @@ const HomePage = () => {
   const [lista, setLista] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [pageData, setPageData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [media, setMedia] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
+  const [categories, setCategories] = useState([]);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const MIN_DESKTOP_WIDTH = 600;
 
@@ -97,11 +99,42 @@ const HomePage = () => {
     fetchProductsData();
   }, [currentPage]);
 
-  const getProductsByType = async (type) => {
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/api/v1/public/category/all`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response) {
+          setCategoryList(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCategories();
+  }, []);
+
+  const handleCategoryClick = (category) => {;
+    if(!categories.includes(category)){
+      setCategories([...categories, category]);
+    }else{
+      return
+    }
+    
+  };
+
+  const getProductsByType = async (categories) => {
+
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/byType?type=${type}&page=${currentPage}`,
-        {
+        `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${currentPage}`,
+      {
           headers: {
             "Content-Type": "application/json",
           },
@@ -120,10 +153,10 @@ const HomePage = () => {
     }
   }, [pageData]);
 
-  const handleCategoryClick = async (type) => {
+  const handleSearch = async () => {
     setCurrentPage(1);
     setLoading(true);
-    const data = await getProductsByType(type);
+    const data = await getProductsByType(categories);
     if (data) {
       setPageData(data);
       setLista(data.content);
@@ -131,36 +164,8 @@ const HomePage = () => {
     }
   };
 
-  const categoriesData = [
-    {
-      id: 1,
-      name: "Remeras",
-      type: "T_SHIRT",
-    },
-    {
-      id: 2,
-      name: "Camisas",
-      type: "SHIRT",
-    },
-    {
-      id: 3,
-      name: "Pantalones",
-      type: "PANT",
-    },
-    {
-      id: 4,
-      name: "Abrigos",
-      type: "JACKET",
-    },
-    {
-      id: 5,
-      name: "Accesorios",
-      type: "ACCESSORY",
-    },
-  ];
-
   return (
-    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
+    <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
@@ -172,7 +177,6 @@ const HomePage = () => {
           align={"Center"}
           /*p={9}*/
           mt={2}
-          
         >
           {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
           <Input
@@ -184,7 +188,7 @@ const HomePage = () => {
             borderRadius={"15px"}
             m={10}
           />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
+          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"} onClick={()=> handleSearch()}>
             Buscar
           </Button>
         </HStack>
@@ -192,62 +196,59 @@ const HomePage = () => {
         {/* categorias */}
         {media && (
           <Menu>
-            <MenuButton minW={'99vh'} bg={"negro"}>
-              
-                <Text
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  Categorias
-                </Text>
+            <MenuButton minW={"99vh"} bg={"negro"}>
+              <Text fontFamily={"podkova"} color={"verde2"} fontSize={17} p={3}>
+                Categorias
+              </Text>
             </MenuButton>
             <MenuList bg={"negro"}>
-              {categoriesData.map((category) => (
+              {categoryList.map((category) => (
                 <MenuItem
                   bg={"negro"}
                   key={category.id}
                   textAlign="center"
-                  onClick={() => handleCategoryClick(category.type)}
+                  onClick={() => handleCategoryClick(category.categoryName)}
                 >
-                  <Link
-                    fontFamily={"podkova"}
-                    color={"verde2"}
-                    fontSize={17}
-                    p={3}
-                  >
-                    {category.name}
-                  </Link>
+                    <Box bg={"yellow"}>
+                      <Image
+                        src={category.imageUrl}
+                        fallbackSrc="https://via.placeholder.com/150"
+                      />
+                      <Text color={"green"}>{category.categoryName}</Text>
+                    </Box>
                 </MenuItem>
               ))}
             </MenuList>
           </Menu>
         )}
         {!media && (
-          <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
+          <HStack justify={"space-around"} h={200} w={"100%"} bg={"negro"}>
             {/* Muestra las tarjetas de categorías */}
-            {categoriesData.map((category) => (
+            {categoryList.map((category) => (
               <Box
                 key={category.id}
                 textAlign="center"
-                onClick={() => handleCategoryClick(category.type)}
+                onClick={() => handleCategoryClick(category.categoryName)}
               >
-                {" "}
-                <Link
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  {category.name}
-                </Link>
+              
+                  <Box bg={"verde2"}>
+                    <Image
+                      src={category.imageUrl}
+                      fallbackSrc="https://via.placeholder.com/150"
+                    />
+                    <Text color={"negro"}>{category.categoryName}</Text>
+                  </Box>
               </Box>
             ))}
           </HStack>
         )}
 
-        <SimpleGrid minH={'100vh'} columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
+        <SimpleGrid
+          minH={"100vh"}
+          columns={{ sm: 1, md: 2 }}
+          padding={20}
+          spacing={20}
+        >
           {isLoading &&
             Skeletons.map((Skeleton) => {
               return (
