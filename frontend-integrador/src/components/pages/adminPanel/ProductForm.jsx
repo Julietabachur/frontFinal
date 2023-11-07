@@ -127,8 +127,6 @@ const ProductForm = ({ isOpen, onClose, token, categoryListAll, addProduct, getP
   // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
   const handleProductForm = () => {
     console.log("Datos Formulario:", productData);
-
-
     addProduct(productData);
 
   

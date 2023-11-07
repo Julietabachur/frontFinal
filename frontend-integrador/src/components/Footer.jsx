@@ -34,8 +34,6 @@ const Footer = () => {
 
           <>
             {media ? (
-
-
             <VStack bg={'#444444'} p={3} textAlign="center" w="100vw">
               <HStack spacing='16px' py={'20px'}>
               <Box w='40px' h='40px'>
@@ -65,12 +63,10 @@ const Footer = () => {
                   </Text>
                 </Box>
               </VStack>
-                       
             </VStack>            
             )
             :
             (
-
             <HStack bg={'#444444'} p={3} textAlign="center" w="100vw">
             <VStack
               spacing={4}
@@ -79,6 +75,7 @@ const Footer = () => {
               justifyContent="center"
               alignItems="start"
               my={5}
+              marginLeft={"2%"}
             >
               <Box h='40px' d='flex' justifyContent="center" alignItems="start">
                 <Image ml={2} src="https://images-g3.s3.amazonaws.com/logoFooter.png" alt="Logo"/>
@@ -105,8 +102,6 @@ const Footer = () => {
             )
             } 
             </>
-        
-
   )
 }
 
