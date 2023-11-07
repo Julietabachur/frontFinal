@@ -19,6 +19,7 @@ useEffect( () => {
       .then((response) => {
         // La respuesta exitosa se encuentra en response.data
         setCategories(response.data)
+        console.log('cat:', categories);
       })
       .catch((error) => {
         console.error('Error al obtener las categorías:', error);
@@ -43,6 +44,7 @@ const handleCategoryClick = (category) => {
 
   countFilteredProducts();
 };
+
  // Función para contar la cantidad de productos filtrados
  const countFilteredProducts = () => {
   const filteredCount = selectedCategories.length; // Usa selectedCategories para contar
