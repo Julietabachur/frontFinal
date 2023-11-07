@@ -24,19 +24,19 @@ import ListAdminProduct from "./ListAdminProduct";
 
 const initialProductState = {
   productName: "",
-  size: "",
-  type: "",
-  productionTime: "",
+  productSize:"",
+  category: "",
+  productionTime: 0,
   collection: "",
   thumbnail: "",
   detail: "",
   gallery: [],
+  //features: []
 };
 
-const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
+const ProductForm = ({ isOpen, onClose, token, categoryListAll, addProduct, getProducts, lista, isModalOpen, setIsModalOpen, page, handlePageChange }) => {
 
-  console.log("TOKEN:", token);
-  //const token ="eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJjbGllbnROYW1lIjoiYWRtaW4xIiwic3ViIjoiYWRtaW4xQGFkbWluMS5jb20iLCJpYXQiOjE2OTg1OTY2MjYsImV4cCI6MTY5OTIwMTQyNn0.lEN5fevoixjN4WXzCC3iSn9P4XTkoMfoDmpALGvbEPE"
+  
 
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
@@ -44,7 +44,7 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
   const [nombreValido, setNombreValido] = useState(true);
   const [formDisabled, setFormDisabled] = useState(false);
   const [showError, setShowError] = useState(false);
-
+ 
 
 
   const handleInputChange = (e) => {
@@ -91,10 +91,8 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
   //version demorada de del metodo checkName
   const debouncedCheckProductName = debounce(checkProductName, 2000); //2 segundos en millisegundos
 
-  /* en el input , onChange le pasamos handleName pero
-  la demoramos 2 segundos para que no este haciendo el
-  llamado en cada dato ingresado sino  despues de una demora
-    de 2 segundos sin ingresar dato */
+  /* en el input , onChange le pasamos handleName perola demoramos 2 segundos para que no este haciendo el
+  llamado en cada dato ingresado sino  despues de una demora de 2 segundos sin ingresar dato */
   const handleName = (e) => {
     const productName = e.target.value;
     debouncedCheckProductName(productName, e);
@@ -129,26 +127,23 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
   // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
   const handleProductForm = () => {
     console.log("Datos Formulario:", productData);
-
-
     addProduct(productData);
 
-   
+  
      // Cierra el modal y resetea el formulario
-     setIsModalOpen(false);
-     onClose();
-     setProductData(initialProductState);
-     setInputValue(""); // Reinicia el valor del input
-     setNombreValido(true); // Reinicia la validación del nombre
-     setShowError(false); // Reinicia el estado de error
+    setIsModalOpen(false);
+    onClose();
+    setProductData(initialProductState);
+    setInputValue(""); // Reinicia el valor del input
+    setNombreValido(true); // Reinicia la validación del nombre
+    setShowError(false); // Reinicia el estado de error
 
     
   };
-
-
+ /*
   useEffect(() => {
     console.log('Component re-rendered');
-  }, [lista]);
+  }, [lista]);*/
   
   const handleCancel = () => {
     // Cierra el modal y resetea el formulario
@@ -167,6 +162,14 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
         <ModalHeader>Agregar Producto</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
+        <Flex
+              flexDirection="column"
+              p={1}
+              gap={5}
+              my={1}
+              maxHeight="45vh"
+              overflowY="scroll"
+            >
           {/* Formulario para agregar producto */}
 
           <Input
@@ -184,10 +187,10 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
           )}
 
           <Select
-            name="size"
+            name="productSize"
             mb={3}
             placeholder="Selecciona una talla"
-            value={productData.size}
+            value={productData.productSize}
             disabled={formDisabled}
             onChange={handleInputChange}
           >
@@ -196,20 +199,19 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
             <option value="L">L</option>
           </Select>
           <Select
-            name="type"
-            mb={3}
-            placeholder="Selecciona un tipo"
-            value={productData.type}
-            disabled={formDisabled}
-            onChange={handleInputChange}
-          >
-            <option value="T_SHIRT">T_SHIRT</option>
-            <option value="SHIRT">SHIRT</option>
-            <option value="SKIRT">SKIRT</option>
-            <option value="JACKET">JACKET</option>
-            <option value="PANT">PANT</option>
-            <option value="ACCESORY">ACCESORY</option>
-          </Select>
+              name="category"
+              mb={3}
+              placeholder="Selecciona una categoría"
+              value={productData.category}
+              disabled={formDisabled}
+              onChange={handleInputChange}
+            >
+              {categoryListAll.map((category) => (
+                <option key={category.id} value={category.categoryName}>
+                  {category.categoryName}
+                </option>
+              ))}
+            </Select> 
           <NumberInput>
             <NumberInputField
               name="productionTime"
@@ -217,15 +219,7 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
               disabled={formDisabled}
               placeholder="Cantidad de días para la fábricación"
               value={productData.productionTime}
-              onChange={(valueString) => {
-                // Convierte el valor de cadena a número antes de pasarlo a handleInputChange
-                handleInputChange({
-                  target: {
-                    name: "productionTime",
-                    value: parseInt(valueString, 10),
-                  },
-                }); //10 base decimal
-              }}
+              onChange={handleInputChange}
             />
           </NumberInput>
           <Input
@@ -289,6 +283,7 @@ const ProductForm = ({ isOpen, onClose, token, productToEdit, addProduct, getPro
               ))}
             </List>
           </Box>
+          </Flex>
 
          </ModalBody>
         <ModalFooter>

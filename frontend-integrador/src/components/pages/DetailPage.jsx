@@ -22,13 +22,14 @@ import {
 import ProductGallery from "./ProductGallery";
 
 import axios from "axios";
+import Specs from "./Specs";
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  
   const handleGallery = () => {
     onOpen();
   };
@@ -66,13 +67,13 @@ const DetailPage = () => {
             padding={"10px"}
             minW={"300px"}
           >
-            <Text fontFamily={"Saira"} color={"black"} fontSize={"1rem"}>
+            <Text fontFamily={"Saira"} color={"black"} fontSize={"1.5rem"} marginLeft={"3%"}>
               {detail.productName}
             </Text>
-            <Button onClick={() => navigate(-1)}> Atrás </Button>
+            <Button onClick={() => navigate(-1)} bg={"verde2"} marginRight={"3%"}> Atras </Button>
           </HStack>
 
-          <Stack border={"2px solid black"}>
+          <Stack border={"1px solid black"}>
             <VStack border={"1px solid black"} p={20}>
               <Stack
                 h={"30px"}
@@ -132,10 +133,12 @@ const DetailPage = () => {
                 </Drawer>
               </>
             )}
-          </Stack>
+          </Stack><Specs detail={detail}></Specs>
         </VStack>
       )}
+      
     </VStack>
+    
   );
 };
 

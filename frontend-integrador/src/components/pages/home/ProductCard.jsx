@@ -13,7 +13,10 @@ import {
 
 const ProductCard = ({ item }) => {
   return (
-    <Card  h={"500px"} color={"blanco"}>
+    <Card  
+    h={['350px','300px', "300px"]}
+    w={['300px','300px',"300px"]} 
+    color={"blanco"}>
       <CardBody
         _hover={{
           transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
@@ -24,7 +27,8 @@ const ProductCard = ({ item }) => {
         boxShadow={"5px 5px 5px gray"}
         display={"flex"}
         justifyContent={"center"}
-        h={"80%"}
+        h={['100%']}
+        w={['100%']}
         p={0}
       >
         <Image
@@ -38,8 +42,8 @@ const ProductCard = ({ item }) => {
         <Text
           fontFamily={"Saira"}
           color={"gris1"}
-          fontSize={"1.5rem"}
-          textShadow={"5px 5px 5px gray"}
+          fontSize={['1 rem', '1.2rem']}
+          // textShadow={"5px 5px 5px gray"}
           whiteSpace="nowrap"
           overflow="hidden"
           textOverflow="ellipsis"

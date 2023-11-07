@@ -45,13 +45,13 @@ const ListUsers = ({
       }
     );
     if (response.data) {
-      getUsers()
-    } 
+      getUsers();
+    }
   };
 
   return (
     <Flex justify={"center"}>
-      <Box>
+      <Box mt={10}>
         <div
           style={{
             display: "flex",
@@ -59,28 +59,34 @@ const ListUsers = ({
             alignItems: "center",
           }}
         >
-          <Button
+          <Button colorScheme="green" 
             onClick={() =>
               handlePageChange(userPage > 1 ? userPage - 1 : userPage)
             }
             disabled={userPage === 0}
           >
             &lt;&lt;&lt;
-          </Button>
+          </Button >
           <Text>- {userPage} -</Text>
-          <Button onClick={() => handlePageChange(userPage + 1)}>
+          <Button colorScheme="green"  onClick={() => handlePageChange(userPage + 1)}>
             &gt;&gt;&gt;
           </Button>
         </div>
-        <Box w={830}>
-          <Table variant="striped" colorScheme="blue">
+        <Box w={830} mt={3}>
+          <Table variant="striped" colorScheme="green">
             <Thead>
               <Tr>
                 <Th>
                   <Text fontWeight="bold">ID</Text>
                 </Th>
                 <Th>
-                  <Text fontWeight="bold">Nombre de usuario</Text>
+                  <Text fontWeight="bold">Nombre y apellido</Text>
+                </Th>
+                <Th>
+                  <Text fontWeight="bold">Username</Text>
+                </Th>
+                <Th>
+                  <Text fontWeight="bold">email</Text>
                 </Th>
                 <Th>
                   <Text fontWeight="bold">Admin</Text>
@@ -92,13 +98,14 @@ const ListUsers = ({
                 userList.map((user) => (
                   <Tr key={user.id} h="10px">
                     <Td>{user.id}</Td>
+                    <Td>{user.firstName + " " + user.lastName}</Td>
                     <Td>{user.clientName}</Td>
+                    <Td>{user.email}</Td>
                     <Td>
-                      <Checkbox
+                      <Checkbox colorScheme="green"  borderColor="gray.800" borderWidth="2px"
                       isDisabled={user.clientName === 'admin1'}
                         isChecked={user.roles[1] === "ADMIN"}
                         onChange={() => adminHandle(user)}
-                        onClick={() => adminHandle(user)}
                       />
                     </Td>
                   </Tr>

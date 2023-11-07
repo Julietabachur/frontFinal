@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, } from "react";
 import axios from "axios";
 import {
   Box,
@@ -15,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Flex,
   HStack,
   Input,
   SimpleGrid,
@@ -22,17 +23,12 @@ import {
   Text,
   Button,
   Center,
+  Link,
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ListAdminProduct = ({
-  getProducts,
-  page,
-  handlePageChange,
-  lista,
-  token,
-}) => {
+const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCategoriesAll,categoryListAll}) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -50,6 +46,10 @@ const ListAdminProduct = ({
   useEffect(() => {
     getProducts();
   }, [page]); // Agrega 'page' como dependencia para que se actualice cuando cambie el número de página
+
+  useEffect(() => {
+    getCategoriesAll();
+}, []);
 
   const openDeleteDialog = (item) => {
     setIsDeleteDialogOpen(true);
@@ -87,7 +87,8 @@ const ListAdminProduct = ({
 
   return (
     <>
-      <Box>
+    <Flex justify={"center"}>
+      <Box mt={10}>
         <div
           style={{
             display: "flex",
@@ -95,18 +96,20 @@ const ListAdminProduct = ({
             alignItems: "center",
           }}
         >
-          <Button
+          <Button colorScheme="green"
             onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
             disabled={page === 0}
           >
             &lt;&lt;&lt;
           </Button>
           <Text>- {page} -</Text>
-          <Button onClick={() => handlePageChange(page + 1)}>
+          <Button colorScheme="green" onClick={() => handlePageChange(page + 1)}>
             &gt;&gt;&gt;
           </Button>
         </div>
-        <Table variant="simple">
+
+        <Box w={830} mt={3}>
+        <Table variant="striped" colorScheme="green">
           <Thead>
             <Tr>
               <Th>
@@ -119,11 +122,13 @@ const ListAdminProduct = ({
                 <Text fontWeight="bold">Imagen</Text>
               </Th>
               <Th>
-                <Text fontWeight="bold">Editar</Text>
+                <Text fontWeight="bold">Caracteristicas</Text>
               </Th>
-              <Th>
-                <Text fontWeight="bold">Eliminar</Text>
-              </Th>
+              <Th >
+                <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
+                  Editar / Eliminar
+                </Text>
+              </Th >
             </Tr>
           </Thead>
           <Tbody>
@@ -146,11 +151,11 @@ const ListAdminProduct = ({
                         cursor: "pointer",
                         color: "green",
                         fontSize: "1.2em",
+                        marginBottom: "10px"
                       }}
                       onClick={() => handleEdit(item)}
                     />
-                  </Td>
-                  <Td>
+                  
                     <FaTrash
                       style={{
                         cursor: "pointer",
@@ -165,6 +170,8 @@ const ListAdminProduct = ({
           </Tbody>
         </Table>
       </Box>
+      </Box>
+      </Flex>
       <AlertDialog
         isOpen={isDeleteDialogOpen}
         leastDestructiveRef={cancelRef}
@@ -208,6 +215,8 @@ const ListAdminProduct = ({
             setIsModalOpen(false);
           }}
           getProducts={getProducts}
+          getCategoriesAll = {getCategoriesAll}
+          categoryListAll ={categoryListAll}
         />
       )}
     </>

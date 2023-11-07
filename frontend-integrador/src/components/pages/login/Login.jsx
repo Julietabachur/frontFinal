@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import { Box, Input, Button, Stack, Flex, Alert, AlertIcon } from '@chakra-ui/react';
+import { Box, Input, Button, Stack, VStack, Flex, Alert, AlertIcon, Text } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +11,31 @@ const Login = () => {
     const [invalidCredentials, setInvalidCredentials] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const navigate = useNavigate();
+    const [media, setMedia] = useState(false);
+    const MIN_DESKTOP_WIDTH = 768;
+
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+    useEffect(() => {
+        const handleResize = () => {
+        if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+            setMedia(true);
+        } else {
+            setMedia(false);
+        }
+        };
+        if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+        setMedia(true);
+        } else {
+        setMedia(false);
+        }
+
+        window.addEventListener("resize", handleResize);
+
+        // Limpieza del event listener cuando el componente se desmonta
+        return () => {
+        window.removeEventListener("resize", handleResize);
+        };
+    }, [window.innerWidth]);
 
      //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
     const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -87,11 +112,33 @@ const Login = () => {
             minH="100vh"
             p={4}
         >
-            <Box pos={'relative'} top={100} w={'97vw'} h={'100vh'}>
+            { media ?
+            (
+            <Box pos={'relative'} top={10} w={'97vw'} h={'100vh'}>
+                <Text fontSize='2xl' align='center' py={3}>Iniciar sesión</Text>
+                <Stack spacing={4} align="center" justify="center">
+                    <Input w="250px" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <Input w="250px" placeholder="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Button w="200px" bg={"verde2"} onClick={handleLogin}>Iniciar Sesión</Button>
+                    {showAlert && invalidCredentials && ( 
+                        <Alert status="error" w="300px" mt={4}>
+                            <VStack>
+                                <AlertIcon />
+                                <p align='center'>Credenciales incorrectas. Por favor, verifica tu correo electrónico y contraseña.</p>
+                            </VStack>                            
+                        </Alert>
+                    )}
+                </Stack>
+            </Box>
+            )
+            :
+            (
+            <Box pos={'relative'} top={10} w={'97vw'} h={'100vh'}>
+                <Text fontSize='4xl' align='center' py={3}>Iniciar sesión</Text>
                 <Stack spacing={4} align="center" justify="center">
                     <Input w="500px" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     <Input w="500px" placeholder="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <Button w="500px" colorScheme="green" onClick={handleLogin}>Iniciar Sesión</Button>
+                    <Button w="500px" bg={"verde2"} onClick={handleLogin}>Iniciar Sesión</Button>
                     {showAlert && invalidCredentials && ( 
                         <Alert status="error" w="500px" mt={4}>
                             <AlertIcon />
@@ -100,6 +147,9 @@ const Login = () => {
                     )}
                 </Stack>
             </Box>
+            )
+            }
+            
         </Flex>
     );
 };
