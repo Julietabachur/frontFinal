@@ -32,9 +32,9 @@ const HomePage = () => {
 
   const [lista, setLista] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageData, setPageData] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [media, setMedia] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);

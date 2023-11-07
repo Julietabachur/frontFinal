@@ -8,7 +8,7 @@ import {
 
 const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
   const pageNumbers = [];
-  for (let i = 1; i <= totalPages -1; i++) {
+  for (let i = 1; i <= totalPages-1; i++) {
     pageNumbers.push(i);
   }
 
@@ -44,7 +44,7 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
   
 
       <Button
-        isDisabled={currentPage === totalPages}
+        isDisabled={currentPage === totalPages-1}
         colorScheme="teal"
         onClick={() => setCurrentPage(currentPage + 1)}
       >
@@ -52,9 +52,9 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       </Button>
 
       <Button
-        isDisabled={currentPage === totalPages}
+        isDisabled={currentPage === totalPages-1}
         colorScheme="teal"
-        onClick={() => setCurrentPage(totalPages)}
+        onClick={() => setCurrentPage(totalPages-1)}
       >
         <ArrowRightIcon />
       </Button>
