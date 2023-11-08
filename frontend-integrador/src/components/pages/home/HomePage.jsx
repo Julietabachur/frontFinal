@@ -163,11 +163,11 @@ const HomePage = () => {
 
   return (
     <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
-      <VStack margin={"0px auto"} rowGap={0}>
+      <VStack margin={"0px auto"} w={'100vw'} rowGap={0}>
 
         {/* buscador */}
         <HStack
-          color={"negro"}
+          color={"blanco"}
           w={"100%"}
           bg={"#444444"}
           justify={"center"}
@@ -192,8 +192,8 @@ const HomePage = () => {
           </Button>
         </HStack>
         {/* categorias */}
-        <HStack >     
-            <Flex position={'relative'} h={'10px'}>
+        <HStack w={"100%"} h={{'base':'500px','sm': '250px', 'md':'500px', "lg":'300px'}} bg={"#444444"} display={'flex'} justifyContent={'center'}>     
+            <Flex position={'relative'} h={['500px','250px','500px',]}>
               <FilterBar/>
             </Flex>
         </HStack>

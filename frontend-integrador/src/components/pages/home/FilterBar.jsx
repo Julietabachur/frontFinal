@@ -46,18 +46,18 @@ const handleCategoryClick = (category) => {
 };
 
  // Función para contar la cantidad de productos filtrados
- const countFilteredProducts = () => {
-  const filteredCount = selectedCategories.length; // Usa selectedCategories para contar
-  setFilteredProductCount(filteredCount);
-};
+//  const countFilteredProducts = () => {
+//   const filteredCount = selectedCategories.length; // Usa selectedCategories para contar
+//   setFilteredProductCount(filteredCount);
+// };
 
-  // Función para limpiar los filtros
+  // Función para limpiar los filtros NO ERROR
   const clearFilters = () => {
     setSelectedCategories([]);
     setFilteredProductCount(0);
   };
 
-  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana NO ERROR
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < MIN_DESKTOP_WIDTH) {
@@ -83,11 +83,11 @@ const handleCategoryClick = (category) => {
 
         {media ? 
                 (
-                    <>
+                    
                     <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'} bg={"#444444"}>
                     {/* //    Muestra las tarjetas de categorías  */}
                     {categories.map((category) => (                    
-                        <ProductCardContainer key={category.id} onClick={handleCategoryClick(category)}>
+                        <ProductCardContainer key={category.id} /*onClick={handleCategoryClick(category)}*/>
                             <Card  
                             _hover={{
                                 transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
@@ -116,32 +116,14 @@ const handleCategoryClick = (category) => {
                         </ProductCardContainer>
                     )
                     )}                   
-                    </HStack>
-                    <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'} bg={"#444444"}>
-                    {/* //    Muestra las tarjetas de categorías  */}
-                    <Text>Cantidad de productos: {filteredProductCount}</Text>
-                    {selectedCategories.map((category) => (                    
-                        <Checkbox
-                        fontFamily={"Saira"}
-                        color={"gris1"}
-                        fontSize={'1rem'}
-                        whiteSpace="nowrap"
-                        overflow="hidden"
-                        textOverflow="ellipsis"
-                        maxWidth="100%"
-                        >
-                        {category.categoryName}
-                        </Checkbox>
-                    )
-                    )}                   
-                    </HStack>
-                    </>
+                    </HStack>                    
+                  
                 )
                  : 
                 (
                     <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'}>
                         {categories.map((category) => (
-                        <ProductCardContainer key={category.id} onClick={handleCategoryClick(category)}>
+                        <ProductCardContainer key={category.id} /*onClick={handleCategoryClick(category)}*/>
                             <Card  
                             _hover={{
                                 transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
@@ -151,15 +133,16 @@ const handleCategoryClick = (category) => {
                                 border={"5px solid black"}
                                 h={['100px','150px',"180px"]}
                                 w={['100px','150px',"180px"]} 
-                                color={"blanco"}>
+                                color={"blanco"}
+                                alignContent={"center"} justify={"center"} display={"flex"} alignItems={'center'}>
                                 <CardBody 
-                                    border={"1px solid black"}
+                                    border={"0px 1px solid black"}
                                     display={"flex"}
                                     justifyContent={"center"}
                                     alignItems={'center'}
                                     alignContent={'center'}
-                                    h={"99%"}
-                                    w={"99%"}
+                                    h={"100%"}
+                                    w={"100%"}
                                     p={0}
                                 >
                                     <Image
