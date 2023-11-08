@@ -16,14 +16,8 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Flex,
-  HStack,
-  Input,
-  SimpleGrid,
-  Image,
   Text,
   Button,
-  Center,
-  Link,
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -122,21 +116,11 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
                 <Text fontWeight="bold">Imagen</Text>
               </Th>
               <Th>
-<<<<<<< HEAD
                 <Text fontWeight="bold">Editar</Text>
               </Th>
               <Th>
                 <Text fontWeight="bold">Eliminar</Text>
               </Th>
-=======
-                <Text fontWeight="bold">Caracteristicas</Text>
-              </Th>
-              <Th >
-                <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
-                  Editar / Eliminar
-                </Text>
-              </Th >
->>>>>>> 33e335cb871a10fc4b83d59b43f560cfa5b5fa93
             </Tr>
           </Thead>
           <Tbody>
@@ -163,7 +147,8 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
                       }}
                       onClick={() => handleEdit(item)}
                     />
-                  
+                    </Td>
+                  <Td>
                     <FaTrash
                       style={{
                         cursor: "pointer",
