@@ -150,7 +150,7 @@ const HomePage = () => {
   }, [pageData]);
 
   const handleSearch = async () => {
-    setCurrentPage(1);
+    /* setCurrentPage(1); */
     setLoading(true);
     const data = await getProductsByType(categories);
     if (data) {
@@ -159,9 +159,15 @@ const HomePage = () => {
       setLoading(false);
     }
   };
+
+  /* Reseteo del paginado para que al
+   apretar el boton buscar, no lo 
+   mande con la pagina en la que estaba en el home */
   useEffect(() => {
     setCurrentPage(1);
   }, [handleSearch]);
+
+
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
