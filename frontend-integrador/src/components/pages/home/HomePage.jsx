@@ -34,7 +34,7 @@ const HomePage = () => {
   const [isLoading, setLoading] = useState(false);
   const [pageData, setPageData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [media, setMedia] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -120,21 +120,17 @@ const HomePage = () => {
     getCategories();
   }, []);
 
-  const handleCategoryClick = (category) => {;
-    if(!categories.includes(category)){
+  const handleCategoryClick = (category) => {
+    if (!categories.includes(category)) {
       setCategories([...categories, category]);
-    }else{
-      return
     }
-    
   };
 
   const getProductsByType = async (categories) => {
-
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${currentPage}`,
-      {
+        {
           headers: {
             "Content-Type": "application/json",
           },
@@ -163,7 +159,9 @@ const HomePage = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [handleSearch]);
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
@@ -188,7 +186,13 @@ const HomePage = () => {
             borderRadius={"15px"}
             m={10}
           />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"} onClick={()=> handleSearch()}>
+          <Button
+            h={7}
+            color={"blanco"}
+            borderRadius={20}
+            bg={"negro"}
+            onClick={() => handleSearch()}
+          >
             Buscar
           </Button>
         </HStack>
@@ -209,13 +213,13 @@ const HomePage = () => {
                   textAlign="center"
                   onClick={() => handleCategoryClick(category.categoryName)}
                 >
-                    <Box bg={"yellow"}>
-                      <Image
-                        src={category.imageUrl}
-                        fallbackSrc="https://via.placeholder.com/150"
-                      />
-                      <Text color={"green"}>{category.categoryName}</Text>
-                    </Box>
+                  <Box bg={"yellow"}>
+                    <Image
+                      src={category.imageUrl}
+                      fallbackSrc="https://via.placeholder.com/150"
+                    />
+                    <Text color={"green"}>{category.categoryName}</Text>
+                  </Box>
                 </MenuItem>
               ))}
             </MenuList>
@@ -230,14 +234,13 @@ const HomePage = () => {
                 textAlign="center"
                 onClick={() => handleCategoryClick(category.categoryName)}
               >
-              
-                  <Box bg={"verde2"}>
-                    <Image
-                      src={category.imageUrl}
-                      fallbackSrc="https://via.placeholder.com/150"
-                    />
-                    <Text color={"negro"}>{category.categoryName}</Text>
-                  </Box>
+                <Box bg={"verde2"}>
+                  <Image
+                    src={category.imageUrl}
+                    fallbackSrc="https://via.placeholder.com/150"
+                  />
+                  <Text color={"negro"}>{category.categoryName}</Text>
+                </Box>
               </Box>
             ))}
           </HStack>
