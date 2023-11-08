@@ -32,11 +32,14 @@ const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
-  const [lista, setLista] = useState([]);
+  const [lista, setLista] = useState([]); //products
   const [isLoading, setLoading] = useState(false);
   const [pageData, setPageData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [media, setMedia] = useState(false);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const MIN_DESKTOP_WIDTH = 600;
@@ -58,6 +61,24 @@ const HomePage = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  //traer categorias
+  useEffect( () => {
+    debugger;
+    const urlCategories = `${baseUrl}/api/v1/public/category/all`
+      axios
+      .get(urlCategories)
+      .then((response) => {
+        // La respuesta exitosa se encuentra en response.data
+        setCategories(response.data)
+        console.log('cat:', categories);
+      })
+      .catch((error) => {
+        console.error('Error al obtener las categorías:', error);
+      });
+    }
+    
+,[])
 
   useEffect(() => {
     setLoading(true);
@@ -133,33 +154,33 @@ const HomePage = () => {
     }
   };
 
-  const categoriesData = [
-    {
-      id: 1,
-      name: "Remeras",
-      type: "T_SHIRT",
-    },
-    {
-      id: 2,
-      name: "Camisas",
-      type: "SHIRT",
-    },
-    {
-      id: 3,
-      name: "Pantalones",
-      type: "PANT",
-    },
-    {
-      id: 4,
-      name: "Abrigos",
-      type: "JACKET",
-    },
-    {
-      id: 5,
-      name: "Accesorios",
-      type: "ACCESSORY",
-    },
-  ];
+  // const categoriesData = [
+  //   {
+  //     id: 1,
+  //     name: "Remeras",
+  //     type: "T_SHIRT",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Camisas",
+  //     type: "SHIRT",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Pantalones",
+  //     type: "PANT",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Abrigos",
+  //     type: "JACKET",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Accesorios",
+  //     type: "ACCESSORY",
+  //   },
+  // ];
 
   return (
     <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
@@ -194,7 +215,7 @@ const HomePage = () => {
         {/* categorias */}
         <HStack w={"100%"} h={{'base':'500px','sm': '250px', 'md':'500px', "lg":'300px'}} bg={"#444444"} display={'flex'} justifyContent={'center'}>     
             <Flex position={'relative'} h={['500px','250px','500px',]}>
-              <FilterBar/>
+              <FilterBar categories={categories} /*getProductsByType={getProductsByType()}*//>
             </Flex>
         </HStack>
       </VStack>
