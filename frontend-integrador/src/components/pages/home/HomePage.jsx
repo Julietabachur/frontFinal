@@ -34,13 +34,12 @@ const HomePage = () => {
 
   const [lista, setLista] = useState([]); //products
   const [isLoading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState(null);
+  const [pageData, setPageData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [media, setMedia] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
+  const [categories, setCategories] = useState([]);
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const MIN_DESKTOP_WIDTH = 600;
 
@@ -120,10 +119,37 @@ const HomePage = () => {
     fetchProductsData();
   }, [currentPage]);
 
-  const getProductsByType = async (type) => {
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/api/v1/public/category/all`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response) {
+          setCategoryList(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getCategories();
+  }, []);
+
+  const handleCategoryClick = (category) => {
+    if (!categories.includes(category)) {
+      setCategories([...categories, category]);
+    }
+  };
+
+  const getProductsByType = async (categories) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/byType?type=${type}&page=${currentPage}`,
+        `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${currentPage}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -143,10 +169,10 @@ const HomePage = () => {
     }
   }, [pageData]);
 
-  const handleCategoryClick = async (type) => {
-    setCurrentPage(1);
+  const handleSearch = async () => {
+    /* setCurrentPage(1); */
     setLoading(true);
-    const data = await getProductsByType(type);
+    const data = await getProductsByType(categories);
     if (data) {
       setPageData(data);
       setLista(data.content);
@@ -154,38 +180,17 @@ const HomePage = () => {
     }
   };
 
-  // const categoriesData = [
-  //   {
-  //     id: 1,
-  //     name: "Remeras",
-  //     type: "T_SHIRT",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Camisas",
-  //     type: "SHIRT",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Pantalones",
-  //     type: "PANT",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Abrigos",
-  //     type: "JACKET",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Accesorios",
-  //     type: "ACCESSORY",
-  //   },
-  // ];
+  /* Reseteo del paginado para que al
+   apretar el boton buscar, no lo 
+   mande con la pagina en la que estaba en el home */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [handleSearch]);
+
 
   return (
-    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
-      <VStack margin={"0px auto"} w={'100vw'} rowGap={0}>
-
+    <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
+      <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
           color={"blanco"}
@@ -196,7 +201,6 @@ const HomePage = () => {
           align={"Center"}
           /*p={9}*/
           mt={2}
-          
         >
           {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
           <Input
@@ -208,16 +212,94 @@ const HomePage = () => {
             borderRadius={"15px"}
             m={10}
           />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
+          <Button
+            h={7}
+            color={"blanco"}
+            borderRadius={20}
+            bg={"negro"}
+            onClick={() => handleSearch()}
+          >
             Buscar
           </Button>
         </HStack>
         {/* categorias */}
-        <HStack w={"100%"} h={{'base':'500px','sm': '250px', 'md':'500px', "lg":'300px'}} bg={"#444444"} display={'flex'} justifyContent={'center'}>     
-            <Flex position={'relative'} h={['500px','250px','500px',]}>
-              <FilterBar categories={categories} /*getProductsByType={getProductsByType()}*//>
-            </Flex>
-        </HStack>
+        {media && (
+          <Menu>
+            <MenuButton minW={"99vh"} bg={"negro"}>
+              <Text fontFamily={"podkova"} color={"verde2"} fontSize={17} p={3}>
+                Categorias
+              </Text>
+            </MenuButton>
+            <MenuList bg={"negro"}>
+              {categoryList.map((category) => (
+                <MenuItem
+                  bg={"negro"}
+                  key={category.id}
+                  textAlign="center"
+                  onClick={() => handleCategoryClick(category.categoryName)}
+                >
+                  <Box bg={"yellow"}>
+                    <Image
+                      src={category.imageUrl}
+                      fallbackSrc="https://via.placeholder.com/150"
+                    />
+                    <Text color={"green"}>{category.categoryName}</Text>
+                  </Box>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        )}
+        {!media && (
+          <HStack justify={"space-around"} h={200} w={"100%"} bg={"negro"}>
+            {/* Muestra las tarjetas de categorías */}
+            {categoryList.map((category) => (
+              <Box
+                key={category.id}
+                textAlign="center"
+                onClick={() => handleCategoryClick(category.categoryName)}
+              >
+                <Box bg={"verde2"}>
+                  <Image
+                    src={category.imageUrl}
+                    fallbackSrc="https://via.placeholder.com/150"
+                  />
+                  <Text color={"negro"}>{category.categoryName}</Text>
+                </Box>
+              </Box>
+            ))}
+          </HStack>
+        )}
+
+        <SimpleGrid
+          minH={"100vh"}
+          columns={{ sm: 1, md: 2 }}
+          padding={20}
+          spacing={20}
+        >
+          {isLoading &&
+            Skeletons.map((Skeleton) => {
+              return (
+                <ProductCardContainer key={Skeleton}>
+                  <ProductCardSkeleton />
+                </ProductCardContainer>
+              );
+            })}
+          {lista.map((item) => (
+            <Link key={item.id} as={ReactRouterLink} to={`/detalle/${item.id}`}>
+              <ProductCardContainer key={item.id}>
+                <ProductCard item={item} />
+              </ProductCardContainer>
+            </Link>
+          ))}
+        </SimpleGrid>
+        {pageData && (
+          <RenderPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </VStack>
         
           
