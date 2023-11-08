@@ -178,8 +178,8 @@ const HomePage = () => {
               >
                 <Box bg={"verde2"}>
                   <Image
-                    w={150}
-                    h={150}
+                    w={{ base: 100, lg: 150 }}
+                    h={{ base: 100, lg: 150 }}
                     objectFit={"cover"}
                     src={category.imageUrl}
                     fallbackSrc="https://via.placeholder.com/150"
@@ -193,7 +193,7 @@ const HomePage = () => {
                 h={7}
                 color={"blanco"}
                 bg={"verde1"}
-                w={40}
+                w={{ base: "100px", lg: 40 }}
                 onClick={() => handleSearch()}
               >
                 Filtrar
@@ -202,7 +202,7 @@ const HomePage = () => {
                 h={7}
                 color={"blanco"}
                 bg={"red.400"}
-                w={40}
+                w={{ base: "100px", lg: 40 }}
                 onClick={() => handleFiltros()}
               >
                 Borrar Filtros
