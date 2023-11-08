@@ -22,8 +22,7 @@ import {
   Image,
   Text,
   Button,
-  Center,
-  Link,
+  
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
