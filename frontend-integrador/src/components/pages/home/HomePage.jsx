@@ -33,7 +33,7 @@ const HomePage = () => {
   const [media, setMedia] = useState(false);
   const [categoryList, setCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [cant, setCant] = useState(0)
+  const [cant, setCant] = useState(0);
   const MIN_DESKTOP_WIDTH = 600;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -91,11 +91,12 @@ const HomePage = () => {
     setFiltered(true);
   };
 
-  useEffect(()=>{
-    if(categories.length === 0){
-      setFiltered(false)
+  //si se cancelan todos los filtros te vuelve a  la lista de mesclados
+  useEffect(() => {
+    if (categories.length === 0) {
+      setFiltered(false);
     }
-  },[categories])
+  }, [categories]);
 
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
@@ -121,12 +122,7 @@ const HomePage = () => {
             borderRadius={"15px"}
             m={10}
           />
-          <Button
-            h={7}
-            color={"blanco"}
-            borderRadius={20}
-            bg={"negro"}
-          >
+          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
             Buscar
           </Button>
         </HStack>
@@ -160,22 +156,31 @@ const HomePage = () => {
           </Menu>
         )}
         {!media && (
-          <HStack justify={"space-around"}  w={"100%"} bg={"negro"} pr={'40px'} >
+          <HStack
+            justify={"space-around"}
+            w={"100%"}
+            bg={"negro"}
+            pr={"40px"}
+            pt={2}
+            pb={2}
+          >
             {/* Muestra las tarjetas de categorías */}
             {categoryList.map((category) => (
               <Box
-
                 key={category.id}
                 textAlign="center"
                 onClick={() => handleCategoryClick(category.categoryName)}
                 style={{
                   border: categories.includes(category.categoryName)
-                    ? "3px solid green"
+                    ? "3px solid #00cc00"
                     : "none",
                 }}
               >
                 <Box bg={"verde2"}>
                   <Image
+                    w={150}
+                    h={150}
+                    objectFit={"cover"}
                     src={category.imageUrl}
                     fallbackSrc="https://via.placeholder.com/150"
                   />
@@ -183,7 +188,7 @@ const HomePage = () => {
                 </Box>
               </Box>
             ))}
-            <VStack w={'20%'} pl={10}>
+            <VStack w={"20%"} pl={10}>
               <Button
                 h={7}
                 color={"blanco"}
@@ -202,11 +207,18 @@ const HomePage = () => {
               >
                 Borrar Filtros
               </Button>
-              <Text color={'verde2'} fontSize={18}>{`Cantidad de resultados ${cant}`}</Text>
+              <Text
+                color={"verde2"}
+                fontSize={{ base: 12, lg: 18 }}
+              >{`Cantidad de resultados ${cant}`}</Text>
             </VStack>
           </HStack>
         )}
-        {filtered ? <FilteredList categories={categories} setCant={setCant} /> : <ProductList setCant={setCant} />}
+        {filtered ? (
+          <FilteredList categories={categories} setCant={setCant} />
+        ) : (
+          <ProductList setCant={setCant} />
+        )}
       </VStack>
     </Box>
   );
