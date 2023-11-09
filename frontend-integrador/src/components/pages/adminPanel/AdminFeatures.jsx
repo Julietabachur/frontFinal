@@ -20,8 +20,15 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  Alert,
   } from '@chakra-ui/react'
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash, FaEdit } from "react-icons/fa";
 import FeatureForm from './FeatureForm';
 import EditFeature from './EditFeature';
 
@@ -32,10 +39,26 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
   const cancelRef = useRef(); // permite cancelar en el box de alerta
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
   const [featureToDelete, setFeatureToDelete] = useState(null); // pasa la variable del item a eliminar
-  const [featureToEdit, setFeatureToEdit] = useState(null);
+  const [featureToEdit, setFeatureToEdit] = useState(null)
+  const { isOpen, onOpen, onClose } = useDisclosure();
   
-  const [isOpenModal, setIsOpenModal] = useState(false)
-  const {isOpen, onOpen, onClose} = useDisclosure()
+  
+  // LOGICA para editar una caracteristica.
+  const handleEdit = (char) => {
+    onOpen();
+    setFeatureToEdit(char);
+  };
+
+  const handleCancel = () => {
+    onClose();
+    setFeatureToEdit(null);
+  }
+
+  const handleChange = () => {
+    onClose();
+    setFeatureToEdit(null);
+    getFeatures();
+  }
 
   useEffect(() => {
     getFeatures();
@@ -61,30 +84,24 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
         },
       });
       // Vuelve a obtener la lista de caracteristicas después de eliminar.
+      // Deberia volver a la pagina 1. Ver como ?
       getFeatures();
     } catch (error) {
       console.error("Error al eliminar la caracteristica", error);
     }
   };
-
-  //LOGICA para editar una caracteristica
-  const handleEdit = (feature) => {
-    setIsOpenModal(true);
-    setFeatureToEdit(feature); // pasa el objeto feature a traves del prop
-    console.log("Caracteristica para editar:", featureToEdit);
-  };
-
+  
   // renderizado del componente
     return (
+      <>
       <Flex justify={"center"}>
-        <Box mt={10} >
-          
+        <Box mt={10} >    
           <Box display= {"flex"} justifyContent ={"space-between"}>
           {/* Componente del modal para agregar caracteristica */}
-          <FeatureForm
+            <FeatureForm
             token={token}
             getFeatures={getFeatures}
-          />
+            />
           <div
             style={{
               display: "flex",
@@ -105,8 +122,6 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
             </Button>
           </div>
           </Box>
-        
-
           <TableContainer w={830} mt={3} /*border="2px" boxShadow='lg' bg='white'
               flexDirection="column"
               p={1}
@@ -116,7 +131,7 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
             >
             <Table variant="striped" colorScheme="green">
               <Thead /*borderBottom="2px"*/ >
-                <Tr >
+                <Tr>
                   <Th>
                     <Text fontWeight="bold">Nombre</Text>
                   </Th>
@@ -133,19 +148,19 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
               </Thead>
               <Tbody fontSize="0.9em">
                 {featuresList &&
-                  featuresList.map((feature) => (
+                  featuresList.map((feature) => ( 
                     <Tr key={feature.id} h="10px">
                       <Td>{feature.charName}</Td>
                       <Td>{feature.charIcon}</Td>
                       <Td>
-                        <FaEdit
-                        style={{
+                      <FaEdit
+                      style={{
                         cursor: "pointer",
                         color: "green",
                         fontSize: "1.2em",
-                        }}
-                        onClick={() => handleEdit(feature)}
-                        />
+                      }}
+                      onClick={() => handleEdit(feature)}
+                      />                        
                       </Td>
                       <Td>
                         <FaTrash
@@ -185,32 +200,41 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
                 colorScheme="red"
                 onClick={() => {
                   handleDelete(featureToDelete.id);
-                  closeDeleteDialog();
+                  setTimeout(() => {
+                    closeDeleteDialog();
+                  }, 1000);
                 }}
                 ml={3}
               >
                 Eliminar
               </Button>
-            </AlertDialogFooter>
+          </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
-      </AlertDialog>
-
-       {/* Render condicional, solo se llama a Editfeature si la variable featureToEdit es valida */}
-       {featureToEdit !== null && (
-        <EditFeature
-          token={token}
-          featureToEdit={featureToEdit}
-          isOpen={isOpenModal}
-          onClose={() => {
-            setFeatureToEdit(null);
-            setIsOpenModal(false)
-          }}
-          getFeatures={getFeatures}
-        />
-      )} 
-
-     </Flex>
+        </AlertDialog>
+      
+        <Box>
+        <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Editar Caracteristica</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {featureToEdit !== null && (
+            <EditFeature 
+              featureToEdit= {featureToEdit}
+              handleCancel= {handleCancel}
+              handleChange= {handleChange}
+              token = {token}
+            />
+            )}
+          </ModalBody>
+        </ModalContent>
+        </Modal>
+        </Box>
+      </Flex>
+      </>
     );
-  }
+  };
+
 export default AdminFeatures
