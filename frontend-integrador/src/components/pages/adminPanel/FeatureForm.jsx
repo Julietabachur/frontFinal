@@ -1,34 +1,29 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
+import { Alert, Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import axios from 'axios';
 
-const initialFeatureState = {
-    charName: "",
-    charIcon: "",
-    };
 
 const FeatureForm = ({token, getFeatures}) => {
 
-  const [ newFeature, setNewFeature] = useState(initialFeatureState)
-  const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito. NO IMPLEMENTADO
-  const [showError, setShowError] = useState(false); // Variable para controlar el mensaje de error. NO IMPLEMENTADO
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [newFeature, setNewFeature] = useState({charName: '', charIcon: ''})
+  const [show, setShow] = useState(false)
+  const [error, setError] = useState(false) 
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addFeature(newFeature);
+    setNewFeature({charName: "", charIcon:""});
+    setTimeout(() =>{
+      onClose();
+      setShow(false);
+      setError(false)
+    }, 2000)
+    getFeatures()
+    }
+    
 
   // LOGICA para agregar una nueva caracteristica
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setNewFeature({ ...newFeature, [name]: value });
-      console.log(newFeature)
-    };
-  
-    const handleNewFeature = () => {
-      console.log("Datos Formulario:", newFeature);
-      addFeature(newFeature);
-       // Cierra el modal y resetea el formulario
-       onClose();
-       setNewFeature({});   
-    };
 
   //llamada a la api, peticion POST para agregar caracteristica
   const addFeature = (newFeature) => {
@@ -38,17 +33,14 @@ const FeatureForm = ({token, getFeatures}) => {
       .then((response) => {
         console.log("Caracteristica agregada con éxito:", response.data);
         // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 1500);
-        getFeatures();
+        setShow(true);
+        setError(false);  
       })
       .catch((error) => {
+        setShow(false);
+        setError(true);
         // Maneja el error de la solicitud POST aquí - VERIFICAR.
-        alert("Error al agregar la caracteristica, la misma ya existe en la base de datos. Verifiquelo o elija otro nombre");
         console.error("Error al agregar la caracteristica:", error);
-        // Muestra un mensaje de error al usuario
       });
   };
   
@@ -63,34 +55,34 @@ const FeatureForm = ({token, getFeatures}) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Nueva Caracteristica</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton/>
           <ModalBody>
             <form>
-              /*FALTAN LAS VALIDADCIONES PARA LOS IMPUT 
-            <FormControl isRequired>
+            <FormControl>
               <FormLabel> Nombre de la caracteristica</FormLabel>
               <Input
-                name="charName"
+                type="text"
+                name="newCharName"
+                placeholder="Nombre"
                 mb={3}
                 value={newFeature.charName}
-                onChange={handleInputChange}
+                onChange={(e) => setNewFeature({...newFeature, charName: (e.target.value).toUpperCase()})}
               />
               <FormLabel> Icono representativo </FormLabel>
               <Input
-                name="charIcon"
+                type="text"
+                name="newCharIcon"
                 mb={3}
                 value={newFeature.charIcon}
-                onChange={handleInputChange}
+                onChange={(e) => setNewFeature({...newFeature, charIcon: e.target.value})}
               />
-          </FormControl>
-          </form>
+              <Button type= "reset" mr={3} onClick={onClose}> Cancelar</Button>
+              <Button colorScheme='green' onClick={handleSubmit} >Guardar</Button>
+            </FormControl>
+            </form>
+            {show && <Alert style={{color: 'green'}}>Caracteristica agregada con exito</Alert>}
+            {error && <Alert style={{color: 'red'}}> Error al agregar la caracteristica, el nombre ya existe. Verifiquelo o elija otro nombre</Alert>}
           </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Cerrar
-            </Button>
-            <Button variant='ghost' onClick={handleNewFeature} >Guardar</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
       </>
