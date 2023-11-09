@@ -173,12 +173,13 @@ const HomePage = () => {
                 >
                   <Box bg={"verde2"} py={1} px={2} ml={5} style={{
                     border: categories.includes(category.categoryName)
-                      ? "3px solid white"
+                      ? "3px solid #e2e8f0"
                       : "none",
                   }}>                    
-                    <Text color={"black"}
+                    <Text 
                      style={{
                       fontWeight: categories.includes(category.categoryName) ? "bold" : "normal",
+                      color: categories.includes(category.categoryName) ? "#e2e8f0" : "black",
                     }}
                     >{category.categoryName}</Text>
                   </Box>
