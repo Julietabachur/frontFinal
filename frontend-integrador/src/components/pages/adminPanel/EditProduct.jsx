@@ -75,6 +75,7 @@ console.log(productData);
   }, [inputValue, token]);
 
 
+
   const handleEditProduct = () => {
 
     // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
@@ -205,46 +206,20 @@ console.log(productData);
             </Box>
 
             <Text mt={10} fontWeight="bold">Caracteristicas del producto</Text>
-            <Select
-                  borderColor={"black"}
-                  name="features"
-                  placeholder="Seleccione las caracteristicas que desea agregar"
-                  value={featureAdd.charName}
-                  disabled={formDisabled}
-                  onChange={(e) => handleFeature(e.target.value)}
-                  >
 
-                    
-                  {featuresListAll.map((feature) => (
-                      <option key={feature.id} value={feature.charName}>
-                      {feature.charName}
-                      {feature.charIcon}
-                      </option>
-                            
-                ))}
-                </Select>
-
-                 {featureAdd.charName && (
-                   
-
-                  <>
-                  {<Input
-                  disabled={true}
-                  name="charIcon"
-                  my={3}
-                  defaultValue={featureAdd.charIcon}
-                 />}
-                 
-                  <Input
-                  borderColor={"black"}
-                  name="charValue"
-                  my={3}
-                  placeholder="Detalle una descripcion de la caracteristica y luego presione agregar"
-                  onChange={(e) => setFeatureAdd({...featureAdd, charValue: [e.target.value]})}
-                  />
-                  <Button  border={"1px solid black"} disabled={formDisabled} onClick={handleAddFeature}> Agregar</Button>
-                  </>
-                 )}
+            <Select borderColor={"black"}
+              name="features"
+              mb={3}
+              placeholder="Selecciona una categoria para agregar"
+              value={productData.features}
+              onChange={handleInputChange}
+            >
+              {featuresListAll.map((feature) => (
+                <option key={feature.id} value={feature.charName}>
+                  {feature.charName}
+                </option>
+              ))}
+            </Select>
 
             <Text mt={3} fontWeight="bold">Elimina caracteristicas del producto</Text>
 
