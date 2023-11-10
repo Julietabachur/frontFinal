@@ -216,7 +216,7 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
         <Box>
         <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mt={150}>
           <ModalHeader>Editar Caracteristica</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

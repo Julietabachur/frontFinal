@@ -18,20 +18,18 @@ import {
   ListItem,
   Text,
   Box,
+  Textarea,
 } from "@chakra-ui/react";
 
 import ListAdminProduct from "./ListAdminProduct";
 
 const initialProductState = {
   productName: "",
-  productSize: "",
-  category: "",
-  productionTime: 0,
-  collection: "",
   thumbnail: "",
-  detail: "",
   gallery: [],
-  //features: []
+  Detail: "",
+  features: [],
+  category: "",
 };
 
 const ProductForm = ({
@@ -39,6 +37,7 @@ const ProductForm = ({
   onClose,
   token,
   categoryListAll,
+  featuresListAll,
   addProduct,
   getProducts,
   lista,
@@ -50,9 +49,20 @@ const ProductForm = ({
   const [productData, setProductData] = useState(initialProductState);
   const [inputValue, setInputValue] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
+  const [featureAdd, setFeatureAdd] = useState ({})
   const [nombreValido, setNombreValido] = useState(true);
   const [formDisabled, setFormDisabled] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  
+  const handleFeature = (charName) => {
+    const buscarFeature = featuresListAll.find((feature) => feature.charName === charName);
+    console.log(buscarFeature);
+    setFeatureAdd({charName: buscarFeature.charName, charIcon: buscarFeature.charIcon})
+    
+  }
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -131,9 +141,28 @@ const ProductForm = ({
     setProductData({ ...productData, gallery: updatedGallery });
   };
 
+  const handleAddFeature = () => {
+    if (featureAdd.charName !== "") {
+      console.log(featureAdd)
+      setProductData((prevState) => ({
+        ...prevState,
+        features: [...prevState.features, featureAdd],
+      }));
+      setFeatureAdd({});
+    }
+  }
+  
+
+  const handleRemoveFeature = (index) => {
+    const updatedFeature = [...productData.features];
+    updatedFeature.splice(index, 1);
+    setProductData({ ...productData, features: updatedFeature });
+  };
+
   // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
   const handleProductForm = () => {
     console.log("Datos Formulario:", productData);
+    console.log(productData.features)
     addProduct(productData);
     // Cierra el modal y resetea el formulario
     setIsModalOpen(false);
@@ -159,13 +188,13 @@ const ProductForm = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={handleCancel}>
+      <Modal isOpen={isOpen} onClose={handleCancel} size= {'xl'}>
         <ModalOverlay />
-        <ModalContent mt={200}>
+        <ModalContent mt={150} maxWidth="50%">
           <ModalHeader>Agregar Producto</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Flex
+          <ModalBody borderColor={"black"}>
+            <Flex  border={1}
               flexDirection="column"
               p={1}
               gap={5}
@@ -177,7 +206,8 @@ const ProductForm = ({
 
               <Input
                 name="productName"
-                mb={3}
+                
+                autoComplete={"off"}
                 placeholder="Nombre del producto"
                 defaultValue={productData.productName}
                 onChange={handleName}
@@ -189,70 +219,120 @@ const ProductForm = ({
                 </Text>
               )}
 
-              <Select
-                name="productSize"
-                mb={3}
-                placeholder="Selecciona una talla"
-                value={productData.productSize}
-                disabled={formDisabled}
-                onChange={handleInputChange}
-              >
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-              </Select>
-              <Select
+              <Select borderColor={"black"}
                 name="category"
-                mb={3}
-                placeholder="Selecciona una categoría"
+                
+                placeholder="Selecciona la categoría"
                 value={productData.category}
                 disabled={formDisabled}
                 onChange={handleInputChange}
               >
                 {categoryListAll.map((category) => (
-                  <option key={category.id} value={category.categoryName}>
+                  <option  key={category.id} value={category.categoryName}>
                     {category.categoryName}
                   </option>
                 ))}
               </Select>
-              <NumberInput>
-                <NumberInputField
-                  name="productionTime"
-                  mb={3}
-                  disabled={formDisabled}
-                  placeholder="Cantidad de días para la fábricación"
-                  value={productData.productionTime}
-                  onChange={handleInputChange}
-                />
-              </NumberInput>
-              <Input
-                name="collection"
-                mb={3}
-                placeholder="Colección"
-                value={productData.collection}
+
+              <Textarea
+                name="Detail"
+                autoComplete={"off"}
                 disabled={formDisabled}
-                onChange={handleInputChange}
-              />
-              <Input
-                name="detail"
-                mb={3}
-                disabled={formDisabled}
-                placeholder="Detalle:\nprimer renglón\nsegundo renglón"
-                value={productData.detail}
+                placeholder="Descripcion del producto:\nprimer renglón\nsegundo renglón"
+                value={productData.Detail}
                 onChange={handleInputChange}
               />
               <Input
                 name="thumbnail"
+                autoComplete={"off"}
                 mb={3}
-                placeholder="Enlace de la miniatura"
+                placeholder="Enlace de la imagen miniatura"
                 value={productData.thumbnail}
                 disabled={formDisabled}
                 onChange={handleInputChange}
               />
-              <Flex align="center" mb={3}>
+
+
+                <Flex flexDirection={"column"}> 
+                <Text mb={3} fontWeight="bold">
+                  Caracteristicas del producto:
+                </Text>       
+                  <Select
+                  borderColor={"black"}
+                  name="features"
+                  placeholder="Seleccione las caracteristicas que desea agregar"
+                  value={featureAdd.charName}
+                  disabled={formDisabled}
+                  onChange={(e) => handleFeature(e.target.value)}
+                  /*onChange={(e) => setFeatureAdd({...featureAdd, charName: e.target.value})}*/
+                  >
+
+                    
+                  {featuresListAll.map((feature) => (
+                      <option key={feature.id} value={feature.charName} /*selected={setIcon(feature.charIcon)}*/>
+                      {feature.charName}
+                      {feature.charIcon}
+                      </option>
+                            
+                ))}
+                </Select>
+
+                 {featureAdd.charName && (
+                   
+
+                  <>
+                  //NO SE COMO TRAER EL ICONO ASOCIADO AL CHARNAME.
+                  {<Input
+                  disabled={true}
+                  name="charIcon"
+                  my={3}
+                  defaultValue={featureAdd.charIcon}
+                 />}
+                 
+                  <Input
+                  borderColor={"black"}
+                  name="charValue"
+                  my={3}
+                  placeholder="Detalle una descripcion de la caracteristica y luego presione agregar"
+                  onChange={(e) => setFeatureAdd({...featureAdd, charValue: [e.target.value]})}
+                  />
+                  <Button  border={"1px solid black"} disabled={formDisabled} onClick={handleAddFeature}> Agregar</Button>
+                  </>
+                 )}          
+
+              
+                </Flex>
+
+              <Box>
+                   <List>
+                     
+                   {productData.features.map((feature, index) => (
+                     <Flex key={index} align="center" >
+                       <ListItem maxWidth="90%" m={2} >
+                           <Text>{feature.charName} {feature.charIcon} {feature.charValue}</Text>
+                       </ListItem>
+                       <Button
+                         size="sm"
+                         colorScheme="blue"
+                         variant="outline"
+                         borderColor="red.500"
+                         onClick={() => handleRemoveFeature(index)}
+                         disabled={formDisabled}
+                       >
+                         -
+                       </Button>
+                     </Flex>
+                   ))}
+                 </List>              
+              </Box>
+              
+                <Text fontWeight="bold">
+                  Galería de Imágenes:
+                </Text>
+                <Flex align="center" mb={3}  borderColor={"black"}>
                 <Input
                   flex="1"
-                  placeholder="Enlace de la imagen de la galería"
+                  placeholder="Agregue enlaces de imagenes a la galería"
                   value={galleryUrl}
                   disabled={formDisabled}
                   onChange={(e) => setGalleryUrl(e.target.value)}
@@ -262,14 +342,12 @@ const ProductForm = ({
                   +
                 </Button>
               </Flex>
-              <Box mb={3}>
-                <Text fontSize="sm" fontWeight="bold">
-                  Galería de Imágenes:
-                </Text>
+
+              <Box m={3}>
                 <List>
                   {productData.gallery.map((image, index) => (
-                    <Flex key={index} align="center">
-                      <ListItem flex="1">
+                    <Flex key={index} align="center" >
+                      <ListItem maxWidth="90%" m={3} >
                         <a
                           href={image}
                           target="_blank"
@@ -307,7 +385,6 @@ const ProductForm = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       {console.log("isModalOpen:", isModalOpen)}
       {console.log("Lista?:", lista)}
       {lista && !isModalOpen && (

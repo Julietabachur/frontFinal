@@ -30,6 +30,8 @@ const ListAdminProduct = ({
   token,
   getCategoriesAll,
   categoryListAll,
+  featuresListAll,
+  getFeaturesAll
 }) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
