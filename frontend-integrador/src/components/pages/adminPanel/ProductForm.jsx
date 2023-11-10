@@ -264,12 +264,11 @@ const ProductForm = ({
                   value={featureAdd.charName}
                   disabled={formDisabled}
                   onChange={(e) => handleFeature(e.target.value)}
-                  /*onChange={(e) => setFeatureAdd({...featureAdd, charName: e.target.value})}*/
                   >
 
                     
                   {featuresListAll.map((feature) => (
-                      <option key={feature.id} value={feature.charName} /*selected={setIcon(feature.charIcon)}*/>
+                      <option key={feature.id} value={feature.charName}>
                       {feature.charName}
                       {feature.charIcon}
                       </option>
@@ -281,7 +280,6 @@ const ProductForm = ({
                    
 
                   <>
-                  //NO SE COMO TRAER EL ICONO ASOCIADO AL CHARNAME.
                   {<Input
                   disabled={true}
                   name="charIcon"
@@ -304,8 +302,7 @@ const ProductForm = ({
                 </Flex>
 
               <Box>
-                   <List>
-                     
+                   <List bg={"green.200"}> 
                    {productData.features.map((feature, index) => (
                      <Flex key={index} align="center" >
                        <ListItem maxWidth="90%" m={2} >
@@ -319,7 +316,7 @@ const ProductForm = ({
                          onClick={() => handleRemoveFeature(index)}
                          disabled={formDisabled}
                        >
-                         -
+                         X
                        </Button>
                      </Flex>
                    ))}
@@ -364,7 +361,7 @@ const ProductForm = ({
                         onClick={() => handleRemoveGalleryImage(index)}
                         disabled={formDisabled}
                       >
-                        -
+                        X
                       </Button>
                     </Flex>
                   ))}

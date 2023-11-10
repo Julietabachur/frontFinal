@@ -216,12 +216,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       .then((response) => {
         console.log("Producto agregado con éxito:", response.data);
         getProducts();
-        /*setShowSuccess(true);
-
-        // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 1500);*/
+        window.alert("Producto agregado con exito");        
       })
       .catch((error) => {
         // Maneja el error de la solicitud POST aquí - VERIFICAR.
@@ -230,7 +225,6 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         // Muestra un mensaje de error al usuario
       });
   };
-
   //para llamar a todas las categorias
   useEffect(() => {
     getCategoriesAll();

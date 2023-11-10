@@ -1,13 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Flex, Modal, ModalOverlay,NumberInput, NumberInputField, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box } from '@chakra-ui/react';
+import { Button, Flex, Modal, ModalOverlay,NumberInput, NumberInputField, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Input, Select, List, ListItem, Text, Box, Image, Textarea, FormLabel } from '@chakra-ui/react';
+import ProductGallery from "../ProductGallery";
 
-
-const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token, getCategoriesAll, categoryListAll }) => {
+const EditProduct = ({ isOpen, onClose, productToEdit, getProducts,token, getCategoriesAll, categoryListAll, getFeaturesAll, featuresListAll }) => {
   const [productData, setProductData] = useState(productToEdit);
   const [inputValue, setInputValue] = useState('');
   const [galleryUrl, setGalleryUrl] = useState('');
   const [nombreRepetido, setNombreRepetido] = useState(false);
+  const [formDisabled, setFormDisabled] = useState(false);
+
+  
+  const handleRemoveFeature = (index) => {
+    const updatedFeature = [...productData.features];
+    updatedFeature.splice(index, 1);
+    setProductData({ ...productData, features: updatedFeature });
+  };
+
+  const handleAddGalleryImage = () => {
+    if (galleryUrl) {
+      setProductData((prevState) => ({
+        ...prevState,
+        gallery: [...prevState.gallery, galleryUrl],
+      }));
+      setGalleryUrl("");
+    }
+  };
+
+  const handleRemoveGalleryImage = (index) => {
+    const updatedGallery = [...productData.gallery];
+    updatedGallery.splice(index, 1);
+    setProductData({ ...productData, gallery: updatedGallery });
+  };
+
+  const handleAddFeature = () => {
+    if (featureAdd.charName !== "") {
+      console.log(featureAdd)
+      setProductData((prevState) => ({
+        ...prevState,
+        features: [...prevState.features, featureAdd],
+      }));
+      setFeatureAdd({});
+    }
+  }
+  
 
 console.log(productData);
   const handleInputChange = (e) => {
@@ -38,15 +74,6 @@ console.log(productData);
     }
   }, [inputValue, token]);
 
-  const handleAddGalleryImage = () => {
-    if (galleryUrl) {
-      setProductData(prevState => ({
-        ...prevState,
-        gallery: [...prevState.gallery, galleryUrl]
-      }));
-      setGalleryUrl('');
-    }
-  };
 
   const handleEditProduct = () => {
 
@@ -54,7 +81,7 @@ console.log(productData);
     axios.put(`http://localhost:8080/api/v1/admin/products/${productToEdit.id}`, productData, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         console.log('Producto actualizado con éxito:', response.data);
-        
+        alert("Producto actualizado con exito")
         // Cierra el modal y resetea el formulario
         onClose();
         // vuelve a listar productos
@@ -65,24 +92,25 @@ console.log(productData);
       .catch((error) => {
         // Maneja el error de la solicitud POST aquí
         console.error('Error al actualizar el producto:', error);
+        alert("No se pudo modificar el producto, verifique la informacion")
         // Muestra un mensaje de error al usuario 
       });
   };
 
-  const handleCancel = () => {
+  /*const handleCancel = () => {
     // Cierra el modal y resetea el formulario
     onClose();
     //setProductData(initialProductState);
-  };
+  };*/
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} >
+    <Modal isOpen={isOpen} onClose={onClose} size= {'xl'} >
       <ModalOverlay />
-      <ModalContent mt={200}>
+      <ModalContent mt={150} maxWidth="50%">
         <ModalHeader>Editar Producto</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-        <Flex
+        <ModalBody borderColor={"black"}>
+        <Flex border={1}
               flexDirection="column"
               p={1}
               gap={5}
@@ -105,12 +133,7 @@ console.log(productData);
             </Text>
           )}
 
-          <Select name="productSize" mb={3} placeholder="Selecciona una talla" value={productData.productSize} onChange={handleInputChange}>
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-          </Select>
-          <Select
+          <Select borderColor={"black"}
               name="category"
               mb={3}
               placeholder="Selecciona una categoría"
@@ -122,54 +145,139 @@ console.log(productData);
                   {category.categoryName}
                 </option>
               ))}
-            </Select> 
-            {/* <NumberInput>
-            <NumberInputField
-              name="productionTime"
-              mb={3}
-              placeholder="Cantidad de días para la fábricación"
-              value={productData.productionTime}
-              onChange={handleInputChange}
+            </Select>
+
+            <Textarea
+            p={"5"}
+                name="Detail"
+                autoComplete={"off"}
+                disabled={formDisabled}
+                value={productData.Detail}
+                onChange={handleInputChange}
             />
-          </NumberInput> */}
-         <Input 
-          name="productionTime" 
-          mb={3} placeholder="Fecha de producción in dias" 
-          value={productData.productionTime} 
-          onChange={handleInputChange}/>
-          <Input name="collection" mb={3} placeholder="Colección" value={productData.collection} onChange={handleInputChange} />
-          <Input name="thumbnail" mb={3} placeholder="Enlace de la miniatura" value={productData.thumbnail} onChange={handleInputChange} />
-          <Flex align="center" mb={3}>
+
+            <Text fontWeight="bold">Imagen miniatura</Text>
+            <Input 
+            name="thumbnail" 
+            mb={3} 
+            placeholder="Enlace de la miniatura" 
+            value={productData.thumbnail} 
+            onChange={handleInputChange} />
+            
+            
+            <Text fontWeight="bold">Galeria de imagenes</Text>
+            <Flex align="center" mb={3}>
             <Input
               flex="1"
-              placeholder="Enlace de la imagen de la galería"
+              placeholder="Agrega el enlace de la imagen para la galería"
               value={galleryUrl}
               onChange={(e) => setGalleryUrl(e.target.value)}
               marginRight={2}
-            />
-            <Button
+              />
+              <Button
               onClick={handleAddGalleryImage}
-            >
-              +
-            </Button>
-          </Flex>
-          <Box mb={3}>
-            <Text fontSize="sm" fontWeight="bold">Galería de Imágenes:</Text>
+              >+</Button>
+            </Flex>
+            
+            <Box mb={3} >
+            <ProductGallery thumbnail={productData.thumbnail} gallery={productData.gallery} />
+            <Text mt={10} fontWeight="bold">Remover imagenes de la galeria</Text>
             <List>
-              {productData.gallery && productData.gallery.map((image, index) => (
-                <ListItem key={index}>
-                  <a href={image} target="_blank" rel="noopener noreferrer">{image}</a>
-                </ListItem>
+              {productData.gallery.map((image, index) => (
+                <Flex key={index} align="center">
+                  <ListItem mt={5} flex="1">
+                    <Image mb={1} boxSize={"30%"} src={image} alt="image"/>
+                    <a href={image} target="_blank" rel="noopener noreferrer">
+                      {image}
+                    </a>
+                  </ListItem>
+                  <Button
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleRemoveGalleryImage(index)}
+                    disabled={formDisabled}
+                  >
+                    X
+                  </Button>
+                </Flex>
               ))}
             </List>
-          </Box>
-          </Flex>
+            </Box>
+
+            <Text mt={10} fontWeight="bold">Caracteristicas del producto</Text>
+            <Select
+                  borderColor={"black"}
+                  name="features"
+                  placeholder="Seleccione las caracteristicas que desea agregar"
+                  value={featureAdd.charName}
+                  disabled={formDisabled}
+                  onChange={(e) => handleFeature(e.target.value)}
+                  >
+
+                    
+                  {featuresListAll.map((feature) => (
+                      <option key={feature.id} value={feature.charName}>
+                      {feature.charName}
+                      {feature.charIcon}
+                      </option>
+                            
+                ))}
+                </Select>
+
+                 {featureAdd.charName && (
+                   
+
+                  <>
+                  {<Input
+                  disabled={true}
+                  name="charIcon"
+                  my={3}
+                  defaultValue={featureAdd.charIcon}
+                 />}
+                 
+                  <Input
+                  borderColor={"black"}
+                  name="charValue"
+                  my={3}
+                  placeholder="Detalle una descripcion de la caracteristica y luego presione agregar"
+                  onChange={(e) => setFeatureAdd({...featureAdd, charValue: [e.target.value]})}
+                  />
+                  <Button  border={"1px solid black"} disabled={formDisabled} onClick={handleAddFeature}> Agregar</Button>
+                  </>
+                 )}
+
+            <Text mt={3} fontWeight="bold">Elimina caracteristicas del producto</Text>
+
+            <Box>
+                   <List bg={"green.200"}> 
+                   {productData.features.map((feature, index) => (
+                     <Flex key={index} align="center" >
+                       <ListItem maxWidth="90%" m={2} >
+                           <Text>{feature.charName} {feature.charIcon} {feature.charValue}</Text>
+                       </ListItem>
+                       <Button
+                         size="sm"
+                         colorScheme="blue"
+                         variant="outline"
+                         borderColor="red.500"
+                         onClick={() => handleRemoveFeature(index)}
+                         disabled={formDisabled}
+                       >
+                         X
+                       </Button>
+                     </Flex>
+                   ))}
+                 </List>              
+              </Box>
+
+
+        </Flex>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="green" mr={3} onClick={handleEditProduct}>
             Guardar Cambios
           </Button>
-          <Button onClick={handleCancel}>Cancelar</Button>
+          <Button onClick={onClose}>Cancelar</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
