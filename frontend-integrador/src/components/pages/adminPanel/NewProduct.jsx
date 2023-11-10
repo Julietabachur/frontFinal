@@ -34,16 +34,7 @@ const initialProductState = {
   productionTime: 1,
   thumbnail: "",
   gallery: [],
-  features: [
-    {
-      id: "",
-      charName: "",
-      charValue: [
-        ""
-      ],
-      charIcon: ""
-    }
-  ],
+  features: [],
   category: "",
   detail: ""
 };
@@ -106,7 +97,7 @@ const demoProduct = {
   detail: "Campera de jean negro de 10 oz. Amplia estilo oversize.\nBolsillos delanteros inferiores y superiores.\nTiene un proceso de lavado y suavizado dandole mejor calidad y acabado.\nCierre delantero con botones metálicos."
 };
 
-const NewProduct = ({ prodId, token, setShowAddProduct, addProduct }) => {
+const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryListAll, getCategoriesAll }) => {
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [isEditing, setIsEditing] = useState(false); // Nuevo estado para el modo edición
@@ -141,31 +132,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct }) => {
     }
   };
 
-  // LOGICA para obtener el listado de categorías para usarlas en el form.
-  //no se precisa el token porque es publico
-  const [categoryListAll, setCategoryListAll] = useState([]);
-
-  const getCategoriesAll = async () => {
-    try {
-      const response = await axios.get(
-        //Petición GET a la api del listado de productos
-        `${baseUrl}/api/v1/public/category/all`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data) {
-        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-        setCategoryListAll(response.data);
-        console.log("Datos recibidos:", response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  
 
   // LOGICA PARA VERIFICAR NOMBRE NO ESTE DUPLICADO >>>
   // Parte 1 - Llamado a la API del nombre
@@ -255,11 +222,11 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct }) => {
 
   // LOGICA MANEJO CARACTERISTICAS
 
-  //LOGICA de getFeatures. Listar Caracteristicas.
+  //LOGICA de getFeaturesAll. Listar TODAS Caracteristicas.
   const [featuresList, setFeaturesList] = useState([]);
 
-  const getFeatures = async () => {
-    console.log("Inicia getFeatures");
+  const getFeaturesAll = async () => {
+    console.log("Inicia getFeaturesALL");
     try {
       const response = await axios.get(
         //Petición GET a la api del listado de caracteristicas
@@ -287,19 +254,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct }) => {
 
   const [newFeature, setNewFeature] = useState("");
   const [newFeatureValue, setNewFeatureValue] = useState("");
-  /*
-    const handleAddCharacteristic = () => {
-      if (newFeature) {
-        const selectedFeature = featuresList.find((feature) => feature.charName === newFeature);
-        setProductData((prevState) => ({
-          ...prevState,
-          features: [...prevState.features, { id: nanoid(), charIcon: selectedFeature.charIcon ,charName: newFeature, charValue: [newFeatureValue] }],
-        }));
-        setNewFeature("");
-        setNewFeatureValue("");
-      }
-    };
-  */
+
 
   const handleAddCharacteristic = () => {
     if (newFeature) {
@@ -337,13 +292,12 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct }) => {
     }
   };
 
-
+/*
   useEffect(() => {
     console.log("Feature AGREGADA");
     console.log(productData.features);
   }, [productData.features]);
-
-
+*/
 
 
   const handleRemoveCharacteristic = (id) => {
@@ -406,7 +360,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct }) => {
 
   useEffect(() => {
 
-    getFeatures();
+    getFeaturesAll();
     getCategoriesAll();
 
   }, []);

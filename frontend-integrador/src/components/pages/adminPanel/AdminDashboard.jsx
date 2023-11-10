@@ -8,9 +8,7 @@ import ListCategories from "./ListCategories";
 import NewProduct from "./NewProduct";
 
 const AdminDashboard = ({ productData, token }) => {
-  // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
-  //const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);  // estado para mostrar formulario de producto
   const [prodId, setProdId] = useState(null);
   // Estado para mostrar el listado de productos, categorias, usuarios y caracteristicas cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
@@ -91,7 +89,6 @@ const AdminDashboard = ({ productData, token }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -327,6 +324,8 @@ const AdminDashboard = ({ productData, token }) => {
           token={token}
           setShowAddProduct={setShowAddProduct}
           addProduct={addProduct}
+          categoryListAll={categoryListAll}
+          getCategoriesAll={getCategoriesAll}
         />
       )}
 
