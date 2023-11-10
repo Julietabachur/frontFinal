@@ -38,6 +38,7 @@ const AdminDashboard = ({ productData, token }) => {
   const [featuresList, setFeaturesList] = useState([]);
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
+  const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
   const [categoryListAll, setCategoryListAll] = useState([]); // array de lista de categorias
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -330,7 +331,6 @@ const AdminDashboard = ({ productData, token }) => {
       )}
 
       {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
-
       {showList == true && (
         <ListAdminProduct
           token={token}
