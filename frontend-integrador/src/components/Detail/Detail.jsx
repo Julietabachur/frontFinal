@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { VStack, Text, Image } from "@chakra-ui/react";
 
 const Detail = () => {
   const [product, setProduct] = useState({});
@@ -21,6 +22,7 @@ const Detail = () => {
   }, [id]);
 
   return (
+    
     <>
       <div className="conteiner-product">
         {product && (

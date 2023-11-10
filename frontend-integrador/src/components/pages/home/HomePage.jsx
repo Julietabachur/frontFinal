@@ -21,6 +21,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Flex,
 } from "@chakra-ui/react";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
@@ -160,7 +161,11 @@ const HomePage = () => {
   ];
 
   return (
-    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
+    <
+      Box w={'99vw'} bg={"blanco"}  /*p={9}*/
+    
+    >
+
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
@@ -168,23 +173,30 @@ const HomePage = () => {
           w={"100%"}
           bg={"#444444"}
           justify={"center"}
-          h={"75px"}
+          h={{ base: "auto", md: "75px" }} // Altura responsiva
           align={"Center"}
           /*p={9}*/
-          mt={2}
+          mt={5}
           
         >
-          {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
+          {!media && <Text fontSize={{ base: "1rem", md: "1.5rem" }}  >¿Qué buscas?</Text>}
           <Input
             bg={"blanco"}
-            w={media ? "50%" : "30%"}
-            h={7}
+            w={{ base: "80%", md: "50%" }} // Ancho responsivo
+            h={{ base: "50px", md: "50px" }} // Altura responsiva
             placeholder="Buscar productos"
             _placeholder={{ color: "inherit" }}
             borderRadius={"15px"}
-            m={10}
+            m={{ base: 2, md: 10 }} // Márgenes responsivos
           />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
+          <Button
+           h={{ base: "50px", md: "50px" }} // Altura responsiva
+            color={"blanco"}
+            borderRadius={20}
+            bg={"negro"}
+            fontSize={{ base: "0.8rem", md: "1rem" }} // Tamaño de fuente responsivo
+            mr={5}
+            >
             Buscar
           </Button>
         </HStack>
