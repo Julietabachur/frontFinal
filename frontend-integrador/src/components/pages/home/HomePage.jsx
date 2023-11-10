@@ -21,22 +21,20 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Flex,
 } from "@chakra-ui/react";
-import ProductCard from "./ProductCard";
-import ProductCardContainer from "./ProductCardContainer";
-import RenderPagination from "./RenderPagination";
+import ProductList from "./ProductList";
+import FilteredList from "./FilteredList";
 
 const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
-  const [lista, setLista] = useState([]);
-  const [isLoading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [filtered, setFiltered] = useState(false);
   const [media, setMedia] = useState(false);
-  const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const [categoryList, setCategoryList] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [cant, setCant] = useState(0);
   const MIN_DESKTOP_WIDTH = 600;
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -48,9 +46,7 @@ const HomePage = () => {
         setMedia(false);
       }
     };
-
     window.addEventListener("resize", handleResize);
-
     // Limpieza del event listener cuando el componente se desmonta
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -58,20 +54,10 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-
-    const getProducts = async () => {
+    const getCategories = async () => {
       try {
-        const shuffleArray = (array) => {
-          for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-          }
-          return array;
-        };
-
         const response = await axios.get(
-          `${baseUrl}/api/v1/public/products?page=${currentPage}`,
+          `${baseUrl}/api/v1/public/category/all`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -79,92 +65,46 @@ const HomePage = () => {
           }
         );
         if (response) {
-          setPageData(response.data);
-          setLista(shuffleArray(response.data.content));
-          setLoading(false);
+          setCategoryList(response.data);
         }
       } catch (error) {
         console.error(error);
       }
     };
-    const fetchProductsData = async () => {
-      const data = await getProducts();
-      if (data) {
-        console.log(data.content);
-        setLista(data.content);
-      }
-    };
-    fetchProductsData();
-  }, [currentPage]);
+    getCategories();
+  }, []);
 
-  const getProductsByType = async (type) => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/byType?type=${type}&page=${currentPage}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      console.error(error);
+  const handleCategoryClick = (category) => {
+    if (!categories.includes(category)) {
+      setCategories([...categories, category]);
+    } else {
+      let updatedCategories = categories.filter((item) => item !== category);
+      setCategories(updatedCategories);
     }
   };
 
+  const handleFiltros = () => {
+    setCategories([]);
+    setFiltered(false);
+  };
+
+  const handleSearch = async () => {
+    setFiltered(true);
+  };
+
+  //si se cancelan todos los filtros te vuelve a  la lista de mesclados
   useEffect(() => {
-    if (pageData) {
-      setTotalPages(pageData.last);
+    if (categories.length === 0) {
+      setFiltered(false);
     }
-  }, [pageData]);
-
-  const handleCategoryClick = async (type) => {
-    setCurrentPage(1);
-    setLoading(true);
-    const data = await getProductsByType(type);
-    if (data) {
-      setPageData(data);
-      setLista(data.content);
-      setLoading(false);
-    }
-  };
-
-  const categoriesData = [
-    {
-      id: 1,
-      name: "Remeras",
-      type: "T_SHIRT",
-    },
-    {
-      id: 2,
-      name: "Camisas",
-      type: "SHIRT",
-    },
-    {
-      id: 3,
-      name: "Pantalones",
-      type: "PANT",
-    },
-    {
-      id: 4,
-      name: "Abrigos",
-      type: "JACKET",
-    },
-    {
-      id: 5,
-      name: "Accesorios",
-      type: "ACCESSORY",
-    },
-  ];
+  }, [categories]);
 
   return (
-    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
+    <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
-          color={"negro"}
+          color={"blanco"}
           w={"100%"}
           bg={"#444444"}
           justify={"center"}
@@ -172,7 +112,6 @@ const HomePage = () => {
           align={"Center"}
           /*p={9}*/
           mt={2}
-          
         >
           {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
           <Input
@@ -188,88 +127,130 @@ const HomePage = () => {
             Buscar
           </Button>
         </HStack>
-
         {/* categorias */}
         {media && (
           <Menu>
-            <MenuButton minW={'99vh'} bg={"negro"}>
-              
-                <Text
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  Categorias
-                </Text>
+            <MenuButton minW={"99vh"} bg={"negro"}>
+              <Text fontFamily={"podkova"} color={"verde2"} fontSize={17} p={3}>
+                Categorias
+              </Text>
             </MenuButton>
             <MenuList bg={"negro"}>
-              {categoriesData.map((category) => (
+            <VStack w={"30%"}  ml={10}>
+              <Button
+                h={7}
+                color={"blanco"}
+                bg={"verde2"}
+                w={{ base: "100px", lg: 40 }}
+                onClick={() => handleSearch()}
+                ml={4}
+              >
+                Filtrar
+              </Button>
+              <Button
+                h={7}
+                color={"blanco"}
+                bg={"red.400"}
+                w={{ base: "100px", lg: 40 }}
+                onClick={() => handleFiltros()}
+                ml={4}
+              >
+                Borrar Filtros
+              </Button>
+              <Text
+                color={"verde2"}
+                fontSize={{ base: 12, lg: 18 }}
+                w={'80px'}
+              >{`Estás viendo ${cant} productos`}</Text>
+            </VStack>
+              {categoryList.map((category) => (
                 <MenuItem
                   bg={"negro"}
                   key={category.id}
                   textAlign="center"
-                  onClick={() => handleCategoryClick(category.type)}
+                  onClick={() => handleCategoryClick(category.categoryName)}
+                  
                 >
-                  <Link
-                    fontFamily={"podkova"}
-                    color={"verde2"}
-                    fontSize={17}
-                    p={3}
-                  >
-                    {category.name}
-                  </Link>
+                  <Box bg={"verde2"} py={1} px={2} ml={5} style={{
+                    border: categories.includes(category.categoryName)
+                      ? "3px solid #e2e8f0"
+                      : "none",
+                  }}>                    
+                    <Text 
+                     style={{
+                      fontWeight: categories.includes(category.categoryName) ? "bold" : "normal",
+                      color: categories.includes(category.categoryName) ? "#e2e8f0" : "black",
+                    }}
+                    >{category.categoryName}</Text>
+                  </Box>
                 </MenuItem>
               ))}
             </MenuList>
           </Menu>
         )}
         {!media && (
-          <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
+          <HStack
+            justify={"space-around"}
+            w={"100%"}
+            bg={"negro"}
+            pr={"40px"}
+            pt={2}
+            pb={2}
+          >
             {/* Muestra las tarjetas de categorías */}
-            {categoriesData.map((category) => (
+            {categoryList.map((category) => (
               <Box
                 key={category.id}
                 textAlign="center"
-                onClick={() => handleCategoryClick(category.type)}
+                onClick={() => handleCategoryClick(category.categoryName)}
+                style={{
+                  border: categories.includes(category.categoryName)
+                    ? "3px solid #00cc00"
+                    : "none",
+                }}
               >
-                {" "}
-                <Link
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  {category.name}
-                </Link>
+                <Box bg={"verde2"}>
+                  <Image
+                    w={{ base: 100, lg: 150 }}
+                    h={{ base: 100, lg: 150 }}
+                    objectFit={"cover"}
+                    src={category.imageUrl}
+                    fallbackSrc="https://via.placeholder.com/150"
+                  />
+                  <Text color={"negro"}>{category.categoryName}</Text>
+                </Box>
               </Box>
             ))}
+            <VStack w={"20%"} pl={10}>
+              <Button
+                h={7}
+                color={"blanco"}
+                bg={"verde2"}
+                w={{ base: "100px", lg: 40 }}
+                onClick={() => handleSearch()}
+              >
+                Filtrar
+              </Button>
+              <Button
+                h={7}
+                color={"blanco"}
+                bg={"red.400"}
+                w={{ base: "100px", lg: 40 }}
+                onClick={() => handleFiltros()}
+              >
+                Borrar Filtros
+              </Button>
+              <Text
+                color={"verde2"}
+                fontSize={{ base: 12, lg: 18 }}
+              >{`Estás viendo ${cant} productos`}</Text>
+            </VStack>
           </HStack>
         )}
-
-        <SimpleGrid minH={'100vh'} columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
-          {isLoading &&
-            Skeletons.map((Skeleton) => {
-              return (
-                <ProductCardContainer key={Skeleton}>
-                  <ProductCardSkeleton />
-                </ProductCardContainer>
-              );
-            })}
-          {lista.map((item) => (
-            <Link key={item.id} as={ReactRouterLink} to={`/detalle/${item.id}`}>
-              <ProductCardContainer key={item.id}>
-                <ProductCard item={item} />
-              </ProductCardContainer>
-            </Link>
-          ))}
-        </SimpleGrid>
-        {pageData && (
-          <RenderPagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+        {filtered ? (
+          <FilteredList categories={categories} setCant={setCant} />
+        ) : (
+          <ProductList setCant={setCant} />
         )}
       </VStack>
     </Box>
