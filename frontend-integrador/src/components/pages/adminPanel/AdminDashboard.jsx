@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Box, Alert, AlertIcon } from "@chakra-ui/react";
 import ListAdminProduct from "./ListAdminProduct";
-import ProductForm from "./ProductForm";
 import ListUsers from "./ListUsers";
 import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
+import NewProduct from "./NewProduct";
 
-const AdminDashboard = ({ productToEdit, productData, token }) => {
+const AdminDashboard = ({ productData, token }) => {
   // Estado para controlar si el modal de "Agregar Producto" está abierto o cerrado
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [prodId, setProdId] = useState(null);
   // Estado para mostrar el listado de productos, categorias, usuarios y caracteristicas cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
@@ -183,7 +185,7 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
     //console.log("TOKEN ADD PRODUCT", token);
     // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
     axios
-      .post("http://localhost:8080/api/v1/admin/products", productData, {
+      .post(`${baseUrl}/api/v1/admin/products`, productData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -242,28 +244,38 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       setShowList(false);
       setShowAdminFeatures(false);
       setShowCategoyList(false);
-    }
-    if (origin === "feature") {
+      setShowAddProduct(false);
+    } else if (origin === "addProd") {
+      setShowAddProduct(true);
+      setProdId(null);
+      setShowUserList(false);
+      setShowList(false);
+      setShowAdminFeatures(false);
+      setShowCategoyList(false);
+    } else if (origin === "feature") {
       setShowUserList(false);
       setShowList(false);
       setShowAdminFeatures(true);
       setShowCategoyList(false);
+      setShowAddProduct(false);
     } else if (origin === "item") {
       setShowUserList(false);
       setShowCategoyList(false);
       setShowList(true);
       setShowAdminFeatures(false);
+      setShowAddProduct(false);
     } else if (origin === "category") {
       setShowCategoyList(true);
       setShowUserList(false);
       setShowList(false);
       setShowAdminFeatures(false);
+      setShowAddProduct(false);
     }
   };
 
   // Renderizado del componente
   return (
-    <Box pos={"relative"} top={100} w={"99vw"} h={"170vh"}>
+    <Box pos={"relative"} top={45} w={"90vw"} minH={470} >
       {console.log("AlertSuccess:", showSuccess)}
 
       {showSuccess && (
@@ -274,16 +286,14 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
       )}
 
       <Box borderBottom="2px" p="10px" bg={"white"}>
-        {/* Mostrar el botón "Agregar Producto" solo si la resolución es de computadora */}
-        {window.innerWidth >= MIN_DESKTOP_WIDTH && (
-          <Button
-            colorScheme="green"
-            ml={4}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Agregar Producto
-          </Button>
-        )}
+
+        <Button
+          colorScheme="green"
+          ml={4}
+          onClick={() => handleShow("addProd")}
+        >
+          Agregar Producto
+        </Button>
 
         <Button colorScheme="green" ml={4} onClick={() => handleShow("item")}>
           Listar Productos
@@ -299,8 +309,6 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           Listar Categorías
         </Button>
 
-        {/* Componente del modal para agregar producto */}
-
         <Button
           colorScheme="green"
           ml={4}
@@ -308,18 +316,19 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
         >
           Administrar Características
         </Button>
-
-        {/* Componente del modal para agregar producto */}
       </Box>
-      <ProductForm
-        isOpen={isModalOpen}
-        token={token}
-        addProduct={addProduct}
-        getProducts={getProducts}
-        setIsModalOpen={setIsModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        categoryListAll={categoryListAll}
-      />
+
+
+      {/* Componente del modal para agregar producto */}
+
+      {showAddProduct && (
+        <NewProduct
+          prodId={prodId}
+          token={token}
+          setShowAddProduct={setShowAddProduct}
+          addProduct={addProduct}
+        />
+      )}
 
       {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
 
@@ -332,6 +341,10 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           lista={lista}
           categoryListAll={categoryListAll}
           getCategoriesAll={getCategoriesAll}
+          setShowList={setShowList}
+          setShowAddProduct={setShowAddProduct}
+          showAddProduct={showAddProduct}
+          setProdId={setProdId}
         />
       )}
 

@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Perfil from "./components/Perfil";
 import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
+import NewProduct from "./components/pages/adminPanel/NewProduct";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));

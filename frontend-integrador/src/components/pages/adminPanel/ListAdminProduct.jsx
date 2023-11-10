@@ -25,23 +25,23 @@ import {
   Center,
   Link,
 } from "@chakra-ui/react";
-import EditProduct from "./EditProduct";
+import NewProduct from "./NewProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCategoriesAll,categoryListAll}) => {
+const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, getCategoriesAll, setShowList, showAddProduct, setShowAddProduct, prodId, setProdId }) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [productToEdit, setProductToEdit] = useState(null);
+  //const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [productToEdit, setProductToEdit] = useState(null);
+
+
 
   // constantes del Alert Box
-
   const cancelRef = useRef(); // permite cancelar en el box de alerta
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
   const [itemToDelete, setItemToDelete] = useState(null); // pasa la variable del item a eliminar
 
-  console.log(isModalOpen, productToEdit);
 
   useEffect(() => {
     getProducts();
@@ -49,7 +49,7 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
 
   useEffect(() => {
     getCategoriesAll();
-}, []);
+  }, []);
 
   const openDeleteDialog = (item) => {
     setIsDeleteDialogOpen(true);
@@ -79,98 +79,99 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
   };
 
   const handleEdit = (product) => {
-    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
-    setProductToEdit(product); // pasa el objeto product a traves del prop
-    console.log("Producto para editar:", productToEdit);
-    console.log("Modal", isModalOpen);
+    setShowList(false); // cierra el listado de productos
+    setShowAddProduct(true)// abre el product form.
+    setProdId(product.id); // pasa el id product a traves del prop
+    console.log("Producto para editar:", product.id);
+
   };
 
   return (
     <>
-    <Flex justify={"center"}>
-      <Box mt={10}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          <Button colorScheme="green"
-            onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
-            disabled={page === 0}
+      <Flex justify={"center"}>
+        <Box mt={10}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
           >
-            &lt;&lt;&lt;
-          </Button>
-          <Text>- {page} -</Text>
-          <Button colorScheme="green" onClick={() => handlePageChange(page + 1)}>
-            &gt;&gt;&gt;
-          </Button>
-        </div>
+            <Button colorScheme="green"
+              onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
+              disabled={page === 0}
+            >
+              &lt;&lt;&lt;
+            </Button>
+            <Text>- {page} -</Text>
+            <Button colorScheme="green" onClick={() => handlePageChange(page + 1)}>
+              &gt;&gt;&gt;
+            </Button>
+          </div>
 
-        <Box w={830} mt={3}>
-        <Table variant="striped" colorScheme="green">
-          <Thead>
-            <Tr>
-              <Th>
-                <Text fontWeight="bold">ID</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Nombre</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Imagen</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Caracteristicas</Text>
-              </Th>
-              <Th >
-                <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
-                  Editar / Eliminar
-                </Text>
-              </Th >
-            </Tr>
-          </Thead>
-          <Tbody>
-            {lista &&
-              lista.map((item) => (
-                <Tr key={item.id} h="10px">
-                  <Td>{item.productId}</Td>
-                  <Td>{item.productName}</Td>
-                  <Td>
-                    <Img
-                      src={item.thumbnail}
-                      alt={item.productName}
-                      w={50}
-                      h={50}
-                    />
-                  </Td>
-                  <Td>
-                    <FaEdit
-                      style={{
-                        cursor: "pointer",
-                        color: "green",
-                        fontSize: "1.2em",
-                        marginBottom: "10px"
-                      }}
-                      onClick={() => handleEdit(item)}
-                    />
-                  
-                    <FaTrash
-                      style={{
-                        cursor: "pointer",
-                        color: "red",
-                        fontSize: "1.2em",
-                      }}
-                      onClick={() => openDeleteDialog(item)}
-                    />
-                  </Td>
+          <Box w={830} mt={3}>
+            <Table variant="striped" colorScheme="green">
+              <Thead>
+                <Tr>
+                  <Th>
+                    <Text fontWeight="bold">ID</Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold">Nombre</Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold">Imagen</Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold">Caracteristicas</Text>
+                  </Th>
+                  <Th >
+                    <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
+                      Editar / Eliminar
+                    </Text>
+                  </Th >
                 </Tr>
-              ))}
-          </Tbody>
-        </Table>
-      </Box>
-      </Box>
+              </Thead>
+              <Tbody>
+                {lista &&
+                  lista.map((item) => (
+                    <Tr key={item.id} h="10px">
+                      <Td>{item.productId}</Td>
+                      <Td>{item.productName}</Td>
+                      <Td>
+                        <Img
+                          src={item.thumbnail}
+                          alt={item.productName}
+                          w={50}
+                          h={50}
+                        />
+                      </Td>
+                      <Td>
+                        <FaEdit
+                          style={{
+                            cursor: "pointer",
+                            color: "green",
+                            fontSize: "1.2em",
+                            marginBottom: "10px"
+                          }}
+                          onClick={() => handleEdit(item)}
+                        />
+
+                        <FaTrash
+                          style={{
+                            cursor: "pointer",
+                            color: "red",
+                            fontSize: "1.2em",
+                          }}
+                          onClick={() => openDeleteDialog(item)}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </Box>
       </Flex>
       <AlertDialog
         isOpen={isDeleteDialogOpen}
@@ -204,7 +205,7 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
         </AlertDialogOverlay>
       </AlertDialog>
 
-      {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
+      {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida 
       {productToEdit !== null && (
         <EditProduct
           token={token}
@@ -219,6 +220,17 @@ const ListAdminProduct = ({getProducts,page,handlePageChange,lista,token,getCate
           categoryListAll ={categoryListAll}
         />
       )}
+      */}
+
+      {showAddProduct && (
+        <NewProduct
+          token={token}
+          prodId={prodId}
+        />
+
+      )}
+
+
     </>
   );
 };
