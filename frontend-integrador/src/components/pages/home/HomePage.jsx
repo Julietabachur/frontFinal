@@ -161,7 +161,7 @@ const HomePage = () => {
                 color={"verde2"}
                 fontSize={{ base: 12, lg: 18 }}
                 w={'80px'}
-              >{`Estás viendo xx productos de ${cant} `}</Text>
+              >{`Estás viendo ${cant} productos`}</Text>
             </VStack>
               {categoryList.map((category) => (
                 <MenuItem
@@ -243,7 +243,7 @@ const HomePage = () => {
               <Text
                 color={"verde2"}
                 fontSize={{ base: 12, lg: 18 }}
-              >{`Estás viendo xx productos de ${cant} `}</Text>
+              >{`Estás viendo ${cant} productos`}</Text>
             </VStack>
           </HStack>
         )}
