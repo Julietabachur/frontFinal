@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import {
   ArrowLeftIcon,
   ArrowBackIcon,
@@ -11,8 +11,6 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-
-
 
   return (
     <HStack spacing="2" mb={4}>
@@ -31,7 +29,7 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       >
         <ArrowBackIcon />
       </Button>
-     
+
       {pageNumbers.map((number) => (
         <Button
           key={number}
@@ -41,7 +39,6 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
           {number}
         </Button>
       ))}
-  
 
       <Button
         isDisabled={currentPage === totalPages}
@@ -50,7 +47,6 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       >
         <ArrowForwardIcon />
       </Button>
-
       <Button
         isDisabled={currentPage === totalPages}
         colorScheme="teal"

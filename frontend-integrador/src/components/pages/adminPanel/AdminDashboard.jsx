@@ -40,6 +40,9 @@ const AdminDashboard = ({ productData, token }) => {
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
   const [categoryListAll, setCategoryListAll] = useState([]); // array de lista de categorias
+  const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de categorias
+
+
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -178,6 +181,29 @@ const AdminDashboard = ({ productData, token }) => {
     }
   };
 
+   // LOGICA DE getFeaturesAll- LISTAR todas las caracteristicas sin paginacion para usarlas en el select de productForm y EditProduct
+  //no se precisa el token porque es publico
+  const getFeaturesAll = async () => {
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de productos
+        `${baseUrl}/api/v1/public/char/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setFeaturesListAll(response.data);
+        console.log("Datos recibidos:", response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //LOGICA DE AGREGAR PRODUCTO - Solo llamado a API y manejo de respuesta.
   const addProduct = (productData) => {
     //console.log("TOKEN ADD PRODUCT", token);
@@ -189,12 +215,7 @@ const AdminDashboard = ({ productData, token }) => {
       .then((response) => {
         console.log("Producto agregado con éxito:", response.data);
         getProducts();
-        setShowSuccess(true);
-
-        // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 1500);
+        window.alert("Producto agregado con exito");        
       })
       .catch((error) => {
         // Maneja el error de la solicitud POST aquí - VERIFICAR.
@@ -203,10 +224,10 @@ const AdminDashboard = ({ productData, token }) => {
         // Muestra un mensaje de error al usuario
       });
   };
-
   //para llamar a todas las categorias
   useEffect(() => {
     getCategoriesAll();
+    getFeaturesAll();
   }, []);
 
   // Control de Paginación en los productos

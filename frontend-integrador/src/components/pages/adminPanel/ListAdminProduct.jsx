@@ -18,11 +18,14 @@ import {
   Flex,
   Text,
   Button,
+  HStack,
 } from "@chakra-ui/react";
 import NewProduct from "./NewProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, getCategoriesAll, categoriesListAll, setShowList, showAddProduct, setShowAddProduct, prodId, setProdId }) => {
+const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, getCategoriesAll, categoriesListAll, setShowList, showAddProduct, setShowAddProduct, prodId, setProdId, featuresListAll,
+  getFeaturesAll
+}) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -43,6 +46,7 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
 
   useEffect(() => {
     getCategoriesAll();
+    getFeaturesAll();
   }, []);
 
   const openDeleteDialog = (item) => {
@@ -104,67 +108,68 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
           </Button>
         </div>
 
-        <Box w={830} mt={3}>
-        <Table variant="striped" colorScheme="green">
-          <Thead>
-            <Tr>
-              <Th>
-                <Text fontWeight="bold">ID</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Nombre</Text>
-              </Th>
-              <Th>
-                <Text fontWeight="bold">Imagen</Text>
-              </Th>
-
-              <Th >
-                <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
-                  Editar / Eliminar
-                </Text>
-              </Th >
-            </Tr>
-          </Thead>
-          <Tbody>
-            {lista &&
-              lista.map((item) => (
-                <Tr key={item.id} h="10px">
-                  <Td>{item.productId}</Td>
-                  <Td>{item.productName}</Td>
-                  <Td>
-                    <Img
-                      src={item.thumbnail}
-                      alt={item.productName}
-                      w={50}
-                      h={50}
-                    />
-                  </Td>
-                  <Td>
-                    <FaEdit
-                      style={{
-                        cursor: "pointer",
-                        color: "green",
-                        fontSize: "1.2em",
-                        marginBottom: "10px"
-                      }}
-                      onClick={() => handleEdit(item)}
-                    />
-                  
-                    <FaTrash
-                      style={{
-                        cursor: "pointer",
-                        color: "red",
-                        fontSize: "1.2em",
-                      }}
-                      onClick={() => openDeleteDialog(item)}
-                    />
-                  </Td>
+          <Box w={830} mt={3}>
+            <Table variant="striped" colorScheme="green">
+              <Thead>
+                <Tr>
+                  <Th>
+                    <Text fontWeight="bold">ID</Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold">Nombre</Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold">Imagen</Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
+                      Editar / Eliminar
+                    </Text>
+                  </Th>
                 </Tr>
-              ))}
-          </Tbody>
-        </Table>
-      </Box>
-      </Box>
+              </Thead>
+              <Tbody>
+                {lista &&
+                  lista.map((item) => (
+                    <Tr key={item.id} h="10px">
+                      <Td>{item.productId}</Td>
+                      <Td>{item.productName}</Td>
+                      <Td>
+                        <Img
+                          src={item.thumbnail}
+                          alt={item.productName}
+                          w={50}
+                          h={50}
+                        />
+                      </Td>
+                      <Td>
+                        <HStack>
+                        <FaEdit
+                          style={{
+                            cursor: "pointer",
+                            color: "green",
+                            fontSize: "1.2em",
+                            margin: "10px",
+                          }}
+                          onClick={() => handleEdit(item)}
+                        />
+                        <FaTrash
+                          style={{
+                            cursor: "pointer",
+                            color: "red",
+                            fontSize: "1.2em",
+                            margin: "10px"
+                          }}
+                          onClick={() => openDeleteDialog(item)}
+                        />
+                        </HStack>
+                      </Td>
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </Box>
       </Flex>
       <AlertDialog
         isOpen={isDeleteDialogOpen}
