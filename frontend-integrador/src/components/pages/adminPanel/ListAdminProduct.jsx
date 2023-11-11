@@ -32,12 +32,14 @@ const ListAdminProduct = ({
   getCategoriesAll,
   categoryListAll,
   featuresListAll,
-  getFeaturesAll
-}) => {
+  getFeaturesAll,
+  setIsModalOpen,
+  isModalOpen,
+  }) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
 
   // constantes del Alert Box
@@ -102,6 +104,15 @@ const ListAdminProduct = ({
               alignItems: "center",
             }}
           >
+          <Button
+            colorScheme="green"
+            ml={4}
+            onClick={() => setIsModalOpen(true)}
+            marginRight= "500px"
+          >
+            Agregar Producto
+          </Button>
+        
             <Button
               colorScheme="green"
               onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
@@ -153,13 +164,14 @@ const ListAdminProduct = ({
                         />
                       </Td>
                       <Td>
-                        <HStack>
+                        
                         <FaEdit
                           style={{
                             cursor: "pointer",
                             color: "green",
                             fontSize: "1.2em",
-                            margin: "10px",
+                            marginLeft: "40px",
+                            marginBotton: "10px" 
                           }}
                           onClick={() => handleEdit(item)}
                         />
@@ -168,11 +180,12 @@ const ListAdminProduct = ({
                             cursor: "pointer",
                             color: "red",
                             fontSize: "1.2em",
-                            margin: "10px"
+                            marginLeft: "40px",
+                            marginTop: "10px" 
                           }}
                           onClick={() => openDeleteDialog(item)}
                         />
-                        </HStack>
+                        
                       </Td>
                     </Tr>
                   ))}

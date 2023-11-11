@@ -356,6 +356,8 @@ const AdminDashboard = ({ productToEdit, productData, token }) => {
           getCategoriesAll={getCategoriesAll}
           featuresListAll={featuresListAll}
           getFeaturesAll={getFeaturesAll}
+          setIsModalOpen={setIsModalOpen}
+          IsModalOpen= {isModalOpen}
         />
       )}
 

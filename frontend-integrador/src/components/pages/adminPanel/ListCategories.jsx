@@ -106,16 +106,29 @@ import {
                     alignItems: "center",
                 }}
             >
+                <Button
+                    colorScheme="green"
+                    onClick={() => setIsModalCategoriaOpen(true)}
+                    marginRight= "504px"
+                    marginBottom={5}
+                >
+                    Agregar Categoría
+                </Button>
+
                 <Button colorScheme="green" 
                     onClick={() =>
                     handleCategoryPageChange(categoryPage > 1 ? categoryPage - 1 : categoryPage)
                     }
                     disabled={categoryPage === 0}
+                    marginBottom={5}
                 >
                     &lt;&lt;&lt;
                 </Button >
-                <Text>- {categoryPage} -</Text>
-                <Button colorScheme="green"  onClick={() => handleCategoryPageChange(categoryPage + 1)}>
+                <Text marginBottom={5} >- {categoryPage} -</Text>
+                <Button 
+                colorScheme="green" 
+                marginBottom={5} 
+                onClick={() => handleCategoryPageChange(categoryPage + 1)}>
                     &gt;&gt;&gt;
                 </Button>
             </div>
@@ -158,7 +171,8 @@ import {
                                     cursor: "pointer",
                                     color: "green",
                                     fontSize: "1.2em",
-                                    marginBottom: "10px"
+                                    marginBottom: "10px",
+                                    marginLeft:"20px" 
                                 }}
                                 onClick={() => handleEditCategory(category)}
                                 />
@@ -167,7 +181,8 @@ import {
                                     cursor: "pointer",
                                     color: "red",
                                     fontSize: "1.2em",
-                                    marginbottom: "10px" // Agregar margen a la izquierda para separar del botón de editar
+                                    marginbottom: "10px",
+                                    marginLeft:"20px" 
                                 }}
                                 onClick={() => openDeleteDialog(category)}
     />
@@ -183,12 +198,7 @@ import {
                 w={250}  // Ancho igual al ancho de la tabla
                 mt={150}   // Espacio arriba del botón
             >
-                <Button
-                    colorScheme="green"
-                    onClick={() => setIsModalCategoriaOpen(true)}
-                >
-                    Agregar Categoría
-                </Button>
+               
 
                  {/* Componente del modal para agregar categoria */}
                 <CategoryForm
