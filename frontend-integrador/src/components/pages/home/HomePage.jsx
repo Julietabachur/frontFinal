@@ -21,6 +21,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Flex,
 } from "@chakra-ui/react";
 import ProductList from "./ProductList";
 import FilteredList from "./FilteredList";
@@ -103,7 +104,7 @@ const HomePage = () => {
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
-          color={"negro"}
+          color={"blanco"}
           w={"100%"}
           bg={"#444444"}
           justify={"center"}
@@ -126,7 +127,6 @@ const HomePage = () => {
             Buscar
           </Button>
         </HStack>
-
         {/* categorias */}
         {media && (
           <Menu>
@@ -136,19 +136,52 @@ const HomePage = () => {
               </Text>
             </MenuButton>
             <MenuList bg={"negro"}>
+            <VStack w={"30%"}  ml={10}>
+              <Button
+                h={7}
+                color={"blanco"}
+                bg={"verde2"}
+                w={{ base: "100px", lg: 40 }}
+                onClick={() => handleSearch()}
+                ml={4}
+              >
+                Filtrar
+              </Button>
+              <Button
+                h={7}
+                color={"blanco"}
+                bg={"red.400"}
+                w={{ base: "100px", lg: 40 }}
+                onClick={() => handleFiltros()}
+                ml={4}
+              >
+                Borrar Filtros
+              </Button>
+              <Text
+                color={"verde2"}
+                fontSize={{ base: 12, lg: 18 }}
+                w={'80px'}
+              >{`Estás viendo ${cant} productos`}</Text>
+            </VStack>
               {categoryList.map((category) => (
                 <MenuItem
                   bg={"negro"}
                   key={category.id}
                   textAlign="center"
                   onClick={() => handleCategoryClick(category.categoryName)}
+                  
                 >
-                  <Box bg={"yellow"}>
-                    <Image
-                      src={category.imageUrl}
-                      fallbackSrc="https://via.placeholder.com/150"
-                    />
-                    <Text color={"green"}>{category.categoryName}</Text>
+                  <Box bg={"verde2"} py={1} px={2} ml={5} style={{
+                    border: categories.includes(category.categoryName)
+                      ? "3px solid #e2e8f0"
+                      : "none",
+                  }}>                    
+                    <Text 
+                     style={{
+                      fontWeight: categories.includes(category.categoryName) ? "bold" : "normal",
+                      color: categories.includes(category.categoryName) ? "#e2e8f0" : "black",
+                    }}
+                    >{category.categoryName}</Text>
                   </Box>
                 </MenuItem>
               ))}
@@ -192,7 +225,7 @@ const HomePage = () => {
               <Button
                 h={7}
                 color={"blanco"}
-                bg={"verde1"}
+                bg={"verde2"}
                 w={{ base: "100px", lg: 40 }}
                 onClick={() => handleSearch()}
               >
@@ -210,7 +243,7 @@ const HomePage = () => {
               <Text
                 color={"verde2"}
                 fontSize={{ base: 12, lg: 18 }}
-              >{`Cantidad de resultados ${cant}`}</Text>
+              >{`Estás viendo ${cant} productos`}</Text>
             </VStack>
           </HStack>
         )}

@@ -18,6 +18,7 @@ import {
   Flex,
   Text,
   Button,
+  HStack,
 } from "@chakra-ui/react";
 import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -30,6 +31,8 @@ const ListAdminProduct = ({
   token,
   getCategoriesAll,
   categoryListAll,
+  featuresListAll,
+  getFeaturesAll
 }) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
@@ -51,6 +54,7 @@ const ListAdminProduct = ({
 
   useEffect(() => {
     getCategoriesAll();
+    getFeaturesAll();
   }, []);
 
   const openDeleteDialog = (item) => {
@@ -149,25 +153,26 @@ const ListAdminProduct = ({
                         />
                       </Td>
                       <Td>
+                        <HStack>
                         <FaEdit
                           style={{
                             cursor: "pointer",
                             color: "green",
                             fontSize: "1.2em",
-                            marginBottom: "10px",
+                            margin: "10px",
                           }}
                           onClick={() => handleEdit(item)}
                         />
-                      </Td>
-                      <Td>
                         <FaTrash
                           style={{
                             cursor: "pointer",
                             color: "red",
                             fontSize: "1.2em",
+                            margin: "10px"
                           }}
                           onClick={() => openDeleteDialog(item)}
                         />
+                        </HStack>
                       </Td>
                     </Tr>
                   ))}
@@ -221,6 +226,8 @@ const ListAdminProduct = ({
           getProducts={getProducts}
           getCategoriesAll={getCategoriesAll}
           categoryListAll={categoryListAll}
+          getFeaturesAll={getFeaturesAll}
+          featuresListAll={featuresListAll}
         />
       )}
     </>

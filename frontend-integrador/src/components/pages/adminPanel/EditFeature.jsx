@@ -8,41 +8,38 @@ import axios from 'axios';
 
 const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
 
-  const [show, setShow] = useState(false)
-  const [error, setError] = useState(false)
-  console.log(featureToEdit)
-
   const [dataEdit, setDataEdit] = useState (featureToEdit)
-  console.log(dataEdit.id)
+
 
   const onSubmit = (e) => {
     e.preventDefault();
-    handleEditFeature(dataEdit);
-    setTimeout(() =>{
-      handleChange();
-      setShow(false);
-      setError(false)
-    }, 2000)
-  }
+    putFeature(dataEdit);
+    handleChange();
+    }
   
+ const putFeature = () => {
 
- const handleEditFeature = () => {
+  console.log(featureToEdit.id)
+  console.log(featureToEdit)
+  console.log(dataEdit)
+
     // Realiza la solicitud PUT al endpoint para actualizar la caracteristica
     axios.put(`http://localhost:8080/api/v1/admin/char/${featureToEdit.id}`, dataEdit, 
       { headers: 
         { Authorization: `Bearer ${token}` } 
       })
       .then((response) => {
+        window.alert("Caracteristica actualizada con exito");
         console.log('Caracteristica actualizada con éxito:', response.data);
-        // Cierra el modal y resetea el formulario
-        setShow(true);
-        setError(false);
       })
       .catch((error) => {
-        setShow(false)
-        setError(true)
-        // Maneja el error de la solicitud POST aquí
-        console.error('Error al actualizar la caracteristica:', error);
+        if (error.response && error.response.status === 400) {
+          // Si el error es 400, muestra una alerta con el mensaje de error del servidor
+          window.alert(error.response.data.error);
+          } else {
+          // Para otros errores, muestra un mensaje de error genérico
+          console.error("Error al actualizar la caracteristica:", error);
+          }
       });
   }
 
@@ -69,10 +66,8 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
                 <Button colorScheme='green' onClick={onSubmit}>Guardar Cambios</Button>
             </FormControl>
             </form>
-            {show && <Alert style={{color: 'green'}}>Caracteristica agregada con exito</Alert>}
-            {error && <Alert style={{color: 'red'}}> Error al agregar la caracteristica, el nombre ya existe. Verifiquelo o elija otro nombre</Alert>}
-            </>
-    )
+  </>
+  )
   }
 
 export default EditFeature
