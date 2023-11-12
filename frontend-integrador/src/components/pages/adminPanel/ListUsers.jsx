@@ -76,9 +76,9 @@ const ListUsers = ({
           <Table variant="striped" colorScheme="green">
             <Thead>
               <Tr>
-                <Th>
+                {/*<Th>
                   <Text fontWeight="bold">ID</Text>
-                </Th>
+                </Th>*/}
                 <Th>
                   <Text fontWeight="bold">Nombre y apellido</Text>
                 </Th>
@@ -97,7 +97,7 @@ const ListUsers = ({
               {userList &&
                 userList.map((user) => (
                   <Tr key={user.id} h="10px">
-                    <Td>{user.id}</Td>
+                    {/*<Td>{user.id}</Td>*/}
                     <Td>{user.firstName + " " + user.lastName}</Td>
                     <Td>{user.clientName}</Td>
                     <Td>{user.email}</Td>

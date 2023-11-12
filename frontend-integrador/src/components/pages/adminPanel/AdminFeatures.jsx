@@ -139,10 +139,7 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
                     <Text fontWeight="bold">Icono</Text>
                   </Th>
                   <Th>
-                    <Text fontWeight="bold">Editar</Text>
-                  </Th>
-                  <Th>
-                    <Text fontWeight="bold">Eliminar</Text>
+                    <Text fontWeight="bold">Editar / Eliminar</Text>
                   </Th>
                 </Tr>
               </Thead>
@@ -158,16 +155,20 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
                         cursor: "pointer",
                         color: "green",
                         fontSize: "1.2em",
+						            marginBottom: "10px",
+                        marginLeft:"40px"
                       }}
                       onClick={() => handleEdit(feature)}
                       />                        
-                      </Td>
-                      <Td>
+                      
+                      
                         <FaTrash
                         style={{
                         cursor: "pointer",
                         color: "red",
                         fontSize: "1.2em",
+						            marginbottom: "10px",
+                        marginLeft:"40px"
                         }}
                         onClick={() => openDeleteDialog(feature)}
                         />

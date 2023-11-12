@@ -24,15 +24,15 @@ import NewProduct from "./NewProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, getCategoriesAll, categoriesListAll, setShowList, showAddProduct, setShowAddProduct, prodId, setProdId, featuresListAll,
-  getFeaturesAll
-}) => {
+  getFeaturesAll,
+  setIsModalOpen,
+  isModalOpen,
+  }) => {
   console.log("COMIENZA LISTADMIN");
   console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   //const [isModalOpen, setIsModalOpen] = useState(false);
-  //const [productToEdit, setProductToEdit] = useState(null);
-
-
+  const [productToEdit, setProductToEdit] = useState(null);
 
   // constantes del Alert Box
   const cancelRef = useRef(); // permite cancelar en el box de alerta
@@ -86,27 +86,39 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
 
   return (
     <>
-    <Flex justify={"center"}>
-      <Box mt={10}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
+      <Flex justify={"center"}>
+        <Box mt={10}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
           <Button
             colorScheme="green"
-            onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
-            disabled={page === 0}
+            ml={4}
+            onClick={() => setIsModalOpen(true)}
+            marginRight= "500px"
           >
-            &lt;&lt;&lt;
+            Agregar Producto
           </Button>
-          <Text>- {page} -</Text>
-          <Button colorScheme="green" onClick={() => handlePageChange(page + 1)}>
-            &gt;&gt;&gt;
-          </Button>
-        </div>
+        
+            <Button
+              colorScheme="green"
+              onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
+              disabled={page === 0}
+            >
+              &lt;&lt;&lt;
+            </Button>
+            <Text>- {page} -</Text>
+            <Button
+              colorScheme="green"
+              onClick={() => handlePageChange(page + 1)}
+            >
+              &gt;&gt;&gt;
+            </Button>
+          </div>
 
           <Box w={830} mt={3}>
             <Table variant="striped" colorScheme="green">
@@ -143,13 +155,14 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
                         />
                       </Td>
                       <Td>
-                        <HStack>
+                        
                         <FaEdit
                           style={{
                             cursor: "pointer",
                             color: "green",
                             fontSize: "1.2em",
-                            margin: "10px",
+                            marginLeft: "40px",
+                            marginBotton: "10px" 
                           }}
                           onClick={() => handleEdit(item)}
                         />
@@ -158,11 +171,12 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
                             cursor: "pointer",
                             color: "red",
                             fontSize: "1.2em",
-                            margin: "10px"
+                            marginLeft: "40px",
+                            marginTop: "10px" 
                           }}
                           onClick={() => openDeleteDialog(item)}
                         />
-                        </HStack>
+                        
                       </Td>
                     </Tr>
                   ))}

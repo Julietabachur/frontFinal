@@ -46,18 +46,18 @@ const FeatureForm = ({token, getFeatures}) => {
     <>
 
     <Button border="2px" colorScheme="green" onClick={onOpen}>
-    Nueva Caracteristica
+    Nueva Característica
     </Button>
 
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent mt={150}>
-          <ModalHeader>Nueva Caracteristica</ModalHeader>
+          <ModalHeader>Nueva Característica</ModalHeader>
           <ModalCloseButton/>
           <ModalBody>
             <form>
             <FormControl>
-              <FormLabel> Nombre de la caracteristica</FormLabel>
+              <FormLabel> Nombre de la característica</FormLabel>
               <Input
                 type="text"
                 name="newCharName"
@@ -66,7 +66,7 @@ const FeatureForm = ({token, getFeatures}) => {
                 value={newFeature.charName}
                 onChange={(e) => setNewFeature({...newFeature, charName: (e.target.value).toUpperCase()})}
               />
-              <FormLabel> Icono representativo </FormLabel>
+              <FormLabel> Ícono representativo </FormLabel>
               <Input
                 type="text"
                 name="newCharIcon"

@@ -365,6 +365,8 @@ const AdminDashboard = ({ productData, token }) => {
           setShowAddProduct={setShowAddProduct}
           showAddProduct={showAddProduct}
           setProdId={setProdId}
+          setIsModalOpen={setIsModalOpen}
+          IsModalOpen= {isModalOpen}
         />
       )}
 
