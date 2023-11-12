@@ -25,6 +25,7 @@ import {
 } from "@chakra-ui/react";
 import ProductList from "./ProductList";
 import FilteredList from "./FilteredList";
+import SearchBar from "./searchBar/SearchBar";
 
 const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
@@ -113,8 +114,8 @@ const HomePage = () => {
           /*p={9}*/
           mt={2}
         >
-          {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
-          <Input
+          {/* {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>} */}
+          {/* <Input
             bg={"blanco"}
             w={media ? "50%" : "30%"}
             h={7}
@@ -122,10 +123,11 @@ const HomePage = () => {
             _placeholder={{ color: "inherit" }}
             borderRadius={"15px"}
             m={10}
-          />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
+          /> */}
+          <SearchBar />
+         {/*  <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
             Buscar
-          </Button>
+          </Button> */}
         </HStack>
         {/* categorias */}
         {media && (
