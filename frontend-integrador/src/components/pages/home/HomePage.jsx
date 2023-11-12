@@ -25,6 +25,7 @@ import {
 } from "@chakra-ui/react";
 import ProductList from "./ProductList";
 import FilteredList from "./FilteredList";
+import VerifiedUser from "./VerifiedUser";
 
 const HomePage = () => {
   //const token = import.meta.env.VITE_TOKEN;
@@ -104,6 +105,7 @@ const HomePage = () => {
 
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
+      <VerifiedUser/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack

@@ -15,15 +15,23 @@ const VerifiedUser = () => {
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const GETME_URL = import.meta.env.VITE_GETME_URL;
     const loginUrl = import.meta.env.VITE_LOGIN_URL;
-    const [showVerify, setShowVerify] = useState(true);
-    const [mailSent, setMailSent] = useState('0');
+    const [showVerify, setShowVerify] = useState(false);
+    const [showSentMail, setShowSentMail] = useState(false);
+    const [mailSent, setMailSent] = useState(0);
     const [userId, setUserId] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [userDataReady, setUserDataReady] = useState(false);
     const [requestSendMail, setRequestSendMail] = useState(false);
 
     const token = JSON.parse(localStorage.getItem("riskkojwt"));
-    console.log("Token LocalStorage:", token);
+    //console.log("Token LocalStorage:", token);
+
+
+    useEffect(() => {
+        if (token) {
+            checkUser(token);
+        }
+    }, []);
 
     const checkUser = async (token) => {
         try {
@@ -40,13 +48,10 @@ const VerifiedUser = () => {
 
             if (response.data.isVerified) {
                 console.log("isVerified: YES");
-                setShowVerify(false);
-
             } else {
-
-                console.log("isVerified: NO")
+                console.log("isVerified: NO");
+                setShowVerify(true);
                 setRequestSendMail(true);
-
             }
         } catch (error) {
             console.error("ERROR en checkUser:", error);
@@ -54,16 +59,11 @@ const VerifiedUser = () => {
 
     };
 
-    useEffect(() => {
-        if (token) {
-            checkUser(token);
-        }
-    }, []);
+
 
     // Utiliza otro useEffect para controlar el envío de emails
     useEffect(() => {
         if (userDataReady && requestSendMail) {
-
             mailSender();
         }
     }, [userDataReady, requestSendMail]);
@@ -84,10 +84,10 @@ const VerifiedUser = () => {
                         },
                     }
                 );
-
-                if (response.data.isVerified) {
+                if (response.data.verified) {
                     console.log("isVerified: YES");
                     setShowVerify(false);
+                    setMailSent("");
                 }
 
             } catch (error) {
@@ -107,12 +107,8 @@ const VerifiedUser = () => {
 
     const mailSender = async () => {
 
-        setRequestSendMail(false); // cambia el estado para resetear la variable.
-
         console.log("MAIL SENDER")
         console.log("******************");
-        console.log("POST: ", baseUrl + "/api/v1/private/email/")
-        console.log("TOKEN", token);
         console.log("Times Sent: ", mailSent);
         console.log("******************");
 
@@ -123,32 +119,43 @@ const VerifiedUser = () => {
         console.log(resendBody);
         console.log("******************");
 
-        try {
-            const response = await axios.post(
-                `${baseUrl}/api/v1/private/email/`,
-                resendBody,  // Cuerpo de la solicitud (contiene id del usuario y path del server)
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
+        if (mailSent != "E") {
+            try {
+                const response = await axios.post(
+                    `${baseUrl}/api/v1/private/email/`,
+                    resendBody,  // Cuerpo de la solicitud (contiene id del usuario y path del server)
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (response.status === 200) {
+                    console.log("Mail ENVIADO");
+                    setUserEmail(response.data);
+                    setShowSentMail(true);
+                    // cuenta tres segundos y vuelve a false
+                    setTimeout(() => {
+                        setShowSentMail(false);
+                    }, 3000);
+
+                    if (mailSent != "E") {
+                        setMailSent(prevMailSent => prevMailSent + 1);
+
+                        if (mailSent >= 5) {
+                            setMailSent('E');
+                        }
+                    }
                 }
-            );
 
-            if (response.data) {
-                console.log("Mail ENVIADO");
-                setMailSent(prevMailSent => prevMailSent + 1);
-
-                if (mailSent > 5) {
-                    setMailSent('E');
-                }
-
+            } catch (error) {
+                console.error("ERROR en envío de e-mail:", error);
             }
 
-        } catch (error) {
-            console.error("ERROR en envío de e-mail:", error);
+            setRequestSendMail(false); // cambia el estado para resetear la variable.
         }
-
     };
 
 
@@ -168,7 +175,7 @@ const VerifiedUser = () => {
             {mailSent > 0 && mailSent <= 5 ? (
                 <Alert status="info">
                     <AlertIcon />
-                    <Text>Email enviado a: {$userEmail}</Text>
+                    <Text>Email enviado a: {userEmail}</Text>
                 </Alert>
             ) : mailSent === 'E' && (
                 <Alert status="error">
