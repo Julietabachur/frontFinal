@@ -8,26 +8,20 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
   PopoverBody,
   VStack,
   Box,
   useDisclosure,
-  UnorderedList,
-  ListItem,
 } from "@chakra-ui/react";
 import { CancelToken } from "axios";
 
-const SearchBar = ({ setSearchedList, setSearched }) => {
+const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const [productName, setProductName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
-  const [searchResults, setSearchResults] = useState([]);
   const [cancelToken, setCancelToken] = useState(null);
 
   const token = import.meta.env.VITE_TOKEN;

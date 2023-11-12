@@ -39,7 +39,33 @@ const HomePage = () => {
   const [cant, setCant] = useState(0);
   const [searchedList, setSearchedList] = useState({});
   const [searched, setSearched] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
   const MIN_DESKTOP_WIDTH = 600;
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/search?`,
+        {
+          params: {
+            productName: productName.toUpperCase(),
+            startDate: startDate,
+            endDate: endDate || null,
+            page,
+            size,
+          },
+        }
+      );
+      if (response) {
+        setSearchedList(response.data);
+        setSearched(true);
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error("Error during search:", error);
+      // Manejar el error en tu aplicación, posiblemente mostrar un mensaje al usuario
+    }
+  };
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -107,13 +133,11 @@ const HomePage = () => {
   useEffect(() => {
     if (searchedList?.content?.length === 0) {
       setSearched(false);
-    }else{
-      setFiltered(false)
+    } else {
+      setFiltered(false);
       setCategories([]);
     }
   }, [searchedList]);
-
-
 
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
@@ -129,7 +153,12 @@ const HomePage = () => {
           /*p={9}*/
           mt={2}
         >
-          <SearchBar setSearchedList={setSearchedList} setSearched={setSearched} />
+          <SearchBar
+            searchResults={searchResults}
+            setSearchResults={setSearchResults}
+            setSearchedList={setSearchedList}
+            setSearched={setSearched}
+          />
         </HStack>
         {/* categorias */}
         {media && (
@@ -265,7 +294,7 @@ const HomePage = () => {
         {filtered ? (
           <FilteredList categories={categories} setCant={setCant} />
         ) : searched ? (
-          <SearchedList searchedList={searchedList} />
+          <SearchedList handleSearch={handleSearch} searchedList={searchedList} />
         ) : (
           <ProductList setCant={setCant} />
         )}
