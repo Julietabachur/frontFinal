@@ -25,6 +25,8 @@ import {
 } from "@chakra-ui/react";
 import ProductList from "./ProductList";
 import FilteredList from "./FilteredList";
+import SearchedList from "./searchBar/SearchedList";
+import SearchBar from "./searchBar/SearchBar";
 
 const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
@@ -35,7 +37,35 @@ const HomePage = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [cant, setCant] = useState(0);
+  const [searchedList, setSearchedList] = useState({});
+  const [searched, setSearched] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
   const MIN_DESKTOP_WIDTH = 600;
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/search?`,
+        {
+          params: {
+            productName: productName.toUpperCase(),
+            startDate: startDate,
+            endDate: endDate || null,
+            page,
+            size,
+          },
+        }
+      );
+      if (response) {
+        setSearchedList(response.data);
+        setSearched(true);
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error("Error during search:", error);
+      // Manejar el error en tu aplicación, posiblemente mostrar un mensaje al usuario
+    }
+  };
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -88,8 +118,9 @@ const HomePage = () => {
     setFiltered(false);
   };
 
-  const handleSearch = async () => {
+  const handleFilterSearch = async () => {
     setFiltered(true);
+    setSearched(false);
   };
 
   //si se cancelan todos los filtros te vuelve a  la lista de mesclados
@@ -98,6 +129,15 @@ const HomePage = () => {
       setFiltered(false);
     }
   }, [categories]);
+
+  useEffect(() => {
+    if (searchedList?.content?.length === 0) {
+      setSearched(false);
+    } else {
+      setFiltered(false);
+      setCategories([]);
+    }
+  }, [searchedList]);
 
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
@@ -108,24 +148,17 @@ const HomePage = () => {
           w={"100%"}
           bg={"#444444"}
           justify={"center"}
-          h={"75px"}
+          h={"175px"}
           align={"Center"}
           /*p={9}*/
           mt={2}
         >
-          {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
-          <Input
-            bg={"blanco"}
-            w={media ? "50%" : "30%"}
-            h={7}
-            placeholder="Buscar productos"
-            _placeholder={{ color: "inherit" }}
-            borderRadius={"15px"}
-            m={10}
+          <SearchBar
+            searchResults={searchResults}
+            setSearchResults={setSearchResults}
+            setSearchedList={setSearchedList}
+            setSearched={setSearched}
           />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
-            Buscar
-          </Button>
         </HStack>
         {/* categorias */}
         {media && (
@@ -136,52 +169,63 @@ const HomePage = () => {
               </Text>
             </MenuButton>
             <MenuList bg={"negro"}>
-            <VStack w={"30%"}  ml={10}>
-              <Button
-                h={7}
-                color={"blanco"}
-                bg={"verde2"}
-                w={{ base: "100px", lg: 40 }}
-                onClick={() => handleSearch()}
-                ml={4}
-              >
-                Filtrar
-              </Button>
-              <Button
-                h={7}
-                color={"blanco"}
-                bg={"red.400"}
-                w={{ base: "100px", lg: 40 }}
-                onClick={() => handleFiltros()}
-                ml={4}
-              >
-                Borrar Filtros
-              </Button>
-              <Text
-                color={"verde2"}
-                fontSize={{ base: 12, lg: 18 }}
-                w={'80px'}
-              >{`Estás viendo ${cant} productos`}</Text>
-            </VStack>
+              <VStack w={"30%"} ml={10}>
+                <Button
+                  h={7}
+                  color={"blanco"}
+                  bg={"verde2"}
+                  w={{ base: "100px", lg: 40 }}
+                  onClick={() => handleFilterSearch()}
+                  ml={4}
+                >
+                  Filtrar
+                </Button>
+                <Button
+                  h={7}
+                  color={"blanco"}
+                  bg={"red.400"}
+                  w={{ base: "100px", lg: 40 }}
+                  onClick={() => handleFiltros()}
+                  ml={4}
+                >
+                  Borrar Filtros
+                </Button>
+                <Text
+                  color={"verde2"}
+                  fontSize={{ base: 12, lg: 18 }}
+                  w={"80px"}
+                >{`Estás viendo ${cant} productos`}</Text>
+              </VStack>
               {categoryList.map((category) => (
                 <MenuItem
                   bg={"negro"}
                   key={category.id}
                   textAlign="center"
                   onClick={() => handleCategoryClick(category.categoryName)}
-                  
                 >
-                  <Box bg={"verde2"} py={1} px={2} ml={5} style={{
-                    border: categories.includes(category.categoryName)
-                      ? "3px solid #e2e8f0"
-                      : "none",
-                  }}>                    
-                    <Text 
-                     style={{
-                      fontWeight: categories.includes(category.categoryName) ? "bold" : "normal",
-                      color: categories.includes(category.categoryName) ? "#e2e8f0" : "black",
+                  <Box
+                    bg={"verde2"}
+                    py={1}
+                    px={2}
+                    ml={5}
+                    style={{
+                      border: categories.includes(category.categoryName)
+                        ? "3px solid #e2e8f0"
+                        : "none",
                     }}
-                    >{category.categoryName}</Text>
+                  >
+                    <Text
+                      style={{
+                        fontWeight: categories.includes(category.categoryName)
+                          ? "bold"
+                          : "normal",
+                        color: categories.includes(category.categoryName)
+                          ? "#e2e8f0"
+                          : "black",
+                      }}
+                    >
+                      {category.categoryName}
+                    </Text>
                   </Box>
                 </MenuItem>
               ))}
@@ -227,7 +271,7 @@ const HomePage = () => {
                 color={"blanco"}
                 bg={"verde2"}
                 w={{ base: "100px", lg: 40 }}
-                onClick={() => handleSearch()}
+                onClick={() => handleFilterSearch()}
               >
                 Filtrar
               </Button>
@@ -249,6 +293,8 @@ const HomePage = () => {
         )}
         {filtered ? (
           <FilteredList categories={categories} setCant={setCant} />
+        ) : searched ? (
+          <SearchedList handleSearch={handleSearch} searchedList={searchedList} />
         ) : (
           <ProductList setCant={setCant} />
         )}
