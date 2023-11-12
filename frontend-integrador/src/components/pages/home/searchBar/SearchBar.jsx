@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { CancelToken } from "axios";
 
-const SearchBar = () => {
+const SearchBar = ({ setSearchedList, setSearched }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const [productName, setProductName] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -62,7 +62,9 @@ const SearchBar = () => {
         }
       );
       if (response) {
-        setSearchResults(response.data.content);
+        setSearchedList(response.data);
+        setSearched(true);
+        setSearchResults([])
       }
     } catch (error) {
       console.error("Error during search:", error);
@@ -102,18 +104,19 @@ const SearchBar = () => {
         }
       }
     };
-
-    fetchData();
+    if (productName) {
+      fetchData();
+    } else {
+      setSearchResults([]);
+    }
 
     // Cleanup function to cancel the request when the component unmounts
     return () => source.cancel("Request canceled by the cleanup function");
   }, [productName, startDate, endDate, page, size]);
 
-
   const handleInput = (productName) => {
     setProductName(productName);
   };
-
 
   return (
     <HStack w={"70%"} align="flex-start">

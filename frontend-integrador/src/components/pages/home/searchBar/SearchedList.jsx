@@ -5,13 +5,12 @@ import {
   useNavigate,
   Link as ReactRouterLink,
 } from "react-router-dom";
-import ProductCard from "./ProductCard";
-import ProductCardContainer from "./ProductCardContainer";
-import RenderPagination from "./RenderPagination";
+import ProductCard from "../ProductCard";
+import ProductCardContainer from "../ProductCardContainer";
+import RenderPagination from "../RenderPagination";
 import axios from "axios";
 
-const SearchedList = () => {
-  
+const SearchedList = ({searchedList}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [list, setList] = useState([]);
@@ -19,29 +18,19 @@ const SearchedList = () => {
     const token = import.meta.env.VITE_TOKEN;
     const baseUrl = import.meta.env.VITE_SERVER_URL;
   
-    const getProductsByType = async (categories) => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${currentPage}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response) {
-          setPageData(response.data);
-          setList(response.data.content);
-          setCant(response.data.totalElements);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
+    console.log(searchedList);
+    useEffect(()=>{
+      setList(searchedList.content)
+      setTotalPages(searchedList.totalPages)
+      setCurrentPage(searchedList.currentPage+1)
+    },[searchedList])
+
+
+
+/*   
     useEffect(() => {
       getProductsByType(categories);
-    }, [currentPage,categories]);
+    }, [currentPage]);
   
     useEffect(() => {
       setCurrentPage(1);
@@ -51,7 +40,7 @@ const SearchedList = () => {
       if (pageData) {
         setTotalPages(pageData.last);
       }
-    }, [pageData]);
+    }, [pageData]); */
   
     return (
       <VStack>
