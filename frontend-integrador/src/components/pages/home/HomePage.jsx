@@ -297,14 +297,14 @@ const HomePage = () => {
             </VStack>
           </HStack>
         )}
-        <ShowList />
-       {/*  {filtered ? (
+        {/* <ShowList /> */}
+        {filtered ? (
           <FilteredList categories={categories} setCant={setCant} />
         ) : searched ? (
           <SearchedList handleSearch={handleSearch} searchedList={searchedList} />
         ) : (
           <ProductList setCant={setCant} />
-        )} */}
+        )}
       </VStack>
     </Box>
   );
