@@ -28,6 +28,7 @@ import FilteredList from "./FilteredList";
 import SearchedList from "./searchBar/SearchedList";
 import SearchBar from "./searchBar/SearchBar";
 import ShowList from "./ShowList";
+import FilterBar from "./FilterBar";
 
 const HomePage = () => {
   const token = import.meta.env.VITE_TOKEN;
@@ -114,22 +115,7 @@ const HomePage = () => {
     }
   };
 
-  const handleFiltros = () => {
-    setCategories([]);
-    setFiltered(false);
-  };
 
-  const handleFilterSearch = async () => {
-    setFiltered(true);
-    setSearched(false);
-  };
-
-  //si se cancelan todos los filtros te vuelve a  la lista de mesclados
-  useEffect(() => {
-    if (categories.length === 0) {
-      setFiltered(false);
-    }
-  }, [categories]);
 
   useEffect(() => {
     if (searchedList?.content?.length === 0) {
@@ -161,139 +147,10 @@ const HomePage = () => {
             setSearched={setSearched}
           />
         </HStack>
-        {/* categorias */}
-        {media && (
-          <Menu>
-            <MenuButton minW={"99vh"} bg={"negro"}>
-              <Text fontFamily={"podkova"} color={"verde2"} fontSize={17} p={3}>
-                Categorias
-              </Text>
-            </MenuButton>
-            <MenuList bg={"negro"}>
-              <VStack w={"30%"} ml={10}>
-                <Button
-                  h={7}
-                  color={"blanco"}
-                  bg={"verde2"}
-                  w={{ base: "100px", lg: 40 }}
-                  onClick={() => handleFilterSearch()}
-                  ml={4}
-                >
-                  Filtrar
-                </Button>
-                <Button
-                  h={7}
-                  color={"blanco"}
-                  bg={"red.400"}
-                  w={{ base: "100px", lg: 40 }}
-                  onClick={() => handleFiltros()}
-                  ml={4}
-                >
-                  Borrar Filtros
-                </Button>
-                <Text
-                  color={"verde2"}
-                  fontSize={{ base: 12, lg: 18 }}
-                  w={"80px"}
-                >{`Estás viendo ${cant} productos`}</Text>
-              </VStack>
-              {categoryList.map((category) => (
-                <MenuItem
-                  bg={"negro"}
-                  key={category.id}
-                  textAlign="center"
-                  onClick={() => handleCategoryClick(category.categoryName)}
-                >
-                  <Box
-                    bg={"verde2"}
-                    py={1}
-                    px={2}
-                    ml={5}
-                    style={{
-                      border: categories.includes(category.categoryName)
-                        ? "3px solid #e2e8f0"
-                        : "none",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontWeight: categories.includes(category.categoryName)
-                          ? "bold"
-                          : "normal",
-                        color: categories.includes(category.categoryName)
-                          ? "#e2e8f0"
-                          : "black",
-                      }}
-                    >
-                      {category.categoryName}
-                    </Text>
-                  </Box>
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-        )}
-        {!media && (
-          <HStack
-            justify={"space-around"}
-            w={"100%"}
-            bg={"negro"}
-            pr={"40px"}
-            pt={2}
-            pb={2}
-          >
-            {/* Muestra las tarjetas de categorías */}
-            {categoryList.map((category) => (
-              <Box
-                key={category.id}
-                textAlign="center"
-                onClick={() => handleCategoryClick(category.categoryName)}
-                style={{
-                  border: categories.includes(category.categoryName)
-                    ? "3px solid #00cc00"
-                    : "none",
-                }}
-              >
-                <Box bg={"verde2"}>
-                  <Image
-                    w={{ base: 100, lg: 150 }}
-                    h={{ base: 100, lg: 150 }}
-                    objectFit={"cover"}
-                    src={category.imageUrl}
-                    fallbackSrc="https://via.placeholder.com/150"
-                  />
-                  <Text color={"negro"}>{category.categoryName}</Text>
-                </Box>
-              </Box>
-            ))}
-            <VStack w={"20%"} pl={10}>
-              <Button
-                h={7}
-                color={"blanco"}
-                bg={"verde2"}
-                w={{ base: "100px", lg: 40 }}
-                onClick={() => handleFilterSearch()}
-              >
-                Filtrar
-              </Button>
-              <Button
-                h={7}
-                color={"blanco"}
-                bg={"red.400"}
-                w={{ base: "100px", lg: 40 }}
-                onClick={() => handleFiltros()}
-              >
-                Borrar Filtros
-              </Button>
-              <Text
-                color={"verde2"}
-                fontSize={{ base: 12, lg: 18 }}
-              >{`Estás viendo ${cant} productos`}</Text>
-            </VStack>
-          </HStack>
-        )}
+       
+        {!media && <FilterBar />}
         <ShowList />
-       {/*  {filtered ? (
+        {/*  {filtered ? (
           <FilteredList categories={categories} setCant={setCant} />
         ) : searched ? (
           <SearchedList handleSearch={handleSearch} searchedList={searchedList} />

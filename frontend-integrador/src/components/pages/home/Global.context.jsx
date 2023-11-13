@@ -13,6 +13,8 @@ const reducer = (state, action) => {
       };
     case "SET_CURRENT_PAGE":
       return { ...state, currentPage: action.payload };
+    case "SET_CATEGORIES":
+      return { ...state, categories: action.payload };
     default:
       return state;
   }
@@ -23,6 +25,7 @@ const initialState = {
   currentPage: 1,
   totalPages: 1,
   totalElements: 0,
+  categories: [],
 };
 
 const ProductContext = createContext();
@@ -38,7 +41,11 @@ const ProductProvider = ({ children }) => {
 
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-    getProducts(page);
+    /*  getProducts(page); */
+  };
+
+  const setCategories = (data) => {
+    dispatch({ type: "SET_CATEGORIES", payload: data });
   };
 
   const getProducts = async (page = 1) => {
@@ -60,16 +67,21 @@ const ProductProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    if (state.categories?.length === 0) {
+      getProducts();
+    }
+  }, [state.categories]);
 
   const value = {
     paginatedData: state.paginatedData,
     totalPages: state.totalPages,
     totalElements: state.totalElements,
     currentPage: state.currentPage,
+    categories: state.categories,
     getProducts,
     setCurrentPage,
+    setCategories,
+    setPaginatedData,
     // Otros valores o funciones que puedas necesitar
   };
 
