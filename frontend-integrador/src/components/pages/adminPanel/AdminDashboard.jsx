@@ -13,6 +13,9 @@ const AdminDashboard = ({ productData, token }) => {
   // Estado para mostrar el listado de productos, categorias, usuarios y caracteristicas cuando se clickea en el botón
   const [showList, setShowList] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [showCategoryList, setShowCategoyList] = useState(false);
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
 
@@ -367,6 +370,7 @@ const AdminDashboard = ({ productData, token }) => {
           setProdId={setProdId}
           setIsModalOpen={setIsModalOpen}
           IsModalOpen= {isModalOpen}
+          getFeaturesAll={getFeaturesAll}
         />
       )}
 
