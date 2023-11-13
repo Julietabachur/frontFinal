@@ -260,4 +260,3 @@ console.log(productData);
 };
 
 export default EditProduct;
-

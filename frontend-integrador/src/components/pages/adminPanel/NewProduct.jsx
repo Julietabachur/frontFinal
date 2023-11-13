@@ -349,10 +349,38 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
   // LOGICA PARA EL GUARDADO DE DATOS
   const saveChanges = async () => {
 
+    if (!prodId) {
+      
+      console.log("PRODUCT DATA:" , productData);
+      addProduct(productData);
+
+    } else {
 
 
+      //const handleEditProduct = () => {
 
+    // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
+    axios.put(`http://localhost:8080/api/v1/admin/products/${prodId}`, productData, { headers: { Authorization: `Bearer ${token}` } })
+      .then((response) => {
+        console.log('Producto actualizado con éxito:', response.data);
+        alert("Producto actualizado con exito")
+        // Cierra el modal y resetea el formulario
+        //onClose();
+        // vuelve a listar productos
+        //getProducts();
 
+        setProductData(initialProductState);
+        navigate("/admin");
+      })
+      .catch((error) => {
+        // Maneja el error de la solicitud POST aquí
+        console.error('Error al actualizar el producto:', error);
+        alert("No se pudo modificar el producto, verifique la informacion")
+        // Muestra un mensaje de error al usuario 
+      });
+     //};
+
+    }
 
     setIsEditing(false);
   };

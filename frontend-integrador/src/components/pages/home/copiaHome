@@ -1,40 +1,4 @@
-import { useState, useEffect } from "react";
-import ProductCardSkeleton from "./ProductCardSkeleton";
-import axios from "axios";
-import {
-  useParams,
-  useNavigate,
-  Link as ReactRouterLink,
-} from "react-router-dom";
-import {
-  VStack,
-  Box,
-  HStack,
-  Input,
-  SimpleGrid,
-  Image,
-  Text,
-  Button,
-  Center,
-  Link,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Flex,
-} from "@chakra-ui/react";
-import ProductList from "./ProductList";
-import FilteredList from "./FilteredList";
-import SearchedList from "./searchBar/SearchedList";
-import SearchBar from "./searchBar/SearchBar";
-import ShowList from "./ShowList";
-import VerifiedUser from "./VerifiedUser";
-
-const HomePage = () => {
-  //const token = import.meta.env.VITE_TOKEN;
-  
-  const token = JSON.parse(localStorage.getItem("riskkojwt"));
-
+const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [filtered, setFiltered] = useState(false);
@@ -146,7 +110,6 @@ const HomePage = () => {
 
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
-      <VerifiedUser/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
@@ -297,17 +260,13 @@ const HomePage = () => {
             </VStack>
           </HStack>
         )}
-        <ShowList />
-       {/*  {filtered ? (
+        {filtered ? (
           <FilteredList categories={categories} setCant={setCant} />
         ) : searched ? (
           <SearchedList handleSearch={handleSearch} searchedList={searchedList} />
         ) : (
           <ProductList setCant={setCant} />
-        )} */}
+        )}
       </VStack>
     </Box>
   );
-};
-
-export default HomePage;
