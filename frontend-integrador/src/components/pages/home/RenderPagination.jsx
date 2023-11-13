@@ -5,8 +5,9 @@ import {
   ArrowForwardIcon,
   ArrowRightIcon,
 } from "@chakra-ui/icons";
-
-const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
+import { useProductContext } from "./Global.context";
+const RenderPagination = () => {
+  const { totalPages, currentPage, setCurrentPage } = useProductContext();
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
@@ -30,7 +31,7 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
         <ArrowBackIcon />
       </Button>
 
-      {pageNumbers.map((number) => (
+      {pageNumbers?.map((number) => (
         <Button
           key={number}
           onClick={() => setCurrentPage(number)}
