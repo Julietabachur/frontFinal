@@ -20,18 +20,10 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
-import EditProduct from "./EditProduct";
+import NewProduct from "./NewProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ListAdminProduct = ({
-  getProducts,
-  page,
-  handlePageChange,
-  lista,
-  token,
-  getCategoriesAll,
-  categoryListAll,
-  featuresListAll,
+const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, getCategoriesAll, categoriesListAll, setShowList, showAddProduct, setShowAddProduct, prodId, setProdId, featuresListAll,
   getFeaturesAll,
   setIsModalOpen,
   isModalOpen,
@@ -43,12 +35,10 @@ const ListAdminProduct = ({
   const [productToEdit, setProductToEdit] = useState(null);
 
   // constantes del Alert Box
-
   const cancelRef = useRef(); // permite cancelar en el box de alerta
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
   const [itemToDelete, setItemToDelete] = useState(null); // pasa la variable del item a eliminar
 
-  console.log(isModalOpen, productToEdit);
 
   useEffect(() => {
     getProducts();
@@ -87,10 +77,11 @@ const ListAdminProduct = ({
   };
 
   const handleEdit = (product) => {
-    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
-    setProductToEdit(product); // pasa el objeto product a traves del prop
-    console.log("Producto para editar:", productToEdit);
-    console.log("Modal", isModalOpen);
+    setShowList(false); // cierra el listado de productos
+    setShowAddProduct(true)// abre el product form.
+    setProdId(product.id); // pasa el id product a traves del prop
+    console.log("Producto para editar:", product.id);
+
   };
 
   return (
@@ -226,23 +217,16 @@ const ListAdminProduct = ({
         </AlertDialogOverlay>
       </AlertDialog>
 
-      {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
-      {productToEdit !== null && (
-        <EditProduct
+     
+      {showAddProduct && (
+        <NewProduct
           token={token}
-          productToEdit={productToEdit}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setProductToEdit(null);
-            setIsModalOpen(false);
-          }}
-          getProducts={getProducts}
-          getCategoriesAll={getCategoriesAll}
-          categoryListAll={categoryListAll}
-          getFeaturesAll={getFeaturesAll}
-          featuresListAll={featuresListAll}
+          prodId={prodId}
         />
+
       )}
+
+
     </>
   );
 };

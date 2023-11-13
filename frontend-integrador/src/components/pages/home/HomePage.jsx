@@ -27,9 +27,13 @@ import ProductList from "./ProductList";
 import FilteredList from "./FilteredList";
 import SearchedList from "./searchBar/SearchedList";
 import SearchBar from "./searchBar/SearchBar";
+import VerifiedUser from "./VerifiedUser";
 
 const HomePage = () => {
-  const token = import.meta.env.VITE_TOKEN;
+  //const token = import.meta.env.VITE_TOKEN;
+  
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
+
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [filtered, setFiltered] = useState(false);
@@ -141,6 +145,7 @@ const HomePage = () => {
 
   return (
     <Box w={"99vw"} bg={"blanco"} /*p={9}*/>
+      <VerifiedUser/>
       <VStack margin={"0px auto"} rowGap={0}>
         {/* buscador */}
         <HStack
