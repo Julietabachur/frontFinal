@@ -20,10 +20,18 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
-import NewProduct from "./NewProduct";
+import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, getCategoriesAll, categoriesListAll, setShowList, showAddProduct, setShowAddProduct, prodId, setProdId, featuresListAll,
+const ListAdminProduct = ({
+  getProducts,
+  page,
+  handlePageChange,
+  lista,
+  token,
+  getCategoriesAll,
+  categoryListAll,
+  featuresListAll,
   getFeaturesAll,
   setIsModalOpen,
   isModalOpen,
@@ -35,10 +43,12 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
   const [productToEdit, setProductToEdit] = useState(null);
 
   // constantes del Alert Box
+
   const cancelRef = useRef(); // permite cancelar en el box de alerta
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
   const [itemToDelete, setItemToDelete] = useState(null); // pasa la variable del item a eliminar
 
+  console.log(isModalOpen, productToEdit);
 
   useEffect(() => {
     getProducts();
@@ -77,11 +87,10 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
   };
 
   const handleEdit = (product) => {
-    setShowList(false); // cierra el listado de productos
-    setShowAddProduct(true)// abre el product form.
-    setProdId(product.id); // pasa el id product a traves del prop
-    console.log("Producto para editar:", product.id);
-
+    setIsModalOpen(true); // llama a la apertura del modal en EditProduct
+    setProductToEdit(product); // pasa el objeto product a traves del prop
+    console.log("Producto para editar:", productToEdit);
+    console.log("Modal", isModalOpen);
   };
 
   return (
@@ -217,16 +226,23 @@ const ListAdminProduct = ({ getProducts, page, handlePageChange, lista, token, g
         </AlertDialogOverlay>
       </AlertDialog>
 
-     
-      {showAddProduct && (
-        <NewProduct
+      {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
+      {productToEdit !== null && (
+        <EditProduct
           token={token}
-          prodId={prodId}
+          productToEdit={productToEdit}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setProductToEdit(null);
+            setIsModalOpen(false);
+          }}
+          getProducts={getProducts}
+          getCategoriesAll={getCategoriesAll}
+          categoryListAll={categoryListAll}
+          getFeaturesAll={getFeaturesAll}
+          featuresListAll={featuresListAll}
         />
-
       )}
-
-
     </>
   );
 };
