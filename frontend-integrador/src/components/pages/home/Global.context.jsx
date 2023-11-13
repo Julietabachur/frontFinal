@@ -7,7 +7,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         paginatedData: action.payload.content,
-        currentPage: action.payload.number + 1,
+        currentPage: action.payload.current,
         totalPages: action.payload.last,
         totalElements: action.payload.totalElements,
       };
@@ -28,7 +28,7 @@ const initialState = {
   categories: [],
 };
 
-const ProductContext = createContext();
+const ProductContext = createContext(undefined);
 
 const ProductProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -41,7 +41,12 @@ const ProductProvider = ({ children }) => {
 
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-    /*  getProducts(page); */
+    if(state.categories.length === 0){
+      getProducts(page);
+    }else if(state.categories.length > 0){
+      getProductsByType(state.categories, page)
+    }
+    
   };
 
   const setCategories = (data) => {
@@ -66,11 +71,30 @@ const ProductProvider = ({ children }) => {
     }
   };
 
+  const getProductsByType = async (categories) => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${state.currentPage}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        setPaginatedData(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    if (state.categories?.length === 0) {
+    if (state.categories.length === 0) {
       getProducts();
     }
   }, [state.categories]);
+  
 
   const value = {
     paginatedData: state.paginatedData,
@@ -82,6 +106,7 @@ const ProductProvider = ({ children }) => {
     setCurrentPage,
     setCategories,
     setPaginatedData,
+    getProductsByType
     // Otros valores o funciones que puedas necesitar
   };
 
@@ -92,11 +117,7 @@ const ProductProvider = ({ children }) => {
 
 const useProductContext = () => {
   const context = useContext(ProductContext);
-  if (!context) {
-    throw new Error(
-      "useProductContext debe ser utilizado dentro de un ProductProvider"
-    );
-  }
+ 
   return context;
 };
 

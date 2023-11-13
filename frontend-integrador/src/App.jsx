@@ -30,7 +30,6 @@ function App() {
       if (response) {
         setUsername(response.data.username);
         setRoles(response.data.roles);
-        console.log(response.data.roles);
       } else {
         localStorage.removeItem("riskkojwt");
       }
