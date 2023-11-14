@@ -7,7 +7,6 @@ const FilterBar = () => {
   const {
     categories,
     setCategories,
-    setPaginatedData,
     setCurrentPage,
     getProductsByType,
     totalElements,
@@ -57,12 +56,6 @@ const FilterBar = () => {
     await setCurrentPage(1)
     await getProductsByType(categories);
   };
-
-/*   useEffect(() => {
-    if (categories.length > 0) {
-      getProductsByType(categories);
-    }
-  }, [currentPage, categories]); */
 
   return (
     <HStack
