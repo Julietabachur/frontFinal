@@ -14,32 +14,26 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { CancelToken } from "axios";
+import { useProductContext } from "../Global.context";
 
-const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults }) => {
+const SearchBar = () => {
+  const {
+    startDate,
+    endDate,
+    productName,
+    setProductName,
+    setStartDate,
+    setEndDate,
+    currentPage,
+    setPaginatedData,
+    searchResults,
+    setSearchResults,
+  } = useProductContext();
   const { isOpen, onToggle, onClose } = useDisclosure();
-  const [productName, setProductName] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
   const [cancelToken, setCancelToken] = useState(null);
 
   const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-
-  // Función para asegurarse de que no puedan elegir menos que la fecha actual
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  // Setea la fecha inicial en la del día
-  useEffect(() => {
-    setStartDate(getCurrentDate());
-  }, []);
 
   const handleSearch = async () => {
     try {
@@ -50,15 +44,13 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
             productName: productName.toUpperCase(),
             startDate: startDate,
             endDate: endDate || null,
-            page,
-            size,
+            currentPage,
           },
         }
       );
       if (response) {
-        setSearchedList(response.data);
-        setSearched(true);
-        setSearchResults([])
+        setPaginatedData(response.data);
+        setSearchResults([]);
       }
     } catch (error) {
       console.error("Error during search:", error);
@@ -79,11 +71,10 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
           `${baseUrl}/api/v1/public/products/search`,
           {
             params: {
-              productName: productName.toUpperCase(),
+              productName: productName,
               startDate: startDate,
               endDate: endDate || null,
-              page,
-              size,
+              currentPage,
             },
             cancelToken: source.token,
           }
@@ -92,7 +83,7 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
         setSearchResults(response.data.content);
       } catch (error) {
         if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
+          return
         } else {
           console.error("Error during search:", error);
         }
@@ -106,7 +97,7 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
 
     // Cleanup function to cancel the request when the component unmounts
     return () => source.cancel("Request canceled by the cleanup function");
-  }, [productName, startDate, endDate, page, size]);
+  }, [productName, startDate, endDate, currentPage]);
 
   const handleInput = (productName) => {
     setProductName(productName);
@@ -126,10 +117,10 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
           <Input
             type="text"
             value={productName}
-            onChange={(e) => handleInput(e.target.value)}
+            onChange={(e) => setProductName(e.target.value)}
           />
         </PopoverTrigger>
-        <PopoverContent w={"150%"}>
+        <PopoverContent minW={"150%"}>
           <PopoverBody>
             <VStack justify={"flex-start"} align={"flex-start"}>
               {searchResults &&
@@ -140,7 +131,7 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
                     justifyContent={"flex-start"}
                     bg={"white"}
                     value={item.productName}
-                    onClick={(e) => handleInput(e.target.value)}
+                    onClick={(e) => setProductName(e.target.value)}
                     color={"black"}
                     key={item.id}
                     _hover={{ backgroundColor: "green.200", cursor: "pointer" }}
@@ -158,7 +149,7 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
         placeholder="Select Date and Time"
         size="md"
         type="date"
-        min={getCurrentDate()}
+        min={startDate}
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
       />

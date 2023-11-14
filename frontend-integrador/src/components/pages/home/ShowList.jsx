@@ -5,12 +5,9 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
 import RenderPagination from "./RenderPagination";
-import axios from "axios";
 const ShowList = () => {
-  const { paginatedData } =
-    useProductContext();
+  const { paginatedData } = useProductContext();
 
-  
   return (
     <VStack>
       <SimpleGrid
@@ -27,9 +24,7 @@ const ShowList = () => {
           </Link>
         ))}
       </SimpleGrid>
-      {paginatedData && (
-        <RenderPagination />
-      )}
+      {paginatedData && <RenderPagination />}
     </VStack>
   );
 };
