@@ -12,8 +12,8 @@ const ShowList = () => {
     <VStack>
       <SimpleGrid
         minH={"100vh"}
-        columns={{ sm: 1, md: 2 }}
-        padding={20}
+        columns={{ base: 1, md: 2 }}
+        pt={16}
         spacing={20}
       >
         {paginatedData.map((item) => (
