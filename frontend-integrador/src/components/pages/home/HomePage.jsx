@@ -6,6 +6,7 @@ import { VStack, Box, HStack } from "@chakra-ui/react";
 import SearchBar from "./searchBar/SearchBar";
 import ShowList from "./ShowList";
 import FilterBar from "./FilterBar";
+import VerifiedUser from "./VerifiedUser"
 
 const HomePage = () => {
   //const token = import.meta.env.VITE_TOKEN;
