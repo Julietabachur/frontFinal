@@ -1,170 +1,244 @@
-import { Checkbox, Text, VStack, Button , HStack, Card, CardBody, Image, CardFooter} from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { Text, VStack, Button, HStack, Image, Box,SimpleGrid } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useProductContext } from "./Global.context";
 import axios from "axios";
-import ProductCardContainer from './ProductCardContainer';
 
-const FilterBar = ({categories, getProductsByType}) => {
-// const token = import.meta.env.VITE_TOKEN;
-// const baseUrl = import.meta.env.VITE_SERVER_URL;
-const [media, setMedia] = useState(false);
-// const [selectedCategories, setSelectedCategories] = useState([]);
-// const [filteredProductCount, setFilteredProductCount] = useState(0);
-const MIN_DESKTOP_WIDTH = 768;
+const FilterBar = () => {
+  const {
+    categories,
+    setCategories,
+    setCurrentPage,
+    getProductsByType,
+    totalElements,
+  } = useProductContext();
+  const [categoryList, setCategoryList ] = useState([]);
 
+  const token = import.meta.env.VITE_TOKEN;
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
 
-// funcion para agregar categoria a categoriesSelected
-// const handleCategoryClick = (category) => {
-//   debugger;
-//   console.log('cat selected: ', category);
-//   const index = selectedCategories.indexOf(category);
+  
 
-//   if (index === -1) {
-//     // La categoría no estaba seleccionada, agrégala
-//     setSelectedCategories([...selectedCategories, category]);
-//     console.log('selected cat array: ', selectedCategories);
-//   } else {
-//     // La categoría ya estaba seleccionada, deseléctala
-//     const newSelectedCategories = [...selectedCategories];
-//     newSelectedCategories.splice(index, 1);
-//     setSelectedCategories(newSelectedCategories);
-//   }
-
-//   // countFilteredProducts();
-// };
-
- // Función para contar la cantidad de productos filtrados
-//  const countFilteredProducts = () => {
-//   const filteredCount = selectedCategories.length; // Usa selectedCategories para contar
-//   setFilteredProductCount(filteredCount);
-// };
-
-  // Función para limpiar los filtros NO ERROR
-  // const clearFilters = () => {
-  //   setSelectedCategories([]);
-  //   setFilteredProductCount(0);
-  // };
-
-  // Efecto para suscribirse al evento de redimensionamiento de la ventana NO ERROR
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < MIN_DESKTOP_WIDTH) {
-        setMedia(true);
-      } else {
-        setMedia(false);
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}/api/v1/public/category/all`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response) {
+          setCategoryList(response.data);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    };   
-
-    window.addEventListener('resize', handleResize);
-
-    // Limpieza del event listener cuando el componente se desmonta
-    return () => {
-      window.removeEventListener('resize', handleResize);
     };
+    getCategories();
   }, []);
 
+  const handleCategoryClick = (category) => {
+    if (!categories.includes(category)) {
+      setCategories([...categories, category]);
+    } else {
+      let updatedCategories = categories.filter((item) => item !== category);
+      setCategories(updatedCategories);
+    }
+  };
+
+  const handleFiltros = () => {
+    setCategories([]);
+  };
+
+  const handleFilterSearch = async () => {
+    await setCurrentPage(1)
+    await getProductsByType(categories);
+  };
+
   return (
-
-    <VStack>
-
-        {!media ? 
-                (
-                  <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'}>
-                      {categories.map((category) => (
-                      <ProductCardContainer key={category.id} /*onClick={getProductsByType(category)}*/>
-                          <Card  
-                          _hover={{
-                              transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
-                              //boxShadow: "md", // Agrega una sombra al hacer hover
-                              cursor: "pointer", // Cambia el cursor al pasar por encima
-                              }}
-                              border={"5px solid black"}
-                              h={['100px','150px',"180px"]}
-                              w={['100px','150px',"180px"]} 
-                              color={"blanco"}
-                              alignContent={"center"} justify={"center"} display={"flex"} alignItems={'center'}>
-                              <CardBody 
-                                  border={"0px 1px solid black"}
-                                  display={"flex"}
-                                  justifyContent={"center"}
-                                  alignItems={'center'}
-                                  alignContent={'center'}
-                                  h={"100%"}
-                                  w={"100%"}
-                                  p={0}
-                              >
-                                  <Image
-                                  src={category?.imageUrl}
-                                  display={"flex"}
-                                  justifyContent={"center"}
-                                  alignItems={'center'}
-                                  alignContent={'center'}
-                                  h={"100%"}
-                                  w={"100%"}
-                                  objectFit={"cover"}
-                                  ></Image>
-                              </CardBody>
-                              <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
-                                  <Text
-                                  fontFamily={"Saira"}
-                                  color={"gris1"}
-                                  fontSize={'1 rem'}
-                                  whiteSpace="nowrap"
-                                  overflow="hidden"
-                                  textOverflow="ellipsis"
-                                  maxWidth="100%"
-                                  >
-                                  {category.categoryName}
-                                  </Text>
-                              </CardFooter>
-                          </Card>
-                      </ProductCardContainer>                    
-                      )
-                      )}           
-                  </HStack>
-                                      
-                  
-                )
-                 : 
-                (
-                  <HStack justify={"space-around"} w={"100%"} h={'100%'} my={5} display={"flex"} wrap={'wrap'} bg={"#444444"}>
-                  {/* //    Muestra las tarjetas de categorías  */}
-                  {categories.map((category) => (                    
-                      <ProductCardContainer key={category.id} /*onClick={handleCategoryClick(category)}*/>
-                          <Card  
-                          _hover={{
-                              transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
-                              //boxShadow: "md", // Agrega una sombra al hacer hover
-                              cursor: "pointer", // Cambia el cursor al pasar por encima
-                              }}
-                              border={"5px solid black"}
-                              h={'50px'}
-                              w={'150px'} 
-                              color={"blanco"}
-                              alignContent={"center"} justify={"center"} display={"flex"} alignItems={'center'}>                         
-                              <CardFooter color={"negro"} alignContent={"center"} justify={"center"} display={"flex"} alignItems={'center'} p={0}>
-                                  <Text
-                                  fontFamily={"Saira"}
-                                  color={"gris1"}
-                                  fontSize={'1rem'}
-                                  whiteSpace="nowrap"
-                                  overflow="hidden"
-                                  textOverflow="ellipsis"
-                                  maxWidth="100%"
-                                  >
-                                  {category.categoryName}
-                                  </Text>
-                              </CardFooter>
-                          </Card>
-                      </ProductCardContainer>
-                  )
-                  )}                   
-                  </HStack>  
-                )
-          }
-        </VStack>
-      )
-    } 
-//   );
-
+  
+   <VStack w={'100%'} bg={'negro'} position={"relative"} top={'14px'} p={5} shadow={'dark-lg'}>
+    <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={2}  >
+    {categoryList.map((category) => (
+        <Box
+          key={category.id}
+          w={'100%'}
+          h={['60px', '90px', '150px']}
+          textAlign="center"
+          onClick={() => handleCategoryClick(category.categoryName)}
+          style={{
+            boxShadow:categories.includes(category.categoryName)
+            ? "1px 10px 28px green"
+            : "none",
+            border: categories.includes(category.categoryName)
+              ? "3px solid #00cc00"
+              : "none",
+          }}
+        >
+          <Box bg={"verde2"} w={'100%'} h={'100%'}>
+            <Image
+              w={'100%'}
+              h={'80%'}
+              objectFit={"cover"}
+              src={category.imageUrl}
+              fallbackSrc="https://via.placeholder.com/150"
+            />
+            <Text fontSize={{ base: 10, lg: 18 }} color={"negro"}>{category.categoryName}</Text>
+          </Box>
+        </Box>
+      ))}
+    </SimpleGrid>
+    <HStack mt={2}>
+    <Button
+          h={7}
+          color={"blanco"}
+          bg={"verde2"}
+          fontSize={{ base: 12, lg: 18 }}
+          w={{ base: "60px", lg: 40 }}
+          onClick={() => handleFilterSearch()}
+        >
+          Filtrar
+        </Button>
+        <Button
+          h={7}
+          color={"blanco"}
+          bg={"red.400"}
+          fontSize={{ base: 10, lg: 18 }}
+          w={{ base: "80px", sm: "80px", md: '100px', lg: 40 }}
+          onClick={() => handleFiltros()}
+        >
+          Borrar Filtros
+        </Button>
+        <Text
+          color={"verde2"}
+          fontSize={{ base: 12, lg: 18 }}
+        >{`Estás viendo ${totalElements} productos`}</Text>
+    </HStack>
+   </VStack>
+  );
+};
 
 export default FilterBar;
+ {/* <HStack
+      justify={"space-around"}
+      w={"100%"}
+      bg={"negro"}
+      pr={"40px"}
+      mt={'2px'}
+      pt={2}
+      pb={2}
+    >
+      
+      {categoryList.map((category) => (
+        <Box
+          key={category.id}
+          textAlign="center"
+          onClick={() => handleCategoryClick(category.categoryName)}
+          style={{
+            border: categories.includes(category.categoryName)
+              ? "3px solid #00cc00"
+              : "none",
+          }}
+        >
+          <Box bg={"verde2"}>
+            <Image
+              w={{ base: 100, lg: 150 }}
+              h={{ base: 100, lg: 150 }}
+              objectFit={"cover"}
+              src={category.imageUrl}
+              fallbackSrc="https://via.placeholder.com/150"
+            />
+            <Text color={"negro"}>{category.categoryName}</Text>
+          </Box>
+        </Box>
+      ))}
+      <VStack w={"20%"} pl={10}>
+        <Button
+          h={7}
+          color={"blanco"}
+          bg={"verde2"}
+          w={{ base: "100px", lg: 40 }}
+          onClick={() => handleFilterSearch()}
+        >
+          Filtrar
+        </Button>
+        <Button
+          h={7}
+          color={"blanco"}
+          bg={"red.400"}
+          w={{ base: "100px", lg: 40 }}
+          onClick={() => handleFiltros()}
+        >
+          Borrar Filtros
+        </Button>
+        <Text
+          color={"verde2"}
+          fontSize={{ base: 12, lg: 18 }}
+        >{`Estás viendo ${totalElements} productos`}</Text>
+      </VStack>
+    </HStack> */}
+
+    {/*  <HStack
+    justify={"space-around"}
+    w={"100%"}
+    bg={"negro"}
+    pr={"40px"}
+    mt={'22px'}
+    pt={2}
+    pb={2}
+  >
+    
+    {categoryList.map((category) => (
+      <Box
+        key={category.id}
+        
+        textAlign="center"
+        onClick={() => handleCategoryClick(category.categoryName)}
+        style={{
+          border: categories.includes(category.categoryName)
+            ? "3px solid #00cc00"
+            : "none",
+        }}
+      >
+        <Box bg={"verde2"}
+         w={{ base: '40px',}}
+        h={{ base: '60px'}}
+         overflow={'hidden'} >
+          <Image
+           w={{ base: '40px'}}
+            h={{ base: '40px' }}
+            objectFit={"cover"}
+            src={category.imageUrl}
+            fallbackSrc="https://via.placeholder.com/150"
+          />
+          <Text color={"negro"}  >{category.categoryName}</Text>
+        </Box>
+      </Box>
+    ))}
+    <VStack w={"20%"} pl={10}>
+      <Button
+        h={7}
+        color={"blanco"}
+        bg={"verde2"}
+        w={{ base: "100px", lg: 40 }}
+        onClick={() => handleFilterSearch()}
+      >
+        Filtrar
+      </Button>
+      <Button
+        h={7}
+        color={"blanco"}
+        bg={"red.400"}
+        w={{ base: "100px", lg: 40 }}
+        onClick={() => handleFiltros()}
+      >
+        Borrar Filtros
+      </Button>
+      <Text
+        color={"verde2"}
+        fontSize={{ base: 12, lg: 18 }}
+      >{`Estás viendo ${totalElements} productos`}</Text>
+    </VStack>
+  </HStack> */}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Button,
-  HStack,
   Input,
   Text,
   Popover,
@@ -12,34 +11,31 @@ import {
   VStack,
   Box,
   useDisclosure,
+  Grid,
+  GridItem
 } from "@chakra-ui/react";
 import { CancelToken } from "axios";
+import { useProductContext } from "../Global.context";
+import { color } from "framer-motion";
 
-const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults }) => {
+const SearchBar = () => {
+  const {
+    startDate,
+    endDate,
+    productName,
+    setProductName,
+    setStartDate,
+    setEndDate,
+    currentPage,
+    setPaginatedData,
+    searchResults,
+    setSearchResults,
+  } = useProductContext();
   const { isOpen, onToggle, onClose } = useDisclosure();
-  const [productName, setProductName] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [page, setPage] = useState(0);
-  const [size, setSize] = useState(10);
   const [cancelToken, setCancelToken] = useState(null);
 
   const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-
-  // Función para asegurarse de que no puedan elegir menos que la fecha actual
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  // Setea la fecha inicial en la del día
-  useEffect(() => {
-    setStartDate(getCurrentDate());
-  }, []);
 
   const handleSearch = async () => {
     try {
@@ -50,15 +46,13 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
             productName: productName.toUpperCase(),
             startDate: startDate,
             endDate: endDate || null,
-            page,
-            size,
+            currentPage,
           },
         }
       );
       if (response) {
-        setSearchedList(response.data);
-        setSearched(true);
-        setSearchResults([])
+        setPaginatedData(response.data);
+        setSearchResults([]);
       }
     } catch (error) {
       console.error("Error during search:", error);
@@ -79,11 +73,10 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
           `${baseUrl}/api/v1/public/products/search`,
           {
             params: {
-              productName: productName.toUpperCase(),
+              productName: productName,
               startDate: startDate,
               endDate: endDate || null,
-              page,
-              size,
+              currentPage,
             },
             cancelToken: source.token,
           }
@@ -92,7 +85,7 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
         setSearchResults(response.data.content);
       } catch (error) {
         if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
+          return
         } else {
           console.error("Error during search:", error);
         }
@@ -106,30 +99,51 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
 
     // Cleanup function to cancel the request when the component unmounts
     return () => source.cancel("Request canceled by the cleanup function");
-  }, [productName, startDate, endDate, page, size]);
+  }, [productName, startDate, endDate, currentPage]);
 
   const handleInput = (productName) => {
     setProductName(productName);
   };
 
   return (
-    <HStack w={"70%"} align="flex-start">
-      <Text>Buscador</Text>
-      <Popover
+    <Grid
+    top={21}
+    position={"relative"}
+    w={'100%'}
+    h={['250px','250px','150px']}
+    templateRows={['repeat(4, 1fr)','repeat(4, 1fr)','repeat(3, 1fr)']}
+    templateColumns={['repeat(2, 1fr)','repeat(4, 1fr)','repeat(7, 1fr)']}
+   
+    bg={'gris1'}
+    pb={3}
+    color={'blanco'}
+  >
+  <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,5,8]} px={3} >
+    <Text textShadow={'dark-lg'} textAlign={"center"}  fontSize={24}>¿Que estas buscando?</Text></GridItem>
+  <GridItem  gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,5]} px={2} >
+    <Popover
         returnFocusOnClose={false}
-        isOpen={searchResults && searchResults.length > 0}
+        isOpen={searchResults && searchResults.length > 1}
         onClose={onClose}
         placement="bottom-start"
         closeOnBlur={false}
       >
         <PopoverTrigger>
           <Input
+          my={2}
+          bg={'white'}
             type="text"
+            focusBorderColor='lime'
             value={productName}
-            onChange={(e) => handleInput(e.target.value)}
+            variant={'filled'}
+            colorScheme="crimson"
+            color={'verde1'}
+           boxShadow={'dark-lg'}
+            placeholder="Escribe aqui el nombre de la prenda que buscas"
+            onChange={(e) => setProductName(e.target.value)}
           />
         </PopoverTrigger>
-        <PopoverContent w={"150%"}>
+        <PopoverContent minW={"150%"}>
           <PopoverBody>
             <VStack justify={"flex-start"} align={"flex-start"}>
               {searchResults &&
@@ -140,9 +154,10 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
                     justifyContent={"flex-start"}
                     bg={"white"}
                     value={item.productName}
-                    onClick={(e) => handleInput(e.target.value)}
+                    onClick={(e) => setProductName(e.target.value)}
                     color={"black"}
                     key={item.id}
+                   
                     _hover={{ backgroundColor: "green.200", cursor: "pointer" }}
                   >
                     {item.productName}
@@ -152,24 +167,36 @@ const SearchBar = ({ setSearchedList, setSearched,searchResults,setSearchResults
           </PopoverBody>
         </PopoverContent>
       </Popover>
-
-      <Input
-        w={"30%"}
-        placeholder="Select Date and Time"
-        size="md"
+      </GridItem>
+  <GridItem pl={2} pr={1} gridRow={[3,3,2]} gridColumnStart={[2,1,5]} gridColumnEnd={[1,3,6]} >
+    <VStack my={2}  >
+    {/* <Text>Fecha inicial</Text> */}
+    <Input
+    focusBorderColor='lime'
         type="date"
-        min={getCurrentDate()}
+        color={'verde1'}
+        min={startDate}
         value={startDate}
+    boxShadow={'dark-lg'}
+
+        variant={"filled"}
         onChange={(e) => setStartDate(e.target.value)}
-      />
-      <Input
-        w={"30%"}
-        size="md"
+      /></VStack>
+      </GridItem>
+  <GridItem pr={2} pl={1} gridRow={[3,3,2]} gridColumnStart={[2,3,6]} gridColumnEnd={[3,5,7]} > 
+  <VStack my={2}>
+    {/* <Text>Fecha final</Text> */}
+    <Input
+    focusBorderColor='lime'
+    boxShadow={'dark-lg'}
+    color={'verde1'}
+    variant={"filled"}
         type="date"
         onChange={(e) => setEndDate(e.target.value)}
-      />
-      <Button onClick={handleSearch}>Buscar</Button>
-    </HStack>
+      /></VStack></GridItem>
+  <GridItem pr={0} pl={[16,16,0]} pt={2}  gridRow={[4,4,2]} gridColumnStart={[1,2,7]} gridColumnEnd={[3,4,8]} ><Button  colorScheme="green" w={'80%'} onClick={handleSearch}>Buscar</Button></GridItem>
+</Grid>
+   
   );
 };
 

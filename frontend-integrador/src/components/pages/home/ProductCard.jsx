@@ -12,20 +12,21 @@ import {
 const ProductCard = ({ item }) => {
   return (
     <Card  
-    h={['350px','300px', "300px"]}
-    w={['300px','300px',"300px"]} 
+    h={500}
+    w={300} 
     color={"blanco"}>
+      
       <CardBody
         _hover={{
-          transform: "scale(1.02)", // Escala un poco la tarjeta en el hover
-          boxShadow: "md", // Agrega una sombra al hacer hover
+          transform: "scale(0.98)", // Escala un poco la tarjeta en el hover
+          /* boxShadow: "inner",  */// Agrega una sombra al hacer hover
           cursor: "pointer", // Cambia el cursor al pasar por encima
         }}
         border={"5px solid black"}
-        boxShadow={"5px 5px 5px gray"}
+        boxShadow={'2xl'}
         display={"flex"}
         justifyContent={"center"}
-        h={['100%']}
+        h={['90%']}
         w={['100%']}
         p={0}
       >

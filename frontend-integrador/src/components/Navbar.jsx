@@ -49,7 +49,7 @@ const Navbar = ({ username, setUserName, roles }) => {
       justify={"space-between"}
       position={"fixed"}
       top={0}
-      minW={400}
+      /* minW={400} */
       w={"99vw"}
       h={"120px"}
       zIndex={1000}
