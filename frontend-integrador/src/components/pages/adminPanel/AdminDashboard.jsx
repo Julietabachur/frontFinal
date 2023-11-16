@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Box, Alert, AlertIcon } from "@chakra-ui/react";
 import ListAdminProduct from "./ListAdminProduct";
-import ProductForm from "./ProductForm";
 import ListUsers from "./ListUsers";
 import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
@@ -114,32 +113,7 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
-  /*/ LOGICA DE getCategories- LISTAR categorias
-  const getCategories = async () => {
-    try {
-      const response = await axios.get(
-        //Petición GET a la api del listado de categorias
-        `${baseUrl}/api/v1/public/category?page=${categoryPage}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data && response.data.content) {
-        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-        setCategoryList(response.data.content);
-        setTotalCategoryPages(response.data.last);
-        setCategoryPage(response.data.current);
-        console.log("Datos recibidos:", response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  */
-
+  
   //LOGICA de getFeatures. Listar Caracteristicas.
   const getFeatures = async () => {
     console.log("Inicia getFeatures");

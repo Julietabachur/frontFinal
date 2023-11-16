@@ -20,7 +20,6 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
-import EditProduct from "./EditProduct";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import NewProduct from "./NewProduct";
 
