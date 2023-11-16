@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
 import { useDisclosure } from "@chakra-ui/react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./home/Detail.css";
 import {
   HStack,
   VStack,
@@ -17,22 +20,69 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  SimpleGrid 
+  SimpleGrid,
 } from "@chakra-ui/react";
 import ProductGallery from "./ProductGallery";
-
+import { useProductContext } from "./home/Global.context";
 import axios from "axios";
 import Specs from "./Specs";
 const DetailPage = () => {
+  const { startDate } = useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [availableDates, setAvailableDates] = useState([]);
+  const [reserveList, setReserveList] = useState([]);
+
   const handleGallery = () => {
     onOpen();
   };
+
+
+  const getReserveList = async () => {
+    const response = await axios.get(
+      `${baseUrl}/api/v1/public/reserves/search/byProductId?productId=${detail.id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response) {
+      console.log(response.data);
+      setReserveList(response.data);
+    }
+  };
+
+  const getReserved = () => {
+    let updatedAvailableDates = [];
+    reserveList.forEach((reserva) => {
+      const startDate = new Date(reserva.startDate);
+      const endDate = new Date(reserva.endDate);
+      startDate.setDate(startDate.getDate() + 1);
+      endDate.setDate(endDate.getDate() + 1);
+
+      let currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        updatedAvailableDates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    });
+  
+    setAvailableDates((prevDates) => [...prevDates, ...updatedAvailableDates]);
+  };
+  
+
+  useEffect(() => {
+    getReserved();
+  }, [reserveList]);
+
+  useEffect(() => {
+    getReserveList();
+  }, [detail]);
 
   const getDetail = async () => {
     const response = await axios.get(
@@ -47,6 +97,22 @@ const DetailPage = () => {
       setDetail(response.data);
     }
   };
+
+  useEffect(() => {
+    const isDateIncluded = availableDates.some(item => {
+      return (
+        item?.getFullYear() === selectedDate?.getFullYear() &&
+        item?.getMonth() === selectedDate?.getMonth() &&
+        item?.getDate() === selectedDate?.getDate()
+      );
+    });
+  
+    if (isDateIncluded) {
+      
+    }
+  }, [selectedDate, availableDates]);
+  
+  
 
   useEffect(() => {
     getDetail();
@@ -67,10 +133,21 @@ const DetailPage = () => {
             padding={"10px"}
             minW={"300px"}
           >
-            <Text fontFamily={"Saira"} color={"black"} fontSize={"1.5rem"} marginLeft={"3%"}>
+            <Text
+              fontFamily={"Saira"}
+              color={"black"}
+              fontSize={"1.5rem"}
+              marginLeft={"3%"}
+            >
               {detail.productName}
             </Text>
-            <Button onClick={() => navigate(-1)} bg={"verde2"} marginRight={"3%"}> Atras </Button>
+            <Button
+              onClick={() => navigate(-1)}
+              bg={"verde2"}
+              marginRight={"3%"}
+            >
+              Atras
+            </Button>
           </HStack>
 
           <Stack border={"1px solid black"}>
@@ -101,7 +178,10 @@ const DetailPage = () => {
               </Text>
             </VStack>
             <Stack p={2}>
-              <ProductGallery thumbnail={detail.thumbnail} gallery={detail.gallery} />
+              <ProductGallery
+                thumbnail={detail.thumbnail}
+                gallery={detail.gallery}
+              />
             </Stack>
             {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
               <>
@@ -121,10 +201,16 @@ const DetailPage = () => {
                     <DrawerCloseButton />
                     <DrawerHeader>{`Galería de Imágenes`}</DrawerHeader>
                     <DrawerBody>
-                    <SimpleGrid minChildWidth='400px' spacing='20px'>
-                        {detail.gallery.map((img,index) => (
+                      <SimpleGrid minChildWidth="400px" spacing="20px">
+                        {detail.gallery.map((img, index) => (
                           <Box key={index}>
-                            <Image w={'100%'} h={'100%'} objectFit={'cover'} src={img} alt="photo" />
+                            <Image
+                              w={"100%"}
+                              h={"100%"}
+                              objectFit={"cover"}
+                              src={img}
+                              alt="photo"
+                            />
                           </Box>
                         ))}
                       </SimpleGrid>
@@ -133,12 +219,28 @@ const DetailPage = () => {
                 </Drawer>
               </>
             )}
-          </Stack><Specs detail={detail}></Specs>
+          </Stack>
+          <Specs detail={detail}></Specs>
+          <HStack>
+            <Text
+              fontFamily={"Saira"}
+              color={"black"}
+              fontSize={"1rem"}
+              marginLeft={"3%"}
+            >
+              Select Reservation Date:
+            </Text>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              inline
+              calendarClassName="date-picker-calendar"
+              highlightDates={availableDates.map((date) => new Date(date))}
+            />
+          </HStack>
         </VStack>
       )}
-      
     </VStack>
-    
   );
 };
 

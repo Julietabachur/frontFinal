@@ -11,23 +11,19 @@ import {
 
 const ProductCard = ({ item }) => {
   return (
-    <Card  
-    h={500}
-    w={300} 
-    color={"blanco"}>
-      
+    <Card h={500} w={300} color={"blanco"}>
       <CardBody
         _hover={{
           transform: "scale(0.98)", // Escala un poco la tarjeta en el hover
-          /* boxShadow: "inner",  */// Agrega una sombra al hacer hover
+          /* boxShadow: "inner",  */ // Agrega una sombra al hacer hover
           cursor: "pointer", // Cambia el cursor al pasar por encima
         }}
         border={"5px solid black"}
-        boxShadow={'2xl'}
+        boxShadow={"2xl"}
         display={"flex"}
         justifyContent={"center"}
-        h={['90%']}
-        w={['100%']}
+        h={["90%"]}
+        w={["100%"]}
         p={0}
       >
         <Image
@@ -41,7 +37,7 @@ const ProductCard = ({ item }) => {
         <Text
           fontFamily={"Saira"}
           color={"gris1"}
-          fontSize={['1 rem', '1.2rem']}
+          fontSize={["1 rem", "1.2rem"]}
           // textShadow={"5px 5px 5px gray"}
           whiteSpace="nowrap"
           overflow="hidden"

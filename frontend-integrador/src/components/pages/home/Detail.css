@@ -1,0 +1,15 @@
+.react-datepicker__day--highlighted {
+    background-color: #fcaba5;
+    color: #777777;
+    border-radius: 0.1rem;
+    
+  }
+
+  .react-datepicker__day--highlighted:hover {
+    background-color: #fcaba5;
+    cursor: not-allowed;
+    color: #777777;
+    border-radius: 0.1rem;
+    
+  }
+  

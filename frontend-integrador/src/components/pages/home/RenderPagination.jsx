@@ -9,12 +9,10 @@ import { useProductContext } from "./Global.context";
 import { useEffect } from "react";
 const RenderPagination = () => {
   const { totalPages, currentPage, setCurrentPage } = useProductContext();
-;
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-
 
   return (
     <HStack spacing="2" mb={4}>

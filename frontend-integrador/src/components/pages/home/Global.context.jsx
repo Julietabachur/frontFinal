@@ -57,6 +57,7 @@ const ProductProvider = ({ children }) => {
 
   // Setea la fecha inicial en la del día
   useEffect(() => {
+
     setStartDate(getCurrentDate());
   }, []);
 
@@ -149,7 +150,7 @@ const ProductProvider = ({ children }) => {
     setEndDate,
     setStartDate,
     setSearchResults,
-    setProductName
+    setProductName,
 
     // Otros valores o funciones que puedas necesitar
   };
