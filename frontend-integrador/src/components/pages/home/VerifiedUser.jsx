@@ -97,11 +97,17 @@ const VerifiedUser = () => {
     }
   };
 
-  const mailSender = async () => {
-    console.log("MAIL SENDER");
-    console.log("******************");
-    console.log("Times Sent: ", mailSent);
-    console.log("******************");
+            if (response.data.isVerified) {
+                console.log("isVerified: YES");
+            } else {
+                console.log("isVerified: NO");
+                setShowVerify(true);
+                setRequestSendMail(true);
+                setShowSentMail(false);
+            }
+        } catch (error) {
+            console.error("ERROR en checkUser:", error);
+        }
 
     const resendBody = {
       id: `${userId}`,
@@ -144,9 +150,97 @@ const VerifiedUser = () => {
         console.error("ERROR en envío de e-mail:", error);
       }
 
-      setRequestSendMail(false); // cambia el estado para resetear la variable.
-    }
-  };
+        if (e === "resend") {
+            console.log("CLICK Resend");
+            console.log("==================");
+
+            mailSender();
+
+        }
+    };
+
+
+    const mailSender = async () => {
+
+        console.log("MAIL SENDER")
+        console.log("******************");
+        console.log("Times Sent: ", mailSent);
+        console.log("******************");
+
+        const resendBody = {
+            id: `${userId}`,
+            login_url: `${loginUrl}`
+        };
+        console.log(resendBody);
+        console.log("******************");
+
+        if (mailSent != "E") {
+            try {
+                const response = await axios.post(
+                    `${baseUrl}/api/v1/private/email/`,
+                    resendBody,  // Cuerpo de la solicitud (contiene id del usuario y path del server)
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (response.status === 200) {
+                    console.log("Mail ENVIADO");
+                    setUserEmail(response.data);
+                    setShowSentMail(true);
+                    // cuenta tres segundos y vuelve a false
+                    setTimeout(() => {
+                        setShowSentMail(false);
+                    }, 3000);
+
+                    if (mailSent != "E") {
+                        setMailSent(prevMailSent => prevMailSent + 1);
+
+                        if (mailSent >= 5) {
+                            setMailSent('E');
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error("ERROR en envío de e-mail:", error);
+            }
+
+            setRequestSendMail(false); // cambia el estado para resetear la variable.
+        }
+    };
+
+
+    return (
+
+        <> {showVerify && (
+            <Alert status='warning'>
+                <AlertIcon />
+                <Stack>
+                    <Text fontSize={18}>Recibiste nuestro e-mail de confirmación? Si es así por favor confirmalo con un click.
+                        <Button onClick={() => handleVerification("ok")}>Recibido OK</Button></Text>
+                    <Text>Si necesitas que volvamos a enviarlo, clickea en Reenviar Mail.
+                        <Button onClick={() => handleVerification("resend")}>Reenviar Mail</Button></Text>
+                </Stack>
+            </Alert>
+        )}
+            {showSentMail && mailSent > 0 && mailSent <= 5 ? (
+                <Alert status="info">
+                    <AlertIcon />
+                    <Text>Email enviado a: {userEmail}</Text>
+                </Alert>
+            ) : showSentMail && mailSent === 'E' && (
+                <Alert status="error">
+                    <AlertIcon />
+                    <Text>Ha intentado reenviar el e-mail muchas veces, contacte al administrador.</Text>
+                </Alert>
+            )}
+        </>
+
+    );
 
   return (
     <>
