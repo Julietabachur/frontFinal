@@ -2,7 +2,9 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
-import { useDisclosure } from "@chakra-ui/react";
+import { Modal, useDisclosure } from "@chakra-ui/react";
+import { FcShare } from "react-icons/fc";
+import { FaFacebookSquare, FaInstagram, FaTwitter } from "react-icons/fa";
 import {
   HStack,
   VStack,
@@ -10,7 +12,15 @@ import {
   Text,
   Box,
   Button,
+  IconButton,
   Stack,
+  Flex,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Drawer,
   DrawerBody,
   DrawerHeader,
@@ -29,6 +39,7 @@ const DetailPage = () => {
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [openShareModal, setOpenShareModal] = useState(false);
   
   const handleGallery = () => {
     onOpen();
@@ -52,7 +63,32 @@ const DetailPage = () => {
     getDetail();
   }, []);
 
+  const setShare = (origin) =>{
+    if (origin == "facebook") {
+
+      alert("PUBLICAR EN FACEBOOK");
+
+    } else if (origin == "instagram") {
+
+      alert("PUBLICAR EN Instagram");
+
+    } else if (origin == "twitter") {
+
+      alert("PUBLICAR EN Twitter");
+
+    }
+
+  };
+
+  const handleCancel = () => {
+    // Cierra el modal y resetea el formulario
+    setOpenShareModal(false);
+    //onClose();
+
+  };
+
   return (
+    <>
     <VStack m={1} w={"98vw"} display={"flex"} justifyContent={"center"} p={20}>
       {detail && (
         <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
@@ -70,6 +106,7 @@ const DetailPage = () => {
             <Text fontFamily={"Saira"} color={"black"} fontSize={"1.5rem"} marginLeft={"3%"}>
               {detail.productName}
             </Text>
+            <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FcShare />} onClick={() => setOpenShareModal(true)}/>
             <Button onClick={() => navigate(-1)} bg={"verde2"} marginRight={"3%"}> Atras </Button>
           </HStack>
 
@@ -138,7 +175,35 @@ const DetailPage = () => {
       )}
       
     </VStack>
-    
+
+    <Modal isOpen={openShareModal} onClose={handleCancel} size={'sm'}>
+        <ModalOverlay />
+        <ModalContent mt={130} maxWidth="40%">
+          <ModalHeader>Compartir</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody borderColor={"black"}>
+            <Flex  border={1}
+              flexDirection="column"
+              align={'center'}
+              p={1}
+              gap={5}
+              my={1}
+              maxHeight="45vh"
+            >
+              <Image w={120} h={150}  src={detail.thumbnail} alt={detail.productName} />
+              <Text size='sm'>{detail.productName}</Text>
+              <HStack>
+              <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FaFacebookSquare />} onClick={() => setShare('facebook')}/>
+              <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FaInstagram />} onClick={() => setShare('instagram')}/>
+              <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FaTwitter />} onClick={() => setShare('twitter')}/>
+              </HStack>
+
+              </Flex>
+              </ModalBody>
+              </ModalContent>
+
+    </Modal>
+    </>
   );
 };
 
