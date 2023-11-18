@@ -12,6 +12,7 @@ import axios from "axios";
 import Perfil from "./components/Perfil";
 import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
 import NewProduct from "./components/pages/adminPanel/NewProduct";
+import { useProductContext } from "./components/pages/home/Global.context";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -19,6 +20,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
+  const {setFavorites, setClientId, setToken} = useProductContext();
 
   const getUsername = async (token) => {
     try {
@@ -31,7 +33,9 @@ function App() {
       if (response) {
         setUsername(response.data.username);
         setRoles(response.data.roles);
-      } else {
+        setFavorites(response.data.favorites);
+        setClientId(response.data.id);
+        } else {
         localStorage.removeItem("riskkojwt");
       }
     } catch (error) {
