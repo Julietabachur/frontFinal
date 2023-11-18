@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 
 const VerifiedUser = () => {
-    console.log("Inicio checkUser");
 
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const GETME_URL = import.meta.env.VITE_GETME_URL;

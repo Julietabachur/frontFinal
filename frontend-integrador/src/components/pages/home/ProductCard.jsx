@@ -26,10 +26,6 @@ const ProductCard = ({ item }) => {
     setHeartClicked(isFavorite);
   }, [item.id]);
 
-  useEffect(() => {
-    console.log(favorites)
-  }, [favorites]);
-
   const handleHeartClick = (event) => {
     // Evitar que el evento se propague a la tarjeta
     event.stopPropagation();

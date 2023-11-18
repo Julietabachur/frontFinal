@@ -1,5 +1,6 @@
 import { createContext, useReducer, useContext, useEffect } from "react";
 import axios from "axios";
+import { json } from "react-router-dom";
 
 /* Definimos el reductor que gestionará el estado global
 ...state : Esto crea una copia del estado actual (state) para mantener la inmutabilidad del estado
@@ -27,9 +28,9 @@ const reducer = (state, action) => {
     case "SET_SEARCH_RESULTS":
       return { ...state, searchResults: action.payload };
     case "SET_FAVORITES":
-      return {...state, favorites: action.payload};
+      return { ...state, favorites: action.payload };
     case "SET_CLIENT_ID":
-        return {...state, clientId: action.payload};
+      return { ...state, clientId: action.payload };
     default:
       return state;
   }
@@ -45,9 +46,9 @@ const initialState = {
   endDate: "",
   productName: "",
   searchResults: [],
-  favorites:[],
-  clientId:"",
-  };
+  favorites: [],
+  clientId: "",
+};
 
 const ProductContext = createContext(undefined); //useContext
 
@@ -58,8 +59,7 @@ Inicialmente, tiene el valor que se proporciona como segundo argumento a useRedu
 que luego son procesadas por (Reducer) para actualizar el estado global de la aplicación.*/
 const ProductProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const token = localStorage.getItem("riskkojwt");
-  console.log(token);
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const getCurrentDate = () => {
@@ -112,7 +112,6 @@ const ProductProvider = ({ children }) => {
     dispatch({ type: "SET_CLIENT_ID", payload: data });
   };
 
-
   const getProducts = async (page = 1) => {
     try {
       const response = await axios.get(
@@ -149,7 +148,7 @@ const ProductProvider = ({ children }) => {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (state.categories.length === 0) {
       getProducts();
     }
@@ -172,32 +171,30 @@ const ProductProvider = ({ children }) => {
             },
           }
         );
-  
-        // Puedes acceder a los datos de la respuesta si es necesario
-        console.log(response.data);
       } catch (error) {
         if (error.response) {
           // El servidor devolvió una respuesta con un código de estado diferente de 2xx
-          console.error("Error de respuesta del servidor:", error.response.data);
+          console.error(
+            "Error de respuesta del servidor:",
+            error.response.data
+          );
           console.error("Código de estado:", error.response.status);
         } else if (error.request) {
           // La solicitud fue hecha pero no se recibió una respuesta
           console.error("No se recibió respuesta del servidor:", error.request);
         } else {
           // Algo sucedió en la configuración de la solicitud que generó un error
-          console.error("Error durante la configuración de la solicitud:", error.message);
+          console.error(
+            "Error durante la configuración de la solicitud:",
+            error.message
+          );
         }
       }
     };
-  
-    // Llama a la función solo si hay favoritos
-    if (state.favorites.length > 0) {
+    if (state.favorites?.length > 0) {
       setFavoritesToClient();
     }
-  
-  }, [state.favorites, state.clientId, token]);
-  
-
+  }, [state.favorites]);
 
   const value = {
     paginatedData: state.paginatedData,
@@ -209,7 +206,7 @@ const ProductProvider = ({ children }) => {
     endDate: state.endDate,
     productName: state.productName,
     searchResults: state.searchResults,
-    favorites:state.favorites,
+    favorites: state.favorites,
     getProducts,
     setCurrentPage,
     setCategories,
