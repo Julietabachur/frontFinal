@@ -14,14 +14,16 @@ const HomePage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   return (
-    <Box w={"99vw"} bg={"blanco"}>
-      <VerifiedUser />
-      <VStack>
-        <SearchBar />
+    <div>
+    <VerifiedUser/>
+    <Box w={"99vw"} bg={"blanco"} >
+      <VStack >
+          <SearchBar />
         <FilterBar />
         <ShowList />
       </VStack>
     </Box>
+    </div>
   );
 };
 

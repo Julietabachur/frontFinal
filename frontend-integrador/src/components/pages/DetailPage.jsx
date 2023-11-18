@@ -2,10 +2,10 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
-import { useDisclosure } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./home/Detail.css";
+import { FcShare } from "react-icons/fc";
 import {
   HStack,
   VStack,
@@ -13,7 +13,9 @@ import {
   Text,
   Box,
   Button,
+  IconButton,
   Stack,
+  useDisclosure ,
   Drawer,
   DrawerBody,
   DrawerHeader,
@@ -26,9 +28,12 @@ import ProductGallery from "./ProductGallery";
 import { useProductContext } from "./home/Global.context";
 import axios from "axios";
 import Specs from "./Specs";
+import SocialShare from "./SocialShare";
+
 const DetailPage = () => {
   const { startDate } = useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
+  const frontUrl = import.meta.env.VITE_LOGIN_URL;
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
@@ -37,6 +42,8 @@ const DetailPage = () => {
   const [availableDates, setAvailableDates] = useState([]);
   const [reserveList, setReserveList] = useState([]);
 
+  const [openShareModal, setOpenShareModal] = useState(false);
+  
   const handleGallery = () => {
     onOpen();
   };
@@ -118,7 +125,9 @@ const DetailPage = () => {
     getDetail();
   }, []);
 
+
   return (
+    <>
     <VStack m={1} w={"98vw"} display={"flex"} justifyContent={"center"} p={20}>
       {detail && (
         <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
@@ -141,13 +150,8 @@ const DetailPage = () => {
             >
               {detail.productName}
             </Text>
-            <Button
-              onClick={() => navigate(-1)}
-              bg={"verde2"}
-              marginRight={"3%"}
-            >
-              Atras
-            </Button>
+            <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FcShare />} onClick={() => setOpenShareModal(true)}/>
+            <Button onClick={() => navigate(-1)} bg={"verde2"} marginRight={"3%"}> Atras </Button>
           </HStack>
 
           <Stack border={"1px solid black"}>
@@ -241,6 +245,22 @@ const DetailPage = () => {
         </VStack>
       )}
     </VStack>
+
+    {openShareModal && (
+        <SocialShare
+        openShareModal={openShareModal}
+        setOpenShareModal={setOpenShareModal}
+        detail={detail}
+        shareTitle={detail.productName}
+        shareText={detail.detail}
+        shareImage={detail.thumbnail}
+        shareUrl={`${frontUrl}/detalle/${id}`}
+      />
+    )};
+
+
+
+    </>
   );
 };
 
