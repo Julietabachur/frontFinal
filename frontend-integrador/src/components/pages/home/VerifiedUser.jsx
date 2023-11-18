@@ -52,6 +52,7 @@ const VerifiedUser = () => {
                 console.log("isVerified: NO");
                 setShowVerify(true);
                 setRequestSendMail(true);
+                setShowSentMail(false);
             }
         } catch (error) {
             console.error("ERROR en checkUser:", error);
@@ -172,12 +173,12 @@ const VerifiedUser = () => {
                 </Stack>
             </Alert>
         )}
-            {mailSent > 0 && mailSent <= 5 ? (
+            {showSentMail && mailSent > 0 && mailSent <= 5 ? (
                 <Alert status="info">
                     <AlertIcon />
                     <Text>Email enviado a: {userEmail}</Text>
                 </Alert>
-            ) : mailSent === 'E' && (
+            ) : showSentMail && mailSent === 'E' && (
                 <Alert status="error">
                     <AlertIcon />
                     <Text>Ha intentado reenviar el e-mail muchas veces, contacte al administrador.</Text>

@@ -14,123 +14,94 @@ import {
   Flex,
   List,
   ListItem,
-  Grid,
-  GridItem,
   Select,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  SimpleGrid,
-  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
 
 const initialProductState = {
   productName: "",
-  productSize: "",
-  productionTime: 1,
+  category: "",
+  detail: "",
   thumbnail: "",
   gallery: [],
   features: [],
-  category: "",
-  detail: ""
 };
 
-const demoProduct = {
-  id: "6548ff896ba51a1ee590c7ff",
-  productId: 152,
-  productName: "CAMPERA JEAN BLACK 222",
-  productSize: "L",
-  productionTime: 20,
-  thumbnail: "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-231-d78a1139211823445c16940343745727-1024-1024.png",
-  gallery: [
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-11-94ef454443a9f3569416939378158959-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-21-7f4f3635487336570b16939378159297-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-41-f78b4d10a96d8e624c16939378159959-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/campe-jean-51-0aefc87d0f6a7d5ef216939378159030-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-101-eab28669eda616d84c16939507892020-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-231-d78a1139211823445c16940343745727-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-26-91-d6dae675ec0016ef5c16939507890258-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-27-11-229e81fb1b892c01c216939507887581-1024-1024.png",
-    "https://images-g3.s3.amazonaws.com/products/Catalogo/A+-+Abrigos/CAMPERA+JEAN+BLACK/foto-27-21-c9574950a6a0f1c36316939507892518-1024-1024.png"
-  ],
-  features: [
-    {
-      id: "CiNwnVKi2QIioFY3rDrPq",
-      charName: "MATERIALES",
-      charValue: [
-        "Cuero",
-        "Plastico"
-      ],
-      charIcon: "✳"
-    },
-    {
-      id: "xYsyKQuYg0JuIZ_wHkRDI",
-      charName: "TEMPORADA",
-      charValue: [
-        "Invierno",
-        "Otoño"
-      ],
-      charIcon: "🧶"
-    },
-    {
-      id: "L814MiGvs9aTPCXb2Vx1c",
-      charName: "RECICLADO",
-      charValue: [
-        "reconfeccionado"
-      ],
-      charIcon: "🧩"
-    },
-    {
-      id: "V3zfZeka7JTmCo_w93WwF",
-      charName: "RECICLADO",
-      charValue: [
-        "reconfeccionado"
-      ],
-      charIcon: "🧩"
-    }
-  ],
-  category: "JACKET",
-  detail: "Campera de jean negro de 10 oz. Amplia estilo oversize.\nBolsillos delanteros inferiores y superiores.\nTiene un proceso de lavado y suavizado dandole mejor calidad y acabado.\nCierre delantero con botones metálicos."
-};
 
-const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryListAll, getCategoriesAll }) => {
+const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setShowProdList }) => {
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const [isEditing, setIsEditing] = useState(false); // Nuevo estado para el modo edición
+  //const [isEditing, setIsEditing] = useState(false); // Nuevo estado para el modo edición
   const [productData, setProductData] = useState(initialProductState);
   const [nombreValido, setNombreValido] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [formDisabled, setFormDisabled] = useState(false);
   const [showError, setShowError] = useState(false);
-
+  const [closeForm, setCloseForm] = useState(false);
+  const [categoryListAll, setCategoryListAll] = useState([]); // array de lista de categorias
   const [galleryUrl, setGalleryUrl] = useState("");
 
   const navigate = useNavigate();
 
   console.log("COMIENZA NEW PRODUCT");
-  console.log("TOKEN: ", token);
-  console.log("ID: ", prodId);
+
+  console.log("ProductToEdit: ", productToEdit);
 
 
-  //LLAMADO A LA API PARA TRAER EL OBJETO PRODUCTO SEGUN SU ID.
+   // LOGICA DE getCategoriesAll- LISTAR todas las categorias sin paginacion para usarlas en el select de productForm y EditProduct
   //no se precisa el token porque es publico
-  const getProductToEdit = async () => {
-    const response = await axios.get(
-      `${baseUrl}/api/v1/public/products/${prodId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+  const getCategoriesAll = async () => {
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de productos
+        `${baseUrl}/api/v1/public/category/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setCategoryListAll(response.data);
+        //console.log("Datos recibidos:", response.data);
       }
-    );
-    if (response) {
-      setProductData(response.data);
+    } catch (error) {
+      console.log(error);
     }
   };
+
+   //LOGICA de getFeaturesAll. Listar TODAS Caracteristicas.
+   const [featuresList, setFeaturesList] = useState([]);
+
+   const getFeaturesAll = async () => {
+     try {
+       const response = await axios.get(
+         //Petición GET a la api del listado de caracteristicas
+         `${baseUrl}/api/v1/public/char/all`,
+         {
+           headers: {
+             "Content-Type": "application/json",
+           },
+         }
+       );
+       if (response.data) {
+         // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+         setFeaturesList(response.data);
+       }
+     } catch (error) {
+       //Manejo de errores
+       console.error(error);
+     }
+   };
+
+  //para llamar a todas las categorias y features
+  useEffect(() => {
+    getCategoriesAll();
+    getFeaturesAll();
+    console.log("GET CATEGORIES AND FEATURES");
+  }, []);
+
 
   
 
@@ -222,39 +193,8 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
 
   // LOGICA MANEJO CARACTERISTICAS
 
-  //LOGICA de getFeaturesAll. Listar TODAS Caracteristicas.
-  const [featuresList, setFeaturesList] = useState([]);
-
-  const getFeaturesAll = async () => {
-    console.log("Inicia getFeaturesALL");
-    try {
-      const response = await axios.get(
-        //Petición GET a la api del listado de caracteristicas
-        `${baseUrl}/api/v1/public/char/all`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data) {
-        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-        setFeaturesList(response.data);
-
-        console.log("Features LIST:")
-        console.log(response.data);
-
-      }
-    } catch (error) {
-      //Manejo de errores
-      console.error(error);
-    }
-  };
-
-
   const [newFeature, setNewFeature] = useState("");
   const [newFeatureValue, setNewFeatureValue] = useState("");
-
 
   const handleAddCharacteristic = () => {
     if (newFeature) {
@@ -292,13 +232,6 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
     }
   };
 
-/*
-  useEffect(() => {
-    console.log("Feature AGREGADA");
-    console.log(productData.features);
-  }, [productData.features]);
-*/
-
 
   const handleRemoveCharacteristic = (id) => {
     // Encuentra el índice del elemento con el id dado
@@ -315,24 +248,6 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
 
 
   /* 
-  
-    // Maneja el botón Agregar/GuardarCambios del formulario segun sea agregar o editar prodocto.
-    const handleProductForm = () => {
-      console.log("Datos Formulario:", productData);
-      addProduct(productData);
-  
-    
-       // Cierra el modal y resetea el formulario
-      setIsModalOpen(false);
-      onClose();
-      setProductData(initialProductState);
-      setInputValue(""); // Reinicia el valor del input
-      setNombreValido(true); // Reinicia la validación del nombre
-      setShowError(false); // Reinicia el estado de error
-  
-      
-    };
-  
       const handleCancel = () => {
       // Cierra el modal y resetea el formulario
       onClose();
@@ -340,7 +255,6 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
       setInputValue(""); // Reinicia el valor del input
       setNombreValido(true); // Reinicia la validación del nombre
       setShowError(false); // Reinicia el estado de error
-    };
   
   */
 
@@ -349,23 +263,36 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
   // LOGICA PARA EL GUARDADO DE DATOS
   const saveChanges = async () => {
 
-    if (!prodId) {
+    if (!productToEdit) {
       
-      console.log("PRODUCT DATA:" , productData);
-      addProduct(productData);
+      console.log("PRODUCT DATA AGREGAR:" , productData);
+
+    // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
+    axios.post(`${baseUrl}/api/v1/admin/products`, productData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log("Producto agregado con éxito:", response.data);
+        //getProducts();
+        window.alert("Producto agregado con exito");        
+      })
+      .catch((error) => {
+        // Maneja el error de la solicitud POST aquí - VERIFICAR.
+        alert("Error al agregar producto!");
+        console.error("Error al agregar el producto:", error);
+        // Muestra un mensaje de error al usuario
+      });
 
     } else {
 
-
-      //const handleEditProduct = () => {
+      console.log("PRODUCT DATA EDITAR:" , productData);
 
     // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
-    axios.put(`http://localhost:8080/api/v1/admin/products/${prodId}`, productData, { headers: { Authorization: `Bearer ${token}` } })
+    axios.put(`${baseUrl}/api/v1/admin/products/${productToEdit.id}`, productData, { headers: { Authorization: `Bearer ${token}` } })
       .then((response) => {
         console.log('Producto actualizado con éxito:', response.data);
         alert("Producto actualizado con exito")
-        // Cierra el modal y resetea el formulario
-        //onClose();
+
         // vuelve a listar productos
         //getProducts();
 
@@ -382,41 +309,37 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
 
     }
 
-    setIsEditing(false);
+    setCloseForm(true);
+    navigate('/admin', { replace: true });
   };
 
 
-  useEffect(() => {
 
-    getFeaturesAll();
-    getCategoriesAll();
-
-  }, []);
 
   useEffect(() => {
-    if (prodId) {
-      setIsEditing(true);
-      getProductToEdit();
+    if (productToEdit) {
+      setProductData(productToEdit);
     } else {
-      setIsEditing(false);
       setProductData(initialProductState);
     }
-  }, [prodId]);
+  }, [productToEdit]);
 
 
   const handleCancel = () => {
-    // resetea el formulario
     setProductData(initialProductState);
-    setIsEditing(false);
+    setCloseForm(true);
+    setShowProdList(false);
     setShowAddProduct(false);
-    //navigate(-1);
-  };
+    navigate('/admin', { replace: true });
 
+  };
 
 
   return (
 
-    <VStack m={1} w={"98vw"} display={"flex"} justifyContent={"center"} p={10}>
+    closeForm === false && (
+
+      <VStack w={"98vw"} display={"flex"} justifyContent={"center"}>
 
       <Text
         fontFamily={"Saira"}
@@ -424,7 +347,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
         fontSize={"1rem"}
         p={1}
       >
-        {isEditing ? "EDITAR PRODUCTO" : "AGREGAR PRODUCTO"}
+        {productToEdit ? "EDITAR PRODUCTO" : "AGREGAR PRODUCTO"}
       </Text>
 
       <VStack color={"negro"} w={"90vw"} justifySelf={"center"}>
@@ -457,7 +380,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
           disabled={formDisabled}
           onChange={handleInputChange}
         >
-          {categoryListAll.map((category) => (
+          {categoryListAll?.map((category) => (
             <option key={category.id} value={category.categoryName}>
               {category.categoryName}
             </option>
@@ -475,11 +398,14 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
               DESCRIPCIÓN DEL PRODUCTO
             </Text>
             <Textarea
+              name="detail"
               fontFamily={"Podkova"}
               color={"black"}
               fontSize={"16px"}
               marginTop={"10px"}
               defaultValue={productData.detail}
+              disabled={formDisabled}
+              onChange={handleInputChange}
               rows={10}
             />
 
@@ -494,6 +420,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
             placeholder="Enlace de la miniatura"
             defaultValue={productData.thumbnail}
             disabled={formDisabled}
+            onChange={handleInputChange}
           />
           <Text fontSize="sm" fontWeight="bold">
             Galería de Imágenes:
@@ -624,7 +551,7 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
 
 
       <HStack>
-        {isEditing ? (
+        {productToEdit ? (
           <Button onClick={saveChanges} bg={"verde2"} alignSelf={"flex-end"}>Guardar Cambios</Button>
 
         ) : (
@@ -637,7 +564,10 @@ const NewProduct = ({ prodId, token, setShowAddProduct, addProduct, categoryList
 
     </VStack>
 
+    )
+
   );
+
 };
 
 export default NewProduct;

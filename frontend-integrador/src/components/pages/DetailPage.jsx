@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
-import { useDisclosure } from "@chakra-ui/react";
+import { FcShare } from "react-icons/fc";
 import {
   HStack,
   VStack,
@@ -10,7 +10,9 @@ import {
   Text,
   Box,
   Button,
+  IconButton,
   Stack,
+  useDisclosure ,
   Drawer,
   DrawerBody,
   DrawerHeader,
@@ -23,12 +25,16 @@ import ProductGallery from "./ProductGallery";
 
 import axios from "axios";
 import Specs from "./Specs";
+import SocialShare from "./SocialShare";
+
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
+  const frontUrl = import.meta.env.VITE_LOGIN_URL;
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [openShareModal, setOpenShareModal] = useState(false);
   
   const handleGallery = () => {
     onOpen();
@@ -52,7 +58,9 @@ const DetailPage = () => {
     getDetail();
   }, []);
 
+
   return (
+    <>
     <VStack m={1} w={"98vw"} display={"flex"} justifyContent={"center"} p={20}>
       {detail && (
         <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
@@ -70,6 +78,7 @@ const DetailPage = () => {
             <Text fontFamily={"Saira"} color={"black"} fontSize={"1.5rem"} marginLeft={"3%"}>
               {detail.productName}
             </Text>
+            <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FcShare />} onClick={() => setOpenShareModal(true)}/>
             <Button onClick={() => navigate(-1)} bg={"verde2"} marginRight={"3%"}> Atras </Button>
           </HStack>
 
@@ -138,7 +147,22 @@ const DetailPage = () => {
       )}
       
     </VStack>
-    
+
+    {openShareModal && (
+        <SocialShare
+        openShareModal={openShareModal}
+        setOpenShareModal={setOpenShareModal}
+        detail={detail}
+        shareTitle={detail.productName}
+        shareText={detail.detail}
+        shareImage={detail.thumbnail}
+        shareUrl={`${frontUrl}/detalle/${id}`}
+      />
+    )};
+
+
+
+    </>
   );
 };
 
