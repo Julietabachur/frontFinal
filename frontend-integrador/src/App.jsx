@@ -16,12 +16,13 @@ import Favorites from "./components/Favorites";
 import { useProductContext } from "./components/pages/home/Global.context";
 
 function App() {
-  const { setFavorites } = useProductContext();
+
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
+  const {setFavorites, setClientId, setToken} = useProductContext();
 
   const getUsername = async (token) => {
     try {
@@ -34,8 +35,9 @@ function App() {
       if (response) {
         setUsername(response.data.username);
         setRoles(response.data.roles);
-        setFavorites(response.data.favorites)
-      } else {
+        setFavorites(response.data.favorites);
+        setClientId(response.data.id);
+        } else {
         localStorage.removeItem("riskkojwt");
       }
     } catch (error) {

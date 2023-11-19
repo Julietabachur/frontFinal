@@ -34,11 +34,10 @@ console.log(paginatedData);
         spacing={20}
       >       
         {paginatedData.map((item) => (
-          <Link key={item.id} as={ReactRouterLink} to={`/detalle/${item.id}`}>
+          
             <ProductCardContainer key={item.id}>
               <ProductCard item={item} />
             </ProductCardContainer>
-          </Link>
         ))}           
       </SimpleGrid>
       {paginatedData && <RenderPagination />}
@@ -47,3 +46,4 @@ console.log(paginatedData);
 };
 
 export default ShowList;
+

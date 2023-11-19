@@ -16,14 +16,16 @@ const HomePage = () => {
 
 
   return (
+    <div>
+    <VerifiedUser/>
     <Box w={"99vw"} bg={"blanco"} >
-      <VerifiedUser/>
       <VStack >
           <SearchBar />
         <FilterBar />
         <ShowList titulo={''}/>
       </VStack>
     </Box>
+    </div>
   );
 };
 
