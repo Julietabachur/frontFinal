@@ -27,9 +27,7 @@ const ProductCard = ({ item }) => {
   }, [item.id]);
 
   const handleHeartClick = (event) => {
-    // Evitar que el evento se propague a la tarjeta
-    event.stopPropagation();
-
+   
     // Cambiar el estado del clic del corazón
     setHeartClicked(!isHeartClicked);
 
