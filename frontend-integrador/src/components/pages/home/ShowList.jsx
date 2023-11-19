@@ -6,6 +6,7 @@ import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
 import RenderPagination from "./RenderPagination";
 import { useNavigate } from "react-router-dom";
+
 const ShowList = ({titulo}) => {
   var { paginatedData } = useProductContext();
   // paginatedData = [];

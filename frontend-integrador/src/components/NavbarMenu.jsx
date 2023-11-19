@@ -55,7 +55,10 @@ const NavbarMenu = ({ username, token, roles }) => {
             Inicio
           </MenuItem>
           <MenuItem as={Button} 
-          onClick={()=>{navigate(`/perfil`)}} 
+          onClick={()=>{
+            getFavoriteProducts()
+            navigate(`/perfil`)
+          }} 
           color={'verde2'} 
           colorScheme={"black"} 
           borderRadius={'0'} 
