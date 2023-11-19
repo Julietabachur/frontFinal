@@ -23,6 +23,8 @@ const reducer = (state, action) => {
       return { ...state, productName: action.payload };
     case "SET_SEARCH_RESULTS":
       return { ...state, searchResults: action.payload };
+    case "SET_FAVORITES":
+      return { ...state, favorites: action.payload };
     default:
       return state;
   }
@@ -38,6 +40,7 @@ const initialState = {
   endDate: "",
   productName: "",
   searchResults: [],
+  favorites:[]
 };
 
 const ProductContext = createContext(undefined);
@@ -74,6 +77,9 @@ const ProductProvider = ({ children }) => {
   };
   const setProductName = (data) => {
     dispatch({ type: "SET_PRODUCT_NAME", payload: data.toUpperCase() });
+  };
+  const setFavorites = (data) => {
+    dispatch({ type: "SET_FAVORITES", payload: data });
   };
 
   const setCurrentPage = (page) => {
@@ -125,6 +131,53 @@ const ProductProvider = ({ children }) => {
     }
   };
 
+  const getFavoriteProducts = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        setPaginatedData(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // const getFavoriteProductsProfile = async () => {
+  //   try {
+  //     console.log(state.favorites);
+  //     const response = await axios.get(
+  //       `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}`,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (response) {
+  //       setPaginatedData(response.data);
+        
+  //       console.log('favs: ', response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  //  useEffect(() => {
+  //   if (state.favorites?.length === 0) {
+  //     getProducts();
+  //   } else{
+  //     getFavoriteProducts()
+  //   }
+  // }, [state.favorites]);
+
   useEffect(() => {
     if (state.categories.length === 0) {
       getProducts();
@@ -141,16 +194,18 @@ const ProductProvider = ({ children }) => {
     endDate: state.endDate,
     productName: state.productName,
     searchResults: state.searchResults,
+    favorites: state.favorites,
     getProducts,
     setCurrentPage,
     setCategories,
     setPaginatedData,
     getProductsByType,
+    getFavoriteProducts,
     setEndDate,
     setStartDate,
     setSearchResults,
-    setProductName
-
+    setProductName,
+    setFavorites
     // Otros valores o funciones que puedas necesitar
   };
 

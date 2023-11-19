@@ -22,7 +22,7 @@ import {
 import LogoutButton from "./LogoutButton";
 
 const Perfil = ({username, token }) => {
-  const USER_URL = import.meta.env.VITE_USER_URL;
+  const USER_URL = import.meta.env.VITE_USER_URL; //http://localhost:8080/api/v1/private/clients/search?
   const [user, setUser] = useState({});
 
   const logoutHandle = () => {

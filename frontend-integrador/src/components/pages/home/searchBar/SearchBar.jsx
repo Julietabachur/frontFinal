@@ -119,7 +119,7 @@ const SearchBar = () => {
     color={'blanco'}
   >
   <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,5,8]} px={3} >
-    <Text textShadow={'dark-lg'} textAlign={"center"}  fontSize={24}>¿Que estas buscando?</Text></GridItem>
+    <Text textShadow={'dark-lg'} textAlign={"center"}  fontSize={24}>¿Qué estás buscando?</Text></GridItem>
   <GridItem  gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,5]} px={2} >
     <Popover
         returnFocusOnClose={false}
@@ -194,7 +194,7 @@ const SearchBar = () => {
         type="date"
         onChange={(e) => setEndDate(e.target.value)}
       /></VStack></GridItem>
-  <GridItem pr={0} pl={[16,16,0]} pt={2}  gridRow={[4,4,2]} gridColumnStart={[1,2,7]} gridColumnEnd={[3,4,8]} ><Button  colorScheme="green" w={'80%'} onClick={handleSearch}>Buscar</Button></GridItem>
+  <GridItem pr={0} pl={[16,16,0]} pt={2}  gridRow={[4,4,2]} gridColumnStart={[1,2,7]} gridColumnEnd={[3,4,8]} ><Button background={'verde2'} w={'80%'} onClick={handleSearch}>Buscar</Button></GridItem>
 </Grid>
    
   );

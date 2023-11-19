@@ -12,8 +12,11 @@ import axios from "axios";
 import Perfil from "./components/Perfil";
 import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
 import NewProduct from "./components/pages/adminPanel/NewProduct";
+import Favorites from "./components/Favorites";
+import { useProductContext } from "./components/pages/home/Global.context";
 
 function App() {
+  const { setFavorites } = useProductContext();
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
   const [username, setUsername] = useState("");
@@ -31,6 +34,7 @@ function App() {
       if (response) {
         setUsername(response.data.username);
         setRoles(response.data.roles);
+        setFavorites(response.data.favorites)
       } else {
         localStorage.removeItem("riskkojwt");
       }
@@ -71,9 +75,10 @@ function App() {
                   roles={roles}
                   username={username}
                   token={token ? token : ""}
-                />
-              }
+                />                
+              }              
             />
+            <Route path="/favorites" element={<Favorites />} />
           </Routes>
           {<Footer />}
         </Router>
