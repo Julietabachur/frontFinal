@@ -12,12 +12,15 @@ import {
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
+import { useProductContext } from "./pages/home/Global.context";
+
 
 const Navbar = ({ username, setUserName, roles }) => {
   const [media, setMedia] = useState(false);
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
   const MIN_DESKTOP_WIDTH = 768;
+  const { getProducts } = useProductContext();
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -62,7 +65,11 @@ const Navbar = ({ username, setUserName, roles }) => {
       >
         {media ? (
           <a
-            href="/"
+          onClick={()=>{
+            navigate(`/`)
+            getProducts()
+          }} 
+            href=""
             style={{
               textDecoration: "none",
               color: "white",
@@ -80,7 +87,11 @@ const Navbar = ({ username, setUserName, roles }) => {
         ) : (
           <>
             <a
-              href="/"
+              onClick={()=>{
+                navigate(`/`)
+                getProducts()
+              }} 
+                href=""
               style={{
                 textDecoration: "none",
                 color: "white",
@@ -98,7 +109,11 @@ const Navbar = ({ username, setUserName, roles }) => {
             </a>
 
             <a
-              href="/"
+             onClick={()=>{
+              navigate(`/`)
+              getProducts()
+            }} 
+              href=""
               style={{
                 textDecoration: "none",
                 color: "white",
@@ -114,7 +129,11 @@ const Navbar = ({ username, setUserName, roles }) => {
               />
             </a>
             <a
-              href="/"
+              onClick={()=>{
+                navigate(`/`)
+                getProducts()
+              }} 
+                href=""
               style={{
                 textDecoration: "none",
                 color: "white",

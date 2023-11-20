@@ -8,10 +8,11 @@ import RenderPagination from "./RenderPagination";
 import { useNavigate } from "react-router-dom";
 
 const ShowList = ({titulo}) => {
-  var { paginatedData } = useProductContext();
+  var { paginatedData, getProducts } = useProductContext();
   // paginatedData = [];
   const navigate = useNavigate();
 console.log(paginatedData);
+
   return (
     <VStack>
        {titulo == 'Mis favoritos' && <Heading as='h2' mt={5}>{titulo}</Heading>}
@@ -22,7 +23,10 @@ console.log(paginatedData);
        {(titulo == 'Mis favoritos' && paginatedData.length == 0 ) &&
          <VStack>
            <Heading as='h3' size='lg'>Tu lista de favoritos está vacía</Heading>
-           <Button size='lg' bg={'verde2'} onClick={()=>{navigate(`/`)}} mt='24px'>
+           <Button size='lg' bg={'verde2'} 
+           onClick={()=>{
+            navigate(`/`)
+            getProducts()}} mt='24px'>
              Volver al inicio
            </Button>
          </VStack>

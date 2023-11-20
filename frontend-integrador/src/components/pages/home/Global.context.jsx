@@ -187,12 +187,16 @@ const ProductProvider = ({ children }) => {
   //   }
   // };
 
+
+  //ARREGLAR EESTE USEFFECT 
+  //RECARGA CADA VEZ QUE CAMBIAN LOS FAVS PERO
+  // AL VOLVER AL INICIO TOCANDO EL LOGO, NO MUESTRA TODOS LOS PRODUCTOS.
+  //DESCOMENTAR Y VER LO QUE PASA
+  
   //  useEffect(() => {
-  //   if (state.favorites?.length === 0) {
-  //     getProducts();
-  //   } else{
+    
   //     getFavoriteProducts()
-  //   }
+    
   // }, [state.favorites]);
 
   useEffect(() => {
