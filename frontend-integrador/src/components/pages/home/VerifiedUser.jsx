@@ -162,7 +162,7 @@ const VerifiedUser = () => {
     return (
 
         <> {showVerify && (
-            <Alert status='warning'>
+            <Alert bg={"gray.300"} status='warning'>
                 <AlertIcon />
                 <Stack>
                     <Text fontSize={18}>Recibiste nuestro e-mail de confirmación? Si es así por favor confirmalo con un click.

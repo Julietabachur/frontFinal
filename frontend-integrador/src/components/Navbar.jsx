@@ -95,7 +95,7 @@ const Navbar = ({ username, setUserName, roles }) => {
               src="https://images-g3.s3.amazonaws.com/logoHeader.png"
               alt="Logo"
               style={{
-                height: "30px",
+                height: "50px",
               }}
             />
           </a>
@@ -115,14 +115,14 @@ const Navbar = ({ username, setUserName, roles }) => {
               src="https://images-g3.s3.amazonaws.com/logoHeader.png"
               alt="Logo"
               style={{
-                height: "30px",
+                height: "40px",
               }}
             />
           </a>
         </HStack>        
           
         ) : username? (          
-             <HStack>
+          <HStack>
                <div>
                <a
               href="/"
@@ -136,27 +136,11 @@ const Navbar = ({ username, setUserName, roles }) => {
                 src="https://images-g3.s3.amazonaws.com/logoHeader.png"
                 alt="Logo"
                 style={{
-                  height: "30px",
+                  height: "40px",
+                  margin: "10px"
                 }}
               />
               </a>
-            <a
-              href="/"
-              style={{
-                textDecoration: "none",
-                color: "white",
-                marginRight: "20px",
-              }}
-            >
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                Vestite con estilo
-              </span>
-              </a>
-
                </div>
               
             <Button
@@ -221,7 +205,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                 alt="Logo"
                 style={{
                   height: "40px",
-                  margin: "0px 50px"
+                  marginRight: "50px"
                 }}
               />
             </a>
@@ -300,13 +284,12 @@ const Navbar = ({ username, setUserName, roles }) => {
       {/**botones o nombre */}
       {media ? (
         username ? (
-          <HStack>
+          <HStack spacing={0}>
           <NavbarMenu username={username} roles={roles} />
           </HStack>
         ) : (
-          <HStack>
-            <div>
-              
+          <HStack spacing={0}>
+            <div>         
             <Menu>
              <MenuButton
             onClick={() => {
@@ -379,7 +362,7 @@ const Navbar = ({ username, setUserName, roles }) => {
           <NavbarMenu username={username} roles={roles} />
           </HStack>
         ) : (
-          <div>
+          <HStack spacing={0}>
             <Button
             onClick={() => {
               navigate("/login");
@@ -403,7 +386,7 @@ const Navbar = ({ username, setUserName, roles }) => {
               <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">CREAR CUENTA</Text>
             </Button>  
         
-          </div>
+          </HStack>
         )
         }
     </HStack>
