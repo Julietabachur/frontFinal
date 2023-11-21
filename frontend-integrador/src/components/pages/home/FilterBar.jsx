@@ -17,6 +17,7 @@ const FilterBar = () => {
     setCategories,
     setCurrentPage,
     getProductsByType,
+    currentPage,
     totalElements,
   } = useProductContext();
   const [categoryList, setCategoryList] = useState([]);
@@ -46,6 +47,7 @@ const FilterBar = () => {
   }, []);
 
   const handleCategoryClick = (category) => {
+    setCurrentPage(1);
     if (!categories.includes(category)) {
       setCategories([...categories, category]);
     } else {
@@ -59,9 +61,15 @@ const FilterBar = () => {
   };
 
   const handleFilterSearch = async () => {
-    await setCurrentPage(1);
     await getProductsByType(categories);
   };
+
+  useEffect(() => {
+    if(Array.isArray(categories)){
+      categories.length > 0 && getProductsByType(categories);
+    }
+   
+  }, [currentPage,categories]);
 
   return (
     <VStack

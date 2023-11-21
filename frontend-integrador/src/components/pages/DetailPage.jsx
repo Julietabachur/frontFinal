@@ -31,7 +31,6 @@ import Specs from "./Specs";
 import SocialShare from "./SocialShare";
 
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { useProductContext } from "./home/Global.context";
 
 const DetailPage = () => {
   const { startDate } = useProductContext();

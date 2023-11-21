@@ -17,11 +17,9 @@ const ShowList = () => {
         spacing={20}
       >
         {paginatedData.map((item) => (
-          
-            <ProductCardContainer key={item.id}>
-              <ProductCard item={item} />
-            </ProductCardContainer>
-          
+          <ProductCardContainer key={item.id}>
+            <ProductCard item={item} />
+          </ProductCardContainer>
         ))}
       </SimpleGrid>
       {paginatedData && <RenderPagination />}
@@ -30,4 +28,3 @@ const ShowList = () => {
 };
 
 export default ShowList;
-

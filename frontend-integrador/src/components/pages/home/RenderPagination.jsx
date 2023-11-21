@@ -14,6 +14,9 @@ const RenderPagination = () => {
     pageNumbers.push(i);
   }
 
+  useEffect(() => {
+    console.log(currentPage);
+  }, [currentPage]);
   return (
     <HStack spacing="2" mb={4}>
       <Button

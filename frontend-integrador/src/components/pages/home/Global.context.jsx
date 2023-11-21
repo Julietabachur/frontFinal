@@ -97,7 +97,8 @@ const ProductProvider = ({ children }) => {
     if (state.categories.length === 0) {
       getProducts(page);
     } else if (state.categories.length > 0) {
-      getProductsByType(state.categories, page);
+      
+      getProductsByType(state.categories);
     }
   };
 
@@ -150,10 +151,10 @@ const ProductProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (state.categories.length === 0) {
+    if (state.categories.length === 0 && state.searchResults.length === 0 && state.favorites.length === 0 ) {
       getProducts();
     }
-  }, [state.categories]);
+  }, [state.categories, state.searchResults, state.favorites]);
 
   //Use Effect para cargar los favoritos en el estado del cliente
 
@@ -208,6 +209,7 @@ const ProductProvider = ({ children }) => {
     productName: state.productName,
     searchResults: state.searchResults,
     favorites: state.favorites,
+    clientId: state.clientId,
     getProducts,
     setCurrentPage,
     setCategories,

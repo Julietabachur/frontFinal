@@ -17,7 +17,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NavbarMenu = ({ username, token, roles }) => {
- const [admin,setAdmin] =useState(false)
+  const [admin, setAdmin] = useState(false);
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
@@ -25,13 +25,13 @@ const NavbarMenu = ({ username, token, roles }) => {
     window.location.reload();
   };
 
-  useEffect(()=> {
-    if(roles.some(role => role == 'ADMIN')){
-      setAdmin(true)
-    }else{
-      setAdmin(false)
+  useEffect(() => {
+    if (roles.some((role) => role == "ADMIN")) {
+      setAdmin(true);
+    } else {
+      setAdmin(false);
     }
-  },[])
+  }, []);
 
   return (
     <Menu>
@@ -40,12 +40,24 @@ const NavbarMenu = ({ username, token, roles }) => {
       </MenuButton>
       <MenuList>
         <MenuGroup title="Perfil">
-          <MenuItem as={Button} onClick={()=>{navigate(`/perfil`)}} >
+          <MenuItem
+            as={Button}
+            onClick={() => {
+              navigate(`/perfil`);
+            }}
+          >
             Mi perfil
           </MenuItem>
-          {admin && <MenuItem as={Button} onClick={()=>{navigate(`/admin`)}} >
-            Panel administrador
-          </MenuItem>}
+          {admin && (
+            <MenuItem
+              as={Button}
+              onClick={() => {
+                navigate(`/admin`);
+              }}
+            >
+              Panel administrador
+            </MenuItem>
+          )}
           <MenuItem>Mis reservas </MenuItem>
         </MenuGroup>
         <MenuDivider />
