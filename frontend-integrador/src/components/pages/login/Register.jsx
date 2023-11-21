@@ -254,7 +254,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
           "Registro exitoso. Serás redirigido a la página de inicio."
         );
         setTimeout(() => {
-          navigate("/");
+          navigate("/verify");
           window.location.reload();
         }, 1000);
       } else {
