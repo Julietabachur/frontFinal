@@ -34,7 +34,7 @@ const Footer = () => {
 
           <>
             {media ? (
-            <VStack bg={'#444444'} p={3} textAlign="center" w="98vw">
+            <VStack bg={'#444444'} p={3} textAlign="center" w="99vw">
               <HStack spacing='16px' py={'20px'}>
               <Box w='40px' h='40px'>
                 <FaFacebook size={35} color={'#EDF2F7'}/>
@@ -75,19 +75,19 @@ const Footer = () => {
               justifyContent="center"
               alignItems="start"
               my={5}
-              marginLeft={"2%"}
+             
             >
               <Box h='40px' d='flex' justifyContent="center" alignItems="start">
-                <Image ml={2} src="https://images-g3.s3.amazonaws.com/logoFooter.png" alt="Logo"/>
+                <Image ml={7} src="https://images-g3.s3.amazonaws.com/logoFooter.png" alt="Logo"/>
               </Box>
               <Box h='40px' d='flex' justifyContent="center" alignItems="start">
-                <Text ml={2} fontSize="sm" color='gray.100' textAlign="left" as='b'>
+                <Text ml={7} fontSize="sm" color='gray.100' textAlign="left" as='b'>
                   Copyright - 2023 - Digital House
                 </Text>
               </Box>
             </VStack>
             <Spacer />    
-            <HStack spacing='16px' pb={'50px'}>
+            <HStack spacing='16px' pb={'50px'} mr={7}>
               <Box w='40px' h='40px'>
                 <FaFacebook size={35} color={'#EDF2F7'}/>
               </Box>

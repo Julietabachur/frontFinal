@@ -13,7 +13,7 @@ const ProductCard = ({ item }) => {
   return (
     <Card  
     h={500}
-    w={300} 
+    w={330} 
     color={"blanco"}>
       
       <CardBody
@@ -22,7 +22,7 @@ const ProductCard = ({ item }) => {
           /* boxShadow: "inner",  */// Agrega una sombra al hacer hover
           cursor: "pointer", // Cambia el cursor al pasar por encima
         }}
-        border={"5px solid black"}
+        border={"3px solid black"}
         boxShadow={'2xl'}
         display={"flex"}
         justifyContent={"center"}

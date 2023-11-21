@@ -1,4 +1,4 @@
-import { Text, VStack, Button, HStack, Image, Box,SimpleGrid } from "@chakra-ui/react";
+import { Text, VStack, Button, HStack, Image, Box,SimpleGrid, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useProductContext } from "./Global.context";
 import axios from "axios";
@@ -59,13 +59,16 @@ const FilterBar = () => {
 
   return (
   
-   <VStack w={'100%'} bg={'negro'} position={"relative"} top={'14px'} p={5} shadow={'dark-lg'}>
+   <VStack w={'100%'} bg={'negro'} position={"relative"} bottom={2} p={8} shadow={'dark-lg'} spacing={5}>
+    <Heading color={"white"} fontFamily={"Podkova"} fontSize={[16, 24, 30]}>Descubri nuestro catalogo</Heading>
+
     <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={2}  >
     {categoryList.map((category) => (
         <Box
           key={category.id}
           w={'100%'}
           h={['60px', '90px', '150px']}
+          fontFamily={"Podkova"}
           textAlign="center"
           onClick={() => handleCategoryClick(category.categoryName)}
           style={{
@@ -77,7 +80,7 @@ const FilterBar = () => {
               : "none",
           }}
         >
-          <Box bg={"verde2"} w={'100%'} h={'100%'}>
+          <Box bg={"verde2"} /*bg={"gray.200"}*/ w={'100%'} h={'100%'}>
             <Image
               w={'100%'}
               h={'80%'}
@@ -85,27 +88,29 @@ const FilterBar = () => {
               src={category.imageUrl}
               fallbackSrc="https://via.placeholder.com/150"
             />
-            <Text fontSize={{ base: 10, lg: 18 }} color={"negro"}>{category.categoryName}</Text>
+            <Text fontSize={{ base: 10, sm:15, lg: 18 }} color={"negro"}>{category.categoryName}</Text>
           </Box>
         </Box>
       ))}
     </SimpleGrid>
-    <HStack mt={2}>
+    
+    <HStack mt={4} spacing={4}>
     <Button
-          h={7}
-          color={"blanco"}
+          h={[5,6,7]}
+          color={"white"}
           bg={"verde2"}
-          fontSize={{ base: 12, lg: 18 }}
-          w={{ base: "60px", lg: 40 }}
+          fontSize={{ base: 10, lg: 16 }}
+          w={{ base: "80px", sm: "80px", md: '100px', lg: 40 }}
+          /*w={{ base: "60px", lg: 40 }}*/
           onClick={() => handleFilterSearch()}
         >
-          Filtrar
+          Aplicar Filtros
         </Button>
         <Button
-          h={7}
-          color={"blanco"}
-          bg={"red.400"}
-          fontSize={{ base: 10, lg: 18 }}
+          h={[5,6,7]}
+          color={"black"}
+          bg={"gray.200"}
+          fontSize={{ base: 10, lg: 16 }}
           w={{ base: "80px", sm: "80px", md: '100px', lg: 40 }}
           onClick={() => handleFiltros()}
         >
@@ -113,9 +118,11 @@ const FilterBar = () => {
         </Button>
         <Text
           color={"verde2"}
-          fontSize={{ base: 12, lg: 18 }}
+          fontSize={{ base: 10, lg: 16 }}
         >{`Estás viendo ${totalElements} productos`}</Text>
     </HStack>
+    
+    
    </VStack>
   );
 };

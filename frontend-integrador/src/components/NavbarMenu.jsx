@@ -36,7 +36,7 @@ const NavbarMenu = ({ username, token, roles }) => {
   return (
     <Menu>
       <MenuButton as={Box}>
-        <Avatar name={username} />
+        <Avatar bg={"gray.100"} size="md"  color={"black"} fontWeight={"black"} name={username} />
       </MenuButton>
       <MenuList>
         <MenuGroup title="Perfil">

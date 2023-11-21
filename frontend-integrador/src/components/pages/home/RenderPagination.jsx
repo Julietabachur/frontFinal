@@ -1,4 +1,4 @@
-import { Button, HStack } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import {
   ArrowLeftIcon,
   ArrowBackIcon,
@@ -17,8 +17,13 @@ const RenderPagination = () => {
 
 
   return (
-    <HStack spacing="2" mb={4}>
-      <Button
+    <Flex 
+    justifyContent={"center"}
+    m={8}
+    wrap={"wrap"}
+    gap={2}
+     >
+      <Button 
         isDisabled={currentPage < 2}
         colorScheme="teal"
         onClick={() => setCurrentPage(1)}
@@ -58,7 +63,7 @@ const RenderPagination = () => {
       >
         <ArrowRightIcon />
       </Button>
-    </HStack>
+    </Flex>
   );
 };
 
