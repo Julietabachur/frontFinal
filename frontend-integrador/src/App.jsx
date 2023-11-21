@@ -13,6 +13,8 @@ import Perfil from "./components/Perfil";
 import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
 import NewProduct from "./components/pages/adminPanel/NewProduct";
 import { useProductContext } from "./components/pages/home/Global.context";
+import Verify from "./components/pages/login/Verify";
+
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -78,6 +80,7 @@ function App() {
                 />
               }
             />
+            <Route path="/verify" element={<Verify />} />
           </Routes>
           {<Footer />}
         </Router>
