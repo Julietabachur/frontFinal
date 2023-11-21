@@ -1,6 +1,10 @@
 import { createContext, useReducer, useContext, useEffect } from "react";
 import axios from "axios";
+import { json } from "react-router-dom";
 
+/* Definimos el reductor que gestionará el estado global
+...state : Esto crea una copia del estado actual (state) para mantener la inmutabilidad del estado
+action.payload: valor que se pasa como argumento cuando se despacha una acción en el reductor*/
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_PAGINATED_DATA":
@@ -23,11 +27,15 @@ const reducer = (state, action) => {
       return { ...state, productName: action.payload };
     case "SET_SEARCH_RESULTS":
       return { ...state, searchResults: action.payload };
+    case "SET_FAVORITES":
+      return { ...state, favorites: action.payload };
+    case "SET_CLIENT_ID":
+      return { ...state, clientId: action.payload };
     default:
       return state;
   }
 };
-
+// Estado inicial del contexto global
 const initialState = {
   paginatedData: [],
   currentPage: 1,
@@ -38,13 +46,20 @@ const initialState = {
   endDate: "",
   productName: "",
   searchResults: [],
+  favorites: [],
+  clientId: "",
 };
 
-const ProductContext = createContext(undefined);
+const ProductContext = createContext(undefined); //useContext
 
+/*Componente ProductProvider que proporciona el contexto global a la aplicación
+-state: Esta constante almacena el estado actual de la aplicación. 
+Inicialmente, tiene el valor que se proporciona como segundo argumento a useReducer (initialState)
+-dispatch es la función que se utiliza para disparar acciones 
+que luego son procesadas por (Reducer) para actualizar el estado global de la aplicación.*/
 const ProductProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const token = import.meta.env.VITE_TOKEN;
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const getCurrentDate = () => {
@@ -89,6 +104,14 @@ const ProductProvider = ({ children }) => {
     dispatch({ type: "SET_CATEGORIES", payload: data });
   };
 
+  const setFavorites = (data) => {
+    dispatch({ type: "SET_FAVORITES", payload: data });
+  };
+
+  const setClientId = (data) => {
+    dispatch({ type: "SET_CLIENT_ID", payload: data });
+  };
+
   const getProducts = async (page = 1) => {
     try {
       const response = await axios.get(
@@ -131,6 +154,48 @@ const ProductProvider = ({ children }) => {
     }
   }, [state.categories]);
 
+  //Use Effect para cargar los favoritos en el estado del cliente
+
+  useEffect(() => {
+    const setFavoritesToClient = async () => {
+      try {
+        const response = await axios.put(
+          `${baseUrl}/api/v1/private/clients/${state.clientId}`,
+          {
+            favorites: state.favorites,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } catch (error) {
+        if (error.response) {
+          // El servidor devolvió una respuesta con un código de estado diferente de 2xx
+          console.error(
+            "Error de respuesta del servidor:",
+            error.response.data
+          );
+          console.error("Código de estado:", error.response.status);
+        } else if (error.request) {
+          // La solicitud fue hecha pero no se recibió una respuesta
+          console.error("No se recibió respuesta del servidor:", error.request);
+        } else {
+          // Algo sucedió en la configuración de la solicitud que generó un error
+          console.error(
+            "Error durante la configuración de la solicitud:",
+            error.message
+          );
+        }
+      }
+    };
+    if (state.favorites?.length > 0) {
+      setFavoritesToClient();
+    }
+  }, [state.favorites]);
+
   const value = {
     paginatedData: state.paginatedData,
     totalPages: state.totalPages,
@@ -141,6 +206,7 @@ const ProductProvider = ({ children }) => {
     endDate: state.endDate,
     productName: state.productName,
     searchResults: state.searchResults,
+    favorites: state.favorites,
     getProducts,
     setCurrentPage,
     setCategories,
@@ -149,7 +215,9 @@ const ProductProvider = ({ children }) => {
     setEndDate,
     setStartDate,
     setSearchResults,
-    setProductName
+    setProductName,
+    setFavorites,
+    setClientId,
 
     // Otros valores o funciones que puedas necesitar
   };
