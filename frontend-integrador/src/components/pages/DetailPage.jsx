@@ -44,6 +44,9 @@ const DetailPage = () => {
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
 
+  // Confirma si 'riskkojwt' existe, es decir, si la persona ya está registrada.
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
+
   useEffect(() => {
     // Actualizar el estado del corazón basado en si el id está en favoritos
     const isFavorite = favorites.includes(id);
@@ -107,19 +110,21 @@ const DetailPage = () => {
               minW={"300px"}
             >
               <HStack w="50%">
-                <Box
-                  onClick={handleHeartClick}
-                  color="green"
-                  _hover={{
-                    color: "green",
-                  }}
-                >
-                  {isFavorite ? (
-                    <FaHeart size={30} />
-                  ) : (
-                    <FaRegHeart size={30} />
-                  )}
-                </Box>
+                {token && (
+                  <Box
+                    onClick={handleHeartClick}
+                    color="green"
+                    _hover={{
+                      color: "green",
+                    }}
+                  >
+                    {isFavorite ? (
+                      <FaHeart size={30} />
+                    ) : (
+                      <FaRegHeart size={30} />
+                    )}
+                  </Box>
+                )}
                 <IconButton
                   colorScheme="gray"
                   variant="outline"
@@ -128,15 +133,16 @@ const DetailPage = () => {
                   icon={<FcShare />}
                   onClick={() => setOpenShareModal(true)}
                 />
-                <Text readOnly={true}
+                <Text
+                  readOnly={true}
                   fontFamily={"Saira"}
                   color={"black"}
                   fontSize={"1.5rem"}
                   marginLeft={"3%"}
                   style={{
-                    caretColor: 'transparent',
-                    background: 'transparent',
-                    border: 'none'
+                    caretColor: "transparent",
+                    background: "transparent",
+                    border: "none",
                   }}
                 >
                   {detail.productName}
