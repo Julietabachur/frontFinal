@@ -6,6 +6,7 @@ import ListUsers from "./ListUsers";
 import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
 import NewProduct from "./NewProduct";
+import AdminPolicy from "./AdminPolicy";
 
 const AdminDashboard = ({ token }) => {
   // Estado para controlar si muestra formulario "Agregar Producto"
@@ -15,6 +16,7 @@ const AdminDashboard = ({ token }) => {
   const [showUserList, setShowUserList] = useState(false);
   const [showCategoryList, setShowCategoyList] = useState(false);
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
+  const [showAdminPolicy, setShowAdminPolicy] = useState(false);
 
   const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
 
@@ -40,8 +42,8 @@ const AdminDashboard = ({ token }) => {
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
   
-  const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de categorias
-
+  const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
+  const [policyListAll, setPolicyListAll] = useState([]);
 
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -158,6 +160,29 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
+  // LOGICA DE getPolicyAll- LISTAR todas las politicas sin paginacion para usarlas en el select de productForm y EditProduct
+  //no se precisa el token porque es publico
+  const getPolicyAll = async () => {
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de productos
+        `${baseUrl}/api/v1/public/policy/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setPolicyListAll(response.data);
+        //console.log("Datos recibidos:", response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
 
   // Control de Paginación en los productos
@@ -194,25 +219,37 @@ const AdminDashboard = ({ token }) => {
       setShowAdminFeatures(false);
       setShowCategoyList(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
     } else if (origin === "feature") {
       setShowUserList(false);
       setShowProdList(false);
       setShowAdminFeatures(true);
       setShowCategoyList(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
     } else if (origin === "item") {
       setShowUserList(false);
       setShowCategoyList(false);
       setShowProdList(true);
       setShowAdminFeatures(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
     } else if (origin === "category") {
       setShowCategoyList(true);
       setShowUserList(false);
       setShowProdList(false);
       setShowAdminFeatures(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
+    } else if (origin === "policy") {
+      setShowAdminPolicy(true);
+      setShowCategoyList(false);
+      setShowUserList(false);
+      setShowProdList(false);
+      setShowAdminFeatures(false);
+      setShowAddProduct(false);
     } else if (origin === "addProd") {
+      setShowAdminPolicy(false);
       setShowCategoyList(false);
       setShowUserList(false);
       setShowProdList(false);
@@ -248,6 +285,9 @@ const AdminDashboard = ({ token }) => {
         </Button>
         <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
           Administrar Características
+        </Button>
+        <Button colorScheme="green" ml={4} onClick={() => handleShow("policy")}>
+          Administrar Politicas
         </Button>
       </Box>
 
@@ -299,6 +339,14 @@ const AdminDashboard = ({ token }) => {
           featurePage={featurePage}
           handlePageChange={handleFeaturePageChange}
           featuresList={featuresList}
+        />
+      )}
+
+      {showAdminFeatures == true && (
+        <AdminPolicy
+          token={token}
+          getPolicyAll={getPolicyAll}
+          policyListAll={policyListAll}
         />
       )}
 
