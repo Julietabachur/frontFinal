@@ -14,6 +14,8 @@ import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
 import NewProduct from "./components/pages/adminPanel/NewProduct";
 import Favorites from "./components/Favorites";
 import { useProductContext } from "./components/pages/home/Global.context";
+import Verify from "./components/pages/login/Verify";
+
 
 function App() {
 
@@ -81,6 +83,7 @@ function App() {
               }              
             />
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/verify" element={<Verify />} />
           </Routes>
           {<Footer />}
         </Router>
