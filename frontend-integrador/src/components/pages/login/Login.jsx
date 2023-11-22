@@ -82,7 +82,11 @@ const Login = () => {
 
                 console.log(response.data)
                 localStorage.setItem('riskkojwt', JSON.stringify(response.data.token))
-                navigate("/");
+                if (response.data.isVerified) {
+                    navigate("/");
+                } else {
+                    navigate("/verify");
+                }
                 window.location.reload()
             } else {
                 // Maneja otros escenarios de respuesta según tu API

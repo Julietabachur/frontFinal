@@ -1,30 +1,33 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import {
     Alert,
     AlertIcon,
+    Flex,
     Button,
     Stack,
     Text,
-    Center,
+    Box,
 } from "@chakra-ui/react";
 
-const VerifiedUser = () => {
+const Verify = () => {
+
+
+    console.log("Inicio Verify");
 
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const GETME_URL = import.meta.env.VITE_GETME_URL;
     const loginUrl = import.meta.env.VITE_LOGIN_URL;
     const [showVerify, setShowVerify] = useState(false);
     const [showSentMail, setShowSentMail] = useState(false);
-    const [mailSent, setMailSent] = useState(0);
+    const [mailSent, setMailSent] = useState(1);
     const [userId, setUserId] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [userDataReady, setUserDataReady] = useState(false);
-    const [requestSendMail, setRequestSendMail] = useState(false);
-
+    const navigate = useNavigate();
     const token = JSON.parse(localStorage.getItem("riskkojwt"));
     //console.log("Token LocalStorage:", token);
-
 
     useEffect(() => {
         if (token) {
@@ -47,10 +50,10 @@ const VerifiedUser = () => {
 
             if (response.data.isVerified) {
                 console.log("isVerified: YES");
+                navigate("/");
             } else {
                 console.log("isVerified: NO");
                 setShowVerify(true);
-                setRequestSendMail(true);
                 setShowSentMail(false);
             }
         } catch (error) {
@@ -59,14 +62,13 @@ const VerifiedUser = () => {
 
     };
 
-
-
-    // Utiliza otro useEffect para controlar el envío de emails
     useEffect(() => {
-        if (userDataReady && requestSendMail) {
-            mailSender();
-        }
-    }, [userDataReady, requestSendMail]);
+      if (userDataReady) {
+        mailSender();
+      }
+
+    }, [userDataReady]);
+    
 
 
     const handleVerification = async (e) => {
@@ -75,8 +77,8 @@ const VerifiedUser = () => {
 
             try {
                 const response = await axios.put(
-                    `${baseUrl}/api/v1/private/clients/chk/${userId}`,
-                    null,  // Cuerpo de la solicitud (en este caso, nulo el back cambia a isVerified=true)
+                    `${baseUrl}/api/v1/private/clients/${userId}`,
+                    {"verified": true},  // Cuerpo de la solicitud (en este caso, nulo el back cambia a isVerified=true)
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -88,6 +90,7 @@ const VerifiedUser = () => {
                     console.log("isVerified: YES");
                     setShowVerify(false);
                     setMailSent("");
+                    navigate("/");
                 }
 
             } catch (error) {
@@ -97,9 +100,26 @@ const VerifiedUser = () => {
 
         if (e === "resend") {
             console.log("CLICK Resend");
-            console.log("==================");
 
-            mailSender();
+            if (mailSent != "E") {
+
+                setMailSent(prevMailSent => prevMailSent + 1);
+
+                mailSender();
+
+
+
+                if (mailSent > 3) {
+                    setMailSent('E');
+                }
+            }
+
+            console.log("******************");
+            console.log("Times Sent: ", mailSent);
+            console.log("******************");
+
+
+
 
         }
     };
@@ -109,8 +129,6 @@ const VerifiedUser = () => {
 
         console.log("MAIL SENDER")
         console.log("******************");
-        console.log("Times Sent: ", mailSent);
-        console.log("******************");
 
         const resendBody = {
             id: `${userId}`,
@@ -119,7 +137,6 @@ const VerifiedUser = () => {
         console.log(resendBody);
         console.log("******************");
 
-        if (mailSent != "E") {
             try {
                 const response = await axios.post(
                     `${baseUrl}/api/v1/private/email/`,
@@ -134,59 +151,59 @@ const VerifiedUser = () => {
 
                 if (response.status === 200) {
                     console.log("Mail ENVIADO");
+
                     setUserEmail(response.data);
                     setShowSentMail(true);
                     // cuenta tres segundos y vuelve a false
                     setTimeout(() => {
                         setShowSentMail(false);
                     }, 3000);
-
-                    if (mailSent != "E") {
-                        setMailSent(prevMailSent => prevMailSent + 1);
-
-                        if (mailSent >= 5) {
-                            setMailSent('E');
-                        }
-                    }
                 }
 
             } catch (error) {
                 console.error("ERROR en envío de e-mail:", error);
             }
-
-            setRequestSendMail(false); // cambia el estado para resetear la variable.
-        }
+        
     };
 
 
     return (
+        <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            minH="50vh"
+            p={4}
+        >
+            {showVerify && (
+                <Box>
 
-        <> {showVerify && (
-            <Alert bg={"gray.300"} status='warning'>
-                <AlertIcon />
-                <Stack>
-                    <Text fontSize={18}>Recibiste nuestro e-mail de confirmación? Si es así por favor confirmalo con un click.
-                        <Button onClick={() => handleVerification("ok")}>Recibido OK</Button></Text>
-                    <Text>Si necesitas que volvamos a enviarlo, clickea en Reenviar Mail.
-                        <Button onClick={() => handleVerification("resend")}>Reenviar Mail</Button></Text>
-                </Stack>
-            </Alert>
-        )}
-            {showSentMail && mailSent > 0 && mailSent <= 5 ? (
-                <Alert status="info">
-                    <AlertIcon />
+                    <Stack>
+                        <Text fontSize={18}>Recibiste nuestro e-mail de confirmación? Si es así por favor confirmalo con un click.
+                            <Button onClick={() => handleVerification("ok")}>Recibido OK</Button></Text>
+                        <Text>Si necesitas que volvamos a enviarlo, clickea en Reenviar Mail.
+                            <Button onClick={() => handleVerification("resend")}>Reenviar Mail</Button></Text>
+                    </Stack>
+                </Box>
+            )}
+            {showSentMail && mailSent > 0 && mailSent <= 3 ? (
+                <Alert status="info" width={450}>
+                    <AlertIcon/>
+
                     <Text>Email enviado a: {userEmail}</Text>
                 </Alert>
-            ) : showSentMail && mailSent === 'E' && (
-                <Alert status="error">
-                    <AlertIcon />
+            ) : mailSent === 'E' && (
+                <Box>
+
                     <Text>Ha intentado reenviar el e-mail muchas veces, contacte al administrador.</Text>
-                </Alert>
+                </Box>
             )}
-        </>
+
+        </Flex>
+
 
     );
 
 };
 
-export default VerifiedUser;
+export default Verify;
