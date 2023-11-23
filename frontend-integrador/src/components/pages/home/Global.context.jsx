@@ -31,6 +31,8 @@ const reducer = (state, action) => {
       return { ...state, favorites: action.payload };
     case "SET_CLIENT_ID":
       return { ...state, clientId: action.payload };
+    case "SET_SHOW_FAV":
+      return { ...state, showFav: action.payload };
     default:
       return state;
   }
@@ -47,6 +49,7 @@ const initialState = {
   productName: "",
   searchResults: [],
   favorites: [],
+  showFav: false,
   clientId: "",
 };
 
@@ -72,7 +75,6 @@ const ProductProvider = ({ children }) => {
 
   // Setea la fecha inicial en la del día
   useEffect(() => {
-
     setStartDate(getCurrentDate());
   }, []);
 
@@ -92,12 +94,16 @@ const ProductProvider = ({ children }) => {
     dispatch({ type: "SET_PRODUCT_NAME", payload: data.toUpperCase() });
   };
 
+  const setShowFav = (data) => {
+    dispatch({ type: "SET_SHOW_FAV", payload: data });
+  };
+
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
     if (state.categories.length === 0) {
       getProducts(page);
-    }else if(state.categories.length > 0){
-      getProductsByType(state.categories, page)
+    } else if (state.categories.length > 0) {
+      getProductsByType(state.categories, page);
     }
   };
 
@@ -131,7 +137,7 @@ const ProductProvider = ({ children }) => {
     }
   };
 
-  const getProductsByType = async (categories, page =1) => {
+  const getProductsByType = async (categories, page = 1) => {
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${page}`,
@@ -149,12 +155,42 @@ const ProductProvider = ({ children }) => {
     }
   };
 
+  const getFavorites = async (page = 1) => {
+    try {
+      setShowFav(true)
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}&page=${page}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data) {
+        setPaginatedData(response.data);
+      }
+    } catch (error) {
+      console.log("error con favoritos", error);
+    }
+  };
+
   useEffect(() => {
     if (state.categories.length === 0) {
       console.log("me active");
       getProducts();
     }
   }, [state.categories]);
+  useEffect(() => {
+    if(state.showFav){
+      if (state.favorites.length === 0) {
+      setShowFav(false)
+      getProducts();
+    } else {
+      getFavorites();
+    }
+    }
+    
+  }, [state.favorites]);
 
   //Use Effect para cargar los favoritos en el estado del cliente
 
@@ -210,8 +246,11 @@ const ProductProvider = ({ children }) => {
     searchResults: state.searchResults,
     favorites: state.favorites,
     clientId: state.clientId,
+    showFav: state.showFav,
+    setShowFav,
     getProducts,
     setCurrentPage,
+    getFavorites,
     setCategories,
     setPaginatedData,
     getProductsByType,
