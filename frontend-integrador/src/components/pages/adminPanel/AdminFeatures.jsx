@@ -122,7 +122,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
               </Button>
             </div>
           </Box>
-          <TableContainer w={830} mt={3} /*border="2px" boxShadow='lg' bg='white'
+          <TableContainer w={830} mt={3}  /*border="2px" boxShadow='lg' bg='white'
               flexDirection="column"
               p={1}
               gap={5}

@@ -42,14 +42,18 @@ const ProductCard = ({ item }) => {
   };
 
   return (
-    <Card h={500} w={300} color={"blanco"}>
+    <Card  
+    h={500}
+    w={330} 
+    color={"blanco"}>
+      
       <CardBody
         _hover={{
           transform: "scale(0.98)",
           cursor: "pointer",
         }}
-        border={"5px solid black"}
-        boxShadow={"2xl"}
+        border={"3px solid black"}
+        boxShadow={'2xl'}
         display={"flex"}
         justifyContent={"center"}
         h={["90%"]}
@@ -87,6 +91,7 @@ const ProductCard = ({ item }) => {
         <Text
           fontFamily={"Saira"}
           color={"gris1"}
+          fontWeight="semibold"
           fontSize={["1rem", "1.2rem"]}
           whiteSpace="nowrap"
           overflow="hidden"

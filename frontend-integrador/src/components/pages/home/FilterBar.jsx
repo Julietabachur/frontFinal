@@ -1,12 +1,5 @@
-import {
-  Text,
-  VStack,
-  Button,
-  HStack,
-  Image,
-  Box,
-  SimpleGrid,
-} from "@chakra-ui/react";
+
+import { Text, VStack, Button, HStack, Image, Box,SimpleGrid, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useProductContext } from "./Global.context";
 import axios from "axios";
@@ -66,204 +59,73 @@ const FilterBar = () => {
 
 
   return (
-    <VStack
-      w={"100%"}
-      bg={"negro"}
-      position={"relative"}
-      top={"14px"}
-      p={5}
-      shadow={"dark-lg"}
-    >
-      <SimpleGrid
-        w={"100%"}
-        h={"80%"}
-        minChildWidth={["50px", "100px"]}
-        spacing={2}
-      >
-        {categoryList.map((category) => (
-          <Box
-            key={category.id}
-            w={"100%"}
-            h={["60px", "90px", "150px"]}
-            textAlign="center"
-            onClick={() => handleCategoryClick(category.categoryName)}
-            style={{
-              boxShadow: categories.includes(category.categoryName)
-                ? "1px 10px 28px green"
-                : "none",
-              border: categories.includes(category.categoryName)
-                ? "3px solid #00cc00"
-                : "none",
-            }}
-          >
-            <Box bg={"verde2"} w={"100%"} h={"100%"}>
-              <Image
-                w={"100%"}
-                h={"80%"}
-                objectFit={"cover"}
-                src={category.imageUrl}
-                fallbackSrc="https://via.placeholder.com/150"
-              />
-              <Text fontSize={{ base: 10, lg: 18 }} color={"negro"}>
-                {category.categoryName}
-              </Text>
-            </Box>
-          </Box>
-        ))}
-      </SimpleGrid>
-      <HStack mt={2}>
-        <Button
-          h={7}
-          color={"blanco"}
-          bg={"verde2"}
-          fontSize={{ base: 12, lg: 18 }}
-          w={{ base: "60px", lg: 40 }}
-          onClick={() => handleFilterSearch()}
-        >
-          Filtrar
-        </Button>
-        <Button
-          h={7}
-          color={"blanco"}
-          bg={"red.400"}
-          fontSize={{ base: 10, lg: 18 }}
-          w={{ base: "80px", sm: "80px", md: "100px", lg: 40 }}
-          onClick={() => handleFiltros()}
-        >
-          Borrar Filtros
-        </Button>
-        <Text
-          color={"verde2"}
-          fontSize={{ base: 12, lg: 18 }}
-        >{`Estás viendo ${totalElements} productos`}</Text>
-      </HStack>
-    </VStack>
-  );
-};
+  
+   <VStack w={'100%'} bg={'negro'} position={"relative"} bottom={2} p={8} shadow={'dark-lg'} spacing={5}>
+    <Heading color={"white"} fontFamily={"Podkova"} fontSize={[16, 24, 30]}>Descubri nuestro catalogo</Heading>
 
-export default FilterBar;
-{
-  /* <HStack
-      justify={"space-around"}
-      w={"100%"}
-      bg={"negro"}
-      pr={"40px"}
-      mt={'2px'}
-      pt={2}
-      pb={2}
-    >
-      
-      {categoryList.map((category) => (
+    <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={2}  >
+    {categoryList.map((category) => (
         <Box
           key={category.id}
+          w={'100%'}
+          h={['60px', '90px', '150px']}
+          fontFamily={"Podkova"}
           textAlign="center"
           onClick={() => handleCategoryClick(category.categoryName)}
           style={{
+            boxShadow:categories.includes(category.categoryName)
+            ? "1px 10px 28px green"
+            : "none",
             border: categories.includes(category.categoryName)
               ? "3px solid #00cc00"
               : "none",
           }}
         >
-          <Box bg={"verde2"}>
+          <Box bg={"verde2"} /*bg={"gray.200"}*/ w={'100%'} h={'100%'}>
             <Image
-              w={{ base: 100, lg: 150 }}
-              h={{ base: 100, lg: 150 }}
+              w={'100%'}
+              h={'80%'}
               objectFit={"cover"}
               src={category.imageUrl}
               fallbackSrc="https://via.placeholder.com/150"
             />
-            <Text color={"negro"}>{category.categoryName}</Text>
+            <Text fontSize={{ base: 10, sm:15, lg: 18 }} color={"negro"}>{category.categoryName}</Text>
           </Box>
         </Box>
       ))}
-      <VStack w={"20%"} pl={10}>
-        <Button
-          h={7}
-          color={"blanco"}
+    </SimpleGrid>
+    
+    <HStack mt={4} spacing={4}>
+    <Button
+          h={[5,6,7]}
+          color={"white"}
           bg={"verde2"}
-          w={{ base: "100px", lg: 40 }}
+          fontSize={{ base: 10, lg: 16 }}
+          w={{ base: "80px", sm: "80px", md: '100px', lg: 40 }}
+          /*w={{ base: "60px", lg: 40 }}*/
           onClick={() => handleFilterSearch()}
         >
-          Filtrar
+          Aplicar Filtros
         </Button>
         <Button
-          h={7}
-          color={"blanco"}
-          bg={"red.400"}
-          w={{ base: "100px", lg: 40 }}
+          h={[5,6,7]}
+          color={"black"}
+          bg={"gray.200"}
+          fontSize={{ base: 10, lg: 16 }}
+          w={{ base: "80px", sm: "80px", md: '100px', lg: 40 }}
           onClick={() => handleFiltros()}
         >
           Borrar Filtros
         </Button>
         <Text
           color={"verde2"}
-          fontSize={{ base: 12, lg: 18 }}
+          fontSize={{ base: 10, lg: 16 }}
         >{`Estás viendo ${totalElements} productos`}</Text>
-      </VStack>
-    </HStack> */
-}
-
-{
-  /*  <HStack
-    justify={"space-around"}
-    w={"100%"}
-    bg={"negro"}
-    pr={"40px"}
-    mt={'22px'}
-    pt={2}
-    pb={2}
-  >
+    </HStack>
     
-    {categoryList.map((category) => (
-      <Box
-        key={category.id}
-        
-        textAlign="center"
-        onClick={() => handleCategoryClick(category.categoryName)}
-        style={{
-          border: categories.includes(category.categoryName)
-            ? "3px solid #00cc00"
-            : "none",
-        }}
-      >
-        <Box bg={"verde2"}
-         w={{ base: '40px',}}
-        h={{ base: '60px'}}
-         overflow={'hidden'} >
-          <Image
-           w={{ base: '40px'}}
-            h={{ base: '40px' }}
-            objectFit={"cover"}
-            src={category.imageUrl}
-            fallbackSrc="https://via.placeholder.com/150"
-          />
-          <Text color={"negro"}  >{category.categoryName}</Text>
-        </Box>
-      </Box>
-    ))}
-    <VStack w={"20%"} pl={10}>
-      <Button
-        h={7}
-        color={"blanco"}
-        bg={"verde2"}
-        w={{ base: "100px", lg: 40 }}
-        onClick={() => handleFilterSearch()}
-      >
-        Filtrar
-      </Button>
-      <Button
-        h={7}
-        color={"blanco"}
-        bg={"red.400"}
-        w={{ base: "100px", lg: 40 }}
-        onClick={() => handleFiltros()}
-      >
-        Borrar Filtros
-      </Button>
-      <Text
-        color={"verde2"}
-        fontSize={{ base: 12, lg: 18 }}
-      >{`Estás viendo ${totalElements} productos`}</Text>
-    </VStack>
-  </HStack> */
-}
+    
+   </VStack>
+  );
+};
+
+export default FilterBar;

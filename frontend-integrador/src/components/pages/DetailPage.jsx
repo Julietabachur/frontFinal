@@ -30,6 +30,7 @@ import Specs from "./Specs";
 import SocialShare from "./SocialShare";
 
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import Policies from "./Policies";
 
 const DetailPage = () => {
   const { startDate } = useProductContext();
@@ -157,19 +158,24 @@ const DetailPage = () => {
         p={20}
       >
         {detail && (
-          <VStack color={"blanco"} w={"70vw"} justifySelf={"center"}>
+          <VStack
+            spacing={4}
+            color={"blanco"}
+            w={"70vw"}
+            justifySelf={"center"}
+          >
             <HStack
               justify={"space-between"}
               w={"100%"}
               h={"60px"}
               color={"blanco"}
-              border={"1px solid black"}
+              border={"2px solid black"}
               alignContent={"center"}
               justifyContent={"space-between"}
               padding={"10px"}
               minW={"300px"}
             >
-              <HStack w="50%">
+              <HStack ml={5} w="50%">
                 {token && (
                   <Box
                     onClick={handleHeartClick}
@@ -197,7 +203,8 @@ const DetailPage = () => {
                   readOnly={true}
                   fontFamily={"Saira"}
                   color={"black"}
-                  fontSize={"1.5rem"}
+                  fontWeight={"semibold"}
+                  fontSize={"1.7rem"}
                   marginLeft={"3%"}
                   style={{
                     caretColor: "transparent",
@@ -211,45 +218,35 @@ const DetailPage = () => {
               <Button
                 onClick={() => navigate(-1)}
                 bg={"verde2"}
-                marginRight={"3%"}
+                marginRight={5}
               >
                 Atras
               </Button>
             </HStack>
-
-            <Stack border={"1px solid black"}>
-              <VStack border={"1px solid black"} p={20}>
-                <Stack
-                  h={"30px"}
-                  border={"1px solid black"}
-                  w={"30%"}
-                  minW={"300px"}
-                  textAlign="center"
-                >
-                  <Text
-                    fontFamily={"Saira"}
-                    color={"black"}
-                    fontSize={"1rem"}
-                    p={1}
-                  >
-                    DESCRIPCIÓN DEL PRODUCTO
-                  </Text>
-                </Stack>
-                <Text
-                  fontFamily={"Podkova"}
-                  color={"black"}
-                  fontSize={"23px"}
-                  marginTop={"20px"}
-                >
-                  {detail.detail}
-                </Text>
-              </VStack>
-              <Stack p={2}>
-                <ProductGallery
-                  thumbnail={detail.thumbnail}
-                  gallery={detail.gallery}
-                />
-              </Stack>
+            <VStack border={"2px solid black"} p={10}>
+              <Text
+                textAlign={"center"}
+                fontFamily="Saira"
+                fontWeight={"semibold"}
+                color="black"
+                fontSize={["1rem", "1.3rem"]}
+              >
+                DESCRIPCIÓN DEL PRODUCTO
+              </Text>
+              <Text
+                fontFamily={"Podkova"}
+                color={"black"}
+                fontSize={"20px"}
+                marginTop={"20px"}
+              >
+                {detail.detail}
+              </Text>
+            </VStack>
+            <Stack border={"2px solid black"} p={2}>
+              <ProductGallery
+                thumbnail={detail.thumbnail}
+                gallery={detail.gallery}
+              />
               {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
                 <>
                   <Button
@@ -305,6 +302,7 @@ const DetailPage = () => {
                 highlightDates={availableDates.map((date) => new Date(date))}
               />
             </HStack>
+            <Policies></Policies>
           </VStack>
         )}
       </VStack>

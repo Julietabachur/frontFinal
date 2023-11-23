@@ -458,7 +458,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
             </div>
           )}
 
-          <Button w="500px" colorScheme="green" onClick={handleRegister}>
+          <Button w="500px" backgroundColor={"verde2"} onClick={handleRegister}>
             Registrarse
           </Button>
         </form>
