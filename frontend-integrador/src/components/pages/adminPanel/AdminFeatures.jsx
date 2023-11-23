@@ -27,13 +27,13 @@ import {
   ModalCloseButton,
   ModalBody,
   Alert,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
 import { FaTrash, FaEdit } from "react-icons/fa";
 import FeatureForm from './FeatureForm';
 import EditFeature from './EditFeature';
 
 
-const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList, token}) => {
+const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresList, token }) => {
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const cancelRef = useRef(); // permite cancelar en el box de alerta
@@ -41,8 +41,8 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
   const [featureToDelete, setFeatureToDelete] = useState(null); // pasa la variable del item a eliminar
   const [featureToEdit, setFeatureToEdit] = useState(null)
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
-  
+
+
   // LOGICA para editar una caracteristica.
   const handleEdit = (char) => {
     onOpen();
@@ -74,7 +74,7 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
   const closeDeleteDialog = () => {
     setIsDeleteDialogOpen(false);
   };
-  
+
   const handleDelete = async (id) => {
     try {
       // Realiza una solicitud DELETE a la API para eliminar la caracteristica
@@ -90,37 +90,37 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
       console.error("Error al eliminar la caracteristica", error);
     }
   };
-  
+
   // renderizado del componente
-    return (
-      <>
+  return (
+    <>
       <Flex justify={"center"}>
-        <Box mt={10} >    
-          <Box display= {"flex"} justifyContent ={"space-between"}>
-          {/* Componente del modal para agregar caracteristica */}
+        <Box mt={10} >
+          <Box display={"flex"} justifyContent={"space-between"}>
+            {/* Componente del modal para agregar caracteristica */}
             <FeatureForm
-            token={token}
-            getFeatures={getFeatures}
+              token={token}
+              getFeatures={getFeatures}
             />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
-            <Button colorScheme="green"
-              onClick={() => handlePageChange(featurePage > 1 ? featurePage - 1 : featurePage)
-              }
-              disabled={featurePage === 0}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
             >
-              &lt;&lt;&lt;
-            </Button >
-            <Text>- {featurePage} -</Text>
-            <Button colorScheme="green"  onClick={() => handlePageChange(featurePage + 1)}
-            > &gt;&gt;&gt;
-            </Button>
-          </div>
+              <Button colorScheme="green"
+                onClick={() => handlePageChange(featurePage > 1 ? featurePage - 1 : featurePage)
+                }
+                disabled={featurePage === 0}
+              >
+                &lt;&lt;&lt;
+              </Button >
+              <Text>- {featurePage} -</Text>
+              <Button colorScheme="green" onClick={() => handlePageChange(featurePage + 1)}
+              > &gt;&gt;&gt;
+              </Button>
+            </div>
           </Box>
           <TableContainer w={830} mt={3} /*border="2px" boxShadow='lg' bg='white'
               flexDirection="column"
@@ -128,7 +128,7 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
               gap={5}
               overflowY="scroll"
               maxHeight="50vh"*/
-            >
+          >
             <Table variant="striped" colorScheme="green">
               <Thead /*borderBottom="2px"*/ >
                 <Tr>
@@ -139,37 +139,38 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
                     <Text fontWeight="bold">Icono</Text>
                   </Th>
                   <Th>
-                    <Text fontWeight="bold">Editar</Text>
-                  </Th>
-                  <Th>
-                    <Text fontWeight="bold">Eliminar</Text>
+                    <Text fontWeight="bold">Editar / Eliminar</Text>
                   </Th>
                 </Tr>
               </Thead>
               <Tbody fontSize="0.9em">
                 {featuresList &&
-                  featuresList.map((feature) => ( 
+                  featuresList.map((feature) => (
                     <Tr key={feature.id} h="10px">
                       <Td>{feature.charName}</Td>
                       <Td>{feature.charIcon}</Td>
                       <Td>
-                      <FaEdit
-                      style={{
-                        cursor: "pointer",
-                        color: "green",
-                        fontSize: "1.2em",
-                      }}
-                      onClick={() => handleEdit(feature)}
-                      />                        
-                      </Td>
-                      <Td>
+                        <FaEdit
+                          style={{
+                            cursor: "pointer",
+                            color: "green",
+                            fontSize: "1.2em",
+                            marginBottom: "10px",
+                            marginLeft: "40px"
+                          }}
+                          onClick={() => handleEdit(feature)}
+                        />
+
+
                         <FaTrash
-                        style={{
-                        cursor: "pointer",
-                        color: "red",
-                        fontSize: "1.2em",
-                        }}
-                        onClick={() => openDeleteDialog(feature)}
+                          style={{
+                            cursor: "pointer",
+                            color: "red",
+                            fontSize: "1.2em",
+                            marginbottom: "10px",
+                            marginLeft: "40px"
+                          }}
+                          onClick={() => openDeleteDialog(feature)}
                         />
                       </Td>
                     </Tr>
@@ -180,61 +181,61 @@ const AdminFeatures = ({getFeatures, featurePage, handlePageChange, featuresList
         </Box>
 
         <AlertDialog
-        isOpen={isDeleteDialogOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={closeDeleteDialog}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Confirmación
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              ¿Seguro que quiere eliminar esta caracteristica?
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={closeDeleteDialog}>
-                Cancelar
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  handleDelete(featureToDelete.id);
-                  setTimeout(() => {
-                    closeDeleteDialog();
-                  }, 1000);
-                }}
-                ml={3}
-              >
-                Eliminar
-              </Button>
-          </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
+          isOpen={isDeleteDialogOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={closeDeleteDialog}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                Confirmación
+              </AlertDialogHeader>
+              <AlertDialogBody>
+                ¿Seguro que quiere eliminar esta caracteristica?
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <Button ref={cancelRef} onClick={closeDeleteDialog}>
+                  Cancelar
+                </Button>
+                <Button
+                  colorScheme="red"
+                  onClick={() => {
+                    handleDelete(featureToDelete.id);
+                    setTimeout(() => {
+                      closeDeleteDialog();
+                    }, 1000);
+                  }}
+                  ml={3}
+                >
+                  Eliminar
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
         </AlertDialog>
-      
+
         <Box>
-        <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Editar Caracteristica</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {featureToEdit !== null && (
-            <EditFeature 
-              featureToEdit= {featureToEdit}
-              handleCancel= {handleCancel}
-              handleChange= {handleChange}
-              token = {token}
-            />
-            )}
-          </ModalBody>
-        </ModalContent>
-        </Modal>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent mt={150}>
+              <ModalHeader>Editar Caracteristica</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {featureToEdit !== null && (
+                  <EditFeature
+                    featureToEdit={featureToEdit}
+                    handleCancel={handleCancel}
+                    handleChange={handleChange}
+                    token={token}
+                  />
+                )}
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </Box>
       </Flex>
-      </>
-    );
-  };
+    </>
+  );
+};
 
 export default AdminFeatures

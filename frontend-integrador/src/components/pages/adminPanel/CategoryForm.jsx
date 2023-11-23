@@ -21,10 +21,31 @@ import {
 
     const CategoryForm = ({ isModalCategoriaOpen,setIsModalCategoriaOpen, onClose, getCategories, token }) => {
     const [categoryData, setCategoryData] = useState(initialCategoryState);
+    const [errors, setErrors] = useState({});
+    const[showErrorsLenght, setShowErrorsLenght] = useState(false);
+    const[showErrorsBlank, setShowErrorsBlank] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setCategoryData({ ...categoryData, [name]: value });
+          // Transforma el nombre a mayúsculas si el campo es "categoryName"
+        const transformedValue = name === "categoryName" ? value.toUpperCase() : value;
+
+        setCategoryData({ ...categoryData, [name]: transformedValue });
+
+        // Validaciones para el campo categoryName
+    if (name === "categoryName") {
+        const categoryNameErrors = {};
+        
+        if (value.length < 3 || value.length > 30) {
+            setShowErrorsLenght (true)
+            categoryNameErrors.lengthError = "El nombre de la categoría debe tener entre 3 y 30 caracteres.";
+        }
+        if (!value.trim()) {
+            setShowErrorsBlank(true)
+            categoryNameErrors.blankError = "El nombre de la categoría no puede estar en blanco.";
+        }
+        setErrors({ ...errors, categoryName: categoryNameErrors });
+    }
     };
 
     const handleAddCategory = async () => {
@@ -75,7 +96,15 @@ import {
                     placeholder="Nombre de la Categoría"
                     value={categoryData.categoryName}
                     onChange={handleInputChange}
+                    required
+                    pattern=".{3,30}"
                 />
+                {errors.categoryName && errors.categoryName.lengthError && (
+                    <div style={{ color: "red" }}>{errors.categoryName.lengthError}</div>
+                )}
+                {errors.categoryName && errors.categoryName.blankError && (
+                    <div style={{ color: "red" }}>{errors.categoryName.blankError}</div>
+                )}
                 <Input
                     name="description"
                     mb={3}

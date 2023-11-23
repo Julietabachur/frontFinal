@@ -26,11 +26,9 @@ const NavbarMenu = ({ username, token, roles }) => {
   };
 
   useEffect(()=> {
-    if(roles.some(role => role.authority == 'ROLE_ADMIN')){
-      console.log('yes');
+    if(roles.some(role => role == 'ADMIN')){
       setAdmin(true)
     }else{
-      console.log('no');
       setAdmin(false)
     }
   },[])

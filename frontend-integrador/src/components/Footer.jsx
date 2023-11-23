@@ -34,7 +34,7 @@ const Footer = () => {
 
           <>
             {media ? (
-            <VStack bg={'#444444'} p={3} textAlign="center" w="100vw">
+            <VStack bg={'#444444'} p={3} textAlign="center" w="98vw">
               <HStack spacing='16px' py={'20px'}>
               <Box w='40px' h='40px'>
                 <FaFacebook size={35} color={'#EDF2F7'}/>
@@ -67,7 +67,7 @@ const Footer = () => {
             )
             :
             (
-            <HStack bg={'#444444'} p={3} textAlign="center" w="100vw">
+            <HStack bg={'#444444'} p={3} textAlign="center" w="99vw">
             <VStack
               spacing={4}
               align='stretch'

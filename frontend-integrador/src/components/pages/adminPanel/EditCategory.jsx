@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Input,
     Button,
@@ -12,18 +12,56 @@ import {
     ModalCloseButton,
     } from "@chakra-ui/react";
     import axios from "axios";
+
     const baseUrl = import.meta.env.VITE_SERVER_URL;
 
-    const EditCategory = ({ isOpen, onClose, categoryToEdit, getCategories, token }) => {
+    const EditCategory = ({
+    isOpen,
+    onClose,
+    categoryToEdit,
+    getCategories,
+    token,
+    }) => {
     const [categoryData, setCategoryData] = useState({
+        categoryName: "",
+        description: "",
+        imageUrl: "",
+    });
+    const [errors, setErrors] = useState({});
+    const [showErrorsLenght, setShowErrorsLenght] = useState(false);
+    const [showErrorsBlank, setShowErrorsBlank] = useState(false);
+
+    useEffect(() => {
+        // Update the local state when the categoryToEdit prop changes
+        setCategoryData({
         categoryName: categoryToEdit.categoryName,
         description: categoryToEdit.description,
         imageUrl: categoryToEdit.imageUrl,
-    });
+        });
+    }, [categoryToEdit]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setCategoryData({ ...categoryData, [name]: value });
+        // Transforma el nombre a mayúsculas si el campo es "categoryName"
+        const transformedValue = name === "categoryName" ? value.toUpperCase() : value;
+
+        setCategoryData({ ...categoryData, [name]: transformedValue });
+        // Validaciones para el campo categoryName
+    if (name === "categoryName") {
+        const categoryNameErrors = {};
+
+        if (transformedValue.length < 3 || transformedValue.length > 30) {
+            setShowErrorsLenght(true);
+            categoryNameErrors.lengthError =
+            "El nombre de la categoría debe tener entre 3 y 30 caracteres.";
+        }
+        if (!transformedValue.trim()) {
+            setShowErrorsBlank(true);
+            categoryNameErrors.blankError =
+            "El nombre de la categoría no puede estar en blanco.";
+        }
+        setErrors({ ...errors, categoryName: categoryNameErrors });
+    }
     };
 
     const handleEditCategory = async () => {
@@ -45,8 +83,14 @@ import {
         }
     };
 
+    const handleCancel = () => {
+        
+        onClose(); // Cerrar el modal
+    };
+
+    
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={handleCancel}>
         <ModalOverlay />
         <ModalContent mt={200}>
             <ModalHeader>Editar Categoría</ModalHeader>
@@ -60,6 +104,12 @@ import {
                 value={categoryData.categoryName}
                 onChange={handleInputChange}
             />
+            {errors.categoryName && errors.categoryName.lengthError && (
+            <div style={{ color: "red" }}>{errors.categoryName.lengthError}</div>
+            )}
+            {errors.categoryName && errors.categoryName.blankError && (
+            <div style={{ color: "red" }}>{errors.categoryName.blankError}</div>
+            )}
             <Input
                 name="description"
                 mb={3}
@@ -76,14 +126,12 @@ import {
             />
             </ModalBody>
             <ModalFooter>
-            <Button colorScheme="green" mr={3} onClick={handleEditCategory}>
-                Guardar
-            </Button>
-            <Button onClick={onClose}>Cancelar</Button>
+            <Button onClick={handleEditCategory } marginRight={5}>Guardar y Cerrar</Button>
+            <Button onClick={handleCancel}>Cancelar</Button>
             </ModalFooter>
         </ModalContent>
         </Modal>
     );
-    };
+};
 
 export default EditCategory;

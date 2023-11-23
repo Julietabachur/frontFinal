@@ -1,17 +1,19 @@
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import {
   ArrowLeftIcon,
   ArrowBackIcon,
   ArrowForwardIcon,
   ArrowRightIcon,
 } from "@chakra-ui/icons";
-
-const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
+import { useProductContext } from "./Global.context";
+import { useEffect } from "react";
+const RenderPagination = () => {
+  const { totalPages, currentPage, setCurrentPage } = useProductContext();
+;
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-
 
 
   return (
@@ -31,8 +33,8 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       >
         <ArrowBackIcon />
       </Button>
-     
-      {pageNumbers.map((number) => (
+
+      {pageNumbers?.map((number) => (
         <Button
           key={number}
           onClick={() => setCurrentPage(number)}
@@ -41,7 +43,6 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
           {number}
         </Button>
       ))}
-  
 
       <Button
         isDisabled={currentPage === totalPages}
@@ -50,7 +51,6 @@ const RenderPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       >
         <ArrowForwardIcon />
       </Button>
-
       <Button
         isDisabled={currentPage === totalPages}
         colorScheme="teal"

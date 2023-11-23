@@ -59,7 +59,7 @@ const ListUsers = ({
             alignItems: "center",
           }}
         >
-          <Button colorScheme="green" 
+          <Button colorScheme="green"
             onClick={() =>
               handlePageChange(userPage > 1 ? userPage - 1 : userPage)
             }
@@ -68,7 +68,7 @@ const ListUsers = ({
             &lt;&lt;&lt;
           </Button >
           <Text>- {userPage} -</Text>
-          <Button colorScheme="green"  onClick={() => handlePageChange(userPage + 1)}>
+          <Button colorScheme="green" onClick={() => handlePageChange(userPage + 1)}>
             &gt;&gt;&gt;
           </Button>
         </div>
@@ -76,9 +76,9 @@ const ListUsers = ({
           <Table variant="striped" colorScheme="green">
             <Thead>
               <Tr>
-                <Th>
+                {/*<Th>
                   <Text fontWeight="bold">ID</Text>
-                </Th>
+                </Th>*/}
                 <Th>
                   <Text fontWeight="bold">Nombre y apellido</Text>
                 </Th>
@@ -97,13 +97,13 @@ const ListUsers = ({
               {userList &&
                 userList.map((user) => (
                   <Tr key={user.id} h="10px">
-                    <Td>{user.id}</Td>
+                    {/*<Td>{user.id}</Td>*/}
                     <Td>{user.firstName + " " + user.lastName}</Td>
                     <Td>{user.clientName}</Td>
                     <Td>{user.email}</Td>
                     <Td>
-                      <Checkbox colorScheme="green"  borderColor="gray.800" borderWidth="2px"
-                      isDisabled={user.clientName === 'admin1'}
+                      <Checkbox colorScheme="green" borderColor="gray.800" borderWidth="2px"
+                        isDisabled={user.clientName === 'admin1'}
                         isChecked={user.roles[1] === "ADMIN"}
                         onChange={() => adminHandle(user)}
                       />

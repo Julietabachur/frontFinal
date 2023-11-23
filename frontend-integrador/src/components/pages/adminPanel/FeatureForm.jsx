@@ -1,4 +1,4 @@
-import { Alert, Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
+import { Alert, Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import axios from 'axios';
 
@@ -7,19 +7,13 @@ const FeatureForm = ({token, getFeatures}) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [newFeature, setNewFeature] = useState({charName: '', charIcon: ''})
-  const [show, setShow] = useState(false)
-  const [error, setError] = useState(false) 
 
+  // controla el envio del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    addFeature(newFeature);
-    setNewFeature({charName: "", charIcon:""});
-    setTimeout(() =>{
-      onClose();
-      setShow(false);
-      setError(false)
-    }, 2000)
-    getFeatures()
+      addFeature(newFeature);
+      setNewFeature({charName: "", charIcon:""});
+      getFeatures() 
     }
     
 
@@ -31,16 +25,20 @@ const FeatureForm = ({token, getFeatures}) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log("Caracteristica agregada con éxito:", response.data);
-        // Oculta el mensaje de éxito después de 1.5 segundos (1500 milisegundos)
-        setShow(true);
-        setError(false);  
+        window.alert("Caracteristica agregada con exito");
+        console.log("Caracteristica agregada con éxito:", response.data)
+        setTimeout(() =>{
+          onClose();   
+        }, 1000)
       })
       .catch((error) => {
-        setShow(false);
-        setError(true);
-        // Maneja el error de la solicitud POST aquí - VERIFICAR.
-        console.error("Error al agregar la caracteristica:", error);
+        if (error.response && error.response.status === 400) {
+          // Si el error es 400, muestra una alerta con el mensaje de error del servidor
+          window.alert(error.response.data.error);
+          } else {
+          // Para otros errores, muestra un mensaje de error genérico
+          console.error("Error al agregar la caracteristica:", error);
+          }
       });
   };
   
@@ -48,18 +46,18 @@ const FeatureForm = ({token, getFeatures}) => {
     <>
 
     <Button border="2px" colorScheme="green" onClick={onOpen}>
-    Nueva Caracteristica
+    Nueva Característica
     </Button>
 
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Nueva Caracteristica</ModalHeader>
+        <ModalContent mt={150}>
+          <ModalHeader>Nueva Característica</ModalHeader>
           <ModalCloseButton/>
           <ModalBody>
             <form>
             <FormControl>
-              <FormLabel> Nombre de la caracteristica</FormLabel>
+              <FormLabel> Nombre de la característica</FormLabel>
               <Input
                 type="text"
                 name="newCharName"
@@ -68,7 +66,7 @@ const FeatureForm = ({token, getFeatures}) => {
                 value={newFeature.charName}
                 onChange={(e) => setNewFeature({...newFeature, charName: (e.target.value).toUpperCase()})}
               />
-              <FormLabel> Icono representativo </FormLabel>
+              <FormLabel> Ícono representativo </FormLabel>
               <Input
                 type="text"
                 name="newCharIcon"
@@ -80,8 +78,6 @@ const FeatureForm = ({token, getFeatures}) => {
               <Button colorScheme='green' onClick={handleSubmit} >Guardar</Button>
             </FormControl>
             </form>
-            {show && <Alert style={{color: 'green'}}>Caracteristica agregada con exito</Alert>}
-            {error && <Alert style={{color: 'red'}}> Error al agregar la caracteristica, el nombre ya existe. Verifiquelo o elija otro nombre</Alert>}
           </ModalBody>
         </ModalContent>
       </Modal>
