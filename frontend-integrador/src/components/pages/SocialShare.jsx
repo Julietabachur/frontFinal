@@ -19,11 +19,13 @@ import {
     ModalBody,
     ModalCloseButton,
 } from "@chakra-ui/react";
-import { FaFacebookSquare, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebookSquare, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { FcShare } from "react-icons/fc";
-import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon } from "react-share";
+import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, WhatsappShareButton} from "react-share";
 
 const SocialShare = ({ openShareModal, setOpenShareModal, shareTitle, shareText, shareImage, shareUrl }) => {
+    
+    const [customMessage, setCustomMessage] = useState(""); // Nuevo estado para el mensaje personalizado
 
     console.log("Titulo: ", shareTitle);
     console.log("Texto: ", shareText);
@@ -38,8 +40,6 @@ const SocialShare = ({ openShareModal, setOpenShareModal, shareTitle, shareText,
 
 
 
-
-
         } else if (origin == "instagram") {
 
             alert("PUBLICAR EN Instagram");
@@ -48,7 +48,12 @@ const SocialShare = ({ openShareModal, setOpenShareModal, shareTitle, shareText,
 
             alert("PUBLICAR EN Twitter");
 
+        } else if (origin == "whatsapp") {
+            alert("COMPARTIR EN WHATSAPP");
         }
+
+
+
 
     };
 
@@ -83,6 +88,13 @@ const SocialShare = ({ openShareModal, setOpenShareModal, shareTitle, shareText,
                             <Image w={120} h={150} src={shareImage} alt={shareTitle} />
                             <Text size='sm'>{shareTitle}</Text>
                             <Text size={'sm'}>{shareUrl}</Text>
+
+                              {/* Nuevo Textarea para el mensaje personalizado */}
+                              <Textarea
+                                placeholder="Agrega tu Comentario..."
+                                value={customMessage}
+                                onChange={(e) => setCustomMessage(e.target.value)}
+                            />
                             <HStack>
 
                                 <div>
@@ -104,6 +116,22 @@ const SocialShare = ({ openShareModal, setOpenShareModal, shareTitle, shareText,
                                 >
                                     <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FaTwitter />} />
                                 </TwitterShareButton>
+
+
+                                {/* Nuevo botón para WhatsApp */}
+                                
+                                <WhatsappShareButton
+                                    url={shareUrl}
+                                    
+                                    quote={shareTitle}
+                                    
+                                    hashtag="#riskko"
+                                >
+                                  <IconButton colorScheme='gray' variant='outline' size='lg' aria-label='Share' icon={<FaWhatsapp />} />
+                                </WhatsappShareButton>
+
+
+
 
                             </HStack>
 
