@@ -13,6 +13,8 @@ import { FaHeart, FaRegHeart} from "react-icons/fa";
 import { useProductContext } from "./Global.context";
 import { Link as ReactRouterLink } from "react-router-dom";
 
+//me lamo esteban 
+
 const ProductCard = ({ item }) => {
   const [isHeartClicked, setHeartClicked] = useState(false);
   const { setFavorites, favorites } = useProductContext();
