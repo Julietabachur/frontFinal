@@ -27,6 +27,11 @@ const NavbarMenu = ({ username, token, roles }) => {
     window.location.reload();
   };
 
+  const handleFavorites = () => {
+    navigate('/')
+    getFavorites()
+  };
+
   useEffect(() => {
     if (roles.some((role) => role == "ADMIN")) {
       setAdmin(true);
@@ -38,7 +43,13 @@ const NavbarMenu = ({ username, token, roles }) => {
   return (
     <Menu>
       <MenuButton as={Box}>
-        <Avatar bg={"gray.100"} size="md"  color={"black"} fontWeight={"black"} name={username} />
+        <Avatar
+          bg={"gray.100"}
+          size="md"
+          color={"black"}
+          fontWeight={"black"}
+          name={username}
+        />
       </MenuButton>
       <MenuList>
         <MenuItem
@@ -60,16 +71,18 @@ const NavbarMenu = ({ username, token, roles }) => {
           </MenuItem>
         )}
         <MenuItem
-        as={Button}
-        colorScheme="green"
-        variant={"ghost"}
-        onClick={() => getFavorites()}
-        >Mis reservas </MenuItem>
+          as={Button}
+          colorScheme="green"
+          variant={"ghost"}
+          onClick={() => handleFavorites()}
+        >
+          Mis reservas{" "}
+        </MenuItem>
         <MenuItem
           as={Button}
           colorScheme="green"
           variant={"ghost"}
-          onClick={() => getFavorites()}
+          onClick={() => handleFavorites()}
         >
           Mis Favoritos{" "}
         </MenuItem>
