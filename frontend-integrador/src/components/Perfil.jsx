@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import {
   HStack,
   Box,
@@ -17,11 +17,15 @@ import {
   Flex,
   Stack,
   Divider,
+  Image,
   SimpleGrid,
 } from "@chakra-ui/react";
 import LogoutButton from "./LogoutButton";
+import { useProductContext } from "./pages/home/Global.context";
+import { Link as ReactRouterLink } from "react-router-dom";
 
-const Perfil = ({username, token }) => {
+const Perfil = ({ username, token }) => {
+  const { getFavorites, paginatedData } = useProductContext();
   const USER_URL = import.meta.env.VITE_USER_URL;
   const [user, setUser] = useState({});
 
@@ -30,7 +34,7 @@ const Perfil = ({username, token }) => {
     navigate("/");
     window.location.reload();
   };
-  
+
   const getUser = async (username) => {
     const response = await axios.get(`${USER_URL}username=${username}`, {
       headers: {
@@ -38,16 +42,23 @@ const Perfil = ({username, token }) => {
         "Content-Type": "application/json",
       },
     });
-    if (response) {
+    if (response.data) {
       setUser(response.data);
     }
   };
+  /* const getReserves = async (id)=> {
+    const response = await Axios.get(`${baseUrl}api/v1/public/reserves/search/byProductId?productId=${id}`)
+  } */
 
   useEffect(() => {
     if (token) {
       getUser(username);
     }
   }, [token]);
+
+  useEffect(() => {
+    getFavorites();
+  }, []);
 
   return (
     <Grid
@@ -82,7 +93,7 @@ const Perfil = ({username, token }) => {
           </Text>
           <Text textAlign={"center"}>{user?.email}</Text>
           <LogoutButton
-            /* justifySelf={"center"}
+          /* justifySelf={"center"}
             w={"130px"}
             bg={"red.400"}
             color={"blanco"}
@@ -187,53 +198,48 @@ const Perfil = ({username, token }) => {
             alignSelf={{ base: "center", md: "flex-start" }}
             textShadow={"10px 10px 10px gray"}
           >
-            Informacion Personal
+            Favoritos
           </Box>
-          <Flex
-            boxShadow={"15px 15px 15px gray"}
-            justify={"flex-start"}
-            direction={"column"}
-            align={"flex-start"}
+
+          <SimpleGrid
+            mt={"15px"}
+            p={2.5}
+            spacing={2}
+            minChildWidth="160px"
             w={"100%"}
-            mt={15}
-            p={5}
             borderRadius={6}
             border={"1px solid lightblue"}
+            boxShadow={"15px 15px 15px gray"}
           >
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Nombre de usuario: {user?.username}
-            </Text>
-            <Text fontSize={{ base: 15, md: 20 }}>
-              nombre: {user?.firstName ? user.firstName : "John"}
-            </Text>
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Apellido: {user?.firstName ? user.lastName : "Doe"}
-            </Text>
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Correo electronico: {user?.email}
-            </Text>
-            <Stack>
-              <Divider m={3} />
-              <Text fontSize={{ base: 20, md: 25 }} color={"verde1"}>
-                Informarcion de Residencia
-              </Text>
-              <Text fontSize={{ base: 15, md: 20 }}>
-                Dirección:{" "}
-                {user?.address
-                  ? user.address.calle + user.address.number
-                  : "Siempre viva 4354"}
-              </Text>
-              <Text fontSize={{ base: 15, md: 20 }}>
-                País: {user?.address ? user.address.country : "Uruguay"}
-              </Text>
-              <Text fontSize={{ base: 15, md: 20 }}>
-                Ciudad: {user?.address ? user.address.city : "Montevideo"}
-              </Text>
-            </Stack>
-          </Flex>
+            {paginatedData.map((item) => (
+              <Link
+                as={ReactRouterLink}
+                key={item.id}
+                to={`/detalle/${item.id}`}
+              >
+                <Box boxShadow={"5px 5px 15px gray"} m={3} borderRadius={8}>
+                  <Image
+                    boxSize={20}
+                    w={"100%"}
+                    src={item.thumbnail}
+                    borderRadius={8}
+                    objectFit={"cover"}
+                  />
+                </Box>
+              </Link>
+            ))}
+          </SimpleGrid>
         </VStack>
       </GridItem>
-      <GridItem colSpan={{ base: 5, md: 4 }} bg="blanco" >{user?.cel? user.cel: '555 555 092'}</GridItem>
+      <GridItem colSpan={{ base: 5, md: 4 }} bg="blanco">
+        <Box m={3}>
+          {user?.reserveIds ? (
+            <Text fontSize={30}>{"Reservas a renderizar"}</Text>
+          ) : (
+            <Text fontSize={30}>{"Aqui irian las reservas"}</Text>
+          )}
+        </Box>
+      </GridItem>
     </Grid>
   );
 };

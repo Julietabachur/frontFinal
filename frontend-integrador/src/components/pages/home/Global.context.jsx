@@ -33,6 +33,8 @@ const reducer = (state, action) => {
       return { ...state, clientId: action.payload };
     case "SET_SHOW_FAV":
       return { ...state, showFav: action.payload };
+    case "SET_RESERVE":
+      return { ...state, showFav: action.payload };
     default:
       return state;
   }
@@ -51,6 +53,7 @@ const initialState = {
   favorites: [],
   showFav: false,
   clientId: "",
+  reserves: []
 };
 
 const ProductContext = createContext(undefined); //useContext
@@ -79,6 +82,9 @@ const ProductProvider = ({ children }) => {
   }, []);
 
   const setSearchResults = (data) => {
+    dispatch({ type: "SET_SEARCH_RESULTS", payload: data });
+  };
+  const setReserve = (data) => {
     dispatch({ type: "SET_SEARCH_RESULTS", payload: data });
   };
   const setStartDate = (date) => {
