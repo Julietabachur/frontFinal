@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
@@ -315,7 +314,7 @@ const DetailPage = () => {
           setOpenShareModal={setOpenShareModal}
           detail={detail}
           shareTitle={detail.productName}
-          shareText={detail.detail}
+          shareText={detail?.detail}
           shareImage={detail.thumbnail}
           shareUrl={`${frontUrl}/detalle/${id}`}
         />

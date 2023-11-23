@@ -96,9 +96,8 @@ const ProductProvider = ({ children }) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
     if (state.categories.length === 0) {
       getProducts(page);
-    } else if (state.categories.length > 0) {
-      
-      getProductsByType(state.categories);
+    }else if(state.categories.length > 0){
+      getProductsByType(state.categories, page)
     }
   };
 
@@ -132,10 +131,10 @@ const ProductProvider = ({ children }) => {
     }
   };
 
-  const getProductsByType = async (categories) => {
+  const getProductsByType = async (categories, page =1) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${state.currentPage}`,
+        `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${page}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -151,10 +150,11 @@ const ProductProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (state.categories.length === 0 && state.searchResults.length === 0 && state.favorites.length === 0 ) {
+    if (state.categories.length === 0) {
+      console.log("me active");
       getProducts();
     }
-  }, [state.categories, state.searchResults, state.favorites]);
+  }, [state.categories]);
 
   //Use Effect para cargar los favoritos en el estado del cliente
 
