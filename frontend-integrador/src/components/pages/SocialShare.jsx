@@ -18,6 +18,7 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
+    Textarea
 } from "@chakra-ui/react";
 import { FaFacebookSquare, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { FcShare } from "react-icons/fc";
@@ -118,7 +119,7 @@ const SocialShare = ({ openShareModal, setOpenShareModal, shareTitle, shareText,
                                 </TwitterShareButton>
 
 
-                                {/* Nuevo botón para WhatsApp */}
+                               
                                 
                                 <WhatsappShareButton
                                     url={shareUrl}
