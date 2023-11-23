@@ -16,6 +16,9 @@ import { Link as ReactRouterLink } from "react-router-dom";
 const ProductCard = ({ item }) => {
   const [isHeartClicked, setHeartClicked] = useState(false);
   const { setFavorites, favorites } = useProductContext();
+  
+  //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(item.id);
@@ -60,18 +63,20 @@ const ProductCard = ({ item }) => {
           <Image src={item?.thumbnail} h={"100%"} w={"100%"} objectFit={"cover"} />
         </Link>
         {/* Botón de corazón personalizado */}
-        <Box
-          position="absolute"
-          top={1.5}
-          right={1.5}
-          onClick={handleHeartClick}
-          color="green"
-          _hover={{
-            color: "green",
-          }}
-        >
-          {isFavorite ? <FaHeart size={30} /> : <FaRegHeart size={30} />}
-        </Box>
+        {token && (
+            <Box
+              position="absolute"
+              top={1.5}
+              right={1.5}
+              onClick={handleHeartClick}
+              color="green"
+              _hover={{
+                color: "green",
+              }}
+            >
+              {isFavorite ? <FaHeart size={30} /> : <FaRegHeart size={30} />}
+            </Box>
+          )}
       </CardBody>
 
       <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
