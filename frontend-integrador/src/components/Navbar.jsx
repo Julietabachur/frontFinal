@@ -10,6 +10,7 @@ import {
   MenuItem,
   Avatar,
   ButtonGroup,
+  Box,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
@@ -58,49 +59,26 @@ const Navbar = ({ username, setUserName, roles }) => {
       zIndex={1000}
     >
       
+      
       {media ? (
         username ? (
           <HStack>
-            <Button
-            onClick={() => {
-            navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-            <HamburgerIcon></HamburgerIcon>
-            </Button>
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-            <Search2Icon></Search2Icon>
-            </Button> 
             <a
             href="/"
             style={{
               textDecoration: "none",
               color: "white",
-              marginLeft: "50px",
             }}
             >
             <Image
               src="https://images-g3.s3.amazonaws.com/logoHeader.png"
               alt="Logo"
               style={{
-                height: "50px",
+                height: "40px",
               }}
             />
           </a>
-          </HStack>
-          
+          </HStack>          
         ) :
         <HStack>
           <a
@@ -108,7 +86,6 @@ const Navbar = ({ username, setUserName, roles }) => {
             style={{
               textDecoration: "none",
               color: "white",
-              marginRight: "50px",
             }}
           >
             <Image
@@ -119,11 +96,9 @@ const Navbar = ({ username, setUserName, roles }) => {
               }}
             />
           </a>
-        </HStack>        
-          
+        </HStack>                
         ) : username? (          
           <HStack>
-               <div>
                <a
               href="/"
               style={{
@@ -137,66 +112,36 @@ const Navbar = ({ username, setUserName, roles }) => {
                 alt="Logo"
                 style={{
                   height: "40px",
-                  margin: "10px"
                 }}
               />
               </a>
-               </div>
-              
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
+              <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                marginRight: "20px"
+              }}
             >
-              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">INICIO</Text>
-            </Button>
-            <Button
-            onClick={() => {
-              navigate("/login");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-            <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">AYUDA</Text>
-            </Button>
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">CONTACTO</Text>
-            </Button>
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-            <Search2Icon></Search2Icon>
-            </Button>
-          </HStack> 
+              <span
+                style={{
+                  color: "white",
+                  fontFamily: "Saira",
+                  fontSize: "14px",
+                  letterSpacing:"1px"
+                }}
+              >
+                Alquila tu estilo
+              </span>
+              </a>
+          </HStack>
         ) : (
-          <HStack spacing={0}>
-
-            <div>
+          <HStack>
               <a
               href="/"
               style={{
                 textDecoration: "none",
                 color: "white",
+                marginRight: "20px",
                 
               }}
             >
@@ -205,81 +150,29 @@ const Navbar = ({ username, setUserName, roles }) => {
                 alt="Logo"
                 style={{
                   height: "40px",
-                  marginRight: "50px"
                 }}
               />
-            </a>
-            {/*<a
+             </a>
+              <a
               href="/"
               style={{
                 textDecoration: "none",
-                color: "white",
-                
+                marginRight: "20px"
               }}
             >
               <span
                 style={{
                   color: "white",
                   fontFamily: "Saira",
-                  fontSize: "11px",
-                  marginLeft:"16px"
+                  fontSize: "14px",
+                  letterSpacing:"1px"
                 }}
               >
-                Vestite con estilo
+                Alquila tu estilo
               </span>
-              </a>*/}
-
-            </div>
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">INICIO</Text>
-            </Button>
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">CONTACTO</Text>
-            
-            </Button>
-            <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">AYUDA</Text>
-            </Button>
-             <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            colorScheme={"whatsapp"}
-            color={"verde2"}
-            borderRadius={28}
-            variant={"outline"}
-            >
-              <Text fontSize={"14px"}><Search2Icon></Search2Icon></Text>
-            </Button>          
-          </HStack>
-          
+              </a>      
+          </HStack>   
           )}
-     
-
 
       {/**botones o nombre */}
       {media ? (
@@ -291,32 +184,6 @@ const Navbar = ({ username, setUserName, roles }) => {
           <HStack spacing={0}>
             <div>         
             <Menu>
-             <MenuButton
-            onClick={() => {
-              navigate("/");
-            }}
-            color={"verde2"}
-            p={3}
-            px={5}
-            borderRadius={28}
-            border={"1px solid green"}
-            colorScheme={"whatsapp"}
-            >
-            <Text fontSize="14px"><HamburgerIcon></HamburgerIcon></Text>
-            </MenuButton>
-            <MenuButton
-            onClick={() => {
-              navigate("/");
-            }}
-            color={"verde2"}
-            p={3}
-            px={5}
-            borderRadius={28}
-            border={"1px solid green"}
-            colorScheme={"whatsapp"}
-            >
-            <Text fontSize={"14px"}><Search2Icon ></Search2Icon></Text>
-            </MenuButton>
             <MenuButton
               color={"verde2"}
               p={3}
@@ -358,7 +225,7 @@ const Navbar = ({ username, setUserName, roles }) => {
         )) : username? (
           
           <HStack>
-          <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>{username}</Text>
+          <Text mr={3} color={"verde2"} fontSize={20} fontWeight="semibold" fontFamily={"saira"}>{username}</Text>
           <NavbarMenu username={username} roles={roles} />
           </HStack>
         ) : (

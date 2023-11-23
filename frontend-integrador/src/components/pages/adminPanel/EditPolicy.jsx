@@ -1,7 +1,8 @@
-import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react';
-import React from 'react'
+import { Button, FormControl, FormLabel, Input} from '@chakra-ui/react';
+import React, { useState } from 'react'
+import axios from 'axios';
 
-const EditPolicy = ({token, policyToEdit, handleCancel, handleChange}) => {
+const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChange}) => {
     
     const [dataEdit, setDataEdit] = useState (policyToEdit)
 
@@ -21,8 +22,10 @@ const EditPolicy = ({token, policyToEdit, handleCancel, handleChange}) => {
             { Authorization: `Bearer ${token}` } 
         })
         .then((response) => {
-            window.alert("Caracteristica actualizada con exito");
-            console.log('Caracteristica actualizada con éxito:', response.data);
+            window.alert("Politica actualizada con exito");
+            console.log('Politica actualizada con éxito:', response.data);
+            getPolicyAll();
+            
         })
         .catch((error) => {
             if (error.response && error.response.status === 400) {
@@ -30,7 +33,7 @@ const EditPolicy = ({token, policyToEdit, handleCancel, handleChange}) => {
             window.alert(error.response.data.error);
             } else {
             // Para otros errores, muestra un mensaje de error genérico
-            console.error("Error al actualizar la caracteristica:", error);
+            console.error("Error al actualizar la politica", error);
             }
         });
     }

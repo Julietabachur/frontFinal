@@ -1,10 +1,38 @@
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react';
 import React from 'react'
-import { useRef, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
+import {
+  Box,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Text,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Flex,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+} from '@chakra-ui/react'
 import EditPolicy from './EditPolicy';
 import PolicyForm from './PolicyForm';
+import { FaTrash, FaEdit } from "react-icons/fa";
 
-const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
+const AdminPolicy = ({token, getPolicy, policyPage, policyList, getPolicyAll, policyListAll, handlePageChange}) => {
+
 
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const cancelRef = useRef(); // permite cancelar en el box de alerta
@@ -13,9 +41,12 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
     const [policyToEdit, setPolicyToEdit] = useState(null)
     const { isOpen, onOpen, onClose } = useDisclosure();
 
+
     //LOGICA para editar una politica.
     const handleEdit = (policy) => {
         onOpen();
+        getPolicy();
+        getPolicyAll();
         setPolicyToEdit(policy);
     };
 
@@ -27,12 +58,18 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
     const handleChange = () => {
         onClose();
         setPolicyToEdit(null);
-        getPolicyAll();
     };
+
+    useEffect(() => {
+        getPolicy();
+    }, [policyPage]);
 
     useEffect(() => {
         getPolicyAll();
     }, []);
+
+
+
 
     //LOGICA para eliminar una caracteristica
     const openDeleteDialog = (policy) => {
@@ -55,7 +92,8 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
         });
         // Vuelve a obtener la lista de politicas después de eliminar.
         // Deberia volver a la pagina 1. Ver como ?
-        getPolicyAll();
+        getPolicyAll()
+        getPolicy();
     } catch (error) {
         console.error("Error al eliminar la politica", error);
     }
@@ -66,20 +104,37 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
     <>
     <Flex justify={"center"}>
         <Box mt={10} >
-            {/* Componente del modal para agregar politica */}
-            <PolicyForm
-            token={token}
-            getPolicyAll={getPolicyAll}
-            />
+            <Box display={"flex"} justifyContent={"space-between"}>
+                {/* Componente del modal para agregar politica */}
+                <PolicyForm
+                token={token}
+                getPolicy={getPolicy}
+                getPolicyAll={getPolicyAll}
+                />
+                <div
+                style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                }}
+                >
+                <Button
+                colorScheme="green"
+                onClick={() => handlePageChange(policyPage > 1 ? policyPage - 1 : policyPage)
+                }
+                disabled={policyPage === 0}
+                >
+                &lt;&lt;&lt;
+                </Button >
+                    <Text>- {policyPage} -</Text>
+                <Button colorScheme="green" onClick={() => handlePageChange(policyPage + 1)}
+                >
+                    &gt;&gt;&gt;
+                </Button>
+                </div>
+            </Box>
 
-            <TableContainer 
-            w={830} mt={3}
-            flexDirection="column"
-            p={1}
-            gap={5}
-            overflowY="scroll"
-            maxHeight="50vh"
-            >
+            <TableContainer w={830} mt={3}>
             <Table variant="striped" colorScheme="green">
                 <Thead borderBottom="2px">
                     <Tr>
@@ -99,7 +154,7 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
                     policyListAll.map((policy) => (
                     <Tr key={policy.id} h="10px">
                         <Td>{policy.policyName}</Td>
-                        <Td>{policy.description}</Td>
+                        <Td > <Text maxWidth={"400px"} noOfLines={1}>{policy.description}</Text> </Td>
                         <Td>
                             <FaEdit
                             style={{
@@ -175,6 +230,7 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
                     policyToEdit={policyToEdit}
                     handleCancel={handleCancel}
                     handleChange={handleChange}
+                    getPolicyAll={getPolicyAll}
                     token={token}
                     />
                     )}
@@ -188,4 +244,4 @@ const AdminPolicy = ({token, getPolicyAll, policyListAll}) => {
 
 }
 
-export default AdminPolicy
+export default AdminPolicy;

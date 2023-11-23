@@ -87,6 +87,7 @@ const ProductCard = ({ item }) => {
         <Text
           fontFamily={"Saira"}
           color={"gris1"}
+          fontWeight="semibold"
           fontSize={["1rem", "1.2rem"]}
           whiteSpace="nowrap"
           overflow="hidden"

@@ -37,13 +37,16 @@ const AdminDashboard = ({ token }) => {
   const [totalCategoryPages, setTotalCategoryPages] = useState(1);
   const [featurePage, setFeaturePage] = useState(1);
   const [totalFeaturePages, setTotalFeaturesPages] = useState(1);
+  const [policyPage, setPolicyPage] = useState(1);
+  const [totalPolicyPages, setTotalPolicyPages] = useState(1);
+  const [policyList, setPolicyList] = useState ([]);
   const [featuresList, setFeaturesList] = useState([]);
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
   
   const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
-  const [policyListAll, setPolicyListAll] = useState([]);
+  const [policyListAll, setPolicyListAll] = useState([]); // array de lista de politicas
 
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -160,6 +163,27 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
+    //LOGICA de getPolicy. Listar Politicas.
+    const getPolicy = async () => {
+      console.log("Inicia getPolicy");
+      try {
+        const response = await axios.get(
+          //Petición GET a la api del listado de politicas
+          `${baseUrl}/api/v1/public/policy?page=${policyPage}`
+        );
+        if (response.data && response.data.content) {
+          // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+          setPolicyList(response.data.content);
+          setTotalPolicyPages(response.data.last);
+          setPolicyPage(response.data.current);
+          console.log(policyList);
+        }
+      } catch (error) {
+        //Manejo de errores
+        console.error(error);
+      }
+    };
+
   // LOGICA DE getPolicyAll- LISTAR todas las politicas sin paginacion para usarlas en el select de productForm y EditProduct
   //no se precisa el token porque es publico
   const getPolicyAll = async () => {
@@ -176,6 +200,7 @@ const AdminDashboard = ({ token }) => {
       if (response.data) {
         // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
         setPolicyListAll(response.data);
+        console.log(policyListAll);
         //console.log("Datos recibidos:", response.data);
       }
     } catch (error) {
@@ -211,6 +236,12 @@ const AdminDashboard = ({ token }) => {
       setFeaturePage(newPage); // Actualiza el número de página
     }
   };
+  // Control de Paginación en las politicas
+  const handlePolicyPageChange = (newPage) => {
+      if (newPage <= totalPolicyPages && newPage >= 1) {
+        setPolicyPage(newPage); // Actualiza el número de página
+      }
+    };
 
   const handleShow = (origin) => {
     if (origin === "user") {
@@ -298,7 +329,6 @@ const AdminDashboard = ({ token }) => {
           showSuccess={showSuccess}
           setShowAddProduct={setShowAddProduct}
           setShowProdList={setShowProdList}
-
         />
 
       )}
@@ -342,11 +372,15 @@ const AdminDashboard = ({ token }) => {
         />
       )}
 
-      {showAdminFeatures == true && (
+      {showAdminPolicy == true && (
         <AdminPolicy
           token={token}
+          getPolicy={getPolicy}
           getPolicyAll={getPolicyAll}
           policyListAll={policyListAll}
+          policyPage={policyPage}
+          handlePageChange={handlePolicyPageChange}
+          policyList={policyList}
         />
       )}
 

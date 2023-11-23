@@ -34,7 +34,7 @@ function Specs({ detail }) {
   }, []);
 
   return (
-    <Box width="100%" padding={4} h={"100%"} mt={3} border={"2px solid black"}>
+    <Box width="100%" padding={4} h={"100%"} border={"2px solid black"}>
       <Button
         variant="outline"
         onClick={toggleCollapse}
