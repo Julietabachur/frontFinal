@@ -81,7 +81,7 @@ const Policies = () => {
                 {listPolicies.map((policy) => (
         
 
-                <Box >
+                <Box key={policy.id} >
                   <VStack
                   
                     p={3}

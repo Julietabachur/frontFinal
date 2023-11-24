@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
+import es from "date-fns/locale/es";
+
 import "react-datepicker/dist/react-datepicker.css";
 import "./home/Detail.css";
 import { FcShare } from "react-icons/fc";
@@ -28,7 +30,7 @@ import { useProductContext } from "./home/Global.context";
 import axios from "axios";
 import Specs from "./Specs";
 import SocialShare from "./SocialShare";
-
+registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
 
@@ -43,7 +45,6 @@ const DetailPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableDates, setAvailableDates] = useState([]);
   const [reserveList, setReserveList] = useState([]);
-
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
   const { setFavorites, favorites } = useProductContext();
@@ -73,8 +74,7 @@ const DetailPage = () => {
         },
       }
     );
-    if (response) {
-      console.log(response.data);
+    if (response.data) {
       setReserveList(response.data);
     }
   };
@@ -285,23 +285,25 @@ const DetailPage = () => {
               )}
             </Stack>
             <Specs detail={detail}></Specs>
-            <HStack>
+            <VStack>
               <Text
                 fontFamily={"Saira"}
                 color={"black"}
-                fontSize={"1rem"}
+                fontSize={"1.5rem"}
                 marginLeft={"3%"}
+                w={"100%"}
               >
-                Select Reservation Date:
+                Fechas disponibles para reservas
               </Text>
               <DatePicker
+                locale="es"
                 selected={selectedDate}
                 onChange={(date) => setSelectedDate(date)}
                 inline
                 calendarClassName="date-picker-calendar"
                 highlightDates={availableDates.map((date) => new Date(date))}
               />
-            </HStack>
+            </VStack>
             <Policies></Policies>
           </VStack>
         )}
