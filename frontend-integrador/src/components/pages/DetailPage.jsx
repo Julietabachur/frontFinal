@@ -11,6 +11,7 @@ import {
   HStack,
   VStack,
   Image,
+  Input,
   Text,
   Box,
   Button,
@@ -33,9 +34,9 @@ import SocialShare from "./SocialShare";
 registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
+import { set } from "mongoose";
 
 const DetailPage = () => {
-  const { startDate } = useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const frontUrl = import.meta.env.VITE_LOGIN_URL;
   const { id } = useParams();
@@ -47,7 +48,10 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites } = useProductContext();
+  const { setFavorites, favorites, startDate } = useProductContext();
+  const [showError, setShowError] = useState(false);
+  const [initialDate, setInitialDate] = useState(null);
+  const [finishDate, setFinishDate] = useState(null);
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
@@ -76,6 +80,9 @@ const DetailPage = () => {
     );
     if (response.data) {
       setReserveList(response.data);
+      setShowError(false);
+    } else {
+      setShowError(true);
     }
   };
 
@@ -104,6 +111,11 @@ const DetailPage = () => {
   useEffect(() => {
     getReserveList();
   }, [detail]);
+
+  useEffect((date) => {
+    console.log(date);
+    setInitialDate(date);
+  }, [selectedDate]);
 
   const handleHeartClick = (event) => {
     // Cambiar el estado del clic del corazón
@@ -285,7 +297,7 @@ const DetailPage = () => {
               )}
             </Stack>
             <Specs detail={detail}></Specs>
-            <VStack>
+            <VStack border={"2px solid black"} p={3} w={"100%"}>
               <Text
                 fontFamily={"Saira"}
                 color={"black"}
@@ -295,6 +307,18 @@ const DetailPage = () => {
               >
                 Fechas disponibles para reservas
               </Text>
+              {showError && (
+                <Text
+                  fontFamily={"Saira"}
+                  color={"black"}
+                  fontSize={"1rem"}
+                  marginLeft={"3%"}
+                  w={"100%"}
+                >
+                  No hemos podido encontrar las fechas disponibles , vuelve a
+                  intentar mas tarde
+                </Text>
+              )}
               <DatePicker
                 locale="es"
                 selected={selectedDate}
@@ -303,7 +327,18 @@ const DetailPage = () => {
                 calendarClassName="date-picker-calendar"
                 highlightDates={availableDates.map((date) => new Date(date))}
               />
+              <HStack w={"100%"}>
+                <Text color={"negro"} w={"25%"}>
+                  Fecha de inicio
+                </Text>
+                <Text>{initialDate}</Text>
+                <Text w={"25%"} color={"negro"}>
+                  Fecha de Termino
+                </Text>
+                <Text>{finishDate}</Text>
+              </HStack>
             </VStack>
+
             <Policies></Policies>
           </VStack>
         )}
