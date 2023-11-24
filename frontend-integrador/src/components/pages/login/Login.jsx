@@ -39,7 +39,7 @@ const Login = () => {
 
      //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
     const token = JSON.parse(localStorage.getItem("riskkojwt"));
-    console.log(token)
+    //console.log(token)
      
     const GETME_URL = import.meta.env.VITE_GETME_URL;
  
@@ -51,8 +51,16 @@ const Login = () => {
             Authorization: `Bearer ${token}`,
             },
         });
+
+        //console.log(response);
+        console.log("Username Verified: ", response.data.isVerified);
+
         if (response) {
-            navigate("/")
+            if (response.data.isVerified === "true") {
+                navigate("/");
+            } else {
+                navigate("/verify");
+            }
         } else {
             localStorage.removeItem("riskkojwt");
         }
@@ -77,17 +85,30 @@ const Login = () => {
             });
 
             if (response.status === 200) {
-                // Inicio de sesión exitoso, redirección a la página home
-                console.log("logueado")
+                // Inicio de sesión exitoso, guarda token y redirección a la página home
 
-                console.log(response.data)
                 localStorage.setItem('riskkojwt', JSON.stringify(response.data.token))
-                if (response.data.isVerified) {
-                    navigate("/");
+
+                //console.log("logueado")
+                //console.log(response.data)
+
+                console.log("HandleLogin Verified: ",response.data.isVerified);
+
+
+                if (response.data.isVerified === "true") {
+
+
+                    response.data.roles.map((rol) => {
+                        if (rol === "ADMIN") {
+                            console.log("ROL: ",rol);
+                          navigate("/admin");
+                        }
+                      });
+                      navigate("/");
                 } else {
                     navigate("/verify");
                 }
-                window.location.reload()
+                //window.location.reload()
             } else {
                 // Maneja otros escenarios de respuesta según tu API
                 console.error("Inicio de sesión fallido");

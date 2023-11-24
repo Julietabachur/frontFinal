@@ -37,6 +37,7 @@ const Verify = () => {
 
     const checkUser = async (token) => {
         try {
+            console.log("Check User TRY");
             const response = await axios.get(GETME_URL, {
                 headers: {
                     "Content-Type": "application/json",
@@ -48,14 +49,14 @@ const Verify = () => {
             setUserEmail(response.data.email);
             setUserDataReady(true); // Marcar que los datos del usuario ya están disponibles.
 
-            if (response.data.isVerified) {
+            if (response.data.isVerified === "true") {
                 console.log("isVerified: YES");
                 navigate("/");
             } else {
                 console.log("isVerified: NO");
                 setShowVerify(true);
                 setShowSentMail(false);
-            }
+              }
         } catch (error) {
             console.error("ERROR en checkUser:", error);
         }
@@ -76,9 +77,10 @@ const Verify = () => {
             console.log("CLICK OK");
 
             try {
+                console.log("Handle Verification TRY");
                 const response = await axios.put(
                     `${baseUrl}/api/v1/private/clients/${userId}`,
-                    {"verified": true},  // Cuerpo de la solicitud (en este caso, nulo el back cambia a isVerified=true)
+                    {isVerified:"true"},  // Cuerpo de la solicitud 
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -86,8 +88,10 @@ const Verify = () => {
                         },
                     }
                 );
-                if (response.data.verified) {
-                    console.log("isVerified: YES");
+                if (response.data.isVerified === "true") {
+                    console.log("isVerified: ", response.data.isVerified);
+                    //console.log(response.data);
+                    
                     setShowVerify(false);
                     setMailSent("");
                     navigate("/");
@@ -114,9 +118,9 @@ const Verify = () => {
                 }
             }
 
-            console.log("******************");
-            console.log("Times Sent: ", mailSent);
-            console.log("******************");
+            //console.log("******************");
+            //console.log("Times Sent: ", mailSent);
+            //console.log("******************");
 
 
 
@@ -128,14 +132,14 @@ const Verify = () => {
     const mailSender = async () => {
 
         console.log("MAIL SENDER")
-        console.log("******************");
+        //console.log("******************");
 
         const resendBody = {
             id: `${userId}`,
             login_url: `${loginUrl}`
         };
-        console.log(resendBody);
-        console.log("******************");
+        //console.log(resendBody);
+        //console.log("******************");
 
             try {
                 const response = await axios.post(
