@@ -44,18 +44,19 @@ const VerifiedUser = () => {
       setUserEmail(response.data.email);
       setUserDataReady(true); // Marcar que los datos del usuario ya están disponibles.
 
-      if (response.data.isVerified) {
-        console.log("isVerified: YES");
-      } else {
-        console.log("isVerified: NO");
-        setShowVerify(true);
-        setRequestSendMail(true);
-        setShowSentMail(false);
-      }
-    } catch (error) {
-      console.error("ERROR en checkUser:", error);
-    }
-  };
+            if (response.data.isVerified === "true") {
+                console.log("isVerified: YES");
+                navigate("/");
+            } else {
+                console.log("isVerified: NO");
+                setShowVerify(true);
+                setShowSentMail(false);
+              }
+        } catch (error) {
+            console.error("ERROR en checkUser:", error);
+        }
+
+    };
 
   // Utiliza otro useEffect para controlar el envío de emails
   useEffect(() => {
@@ -64,30 +65,35 @@ const VerifiedUser = () => {
     }
   }, [userDataReady, requestSendMail]);
 
-  const handleVerification = async (e) => {
-    if (e === "ok") {
-      console.log("CLICK OK");
-z
-      try {
-        const response = await axios.put(
-          `${baseUrl}/api/v1/private/clients/chk/${userId}`,
-          null, // Cuerpo de la solicitud (en este caso, nulo el back cambia a isVerified=true)
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data.verified) {
-          console.log("isVerified: YES");
-          setShowVerify(false);
-          setMailSent("");
+    const handleVerification = async (e) => {
+        if (e === "ok") {
+            console.log("CLICK OK");
+
+            try {
+                console.log("Handle Verification TRY");
+                const response = await axios.put(
+                    `${baseUrl}/api/v1/private/clients/${userId}`,
+                    {isVerified:"true"},  // Cuerpo de la solicitud 
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                if (response.data.isVerified === "true") {
+                    console.log("isVerified: ", response.data.isVerified);
+                    //console.log(response.data);
+                    
+                    setShowVerify(false);
+                    setMailSent("");
+                    navigate("/");
+                }
+
+            } catch (error) {
+                console.error("ERROR en Update isVerified:", error);
+            }
         }
-      } catch (error) {
-        console.error("ERROR en Update isVerified:", error);
-      }
-    }
 
     if (e === "resend") {
       console.log("CLICK Resend");
@@ -97,18 +103,18 @@ z
     }
   };
 
-  const mailSender = async () => {
-    console.log("MAIL SENDER");
-    console.log("******************");
-    console.log("Times Sent: ", mailSent);
-    console.log("******************");
+  
+    const mailSender = async () => {
 
-    const resendBody = {
-      id: `${userId}`,
-      login_url: `${loginUrl}`,
-    };
-    console.log(resendBody);
-    console.log("******************");
+        console.log("MAIL SENDER")
+        //console.log("******************");
+
+        const resendBody = {
+            id: `${userId}`,
+            login_url: `${loginUrl}`
+        };
+        //console.log(resendBody);
+        //console.log("******************");
 
     if (mailSent != "E") {
       try {
