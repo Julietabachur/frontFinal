@@ -103,17 +103,7 @@ const VerifiedUser = () => {
     }
   };
 
-            //console.log("******************");
-            //console.log("Times Sent: ", mailSent);
-            //console.log("******************");
-
-
-
-
-        }
-    };
-
-
+  
     const mailSender = async () => {
 
         console.log("MAIL SENDER")
