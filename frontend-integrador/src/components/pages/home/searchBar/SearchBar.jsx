@@ -191,7 +191,6 @@ const SearchBar = () => {
           focusBorderColor='lime'
           type="date"
           color={'verde1'}
-          min={startDate}
           fontSize={[12,14]}
           maxHeight={["20px","30px", "40px"]}
           value={startDate}

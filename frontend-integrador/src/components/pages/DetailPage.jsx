@@ -48,7 +48,7 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate } = useProductContext();
+  const { setFavorites, favorites, startDate, clientId } = useProductContext();
   const [showError, setShowError] = useState(false);
   const [initialDate, setInitialDate] = useState(null);
   const [finishDate, setFinishDate] = useState(null);
@@ -86,6 +86,14 @@ const DetailPage = () => {
     }
   };
 
+  const handleReserve = () => {
+    if(clientId){
+      navigate('/reserve')
+    }else{
+      navigate('/login')
+    }
+  };
+
   const getReserved = () => {
     let updatedAvailableDates = [];
     reserveList.forEach((reserva) => {
@@ -112,10 +120,7 @@ const DetailPage = () => {
     getReserveList();
   }, [detail]);
 
-  useEffect((date) => {
-    console.log(date);
-    setInitialDate(date);
-  }, [selectedDate]);
+
 
   const handleHeartClick = (event) => {
     // Cambiar el estado del clic del corazón
@@ -327,16 +332,9 @@ const DetailPage = () => {
                 calendarClassName="date-picker-calendar"
                 highlightDates={availableDates.map((date) => new Date(date))}
               />
-              <HStack w={"100%"}>
-                <Text color={"negro"} w={"25%"}>
-                  Fecha de inicio
-                </Text>
-                <Text>{initialDate}</Text>
-                <Text w={"25%"} color={"negro"}>
-                  Fecha de Termino
-                </Text>
-                <Text>{finishDate}</Text>
-              </HStack>
+              <Button onClick={handleReserve} bg={"verde2"} alignSelf={"flex-end"} w={40} mr={5} mb={2}>
+                Reservar
+              </Button>
             </VStack>
 
             <Policies></Policies>
