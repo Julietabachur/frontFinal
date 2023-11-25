@@ -12,7 +12,7 @@ import axios from "axios";
 import Perfil from "./components/Perfil";
 import { useProductContext } from "./components/pages/home/Global.context";
 import Verify from "./components/pages/login/Verify";
-
+import ReservesPage from "./components/pages/reserves/ReservesPage";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -20,7 +20,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const {setFavorites, setClientId, setToken} = useProductContext();
+  const { setFavorites, setClientId, setToken } = useProductContext();
 
   const getUsername = async (token) => {
     try {
@@ -35,7 +35,7 @@ function App() {
         setRoles(response.data.roles);
         setFavorites(response.data.favorites);
         setClientId(response.data.id);
-        } else {
+      } else {
         localStorage.removeItem("riskkojwt");
       }
     } catch (error) {
@@ -65,6 +65,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/verify" element={<Verify />} />
             <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
+            <Route path="/reserve" element={<ReservesPage />} />
             <Route path="/detalle/:id" element={<DetailPage />} />
             <Route path="/perfil"
               element={
