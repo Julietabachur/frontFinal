@@ -34,7 +34,7 @@ import SocialShare from "./SocialShare";
 registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
-import { set } from "mongoose";
+
 
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;

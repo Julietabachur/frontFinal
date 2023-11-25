@@ -45,9 +45,9 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
   const navigate = useNavigate();
 
-  console.log("COMIENZA NEW PRODUCT");
+  //console.log("COMIENZA NEW PRODUCT");
 
-  console.log("ProductToEdit: ", productToEdit);
+  //console.log("ProductToEdit: ", productToEdit);
 
 
    // LOGICA DE getCategoriesAll- LISTAR todas las categorias sin paginacion para usarlas en el select de productForm y EditProduct
@@ -249,25 +249,12 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
   };
 
 
-  /* 
-      const handleCancel = () => {
-      // Cierra el modal y resetea el formulario
-      onClose();
-      setProductData(initialProductState);
-      setInputValue(""); // Reinicia el valor del input
-      setNombreValido(true); // Reinicia la validación del nombre
-      setShowError(false); // Reinicia el estado de error
-  
-  */
-
-
-
   // LOGICA PARA EL GUARDADO DE DATOS
   const saveChanges = async () => {
 
     if (!productToEdit) {
       
-      console.log("PRODUCT DATA AGREGAR:" , productData);
+      //console.log("PRODUCT DATA AGREGAR:" , productData);
 
     // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
     axios.post(`${baseUrl}/api/v1/admin/products`, productData, {
@@ -287,7 +274,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
     } else {
 
-      console.log("PRODUCT DATA EDITAR:" , productData);
+      //console.log("PRODUCT DATA EDITAR:" , productData);
 
     // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
     axios.put(`${baseUrl}/api/v1/admin/products/${productToEdit.id}`, productData, { headers: { Authorization: `Bearer ${token}` } })

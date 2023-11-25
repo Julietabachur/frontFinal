@@ -10,8 +10,6 @@ import DetailPage from "./components/pages/DetailPage";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Perfil from "./components/Perfil";
-import AdminFeatures from "./components/pages/adminPanel/AdminFeatures";
-import NewProduct from "./components/pages/adminPanel/NewProduct";
 import { useProductContext } from "./components/pages/home/Global.context";
 import Verify from "./components/pages/login/Verify";
 
@@ -65,13 +63,10 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route
-              path="/admin"
-              element={<AdminDashboard token={token ? token : ""} />}
-            />
+            <Route path="/verify" element={<Verify />} />
+            <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
             <Route path="/detalle/:id" element={<DetailPage />} />
-            <Route
-              path="/perfil"
+            <Route path="/perfil"
               element={
                 <Perfil
                   roles={roles}
@@ -80,8 +75,8 @@ function App() {
                 />
               }
             />
-            <Route path="/verify" element={<Verify />} />
           </Routes>
+          
           {<Footer />}
         </Router>
       </Box>
