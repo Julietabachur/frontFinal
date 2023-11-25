@@ -34,7 +34,9 @@ const reducer = (state, action) => {
     case "SET_SHOW_FAV":
       return { ...state, showFav: action.payload };
     case "SET_RESERVE":
-      return { ...state, showFav: action.payload };
+      return { ...state, reserves: action.payload };
+    case "SET_RESERVATION":
+      return { ...state, reservation: action.payload };
     default:
       return state;
   }
@@ -53,7 +55,8 @@ const initialState = {
   favorites: [],
   showFav: false,
   clientId: "",
-  reserves: []
+  reserves: [],
+  reservation: "",
 };
 
 const ProductContext = createContext(undefined); //useContext
@@ -84,8 +87,8 @@ const ProductProvider = ({ children }) => {
   const setSearchResults = (data) => {
     dispatch({ type: "SET_SEARCH_RESULTS", payload: data });
   };
-  const setReserve = (data) => {
-    dispatch({ type: "SET_SEARCH_RESULTS", payload: data });
+  const setReserves = (data) => {
+    dispatch({ type: "SET_RESERVE", payload: data });
   };
   const setStartDate = (date) => {
     dispatch({ type: "SET_START_DATE", payload: date });
@@ -99,9 +102,11 @@ const ProductProvider = ({ children }) => {
   const setProductName = (data) => {
     dispatch({ type: "SET_PRODUCT_NAME", payload: data.toUpperCase() });
   };
-
   const setShowFav = (data) => {
     dispatch({ type: "SET_SHOW_FAV", payload: data });
+  };
+  const setReservation = (data) => {
+    dispatch({ type: "SET_RESERVATION", payload: data });
   };
 
   const setCurrentPage = (page) => {
@@ -163,7 +168,7 @@ const ProductProvider = ({ children }) => {
 
   const getFavorites = async (page = 1) => {
     try {
-      setShowFav(true)
+      setShowFav(true);
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}&page=${page}`,
         {
@@ -182,20 +187,18 @@ const ProductProvider = ({ children }) => {
 
   useEffect(() => {
     if (state.categories.length === 0) {
-      console.log("me active");
       getProducts();
     }
   }, [state.categories]);
   useEffect(() => {
-    if(state.showFav){
+    if (state.showFav) {
       if (state.favorites.length === 0) {
-      setShowFav(false)
-      getProducts();
-    } else {
-      getFavorites();
+        setShowFav(false);
+        getProducts();
+      } else {
+        getFavorites();
+      }
     }
-    }
-    
   }, [state.favorites]);
 
   //Use Effect para cargar los favoritos en el estado del cliente
@@ -253,6 +256,8 @@ const ProductProvider = ({ children }) => {
     favorites: state.favorites,
     clientId: state.clientId,
     showFav: state.showFav,
+    reservation: state.reservation,
+    setReservation,
     setShowFav,
     getProducts,
     setCurrentPage,

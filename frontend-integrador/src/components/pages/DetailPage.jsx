@@ -48,10 +48,9 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId } = useProductContext();
+  const { setFavorites, favorites, startDate, clientId, setReservation } =
+    useProductContext();
   const [showError, setShowError] = useState(false);
-  const [initialDate, setInitialDate] = useState(null);
-  const [finishDate, setFinishDate] = useState(null);
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
@@ -87,10 +86,11 @@ const DetailPage = () => {
   };
 
   const handleReserve = () => {
-    if(clientId){
-      navigate('/reserve')
-    }else{
-      navigate('/login')
+    if (clientId) {
+      setReservation(detail.id);
+      navigate("/reserve");
+    } else {
+      navigate("/login");
     }
   };
 
@@ -119,8 +119,6 @@ const DetailPage = () => {
   useEffect(() => {
     getReserveList();
   }, [detail]);
-
-
 
   const handleHeartClick = (event) => {
     // Cambiar el estado del clic del corazón
@@ -324,15 +322,24 @@ const DetailPage = () => {
                   intentar mas tarde
                 </Text>
               )}
-              <DatePicker
-                locale="es"
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                inline
-                calendarClassName="date-picker-calendar"
-                highlightDates={availableDates.map((date) => new Date(date))}
-              />
-              <Button onClick={handleReserve} bg={"verde2"} alignSelf={"flex-end"} w={40} mr={5} mb={2}>
+              <Box w={"100%"}>
+                <DatePicker
+                  locale="es"
+                  selected={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                  inline
+                  calendarClassName="date-picker-calendar"
+                  highlightDates={availableDates.map((date) => new Date(date))}
+                />
+              </Box>
+              <Button
+                onClick={handleReserve}
+                bg={"verde2"}
+                alignSelf={"flex-end"}
+                w={40}
+                mr={5}
+                mb={2}
+              >
                 Reservar
               </Button>
             </VStack>
