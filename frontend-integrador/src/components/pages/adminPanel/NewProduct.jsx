@@ -372,7 +372,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           padding={4}
           minW={"300px"} >
         <Text fontSize="sm" fontWeight="bold">
-          Categoria del producto:
+          Categoría del producto:
         </Text>
         <Select
         borderColor={"black"} 
@@ -396,13 +396,13 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           padding={4}
           minW={"300px"}>
           <Text fontSize="sm" fontWeight="bold">
-            Descripcion del producto:
+            Descripción del producto:
           </Text>
             <Textarea
             border={"1px solid black"}
             p={3}
               name="detail"
-              placeholder="Descripcion del producto"
+              placeholder="Descripción del producto"
               defaultValue={productData.detail}
               disabled={formDisabled}
               onChange={handleInputChange}
@@ -482,7 +482,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       minW={"300px"}>
 
           <Text fontSize="sm" fontWeight="bold">
-            Caracteristicas del producto
+            Características del producto
           </Text>
           
           <HStack align="center" mb={3}>

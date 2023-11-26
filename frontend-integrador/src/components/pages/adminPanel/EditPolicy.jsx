@@ -22,8 +22,8 @@ const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChan
             { Authorization: `Bearer ${token}` } 
         })
         .then((response) => {
-            window.alert("Politica actualizada con exito");
-            console.log('Politica actualizada con éxito:', response.data);
+            window.alert("Política actualizada con éxito");
+            console.log('Política actualizada con éxito:', response.data);
             getPolicyAll();
             
         })
@@ -33,7 +33,7 @@ const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChan
             window.alert(error.response.data.error);
             } else {
             // Para otros errores, muestra un mensaje de error genérico
-            console.error("Error al actualizar la politica", error);
+            console.error("Error al actualizar la política", error);
             }
         });
     }
@@ -42,14 +42,14 @@ const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChan
     <>
     <form>
         <FormControl>
-            <FormLabel> Nombre de la politica</FormLabel>
+            <FormLabel> Nombre de la política</FormLabel>
             <Input
             name="policyName"
             mb={3}
             value={dataEdit.policyName}
             onChange={(e) => setDataEdit({...dataEdit, policyName: (e.target.value).toUpperCase()})}
             />
-            <FormLabel> Descripcion </FormLabel>
+            <FormLabel> Descripción </FormLabel>
             <Input
             name="description"
             mb={3}

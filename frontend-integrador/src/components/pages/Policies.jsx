@@ -68,13 +68,13 @@ const Policies = () => {
           onClick={toggleCollapse}
           display={{ base: "block", md: "none" }}
         >
-          {isCollapsed ? "Mostrar politicas del producto" : "Ocultar politicas del producto"}
+          {isCollapsed ? "Mostrar políticas del producto" : "Ocultar políticas del producto"}
         </Button>
   
         {(!isCollapsed || window.innerWidth >= 768) && (
             <VStack>
                 <Text textAlign={"center"} fontFamily="Saira" fontWeight={"semibold"} color="black" fontSize={["1rem", "1.3rem"]}>
-                    POLITICAS DE USO DEL PRODUCTO
+                    POLÍTICAS DE USO DEL PRODUCTO
                 </Text>
                 <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['150px', '180px']} spacing={2}
                 >

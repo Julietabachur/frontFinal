@@ -319,7 +319,7 @@ const DetailPage = () => {
                   w={"100%"}
                 >
                   No hemos podido encontrar las fechas disponibles , vuelve a
-                  intentar mas tarde
+                  intentar más tarde.
                 </Text>
               )}
               <Box w={"100%"}>

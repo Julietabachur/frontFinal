@@ -216,7 +216,7 @@ const ReservesPage = () => {
               highlightDates={availableDates.map((date) => new Date(date))}
             />
 
-            <Text>Fechas de termino</Text>
+            <Text>Fechas de término</Text>
             <DatePicker
               locale="es"
               selected={selectedFinishDate}
