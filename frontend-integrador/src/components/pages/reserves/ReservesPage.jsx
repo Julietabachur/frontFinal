@@ -34,11 +34,15 @@ const ReservesPage = () => {
   const [product, setProduct] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedFinishDate, setSelectedFinishdate] = useState(null);
+  const [selectedFinishDate, setSelectedFinishDate] = useState(null);
   const [showError, setShowError] = useState(false);
   const [reserveList, setReserveList] = useState([]);
   const [availableDates, setAvailableDates] = useState([]);
-
+  const [user, setUser] = useState({});
+  const [error, setError] = useState({
+    inicial: "",
+    final: "",
+  });
   const initialRef = React.useRef(null);
   const {
     paginatedData,
@@ -51,6 +55,23 @@ const ReservesPage = () => {
     setEndDate,
   } = useProductContext();
   const navigate = useNavigate();
+
+  const handleRangeOfDates = (date) => {};
+
+  const getUser = async () => {
+    const response = await axios.get(
+      `${baseUrl}/api/v1/private/clients/${clientId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.data) {
+      setUser(response.data);
+    }
+  };
 
   const getReserveList = async (id) => {
     const response = await axios.get(
@@ -91,8 +112,10 @@ const ReservesPage = () => {
     const body = {
       clientId: clientId,
       productId: id,
+      productName: product.productName,
       startDate: selectedDate,
       endDate: selectedFinishDate,
+      reserveImg: product.thumbnail,
     };
     try {
       const response = await axios.post(
@@ -109,7 +132,7 @@ const ReservesPage = () => {
         setReserveList([]);
         setAvailableDates([]);
         setSelectedDate(null);
-        setSelectedFinishdate(null);
+        setSelectedFinishDate(null);
         onClose();
       }
     } catch (error) {
@@ -139,13 +162,52 @@ const ReservesPage = () => {
     setReserveList([]);
     setAvailableDates([]);
     setSelectedDate(null);
-    setSelectedFinishdate(null);
+    setSelectedFinishDate(null);
     onClose();
+  };
+
+  //setea la fecha inicial comprobando si no es menor a la fecha actual
+  const handleSelectedDate = (date) => {
+    if (date >= new Date()) {
+      setSelectedDate(date);
+      setError((prev) => {
+        return { ...prev, inicial: "" };
+      });
+    } else {
+      setError((prev) => {
+        return {
+          ...prev,
+          inicial: "La fecha inicial no puede ser menor a la actual",
+        };
+      });
+    }
+  };
+
+  //setea la fecha final comprobando si no es menor a la fecha actual y tampoco menor a la inicial
+  const handleSelectedFinishDate = (date) => {
+    if (date >= new Date() && date >= selectedDate) {
+      setSelectedFinishDate(date);
+      setError((prev) => {
+        return { ...prev, final: "" };
+      });
+    } else {
+      setError((prev) => {
+        return {
+          ...prev,
+          final:
+            "La fecha final no puede ser antes de la fecha inicial o el dia actual",
+        };
+      });
+    }
   };
 
   useEffect(() => {
     getReserved();
   }, [reserveList]);
+
+  useEffect(() => {
+    getUser();
+  }, [clientId]);
 
   return (
     <VStack w={"100%"}>
@@ -197,51 +259,60 @@ const ReservesPage = () => {
         product={product}
         availableDates={availableDates}
         selectedDate={selectedDate}
-        selectedFinishDate={selectedDate}
+        selectedFinishDate={selectedFinishDate}
+        user={user}
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Elige las fechas de tu reserva</ModalHeader>
+          <ModalHeader>{`Hola ${user.firstName} ,desde aqui podras reservar tu prenda favorita `}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Text>{product?.productName}</Text>
             <Text>Fechas disponibles</Text>
             <Text>Fechas de inicio</Text>
-            <DatePicker
-              locale="es"
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              inline
-              calendarClassName="date-picker-calendar"
-              highlightDates={availableDates.map((date) => new Date(date))}
-            />
+            <HStack w={"100%"}>
+              <Box w={"50%"}>
+                <DatePicker
+                  locale="es"
+                  selected={selectedDate}
+                  onChange={handleSelectedDate}
+                  inline
+                  calendarClassName="date-picker-calendar"
+                  highlightDates={availableDates.map((date) => new Date(date))}
+                />
+                {error.inicial && (
+                  <Text color={"red.400"}>{error.inicial}</Text>
+                )}
+              </Box>
 
-            <Text>Fechas de término</Text>
-            <DatePicker
-              locale="es"
-              selected={selectedFinishDate}
-              onChange={(date) => setSelectedFinishdate(date)}
-              inline
-              calendarClassName="date-picker-calendar"
-              highlightDates={availableDates.map((date) => new Date(date))}
-            />
+              {/* <Text>Fechas de termino</Text> */}
+              <Box w={"50%"}>
+                <DatePicker
+                  disabled={!selectedDate}
+                  locale="es"
+                  selected={selectedFinishDate}
+                  onChange={handleSelectedFinishDate}
+                  inline
+                  calendarClassName="date-picker-calendar"
+                  highlightDates={availableDates.map((date) => new Date(date))}
+                />
+                {error.final && <Text color={"red.400"}>{error.final}</Text>}
+              </Box>
+            </HStack>
+            {selectedDate && !error.inicial && !selectedFinishDate && (
+              <Text>{`Desde el ${selectedDate.toLocaleDateString()}`}</Text>
+            )}
+            {!selectedDate && !error.final && selectedFinishDate && (
+              <Text>{`hasta el ${selectedFinishDate.toLocaleDateString()}`}</Text>
+            )}
+            {selectedDate &&
+              selectedFinishDate &&
+              !error.final &&
+              !error.inicial && (
+                <Text>{`Desde el ${selectedDate.toLocaleDateString()} hasta el ${selectedFinishDate.toLocaleDateString()}`}</Text>
+              )}
 
-            {/*   <FormControl>
-              <FormLabel>Fecha de inicio</FormLabel>
-              <Input
-                focusBorderColor="lime"
-                type="date"
-                color={"verde1"}
-                fontSize={[12, 14]}
-                maxHeight={["20px", "30px", "40px"]}
-                value={startDate}
-                boxShadow={"dark-lg"}
-                variant={"filled"}
-                onChange={(e) => setStartDate(e.target.value)}
-                
-              />
-            </FormControl>
-
+            {/* 
             <FormControl mt={4}>
               <FormLabel>Fecha de termino</FormLabel>
               <Input
