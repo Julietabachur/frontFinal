@@ -46,9 +46,7 @@ const Perfil = ({ username, token }) => {
       setUser(response.data);
     }
   };
-  /* const getReserves = async (id)=> {
-    const response = await Axios.get(`${baseUrl}api/v1/public/reserves/search/byProductId?productId=${id}`)
-  } */
+
 
   useEffect(() => {
     if (token) {

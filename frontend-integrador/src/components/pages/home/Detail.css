@@ -21,6 +21,7 @@ background-color: #00cc00;
 }
 .react-datepicker__day-name {
   width: 13%;
+  margin: 1px;
 }
 .react-datepicker__week {
   margin: 1px;
