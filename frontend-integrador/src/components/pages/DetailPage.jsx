@@ -309,50 +309,6 @@ const DetailPage = () => {
               )}
             </Stack>
             <Specs detail={detail}></Specs>
-            {/*  <VStack border={"2px solid black"} p={3} w={"100%"}>
-              <Text
-                fontFamily={"Saira"}
-                color={"black"}
-                fontSize={"1.5rem"}
-                marginLeft={"3%"}
-                w={"100%"}
-              >
-                Fechas disponibles para reservas
-              </Text>
-              {showError && (
-                <Text
-                  fontFamily={"Saira"}
-                  color={"black"}
-                  fontSize={"1rem"}
-                  marginLeft={"3%"}
-                  w={"100%"}
-                >
-                  No hemos podido encontrar las fechas disponibles , vuelve a
-                  intentar mas tarde
-                </Text>
-              )}
-              <Box w={"100%"}>
-                <DatePicker
-                  locale="es"
-                  selected={selectedDate}
-                  onChange={(date) => setSelectedDate(date)}
-                  inline
-                  calendarClassName="date-picker-calendar"
-                  highlightDates={availableDates.map((date) => new Date(date))}
-                />
-              </Box>
-              <Button
-                onClick={handleReserve}
-                bg={"verde2"}
-                alignSelf={"flex-end"}
-                w={40}
-                mr={5}
-                mb={2}
-              >
-                Reservar
-              </Button>
-            </VStack> */}
-
             <Policies></Policies>
           </VStack>
         )}

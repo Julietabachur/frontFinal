@@ -186,7 +186,7 @@ const ReservesPage = () => {
         setSelectedDate(null);
         return {
           ...prev,
-          inicial: "La fecha inicial no puede ser menor a la actual",
+          inicial: "La fecha inicial no puede ser menor o igual a la actual",
         };
       });
     }
