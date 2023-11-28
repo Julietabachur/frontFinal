@@ -296,20 +296,50 @@ const DetailPage = () => {
               )}
             </Stack>
             <Specs detail={detail}></Specs>
-            <Box width="100%" padding={4} h={"100%"} border={"2px solid black"}>
-            <VStack  spacing={[2,5]} p={5} alignItems="flex-start">
-            <Text as='u' fontFamily="Saira" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["1rem", "1.3rem"]}>
-              DISPONIBILIDAD DEL PRODUCTO
-            </Text>
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                inline
-                calendarClassName="date-picker-calendar"
-                highlightDates={availableDates.map((date) => new Date(date))}
-              />
+            <VStack border={"2px solid black"} p={3} w={"100%"}>
+              <Text
+                fontFamily={"Saira"}
+                color={"black"}
+                fontSize={"1.5rem"}
+                marginLeft={"3%"}
+                w={"100%"}
+              >
+                Fechas disponibles para reservas
+              </Text>
+              {showError && (
+                <Text
+                  fontFamily={"Saira"}
+                  color={"black"}
+                  fontSize={"1rem"}
+                  marginLeft={"3%"}
+                  w={"100%"}
+                >
+                  No hemos podido encontrar las fechas disponibles , vuelve a
+                  intentar más tarde.
+                </Text>
+              )}
+              <Box w={"100%"}>
+                <DatePicker
+                  locale="es"
+                  selected={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                  inline
+                  calendarClassName="date-picker-calendar"
+                  highlightDates={availableDates.map((date) => new Date(date))}
+                />
+              </Box>
+              <Button
+                onClick={handleReserve}
+                bg={"verde2"}
+                alignSelf={"flex-end"}
+                w={40}
+                mr={5}
+                mb={2}
+              >
+                Reservar
+              </Button>
             </VStack>
-            </Box>
+
             <Policies></Policies>
           </VStack>
         )}
