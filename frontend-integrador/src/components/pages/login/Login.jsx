@@ -59,7 +59,7 @@ const Login = () => {
                 if (response.data.isVerified === "true") {
                     navigate("/");
                 } else {
-                    navigate("/verify");
+                    //navigate("/verify");
                 }
             } else {
                 localStorage.removeItem("riskkojwt");
@@ -114,7 +114,8 @@ const Login = () => {
 
                 } else {
                     console.log("Usuario no verificado");
-                    navigate("/verify");
+                    const verifyUrl = "/verify/" + response.data.verifyToken ;
+                    navigate(verifyUrl);
                 }
 
 
