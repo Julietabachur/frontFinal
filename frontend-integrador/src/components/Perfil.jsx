@@ -27,7 +27,10 @@ import { Link as ReactRouterLink } from "react-router-dom";
 const Perfil = ({ username, token }) => {
   const { getFavorites, paginatedData } = useProductContext();
   const USER_URL = import.meta.env.VITE_USER_URL;
+  const RESERVES_URL = import.meta.env.VITE_RESERVES_URL; 
   const [user, setUser] = useState({});
+   // Estado para almacenar la lista de reservas del usuario
+  const [userReserves, setUserReserves] = useState([]);
 
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
@@ -46,9 +49,33 @@ const Perfil = ({ username, token }) => {
       setUser(response.data);
     }
   };
-  /* const getReserves = async (id)=> {
-    const response = await Axios.get(`${baseUrl}api/v1/public/reserves/search/byProductId?productId=${id}`)
-  } */
+
+
+  // Función asincrónica para obtener todas las reservas del usuario actual
+  const getReserves = async () => {
+    try {
+      const response = await axios.get(`${RESERVES_URL}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        setUserReserves(response.data);
+      } else {
+        console.error('Error al obtener las reservas del usuario');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error.message);
+    }
+  };
+
+    // Llamada a la función de obtener reservas del usuario cuando el componente se monta
+    useEffect(() => {
+      if (token && username){
+        getReserves();
+      }
+    }, [token]);
 
   useEffect(() => {
     if (token) {
@@ -132,7 +159,7 @@ const Perfil = ({ username, token }) => {
             alignSelf={{ base: "center", md: "flex-start" }}
             textShadow={"10px 10px 10px gray"}
           >
-            Informacion Personal
+            Información Personal
           </Box>
           <Flex
             boxShadow={"15px 15px 15px gray"}
@@ -149,18 +176,18 @@ const Perfil = ({ username, token }) => {
               Nombre de usuario: {user?.username}
             </Text>
             <Text fontSize={{ base: 15, md: 20 }}>
-              nombre: {user?.firstName ? user.firstName : "John"}
+              Nombre: {user?.firstName ? user.firstName : "John"}
             </Text>
             <Text fontSize={{ base: 15, md: 20 }}>
               Apellido: {user?.firstName ? user.lastName : "Doe"}
             </Text>
             <Text fontSize={{ base: 15, md: 20 }}>
-              Correo electronico: {user?.email}
+              Correo electrónico: {user?.email}
             </Text>
             <Stack>
               <Divider m={3} />
               <Text fontSize={{ base: 20, md: 25 }} color={"verde1"}>
-                Informarcion de Residencia
+                Informarción de residencia
               </Text>
               <Text fontSize={{ base: 15, md: 20 }}>
                 Dirección:{" "}
@@ -231,12 +258,19 @@ const Perfil = ({ username, token }) => {
           </SimpleGrid>
         </VStack>
       </GridItem>
-      <GridItem colSpan={{ base: 5, md: 4 }} bg="blanco">
+      <GridItem colSpan={5} bg="blanco">
         <Box m={3}>
-          {user?.reserveIds ? (
-            <Text fontSize={30}>{"Reservas a renderizar"}</Text>
+        {userReserves.length > 0 ? (
+            // Renderiza las reservas del usuario si hay alguna
+            userReserves.map((reserve) => (
+              <div key={reserve.id}>
+                {/* Renderiza los detalles de la reserva del usuario */}
+                <p>Reserva ID: {reserve.id}</p>
+                {/* ... Otros detalles de la reserva del usuario */}
+              </div>
+            ))
           ) : (
-            <Text fontSize={30}>{"Aqui irian las reservas"}</Text>
+            <Text fontSize={30}>No hay reservas del usuario para mostrar.</Text>
           )}
         </Box>
       </GridItem>

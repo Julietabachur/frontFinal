@@ -25,8 +25,8 @@ const FeatureForm = ({token, getFeatures}) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        window.alert("Caracteristica agregada con exito");
-        console.log("Caracteristica agregada con éxito:", response.data)
+        window.alert("Característica agregada con exito");
+        console.log("Característica agregada con éxito:", response.data)
         setTimeout(() =>{
           onClose();   
         }, 1000)

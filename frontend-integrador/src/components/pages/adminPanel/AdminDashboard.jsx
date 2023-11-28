@@ -318,7 +318,7 @@ const AdminDashboard = ({ token }) => {
           Administrar Características
         </Button>
         <Button colorScheme="green" ml={4} onClick={() => handleShow("policy")}>
-          Administrar Politicas
+          Administrar Políticas
         </Button>
       </Box>
 
@@ -405,7 +405,7 @@ const AdminDashboard = ({ token }) => {
             fontSize: "24px",
           }}
         >
-          Utilice un dispositivo desktop para acceder a la página de
+          Utilice un dispositivo de escritorio para acceder a la página de
           administración.
         </div>
       )}

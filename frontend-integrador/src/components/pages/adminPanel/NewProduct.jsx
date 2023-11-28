@@ -45,9 +45,9 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
   const navigate = useNavigate();
 
-  console.log("COMIENZA NEW PRODUCT");
+  //console.log("COMIENZA NEW PRODUCT");
 
-  console.log("ProductToEdit: ", productToEdit);
+  //console.log("ProductToEdit: ", productToEdit);
 
 
    // LOGICA DE getCategoriesAll- LISTAR todas las categorias sin paginacion para usarlas en el select de productForm y EditProduct
@@ -249,25 +249,12 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
   };
 
 
-  /* 
-      const handleCancel = () => {
-      // Cierra el modal y resetea el formulario
-      onClose();
-      setProductData(initialProductState);
-      setInputValue(""); // Reinicia el valor del input
-      setNombreValido(true); // Reinicia la validación del nombre
-      setShowError(false); // Reinicia el estado de error
-  
-  */
-
-
-
   // LOGICA PARA EL GUARDADO DE DATOS
   const saveChanges = async () => {
 
     if (!productToEdit) {
       
-      console.log("PRODUCT DATA AGREGAR:" , productData);
+      //console.log("PRODUCT DATA AGREGAR:" , productData);
 
     // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
     axios.post(`${baseUrl}/api/v1/admin/products`, productData, {
@@ -287,7 +274,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
     } else {
 
-      console.log("PRODUCT DATA EDITAR:" , productData);
+      //console.log("PRODUCT DATA EDITAR:" , productData);
 
     // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
     axios.put(`${baseUrl}/api/v1/admin/products/${productToEdit.id}`, productData, { headers: { Authorization: `Bearer ${token}` } })
@@ -385,7 +372,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           padding={4}
           minW={"300px"} >
         <Text fontSize="sm" fontWeight="bold">
-          Categoria del producto:
+          Categoría del producto:
         </Text>
         <Select
         borderColor={"black"} 
@@ -409,13 +396,13 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           padding={4}
           minW={"300px"}>
           <Text fontSize="sm" fontWeight="bold">
-            Descripcion del producto:
+            Descripción del producto:
           </Text>
             <Textarea
             border={"1px solid black"}
             p={3}
               name="detail"
-              placeholder="Descripcion del producto"
+              placeholder="Descripción del producto"
               defaultValue={productData.detail}
               disabled={formDisabled}
               onChange={handleInputChange}
@@ -495,7 +482,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       minW={"300px"}>
 
           <Text fontSize="sm" fontWeight="bold">
-            Caracteristicas del producto
+            Características del producto
           </Text>
           
           <HStack align="center" mb={3}>

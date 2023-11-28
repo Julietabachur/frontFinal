@@ -69,7 +69,7 @@ const Policies = () => {
           onClick={toggleCollapse}
           display={{ base: "block", md: "none" }}
         >
-          {isCollapsed ? "Mostrar politicas del producto" : "Ocultar politicas del producto"}
+          {isCollapsed ? "Mostrar políticas del producto" : "Ocultar políticas del producto"}
         </Button>
   
         {(!isCollapsed || window.innerWidth >= 768) && (

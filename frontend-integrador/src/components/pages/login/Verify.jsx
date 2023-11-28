@@ -10,13 +10,13 @@ import {
   Center,
 } from "@chakra-ui/react";
 
-const VerifiedUser = () => {
+const Verify = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const GETME_URL = import.meta.env.VITE_GETME_URL;
   const loginUrl = import.meta.env.VITE_LOGIN_URL;
   const [showVerify, setShowVerify] = useState(false);
   const [showSentMail, setShowSentMail] = useState(false);
-  const [mailSent, setMailSent] = useState(0);
+  const [mailSent, setMailSent] = useState(1);
   const [userId, setUserId] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userDataReady, setUserDataReady] = useState(false);
@@ -24,6 +24,8 @@ const VerifiedUser = () => {
 
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
   //console.log("Token LocalStorage:", token);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -44,17 +46,19 @@ const VerifiedUser = () => {
       setUserEmail(response.data.email);
       setUserDataReady(true); // Marcar que los datos del usuario ya están disponibles.
 
-      if (response.data.isVerified) {
+      if (response.data.isVerified === "true") {
         console.log("isVerified: YES");
+        navigate("/");
       } else {
         console.log("isVerified: NO");
         setShowVerify(true);
         setRequestSendMail(true);
-        setShowSentMail(false);
+        //setShowSentMail(false);
       }
     } catch (error) {
       console.error("ERROR en checkUser:", error);
     }
+
   };
 
   // Utiliza otro useEffect para controlar el envío de emails
@@ -67,11 +71,11 @@ const VerifiedUser = () => {
   const handleVerification = async (e) => {
     if (e === "ok") {
       console.log("CLICK OK");
-z
+
       try {
         const response = await axios.put(
-          `${baseUrl}/api/v1/private/clients/chk/${userId}`,
-          null, // Cuerpo de la solicitud (en este caso, nulo el back cambia a isVerified=true)
+          `${baseUrl}/api/v1/private/clients/${userId}`,
+          { isVerified: "true" },  // Cuerpo de la solicitud 
           {
             headers: {
               "Content-Type": "application/json",
@@ -79,11 +83,15 @@ z
             },
           }
         );
-        if (response.data.verified) {
-          console.log("isVerified: YES");
+        if (response.data.isVerified === "true") {
+          console.log("isVerified: ", response.data.isVerified);
+          //console.log(response.data);
+
           setShowVerify(false);
           setMailSent("");
+          navigate("/");
         }
+
       } catch (error) {
         console.error("ERROR en Update isVerified:", error);
       }
@@ -97,18 +105,18 @@ z
     }
   };
 
+
   const mailSender = async () => {
-    console.log("MAIL SENDER");
-    console.log("******************");
-    console.log("Times Sent: ", mailSent);
-    console.log("******************");
+
+    console.log("MAIL SENDER")
+    //console.log("******************");
 
     const resendBody = {
       id: `${userId}`,
-      login_url: `${loginUrl}`,
+      login_url: `${loginUrl}`
     };
-    console.log(resendBody);
-    console.log("******************");
+    //console.log(resendBody);
+    //console.log("******************");
 
     if (mailSent != "E") {
       try {
@@ -135,7 +143,7 @@ z
           if (mailSent != "E") {
             setMailSent((prevMailSent) => prevMailSent + 1);
 
-            if (mailSent >= 5) {
+            if (mailSent > 3) {
               setMailSent("E");
             }
           }
@@ -150,46 +158,56 @@ z
 
   return (
     <>
-      {" "}
       {showVerify && (
-        <Alert status="warning">
-          <AlertIcon />
-          <Stack>
+        <Alert
+          status="warning"
+          variant="subtle"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
+          borderRadius="md"
+          boxShadow="md"
+          p={8}
+        >
+          <AlertIcon boxSize={8} />
+          <Stack spacing={4}>
             <Text fontSize={18}>
-              Recibiste nuestro e-mail de confirmación? Si es así por favor
-              confirmalo con un click.
-              <Button onClick={() => handleVerification("ok")}>
+              Recibiste nuestro e-mail de confirmación? <br/> Si es así, por favor
+              confírmalo con un clic.<br/>
+              <Button onClick={() => handleVerification("ok")} mt={4}>
                 Recibido OK
               </Button>
             </Text>
             <Text>
-              Si necesitas que volvamos a enviarlo, clickea en Reenviar Mail.
-              <Button onClick={() => handleVerification("resend")}>
+              Si necesitas que lo reenviemos, haz clic en "Reenviar Mail".<br/>
+              <Button onClick={() => handleVerification("resend")} mt={4}>
                 Reenviar Mail
               </Button>
             </Text>
           </Stack>
         </Alert>
       )}
-      {showSentMail && mailSent > 0 && mailSent <= 5 ? (
+
+      {showSentMail && (
         <Alert status="info">
           <AlertIcon />
           <Text>Email enviado a: {userEmail}</Text>
         </Alert>
-      ) : (
-        showSentMail &&
-        mailSent === "E" && (
-          <Alert status="error">
-            <AlertIcon />
-            <Text>
-              Ha intentado reenviar el e-mail muchas veces, contacte al
-              administrador.
-            </Text>
-          </Alert>
-        )
+      )}
+
+      {mailSent === "E" && (
+        <Alert status="error">
+          <AlertIcon />
+          <Text>
+            Ha intentado reenviar el e-mail muchas veces, contacte al
+            administrador.
+          </Text>
+        </Alert>
       )}
     </>
   );
+
 };
 
-export default VerifiedUser;
+export default Verify;

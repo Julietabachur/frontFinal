@@ -95,7 +95,7 @@ const AdminPolicy = ({token, getPolicy, policyPage, policyList, getPolicyAll, po
         getPolicyAll()
         getPolicy();
     } catch (error) {
-        console.error("Error al eliminar la politica", error);
+        console.error("Error al eliminar la política", error);
     }
     };
 
@@ -142,7 +142,7 @@ const AdminPolicy = ({token, getPolicy, policyPage, policyList, getPolicyAll, po
                             <Text fontWeight="bold">Nombre</Text>
                         </Th>
                         <Th>
-                            <Text fontWeight="bold">Descripcion</Text>
+                            <Text fontWeight="bold">Descripción</Text>
                         </Th>
                         <Th>
                             <Text fontWeight="bold">Editar / Eliminar</Text>
@@ -195,7 +195,7 @@ const AdminPolicy = ({token, getPolicy, policyPage, policyList, getPolicyAll, po
                         Confirmación
                     </AlertDialogHeader>
                     <AlertDialogBody>
-                        ¿Seguro que quiere eliminar esta politica?
+                        ¿Seguro que quiere eliminar esta política?
                     </AlertDialogBody>
                     <AlertDialogFooter>
                         <Button ref={cancelRef} onClick={closeDeleteDialog}>
@@ -222,7 +222,7 @@ const AdminPolicy = ({token, getPolicy, policyPage, policyList, getPolicyAll, po
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent mt={150}>
-                    <ModalHeader>Editar Politica</ModalHeader>
+                    <ModalHeader>Editar Política</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
                     {policyToEdit !== null && (
