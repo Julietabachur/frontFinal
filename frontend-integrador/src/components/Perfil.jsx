@@ -24,10 +24,14 @@ import LogoutButton from "./LogoutButton";
 import { useProductContext } from "./pages/home/Global.context";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-const Perfil = ({ username, token }) => {
-  const { getFavorites, paginatedData } = useProductContext();
-  const USER_URL = import.meta.env.VITE_USER_URL;
+const Perfil = () => {
+  const { getFavorites, paginatedData, clientId} = useProductContext();
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
+  const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
   const [user, setUser] = useState({});
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
+  // Estado para almacenar la lista de reservas del usuario
+  const [userReserves, setUserReserves] = useState([]);
 
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
@@ -35,24 +39,76 @@ const Perfil = ({ username, token }) => {
     window.location.reload();
   };
 
-  const getUser = async (username) => {
-    const response = await axios.get(`${USER_URL}username=${username}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+  const getUser = async () => {
+    const response = await axios.get(
+      `${baseUrl}/api/v1/private/clients/${clientId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.data) {
       setUser(response.data);
     }
   };
+  
 
+  // Función asincrónica para obtener todas las reservas del usuario actual
+  const getReserves = async () => {
+    console.log(user.reserveId);
+    try {
+      //asegura que userReserveIds siempre sea un array, incluso si user o reserveIds son nulos.
+      const userReserveIds = user?.reserveIds || [];
+      //patrón de "mapeo concurrente". En lugar de esperar a que cada promesa se resuelva secuencialmente,
+      //se están generando todas las promesas al mismo tiempo y luego esperando a que todas se resuelvan con Promise.all.
+      // Esto puede mejorar el rendimiento al realizar las solicitudes en paralelo.
+      const promises = userReserveIds.map(async (reserveId) => {
+        try {
+          const response = await axios.get(`${RESERVES_URL}/${reserveId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.data) {
+            // Agrega la reserva obtenida al array de userReserves
+            setUserReserves((prevReserves) => [...prevReserves, response.data]);
+          } else {
+            console.error(`Error al obtener la reserva con ID ${reserveId}`);
+          }
+        } catch (error) {
+          console.error(
+            `Error en la solicitud para la reserva con ID ${reserveId}:`,
+            error.message
+          );
+        }
+      });
+      // Espera a que todas las solicitudes se completen antes de continuar
+      await Promise.all(promises);
+    } catch (error) {
+      console.error(
+        "Error al obtener las reservas del usuario:",
+        error.message
+      );
+    }
+  };
+
+  // Llamada a la función de obtener reservas del usuario cuando el componente se monta
+  useEffect(() => {
+    console.log(user);
+    console.log("acá");
+    if ( Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
+      getReserves();
+    }
+  }, [user]);
 
   useEffect(() => {
-    if (token) {
-      getUser(username);
+    if (clientId && token){
+    getUser();
     }
-  }, [token]);
+  }, [clientId, token]);
 
   useEffect(() => {
     getFavorites();
@@ -83,7 +139,7 @@ const Perfil = ({ username, token }) => {
           <Avatar
             boxSize={{ base: "50px", md: 100 }}
             size={{ base: "lg", md: "2xl" }}
-            name={username || user?.clientName}
+            name={user?.clientName}
             justifySelf={"center"}
           />
           <Text textAlign={"center"} color={"verde1"} fontSize={20}>
@@ -130,7 +186,7 @@ const Perfil = ({ username, token }) => {
             alignSelf={{ base: "center", md: "flex-start" }}
             textShadow={"10px 10px 10px gray"}
           >
-            Informacion Personal
+            Información Personal
           </Box>
           <Flex
             boxShadow={"15px 15px 15px gray"}
@@ -147,18 +203,18 @@ const Perfil = ({ username, token }) => {
               Nombre de usuario: {user?.username}
             </Text>
             <Text fontSize={{ base: 15, md: 20 }}>
-              nombre: {user?.firstName ? user.firstName : "John"}
+              Nombre: {user?.firstName ? user.firstName : "John"}
             </Text>
             <Text fontSize={{ base: 15, md: 20 }}>
               Apellido: {user?.firstName ? user.lastName : "Doe"}
             </Text>
             <Text fontSize={{ base: 15, md: 20 }}>
-              Correo electronico: {user?.email}
+              Correo electrónico: {user?.email}
             </Text>
             <Stack>
               <Divider m={3} />
               <Text fontSize={{ base: 20, md: 25 }} color={"verde1"}>
-                Informarcion de Residencia
+                Informarción de residencia
               </Text>
               <Text fontSize={{ base: 15, md: 20 }}>
                 Dirección:{" "}
@@ -229,12 +285,27 @@ const Perfil = ({ username, token }) => {
           </SimpleGrid>
         </VStack>
       </GridItem>
-      <GridItem colSpan={{ base: 5, md: 4 }} bg="blanco">
+      <GridItem colSpan={5} bg="blanco">
         <Box m={3}>
-          {user?.reserveIds ? (
-            <Text fontSize={30}>{"Reservas a renderizar"}</Text>
+          {userReserves.length > 0 ? (
+            // Renderiza las reservas del usuario si hay alguna
+            userReserves.map((reserve) => (
+              <div key={reserve.id}>
+                {/* Renderiza los detalles de la reserva del usuario */}
+                <div key={reserve.id}>
+                  <p>Reserva ID: {reserve.id}</p>
+                  <p>Fecha de inicio: {reserve.startDate}</p>
+                  <p>Fecha de finalización: {reserve.endDate}</p>
+                  <p>
+                    Imagen de la reserva:{" "}
+                    <img src={reserve.reserveImg} alt="Reserva" />
+                  </p>
+                  <p>Nombre del producto: {reserve.productName}</p>
+                </div>
+              </div>
+            ))
           ) : (
-            <Text fontSize={30}>{"Aqui irian las reservas"}</Text>
+            <Text fontSize={30}>No hay reservas del usuario para mostrar.</Text>
           )}
         </Box>
       </GridItem>

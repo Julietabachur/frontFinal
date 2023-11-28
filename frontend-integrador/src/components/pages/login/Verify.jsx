@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from "axios";
 import {
   Alert,
@@ -22,10 +22,16 @@ const Verify = () => {
   const [userDataReady, setUserDataReady] = useState(false);
   const [requestSendMail, setRequestSendMail] = useState(false);
 
+  const {verifyToken} = useParams();
+
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
   //console.log("Token LocalStorage:", token);
 
   const navigate = useNavigate();
+
+  console.log("VerifyToken: ", verifyToken);
+
+
 
   useEffect(() => {
     if (token) {
@@ -108,12 +114,14 @@ const Verify = () => {
 
   const mailSender = async () => {
 
+    const verifyUrl = "/mailVerify/" + verifyToken + "/" ;
     console.log("MAIL SENDER")
     //console.log("******************");
 
     const resendBody = {
       id: `${userId}`,
-      login_url: `${loginUrl}`
+      login_url: `${loginUrl}`,
+      verify_url: `${verifyUrl}`,
     };
     //console.log(resendBody);
     //console.log("******************");

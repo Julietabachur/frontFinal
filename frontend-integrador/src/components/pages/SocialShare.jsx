@@ -69,7 +69,7 @@ const SocialShare = ({
               <Text size={"sm"}>{shareUrl}</Text>
               {/* Nuevo Textarea para el mensaje personalizado */}
               <Textarea
-                placeholder="Agrega tu Comentario..."
+                placeholder="Agrega tu comentario..."
                 value={customMessage}
                 onChange={(e) => setCustomMessage(e.target.value)}
               />
