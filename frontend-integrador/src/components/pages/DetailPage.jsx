@@ -35,7 +35,6 @@ registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
 
-
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const frontUrl = import.meta.env.VITE_LOGIN_URL;
@@ -230,13 +229,23 @@ const DetailPage = () => {
                   {detail.productName}
                 </Text>
               </HStack>
-              <Button
-                onClick={() => navigate(-1)}
-                bg={"verde2"}
-                marginRight={5}
-              >
-                Atras
-              </Button>
+              <HStack>
+                <Button
+                  onClick={handleReserve}
+                  bg={"verde2"}
+                  alignSelf={"flex-end"}
+                  w={40}
+                >
+                  Reservar
+                </Button>
+                <Button
+                  onClick={() => navigate(-1)}
+                  bg={"verde2"}
+                  marginRight={5}
+                >
+                  Atras
+                </Button>
+              </HStack>
             </HStack>
             <VStack border={"2px solid black"} p={10}>
               <Text
@@ -300,7 +309,7 @@ const DetailPage = () => {
               )}
             </Stack>
             <Specs detail={detail}></Specs>
-            <VStack border={"2px solid black"} p={3} w={"100%"}>
+            {/*  <VStack border={"2px solid black"} p={3} w={"100%"}>
               <Text
                 fontFamily={"Saira"}
                 color={"black"}
@@ -342,7 +351,7 @@ const DetailPage = () => {
               >
                 Reservar
               </Button>
-            </VStack>
+            </VStack> */}
 
             <Policies></Policies>
           </VStack>
