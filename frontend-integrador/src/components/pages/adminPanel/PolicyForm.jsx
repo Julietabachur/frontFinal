@@ -48,12 +48,12 @@ const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent mt={150}>
-          <ModalHeader>Nueva Politica</ModalHeader>
+          <ModalHeader>Nueva Política</ModalHeader>
           <ModalCloseButton/>
           <ModalBody>
             <form>
             <FormControl>
-              <FormLabel> Nombre de la politica</FormLabel>
+              <FormLabel> Nombre de la política</FormLabel>
               <Input
                 type="text"
                 name="newPolicyName"

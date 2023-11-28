@@ -86,14 +86,14 @@ import {
         <Modal isOpen={isModalCategoriaOpen} onClose={handleCancel}>
             <ModalOverlay />
             <ModalContent mt={200}>
-                <ModalHeader>Agregar Categoría</ModalHeader>
+                <ModalHeader>Agregar categoría</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                 {/* Formulario para agregar categoría */}
                 <Input
                     name="categoryName"
                     mb={3}
-                    placeholder="Nombre de la Categoría"
+                    placeholder="Nombre de la categoría"
                     value={categoryData.categoryName}
                     onChange={handleInputChange}
                     required
@@ -115,7 +115,7 @@ import {
                 <Input
                     name="imageUrl"
                     mb={3}
-                    placeholder="Enlace de la Imagen"
+                    placeholder="Enlace de la imagen"
                     value={categoryData.imageUrl}
                     onChange={handleInputChange}
                 />

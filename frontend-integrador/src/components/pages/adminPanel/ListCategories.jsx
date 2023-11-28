@@ -78,8 +78,7 @@ import {
         console.log(categoryName);
         //ver si hay productos por categoria
         const getProductsByType = async (category) => {
-        console.log(category);
-        console.log("Estoy acá");
+        
         try {
             const response = await axios.get(
             `${baseUrl}/api/v1/public/products/category?categories=${category}`,

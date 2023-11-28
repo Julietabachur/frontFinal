@@ -73,7 +73,7 @@ const Register = () => {
 
   const validateClientName = (clientName) => {
     return !clientNameRegex.test(clientName)
-      ? "El nombre de usuario puede contener letras, numeros y guión bajo, mínimo 5 y no tener espacios al inicio."
+      ? "El nombre de usuario puede contener letras, números y guión bajo, mínimo 5 y no tener espacios al inicio."
       : "";
   };
 
@@ -85,7 +85,7 @@ const Register = () => {
 
   const validatePassword = (password) => {
     return !passwordRegex.test(password)
-      ? "La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial."
+      ? "La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial."
       : "";
   };
 
@@ -415,7 +415,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
           <Box>
             {showEmailDuplicatedError && (
               <div style={{ color: "red", fontSize: "16px" }}>
-                El Email ingresado ya está en uso. Por favor, elige otro.
+                El e-mail ingresado ya está en uso. Por favor, elige otro.
               </div>
             )}
           </Box>
