@@ -19,13 +19,20 @@ import {
   Divider,
   Image,
   SimpleGrid,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Img,
 } from "@chakra-ui/react";
 import LogoutButton from "./LogoutButton";
 import { useProductContext } from "./pages/home/Global.context";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const Perfil = () => {
-  const { getFavorites, paginatedData, clientId} = useProductContext();
+  const { getFavorites, paginatedData, clientId } = useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
   const [user, setUser] = useState({});
@@ -53,7 +60,6 @@ const Perfil = () => {
       setUser(response.data);
     }
   };
-  
 
   // Función asincrónica para obtener todas las reservas del usuario actual
   const getReserves = async () => {
@@ -97,16 +103,14 @@ const Perfil = () => {
 
   // Llamada a la función de obtener reservas del usuario cuando el componente se monta
   useEffect(() => {
-    console.log(user);
-    console.log("acá");
-    if ( Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
+    if (Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
       getReserves();
     }
   }, [user]);
 
   useEffect(() => {
-    if (clientId && token){
-    getUser();
+    if (clientId && token) {
+      getUser();
     }
   }, [clientId, token]);
 
@@ -130,7 +134,7 @@ const Perfil = () => {
     >
       <GridItem
         as={"aside"}
-        rowSpan={{ base: 1, md: 3 }}
+        rowSpan={{ base: 1, md: 2 }}
         colSpan={{ base: 5, md: 1 }}
         bg="blanco"
         p={7}
@@ -287,25 +291,106 @@ const Perfil = () => {
       </GridItem>
       <GridItem colSpan={5} bg="blanco">
         <Box m={3}>
+          <Box
+            color="verde1"
+            fontWeight="semibold"
+            letterSpacing="wide"
+            fontSize={{ base: "2xl", md: "4xl" }}
+            alignSelf={{ base: "center", md: "flex-start" }}
+            textShadow={"10px 10px 10px gray"}
+          >
+            Reservas
+          </Box>
           {userReserves.length > 0 ? (
-            // Renderiza las reservas del usuario si hay alguna
-            userReserves.map((reserve) => (
-              <div key={reserve.id}>
-                {/* Renderiza los detalles de la reserva del usuario */}
-                <div key={reserve.id}>
-                  <p>Reserva ID: {reserve.id}</p>
-                  <p>Fecha de inicio: {reserve.startDate}</p>
-                  <p>Fecha de finalización: {reserve.endDate}</p>
-                  <p>
-                    Imagen de la reserva:{" "}
-                    <img src={reserve.reserveImg} alt="Reserva" />
-                  </p>
-                  <p>Nombre del producto: {reserve.productName}</p>
-                </div>
-              </div>
-            ))
+            <Table variant="striped" colorScheme="green">
+              <Thead>
+                <Tr>
+                  {/* <Th>
+                    <Text fontWeight="bold">ID</Text>
+                   </Th> */}
+                  <Th>
+                    <Text fontWeight="bold" 
+                    //fontSize="xl"
+                    >
+                      Nombre del Producto
+                    </Text>
+                  </Th>
+                  <Th>
+                    <Text fontWeight="bold" 
+                    //fontSize="xl"
+                    >
+                      Imagen
+                    </Text>
+                  </Th>
+                  <Th>
+                    <Text
+                      fontWeight="bold"
+                      //fontSize="xl"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      Fecha inicio
+                    </Text>
+                  </Th>
+                  <Th>
+                    <Text
+                      fontWeight="bold"
+                      //fontSize="s"
+                      style={{ marginBottom: "8px" }}
+                    >
+                      Fecha de finalización
+                    </Text>
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {userReserves.map((reserve) => (
+                  <Tr key={reserve.id}>
+                    {/* <Td>{reserve.id}</Td> */}
+                    <Td>{reserve.productName}</Td>
+                    <Td>
+                      <Img
+                        src={reserve.reserveImg}
+                        alt={reserve.productName}
+                        w={50}
+                        h={50}
+                      />
+                    </Td>
+                    <Td>{reserve.startDate}</Td>
+                    <Td>{reserve.endDate}</Td>
+                    <Td>
+                      {/*  <FaEdit
+              style={{
+                cursor: "pointer",
+                color: "green",
+                fontSize: "1.2em",
+                marginLeft: "10px",
+                marginBottom: "10px"
+              }}
+              onClick={() => handleEdit(reserve)}
+            /> */}
+                      {/* <FaTrash
+              style={{
+                cursor: "pointer",
+                color: "red",
+                fontSize: "1.2em",
+                marginLeft: "10px",
+                marginTop: "10px"
+              }}
+              onClick={() => openDeleteDialog(reserve)}
+            /> */}
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           ) : (
-            <Text fontSize={30}>No hay reservas del usuario para mostrar.</Text>
+            // Muestra el mensaje solo si no hay reservas y el estado es true
+            Array.isArray(user.reserveIds) &&
+            user?.reserveIds.length === 0 && (
+              <Text fontSize={30}>
+                No hay reservas del usuario para mostrar.
+              </Text>
+            )
           )}
         </Box>
       </GridItem>
