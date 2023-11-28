@@ -76,7 +76,7 @@ const Policies = () => {
                 <Text textAlign={"center"} fontFamily="Saira" fontWeight={"semibold"} color="black" fontSize={["1rem", "1.3rem"]}>
                     POLITICAS DE USO DEL PRODUCTO
                 </Text>
-                <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['150px', '180px']} spacing={2}
+                <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['150px', '160px']} spacing={2}
                 >
                 {listPolicies.map((policy) => (
         
