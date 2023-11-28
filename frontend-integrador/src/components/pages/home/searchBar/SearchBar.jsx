@@ -131,11 +131,11 @@ const SearchBar = () => {
     >
       <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]}  gridColumnEnd={[3,4,5]} >
         <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[16,22,30]}>
-          ¿QUE ESTAS BUSCANDO?</Text>
+          ¿QUÉ ESTÁS BUSCANDO?</Text>
       </GridItem>
       <GridItem py={2} px={[5,5,10]} gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
         <Text textShadow={'dark-lg'} textAlign={"center"} fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[12,13,16,18]}>
-          Descubre los articulos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
+          Descubre los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
       </GridItem>
       <GridItem px={2} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
         <Popover
@@ -156,7 +156,7 @@ const SearchBar = () => {
             color={'verde1'}
             boxShadow={'dark-lg'}
             fontSize={[12,14]}
-            placeholder="Escribe aqui el nombre de la prenda que buscas"
+            placeholder="Escribe aquí el nombre de la prenda que buscas"
             onChange={(e) => setProductName(e.target.value)}
             />
           </PopoverTrigger>
@@ -191,7 +191,6 @@ const SearchBar = () => {
           focusBorderColor='lime'
           type="date"
           color={'verde1'}
-          min={startDate}
           fontSize={[12,14]}
           maxHeight={["20px","30px", "40px"]}
           value={startDate}
