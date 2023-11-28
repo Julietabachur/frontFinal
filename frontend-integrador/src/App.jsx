@@ -12,6 +12,7 @@ import axios from "axios";
 import Perfil from "./components/Perfil";
 import { useProductContext } from "./components/pages/home/Global.context";
 import Verify from "./components/pages/login/Verify";
+import MailVerify from "./components/pages/login/MailVerify";
 
 
 function App() {
@@ -64,6 +65,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verify" element={<Verify />} />
+            <Route path="/verify/:verifyToken" element={<Verify />} />
+            <Route path="/mailVerify/:verifyToken" element={<MailVerify />} />
             <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
             <Route path="/detalle/:id" element={<DetailPage />} />
             <Route path="/perfil"
