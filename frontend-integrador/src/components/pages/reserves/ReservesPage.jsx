@@ -56,8 +56,6 @@ const ReservesPage = () => {
   } = useProductContext();
   const navigate = useNavigate();
 
-  const handleRangeOfDates = (date) => {};
-
   const getUser = async () => {
     const response = await axios.get(
       `${baseUrl}/api/v1/private/clients/${clientId}`,
@@ -133,6 +131,11 @@ const ReservesPage = () => {
         setAvailableDates([]);
         setSelectedDate(null);
         setSelectedFinishDate(null);
+        setError({
+          inicial: "",
+          final: "",
+        });
+        setShowError(false);
         onClose();
       }
     } catch (error) {
@@ -163,6 +166,11 @@ const ReservesPage = () => {
     setAvailableDates([]);
     setSelectedDate(null);
     setSelectedFinishDate(null);
+    setError({
+      inicial: "",
+      final: "",
+    });
+    setShowError(false);
     onClose();
   };
 
@@ -175,6 +183,7 @@ const ReservesPage = () => {
       });
     } else {
       setError((prev) => {
+        setSelectedDate(null);
         return {
           ...prev,
           inicial: "La fecha inicial no puede ser menor a la actual",
@@ -192,6 +201,7 @@ const ReservesPage = () => {
       });
     } else {
       setError((prev) => {
+        setSelectedFinishDate(null);
         return {
           ...prev,
           final:
@@ -264,80 +274,135 @@ const ReservesPage = () => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{`Hola ${user.firstName} ,desde aqui podras reservar tu prenda favorita `}</ModalHeader>
+          <ModalHeader>{`Hola ${user.clientName} ,desde aqui podras reservar tu prenda favorita `}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <Text>{product?.productName}</Text>
-            <Text>Fechas disponibles</Text>
-            <Text>Fechas de inicio</Text>
-            <HStack w={"100%"}>
-              <Box w={"50%"}>
-                <DatePicker
-                  locale="es"
-                  selected={selectedDate}
-                  onChange={handleSelectedDate}
-                  inline
-                  calendarClassName="date-picker-calendar"
-                  highlightDates={availableDates.map((date) => new Date(date))}
-                />
-                {error.inicial && (
-                  <Text color={"red.400"}>{error.inicial}</Text>
-                )}
-              </Box>
+            <VStack
+              borderRadius={5}
+              p={3}
+              justify={"flex-start"}
+              align={"flex-start"}
+              shadow={"2xl"}
+              border={"1px solid green"}
+            >
+              <Text>
+                <Box as="span" fontWeight="bold">
+                  Usuario:
+                </Box>{" "}
+                {`${user?.firstName} ${user?.lastName} (${user?.clientName})`}
+              </Text>
+              <Text>
+                <Box as="span" fontWeight="bold">
+                  Email:
+                </Box>{" "}
+                {user?.email}
+              </Text>
+              <Text>
+                <Box as="span" fontWeight="bold">
+                  Prenda:
+                </Box>{" "}
+                {product?.productName}
+              </Text>
+            </VStack>
 
-              {/* <Text>Fechas de termino</Text> */}
-              <Box w={"50%"}>
-                <DatePicker
-                  disabled={!selectedDate}
-                  locale="es"
-                  selected={selectedFinishDate}
-                  onChange={handleSelectedFinishDate}
-                  inline
-                  calendarClassName="date-picker-calendar"
-                  highlightDates={availableDates.map((date) => new Date(date))}
-                />
-                {error.final && <Text color={"red.400"}>{error.final}</Text>}
-              </Box>
-            </HStack>
-            {selectedDate && !error.inicial && !selectedFinishDate && (
-              <Text>{`Desde el ${selectedDate.toLocaleDateString()}`}</Text>
-            )}
-            {!selectedDate && !error.final && selectedFinishDate && (
-              <Text>{`hasta el ${selectedFinishDate.toLocaleDateString()}`}</Text>
-            )}
-            {selectedDate &&
-              selectedFinishDate &&
-              !error.final &&
-              !error.inicial && (
-                <Text>{`Desde el ${selectedDate.toLocaleDateString()} hasta el ${selectedFinishDate.toLocaleDateString()}`}</Text>
-              )}
+            <VStack
+              mt={5}
+              borderRadius={5}
+              p={3}
+              justify={"flex-start"}
+              shadow={"2xl"}
+              border={"1px solid green"}
+            >
+              <Text fontSize={"1.5rem"} textAlign={"center"} mt={2}>
+                Fechas disponibles
+              </Text>
+              <HStack justify={"space-around"} w={"100%"}>
+                <Text mt={2}>Fechas de inicio</Text>
+                <Text mt={2}>Fechas de termino</Text>
+              </HStack>
 
-            {/* 
-            <FormControl mt={4}>
-              <FormLabel>Fecha de termino</FormLabel>
-              <Input
-                focusBorderColor="lime"
-                type="date"
-                color={"verde1"}
-                fontSize={[12, 14]}
-                maxHeight={["20px", "30px", "40px"]}
-                value={endDate}
-                boxShadow={"dark-lg"}
-                variant={"filled"}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </FormControl> */}
+              <HStack w={"100%"}>
+                <Box w={"50%"}>
+                  <DatePicker
+                    locale="es"
+                    selected={selectedDate}
+                    onChange={handleSelectedDate}
+                    inline
+                    calendarClassName="date-picker-calendar"
+                    highlightDates={availableDates.map(
+                      (date) => new Date(date)
+                    )}
+                  />
+                </Box>
+                <Box w={"50%"}>
+                  <DatePicker
+                    disabled={!selectedDate}
+                    locale="es"
+                    selected={selectedFinishDate}
+                    onChange={handleSelectedFinishDate}
+                    inline
+                    calendarClassName="date-picker-calendar"
+                    highlightDates={availableDates.map(
+                      (date) => new Date(date)
+                    )}
+                  />
+                </Box>
+              </HStack>
+
+              <HStack>
+                <HStack>
+                  {error.inicial && (
+                    <Text color={"red.400"}>{error.inicial}</Text>
+                  )}
+                  {error.final && <Text color={"red.400"}>{error.final}</Text>}
+                </HStack>
+                <HStack>
+                  {" "}
+                  {selectedDate &&
+                    !error.final &&
+                    !error.inicial &&
+                    !selectedFinishDate && (
+                      <Text>{`Desde el ${selectedDate.toLocaleDateString()}`}</Text>
+                    )}
+                  {!selectedDate &&
+                    !error.final &&
+                    !error.inicial &&
+                    selectedFinishDate && (
+                      <Text>{`hasta el ${selectedFinishDate.toLocaleDateString()}`}</Text>
+                    )}
+                  {selectedDate &&
+                    selectedFinishDate &&
+                    !error.final &&
+                    !error.inicial && (
+                      <Text>{`Desde el ${selectedDate.toLocaleDateString()} hasta el ${selectedFinishDate.toLocaleDateString()}`}</Text>
+                    )}
+                  {showError && (
+                    <Text color={"red.500"}>
+                      el rango de fechas selelccionado no puede incluir dias no
+                      habilitados por favor selecciona otro rango de fechas
+                    </Text>
+                  )}
+                </HStack>
+              </HStack>
+            </VStack>
           </ModalBody>
 
           <ModalFooter>
             <Button
-              colorScheme="blue"
+              bg={"verde2"}
+              shadow={"2xl"}
               mr={3}
               onClick={() => handleReservation(product.id)}
             >
               Reservar
             </Button>
-            <Button onClick={() => handleClose()}>Cancel</Button>
+            <Button
+              shadow={"2xl"}
+              bg={"green.200"}
+              onClick={() => handleClose()}
+            >
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
