@@ -134,7 +134,7 @@ const Perfil = () => {
     >
       <GridItem
         as={"aside"}
-        rowSpan={{ base: 1, md: 2 }}
+        rowSpan={{ base: 1, md: 3 }}
         colSpan={{ base: 5, md: 1 }}
         bg="blanco"
         p={7}
@@ -289,7 +289,8 @@ const Perfil = () => {
           </SimpleGrid>
         </VStack>
       </GridItem>
-      <GridItem colSpan={5} bg="blanco">
+
+      <GridItem colSpan={4} bg="blanco">
         <Box m={3}>
           <Box
             color="verde1"
@@ -302,87 +303,35 @@ const Perfil = () => {
             Reservas
           </Box>
           {userReserves.length > 0 ? (
-            <Table variant="striped" colorScheme="green">
-              <Thead>
-                <Tr>
-                  {/* <Th>
-                    <Text fontWeight="bold">ID</Text>
-                   </Th> */}
-                  <Th>
-                    <Text fontWeight="bold" 
-                    //fontSize="xl"
-                    >
-                      Nombre del Producto
-                    </Text>
-                  </Th>
-                  <Th>
-                    <Text fontWeight="bold" 
-                    //fontSize="xl"
-                    >
-                      Imagen
-                    </Text>
-                  </Th>
-                  <Th>
-                    <Text
-                      fontWeight="bold"
-                      //fontSize="xl"
-                      style={{ marginBottom: "8px" }}
-                    >
-                      Fecha inicio
-                    </Text>
-                  </Th>
-                  <Th>
-                    <Text
-                      fontWeight="bold"
-                      //fontSize="s"
-                      style={{ marginBottom: "8px" }}
-                    >
-                      Fecha de finalización
-                    </Text>
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {userReserves.map((reserve) => (
-                  <Tr key={reserve.id}>
-                    {/* <Td>{reserve.id}</Td> */}
-                    <Td>{reserve.productName}</Td>
-                    <Td>
-                      <Img
-                        src={reserve.reserveImg}
-                        alt={reserve.productName}
-                        w={50}
-                        h={50}
-                      />
-                    </Td>
-                    <Td>{reserve.startDate}</Td>
-                    <Td>{reserve.endDate}</Td>
-                    <Td>
-                      {/*  <FaEdit
-              style={{
-                cursor: "pointer",
-                color: "green",
-                fontSize: "1.2em",
-                marginLeft: "10px",
-                marginBottom: "10px"
-              }}
-              onClick={() => handleEdit(reserve)}
-            /> */}
-                      {/* <FaTrash
-              style={{
-                cursor: "pointer",
-                color: "red",
-                fontSize: "1.2em",
-                marginLeft: "10px",
-                marginTop: "10px"
-              }}
-              onClick={() => openDeleteDialog(reserve)}
-            /> */}
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
+            <SimpleGrid
+              mt={"15px"}
+              p={2.5}
+              spacing={2}
+              minChildWidth="160px"
+              w={"100%"}
+              borderRadius={6}
+              border={"1px solid lightblue"}
+              boxShadow={"15px 15px 15px gray"}
+            >
+              {userReserves.map((reserve) => (
+                <Box
+                  key={reserve.id}
+                  boxShadow={"5px 5px 15px gray"}
+                  m={3}
+                  borderRadius={8}
+                >
+                  <Image
+                    boxSize={20}
+                    w={"100%"}
+                    src={reserve.reserveImg}
+                    borderRadius={8}
+                    objectFit={"cover"}
+                  />
+                  
+                  {/* Puedes agregar aquí los botones de editar o eliminar si es necesario */}
+                </Box>
+              ))}
+            </SimpleGrid>
           ) : (
             // Muestra el mensaje solo si no hay reservas y el estado es true
             Array.isArray(user.reserveIds) &&

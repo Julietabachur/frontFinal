@@ -231,6 +231,7 @@ const ReservesPage = () => {
         Reservas
       </Text>
       <SearchBar />
+      //Muestra las cards de las reservas, aqui pondria el condicional
       <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
         {paginatedData.map((product) => (
           <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
@@ -262,6 +263,10 @@ const ReservesPage = () => {
           </VStack>
         ))}
       </SimpleGrid>
+
+      //código de la lista de reservas se muestra cuando se toca mis reservas (hacerlo contexto global)
+      
+
       <Modal
         initialFocusRef={initialRef}
         isOpen={isOpen}

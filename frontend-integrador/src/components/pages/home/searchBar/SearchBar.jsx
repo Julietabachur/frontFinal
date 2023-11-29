@@ -32,6 +32,7 @@ const SearchBar = () => {
     setPaginatedData,
     searchResults,
     setSearchResults,
+    setBanderaReservas,
   } = useProductContext();
   const { isOpen, onToggle, onClose } = useDisclosure();
   const [cancelToken, setCancelToken] = useState(null);
@@ -54,6 +55,7 @@ const SearchBar = () => {
         }
       );
       if (response) {
+        setBanderaReservas(false);
         setPaginatedData(response.data);
         setSearchResults([]);
       }

@@ -15,11 +15,11 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProductContext } from "./pages/home/Global.context";
+import { useProductContext} from "./pages/home/Global.context";
 
 const NavbarMenu = ({ username, token, roles }) => {
   const [admin, setAdmin] = useState(false);
-  const { favorites, getFavorites } = useProductContext();
+  const { favorites, getFavorites, setBanderaReservas} = useProductContext();
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
@@ -28,8 +28,16 @@ const NavbarMenu = ({ username, token, roles }) => {
   };
 
   const handleFavorites = () => {
+    setBanderaReservas(false);
     navigate('/')
     getFavorites()
+    
+  };
+
+  const handleReserves = () => {
+    setBanderaReservas(true);
+    navigate('/reserve')
+    
   };
 
   useEffect(() => {
@@ -74,7 +82,7 @@ const NavbarMenu = ({ username, token, roles }) => {
           as={Button}
           colorScheme="green"
           variant={"ghost"}
-          onClick={() => handleFavorites()}
+          onClick={() => handleReserves()}
         >
           Mis reservas{" "}
         </MenuItem>
