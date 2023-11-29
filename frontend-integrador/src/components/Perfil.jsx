@@ -19,13 +19,20 @@ import {
   Divider,
   Image,
   SimpleGrid,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Img,
 } from "@chakra-ui/react";
 import LogoutButton from "./LogoutButton";
 import { useProductContext } from "./pages/home/Global.context";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 const Perfil = () => {
-  const { getFavorites, paginatedData, clientId} = useProductContext();
+  const { getFavorites, paginatedData, clientId } = useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
   const [user, setUser] = useState({});
@@ -53,7 +60,6 @@ const Perfil = () => {
       setUser(response.data);
     }
   };
-  
 
   // Función asincrónica para obtener todas las reservas del usuario actual
   const getReserves = async () => {
@@ -97,16 +103,14 @@ const Perfil = () => {
 
   // Llamada a la función de obtener reservas del usuario cuando el componente se monta
   useEffect(() => {
-    console.log(user);
-    console.log("acá");
-    if ( Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
+    if (Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
       getReserves();
     }
   }, [user]);
 
   useEffect(() => {
-    if (clientId && token){
-    getUser();
+    if (clientId && token) {
+      getUser();
     }
   }, [clientId, token]);
 
@@ -285,27 +289,57 @@ const Perfil = () => {
           </SimpleGrid>
         </VStack>
       </GridItem>
-      <GridItem colSpan={5} bg="blanco">
+
+      <GridItem colSpan={4} bg="blanco">
         <Box m={3}>
+          <Box
+            color="verde1"
+            fontWeight="semibold"
+            letterSpacing="wide"
+            fontSize={{ base: "2xl", md: "4xl" }}
+            alignSelf={{ base: "center", md: "flex-start" }}
+            textShadow={"10px 10px 10px gray"}
+          >
+            Reservas
+          </Box>
           {userReserves.length > 0 ? (
-            // Renderiza las reservas del usuario si hay alguna
-            userReserves.map((reserve) => (
-              <div key={reserve.id}>
-                {/* Renderiza los detalles de la reserva del usuario */}
-                <div key={reserve.id}>
-                  <p>Reserva ID: {reserve.id}</p>
-                  <p>Fecha de inicio: {reserve.startDate}</p>
-                  <p>Fecha de finalización: {reserve.endDate}</p>
-                  <p>
-                    Imagen de la reserva:{" "}
-                    <img src={reserve.reserveImg} alt="Reserva" />
-                  </p>
-                  <p>Nombre del producto: {reserve.productName}</p>
-                </div>
-              </div>
-            ))
+            <SimpleGrid
+              mt={"15px"}
+              p={2.5}
+              spacing={2}
+              minChildWidth="160px"
+              w={"100%"}
+              borderRadius={6}
+              border={"1px solid lightblue"}
+              boxShadow={"15px 15px 15px gray"}
+            >
+              {userReserves.map((reserve) => (
+                <Box
+                  key={reserve.id}
+                  boxShadow={"5px 5px 15px gray"}
+                  m={3}
+                  borderRadius={8}
+                >
+                  <Image
+                    boxSize={20}
+                    w={"100%"}
+                    src={reserve.reserveImg}
+                    borderRadius={8}
+                    objectFit={"cover"}
+                  />
+                  
+                  {/* Puedes agregar aquí los botones de editar o eliminar si es necesario */}
+                </Box>
+              ))}
+            </SimpleGrid>
           ) : (
-            <Text fontSize={30}>No hay reservas del usuario para mostrar.</Text>
+            // Muestra el mensaje solo si no hay reservas y el estado es true
+            Array.isArray(user.reserveIds) &&
+            user?.reserveIds.length === 0 && (
+              <Text fontSize={30}>
+                No hay reservas del usuario para mostrar.
+              </Text>
+            )
           )}
         </Box>
       </GridItem>

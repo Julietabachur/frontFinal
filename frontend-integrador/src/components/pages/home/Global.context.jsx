@@ -37,6 +37,8 @@ const reducer = (state, action) => {
       return { ...state, reserves: action.payload };
     case "SET_RESERVATION":
       return { ...state, reservation: action.payload };
+    case "SET_BANDERA":
+    return { ...state, banderaReservas: action.payload };
     default:
       return state;
   }
@@ -57,7 +59,9 @@ const initialState = {
   clientId: "",
   reserves: [],
   reservation: "",
-};
+  banderaReservas:false,
+  };
+
 
 const ProductContext = createContext(undefined); //useContext
 
@@ -116,6 +120,10 @@ const ProductProvider = ({ children }) => {
     } else if (state.categories.length > 0) {
       getProductsByType(state.categories, page);
     }
+  };
+
+  const setBanderaReservas = (data) => {
+    dispatch({ type: "SET_BANDERA", payload: data });
   };
 
   const setCategories = (data) => {
@@ -257,6 +265,7 @@ const ProductProvider = ({ children }) => {
     clientId: state.clientId,
     showFav: state.showFav,
     reservation: state.reservation,
+    banderaReservas:state.banderaReservas,
     setReservation,
     setShowFav,
     getProducts,
@@ -271,6 +280,7 @@ const ProductProvider = ({ children }) => {
     setProductName,
     setFavorites,
     setClientId,
+    setBanderaReservas,
 
     // Otros valores o funciones que puedas necesitar
   };

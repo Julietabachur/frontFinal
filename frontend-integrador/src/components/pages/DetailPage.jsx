@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
-
 import "react-datepicker/dist/react-datepicker.css";
 import "./home/Detail.css";
 import { FcShare } from "react-icons/fc";
@@ -34,7 +33,6 @@ import SocialShare from "./SocialShare";
 registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
-
 
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
