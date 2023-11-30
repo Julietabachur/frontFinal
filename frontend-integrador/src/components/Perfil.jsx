@@ -19,31 +19,27 @@ import {
   Divider,
   Image,
   SimpleGrid,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Img,
+  FormHelperText,
 } from "@chakra-ui/react";
 import LogoutButton from "./LogoutButton";
 import { useProductContext } from "./pages/home/Global.context";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink,useNavigate } from "react-router-dom";
+import RenderPagination from "./pages/home/RenderPagination";
 
 const Perfil = () => {
-  const { getFavorites, paginatedData, clientId } = useProductContext();
+  const { getFavorites, paginatedData, clientId, setBanderaReservas } =
+    useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
   const [user, setUser] = useState({});
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
   // Estado para almacenar la lista de reservas del usuario
   const [userReserves, setUserReserves] = useState([]);
+  const navigate = useNavigate();
 
-  const logoutHandle = () => {
-    localStorage.removeItem("riskkojwt");
-    navigate("/");
-    window.location.reload();
+  const handleReserves = () => {
+    setBanderaReservas(true);
+    navigate("/reserve");
   };
 
   const getUser = async () => {
@@ -63,41 +59,45 @@ const Perfil = () => {
 
   // Función asincrónica para obtener todas las reservas del usuario actual
   const getReserves = async () => {
-    console.log(user.reserveId);
-    try {
-      //asegura que userReserveIds siempre sea un array, incluso si user o reserveIds son nulos.
-      const userReserveIds = user?.reserveIds || [];
-      //patrón de "mapeo concurrente". En lugar de esperar a que cada promesa se resuelva secuencialmente,
-      //se están generando todas las promesas al mismo tiempo y luego esperando a que todas se resuelvan con Promise.all.
-      // Esto puede mejorar el rendimiento al realizar las solicitudes en paralelo.
-      const promises = userReserveIds.map(async (reserveId) => {
-        try {
-          const response = await axios.get(`${RESERVES_URL}/${reserveId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+    if (user.reserveIds.length > 0 && userReserves.length === 0) {
+      try {
+        //asegura que userReserveIds siempre sea un array, incluso si user o reserveIds son nulos.
+        const userReserveIds = user?.reserveIds || [];
+        //patrón de "mapeo concurrente". En lugar de esperar a que cada promesa se resuelva secuencialmente,
+        //se están generando todas las promesas al mismo tiempo y luego esperando a que todas se resuelvan con Promise.all.
+        // Esto puede mejorar el rendimiento al realizar las solicitudes en paralelo.
+        const promises = userReserveIds.map(async (reserveId) => {
+          try {
+            const response = await axios.get(`${RESERVES_URL}/${reserveId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
 
-          if (response.data) {
-            // Agrega la reserva obtenida al array de userReserves
-            setUserReserves((prevReserves) => [...prevReserves, response.data]);
-          } else {
-            console.error(`Error al obtener la reserva con ID ${reserveId}`);
+            if (response.data) {
+              // Agrega la reserva obtenida al array de userReserves
+              setUserReserves((prevReserves) => [
+                ...prevReserves,
+                response.data,
+              ]);
+            } else {
+              console.error(`Error al obtener la reserva con ID ${reserveId}`);
+            }
+          } catch (error) {
+            console.error(
+              `Error en la solicitud para la reserva con ID ${reserveId}:`,
+              error.message
+            );
           }
-        } catch (error) {
-          console.error(
-            `Error en la solicitud para la reserva con ID ${reserveId}:`,
-            error.message
-          );
-        }
-      });
-      // Espera a que todas las solicitudes se completen antes de continuar
-      await Promise.all(promises);
-    } catch (error) {
-      console.error(
-        "Error al obtener las reservas del usuario:",
-        error.message
-      );
+        });
+        // Espera a que todas las solicitudes se completen antes de continuar
+        await Promise.all(promises);
+      } catch (error) {
+        console.error(
+          "Error al obtener las reservas del usuario:",
+          error.message
+        );
+      }
     }
   };
 
@@ -150,13 +150,7 @@ const Perfil = () => {
             {user?.clientName}
           </Text>
           <Text textAlign={"center"}>{user?.email}</Text>
-          <LogoutButton
-          /* justifySelf={"center"}
-            w={"130px"}
-            bg={"red.400"}
-            color={"blanco"}
-            onClick={logoutHandle} */
-          />
+          <LogoutButton />
           <UnorderedList
             direction={{ base: "row", md: "column" }}
             listStyleType={"none"}
@@ -258,12 +252,12 @@ const Perfil = () => {
           >
             Favoritos
           </Box>
-
-          <SimpleGrid
+          <Grid
+            templateColumns="repeat(5, 1fr)"
+            templateRows={"repeat(2, 1fr)"}
             mt={"15px"}
-            p={2.5}
+            p={4}
             spacing={2}
-            minChildWidth="160px"
             w={"100%"}
             borderRadius={6}
             border={"1px solid lightblue"}
@@ -286,7 +280,10 @@ const Perfil = () => {
                 </Box>
               </Link>
             ))}
-          </SimpleGrid>
+            <GridItem rowStart={3} colStart={1} colEnd={6} >
+              <RenderPagination />
+            </GridItem>
+          </Grid>
         </VStack>
       </GridItem>
 
@@ -303,15 +300,13 @@ const Perfil = () => {
             Reservas
           </Box>
           {userReserves.length > 0 ? (
-            <SimpleGrid
-              mt={"15px"}
-              p={2.5}
-              spacing={2}
-              minChildWidth="160px"
-              w={"100%"}
+            <Flex
+              justify={"flex-start"}
+              align={"center"}
               borderRadius={6}
               border={"1px solid lightblue"}
               boxShadow={"15px 15px 15px gray"}
+              overflow={"scroll"}
             >
               {userReserves.map((reserve) => (
                 <Box
@@ -319,19 +314,24 @@ const Perfil = () => {
                   boxShadow={"5px 5px 15px gray"}
                   m={3}
                   borderRadius={8}
+                  minWidth={"150px"}
+                  h={100}
+                  onClick={() => handleReserves()}
+                  cursor={'pointer'}
                 >
                   <Image
                     boxSize={20}
                     w={"100%"}
+                    h={"100%"}
                     src={reserve.reserveImg}
                     borderRadius={8}
                     objectFit={"cover"}
                   />
-                  
+
                   {/* Puedes agregar aquí los botones de editar o eliminar si es necesario */}
                 </Box>
               ))}
-            </SimpleGrid>
+            </Flex>
           ) : (
             // Muestra el mensaje solo si no hay reservas y el estado es true
             Array.isArray(user.reserveIds) &&

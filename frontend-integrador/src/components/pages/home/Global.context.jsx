@@ -38,7 +38,7 @@ const reducer = (state, action) => {
     case "SET_RESERVATION":
       return { ...state, reservation: action.payload };
     case "SET_BANDERA":
-    return { ...state, banderaReservas: action.payload };
+      return { ...state, banderaReservas: action.payload };
     default:
       return state;
   }
@@ -59,9 +59,8 @@ const initialState = {
   clientId: "",
   reserves: [],
   reservation: "",
-  banderaReservas:false,
-  };
-
+  banderaReservas: false,
+};
 
 const ProductContext = createContext(undefined); //useContext
 
@@ -115,10 +114,16 @@ const ProductProvider = ({ children }) => {
 
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-    if (state.categories.length === 0) {
+    if (
+      state.categories.length === 0 &&
+      !state.showFav &&
+      state.searchResults.length === 0
+    ) {
       getProducts(page);
-    } else if (state.categories.length > 0) {
+    } else if (state.categories.length > 0 && !state.showFav) {
       getProductsByType(state.categories, page);
+    } else if (state.favorites.length > 0 && state.showFav) {
+      getFavorites(page);
     }
   };
 
@@ -265,7 +270,7 @@ const ProductProvider = ({ children }) => {
     clientId: state.clientId,
     showFav: state.showFav,
     reservation: state.reservation,
-    banderaReservas:state.banderaReservas,
+    banderaReservas: state.banderaReservas,
     setReservation,
     setShowFav,
     getProducts,
