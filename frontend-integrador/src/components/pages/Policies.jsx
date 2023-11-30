@@ -65,6 +65,7 @@ const Policies = () => {
       <Box width="100%" padding={4} h={"100%"} border={"2px solid black"}>
         <Button
           variant="outline"
+          fontSize={"0.8rem"}
           onClick={toggleCollapse}
           display={{ base: "block", md: "none" }}
         >
@@ -72,31 +73,29 @@ const Policies = () => {
         </Button>
   
         {(!isCollapsed || window.innerWidth >= 768) && (
-            <VStack>
-                <Text textAlign={"center"} fontFamily="Saira" fontWeight={"semibold"} color="black" fontSize={["1rem", "1.3rem"]}>
-                    POLÍTICAS DE USO DEL PRODUCTO
+            <VStack my={5} alignItems="flex-start">
+                <Text as='u' marginLeft={4} textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="black" fontSize={["1rem", "1.3rem"]}>
+                    POLITICAS DE USO DEL PRODUCTO
                 </Text>
-                <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['150px', '160px']} spacing={2}
+                <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['130px', '180px']} spacing={3}
                 >
                 {listPolicies.map((policy) => (
         
 
-                <Box key={policy.id} >
+                <Box   >
                   <VStack
-                  
-                    p={3}
-                    border="1px solid green"
-                    borderRadius={5}
+                    h={"100%"}
+                    p={4}
+                    alignItems="flex-start"
                   >
-                    <Text textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="green" fontSize="1rem">
+                    <Text  fontFamily="Saira" fontWeight={"medium"} color="green" fontSize="1rem">
                       {policy.policyName}
                     </Text>
                     <Text
                       fontFamily="Podkova"
                       color="black"
-                      fontWeight={"thin"}
+                      fontWeight={500}
                       fontSize="0.8rem"
-                      textAlign={"center"}
                     >
                       {policy.description}
                     </Text>

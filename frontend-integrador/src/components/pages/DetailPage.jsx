@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
-
 import "react-datepicker/dist/react-datepicker.css";
 import "./home/Detail.css";
 import { FcShare } from "react-icons/fc";
@@ -178,20 +177,17 @@ const DetailPage = () => {
             w={"70vw"}
             justifySelf={"center"}
           >
-            <HStack
+            <HStack p={5} spacing={[2,5]}
               justify={"space-between"}
               w={"100%"}
-              h={"60px"}
               color={"blanco"}
               border={"2px solid black"}
               alignContent={"center"}
               justifyContent={"space-between"}
-              padding={"10px"}
-              minW={"300px"}
-            >
-              <HStack ml={5} w="50%">
+              >
+             
                 {token && (
-                  <Box
+                  <Box 
                     onClick={handleHeartClick}
                     color="green"
                     _hover={{
@@ -205,21 +201,24 @@ const DetailPage = () => {
                     )}
                   </Box>
                 )}
-                <IconButton
-                  colorScheme="gray"
-                  variant="outline"
-                  size="lg"
-                  aria-label="Share"
-                  icon={<FcShare />}
-                  onClick={() => setOpenShareModal(true)}
-                />
+                <Box>
+                <FcShare
+                 colorScheme="gray"
+                 variant="outline"
+                 size={30}
+                 onClick={() => setOpenShareModal(true)}
+                ></FcShare>
+                </Box>
+              
+                          
                 <Text
                   readOnly={true}
+                  w={"85%"}
                   fontFamily={"Saira"}
                   color={"black"}
                   fontWeight={"semibold"}
-                  fontSize={"1.7rem"}
-                  marginLeft={"3%"}
+                  ml={[2,2,5]}
+                  fontSize={["1rem","1.3rem","1.7rem"]}
                   style={{
                     caretColor: "transparent",
                     background: "transparent",
@@ -228,45 +227,33 @@ const DetailPage = () => {
                 >
                   {detail.productName}
                 </Text>
-              </HStack>
-              <HStack>
+
                 <Button
-                  onClick={handleReserve}
-                  bg={"verde2"}
-                  alignSelf={"flex-end"}
-                  w={40}
-                >
-                  Reservar
-                </Button>
-                <Button
-                  onClick={() => navigate(-1)}
-                  bg={"verde2"}
-                  marginRight={5}
-                >
-                  Atras
-                </Button>
-              </HStack>
-            </HStack>
-            <VStack border={"2px solid black"} p={10}>
-              <Text
-                textAlign={"center"}
-                fontFamily="Saira"
-                fontWeight={"semibold"}
-                color="black"
-                fontSize={["1rem", "1.3rem"]}
+                alignSelf={"flex-end"}
+                fontSize={["0.8rem", "1rem"]}
+                onClick={() => navigate(-1)}
+                bg={"verde2"}
               >
-                DESCRIPCIÓN DEL PRODUCTO
-              </Text>
+                Atras
+              </Button>
+              
+             
+            </HStack>
+
+
+            <VStack border={"2px solid black"} spacing={[2,5]} p={[5,10]} alignItems="flex-start">
+              <Text as='u' textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="black" fontSize={["1rem", "1.3rem"]}>
+                    DESCRIPCIÓN DEL PRODUCTO
+                </Text>
               <Text
                 fontFamily={"Podkova"}
                 color={"black"}
-                fontSize={"20px"}
-                marginTop={"20px"}
+                fontSize={["0.8rem", "1rem","1.2rem"]}
               >
                 {detail.detail}
               </Text>
             </VStack>
-            <Stack border={"2px solid black"} p={2}>
+            <Stack border={"2px solid black"} spacing={[2,5]} p={5}>
               <ProductGallery
                 thumbnail={detail.thumbnail}
                 gallery={detail.gallery}
@@ -278,8 +265,6 @@ const DetailPage = () => {
                     bg={"verde2"}
                     alignSelf={"flex-end"}
                     w={20}
-                    mr={5}
-                    mb={5}
                   >
                     Ver más
                   </Button>
@@ -309,6 +294,50 @@ const DetailPage = () => {
               )}
             </Stack>
             <Specs detail={detail}></Specs>
+            <VStack border={"2px solid black"} p={3} w={"100%"}>
+              <Text
+                fontFamily={"Saira"}
+                color={"black"}
+                fontSize={"1.5rem"}
+                marginLeft={"3%"}
+                w={"100%"}
+              >
+                Fechas disponibles para reservas
+              </Text>
+              {showError && (
+                <Text
+                  fontFamily={"Saira"}
+                  color={"black"}
+                  fontSize={"1rem"}
+                  marginLeft={"3%"}
+                  w={"100%"}
+                >
+                  No hemos podido encontrar las fechas disponibles , vuelve a
+                  intentar más tarde.
+                </Text>
+              )}
+              <Box w={"100%"}>
+                <DatePicker
+                  locale="es"
+                  selected={selectedDate}
+                  onChange={(date) => setSelectedDate(date)}
+                  inline
+                  calendarClassName="date-picker-calendar"
+                  highlightDates={availableDates.map((date) => new Date(date))}
+                />
+              </Box>
+              <Button
+                onClick={handleReserve}
+                bg={"verde2"}
+                alignSelf={"flex-end"}
+                w={40}
+                mr={5}
+                mb={2}
+              >
+                Reservar
+              </Button>
+            </VStack>
+
             <Policies></Policies>
           </VStack>
         )}
