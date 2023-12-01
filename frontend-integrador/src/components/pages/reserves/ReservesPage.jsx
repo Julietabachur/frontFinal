@@ -53,6 +53,7 @@ const ReservesPage = () => {
     setStartDate,
     endDate,
     setEndDate,
+    banderaReservas,
   } = useProductContext();
   const navigate = useNavigate();
 
@@ -231,42 +232,60 @@ const ReservesPage = () => {
         Reservas
       </Text>
       <SearchBar />
-      //Muestra las cards de las reservas, aqui pondria el condicional
-      <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
-        {paginatedData.map((product) => (
-          <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
-            <Image
-              boxSize={"sm"}
-              src={product.thumbnail}
-              alt="imagen"
-              objectFit={"cover"}
-            />
-
-            <HStack>
-              <Button
-                bg={"verde2"}
-                onClick={() => {
-                  navigate(`/detalle/${product.id}`);
-                }}
-              >
-                Detalle
-              </Button>
-              <Button
-                bg={"verde2"}
-                onClick={() => {
-                  setReservation(product.id);
-                }}
-              >
-                Reservar
-              </Button>
+      //código de la lista de reservas se muestra cuando se toca mis reservas
+      condicional
+      {banderaReservas ? (
+        <SimpleGrid columns={2} w={"100%"} spacing={4} minChildWidth="300px">
+          {reserveList.map((reserve) => (
+            <HStack key={reserve.id} borderRadius={6} boxShadow={"2xl"} p={3}>
+              <Image
+                boxSize={"sm"}
+                src={reserve.reserveImg}
+                alt="imagen"
+                objectFit={"cover"}
+              />
+              <VStack>
+                <Text>{reserve.productName}</Text>
+                <Text>{`Inicio: ${reserve.startDate}`}</Text>
+                <Text>{`Fin: ${reserve.endDate}`}</Text>
+              </VStack>
             </HStack>
-          </VStack>
-        ))}
-      </SimpleGrid>
+          ))}
+        </SimpleGrid>
+      ) : (
+        //Muestra las cards de las reservas, aqui pondria el condicional
+        <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
+          {paginatedData.map((product) => (
+            <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
+              <Image
+                boxSize={"sm"}
+                src={product.thumbnail}
+                alt="imagen"
+                objectFit={"cover"}
+              />
 
-      //código de la lista de reservas se muestra cuando se toca mis reservas (hacerlo contexto global)
-      
-
+              <HStack>
+                <Button
+                  bg={"verde2"}
+                  onClick={() => {
+                    navigate(`/detalle/${product.id}`);
+                  }}
+                >
+                  Detalle
+                </Button>
+                <Button
+                  bg={"verde2"}
+                  onClick={() => {
+                    setReservation(product.id);
+                  }}
+                >
+                  Reservar
+                </Button>
+              </HStack>
+            </VStack>
+          ))}
+        </SimpleGrid>
+      )}
       <Modal
         initialFocusRef={initialRef}
         isOpen={isOpen}
