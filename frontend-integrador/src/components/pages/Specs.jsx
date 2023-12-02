@@ -47,7 +47,7 @@ function Specs({ detail }) {
       {(!isCollapsed || window.innerWidth >= 768) && (
         <VStack my={5} alignItems="flex-start" >
           <Text as='u' fontFamily="Saira" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["1rem", "1.3rem"]}>
-            CARACTERISTICAS DEL PRODUCTO
+            CARACTERÍSTICAS DEL PRODUCTO
           </Text>
         <Grid
           w={"100%"}
