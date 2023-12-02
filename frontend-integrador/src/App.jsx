@@ -11,8 +11,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Perfil from "./components/Perfil";
 import { useProductContext } from "./components/pages/home/Global.context";
-import Verify from "./components/pages/login/Verify";
-import MailVerify from "./components/pages/login/MailVerify";
 import ReservesPage from "./components/pages/reserves/ReservesPage";
 import VerifyReg from "./components/pages/login/VerifyReg";
 
