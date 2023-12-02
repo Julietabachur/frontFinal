@@ -5,6 +5,7 @@ import axios from 'axios';
 const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChange}) => {
     
     const [dataEdit, setDataEdit] = useState (policyToEdit)
+    const adminUrl = import.meta.env.VITE_ADMIN_URL;
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -17,7 +18,7 @@ const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChan
         console.log(policyToEdit)
         console.log(dataEdit)
         // Realiza la solicitud PUT al endpoint para actualizar la politica
-        axios.put(`http://localhost:8080/api/v1/admin/policy/${policyToEdit.id}`, dataEdit, 
+        axios.put(`${adminUrl}/policy/${policyToEdit.id}`, dataEdit, 
         { headers: 
             { Authorization: `Bearer ${token}` } 
         })

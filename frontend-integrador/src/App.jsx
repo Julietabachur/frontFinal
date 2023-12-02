@@ -14,9 +14,13 @@ import { useProductContext } from "./components/pages/home/Global.context";
 import Verify from "./components/pages/login/Verify";
 import MailVerify from "./components/pages/login/MailVerify";
 import ReservesPage from "./components/pages/reserves/ReservesPage";
+import VerifyReg from "./components/pages/login/VerifyReg";
 
 function App() {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
+
+  const verifyToken = null;
+  const mailToken = null;
 
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
@@ -64,9 +68,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/verify" element={<Verify />} />
-            <Route path="/verify/:verifyToken" element={<Verify />} />
-            <Route path="/mailVerify/:verifyToken" element={<MailVerify />} />
+            <Route path="/verifyReg" element={<VerifyReg />} />
             <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
             <Route path="/reserve" element={<ReservesPage />} />
             <Route path="/detalle/:id" element={<DetailPage />} />

@@ -19,6 +19,8 @@ import {
     imageUrl: "",
     };
 
+    const adminUrl = import.meta.env.VITE_ADMIN_URL;
+
     const CategoryForm = ({ isModalCategoriaOpen,setIsModalCategoriaOpen, onClose, getCategories, token }) => {
     const [categoryData, setCategoryData] = useState(initialCategoryState);
     const [errors, setErrors] = useState({});
@@ -51,7 +53,7 @@ import {
     const handleAddCategory = async () => {
         try{
         const response =await axios.post(
-            "http://localhost:8080/api/v1/admin/category",
+            `${adminUrl}/category`,
             categoryData,
             {
                 headers: {

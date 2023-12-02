@@ -3,7 +3,7 @@ import { Box, Input, Button, Stack, VStack, Flex, Alert, AlertIcon, Text } from 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const LOGIN_URL = "http://localhost:8080/auth/login";
+const authUrl = import.meta.env.VITE_AUTH_URL;
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -79,7 +79,8 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(LOGIN_URL, {
+            const response = await axios.post(
+                `${authUrl}/login`, {
                 email,
                 password,
             });
@@ -114,7 +115,8 @@ const Login = () => {
 
                 } else {
                     console.log("Usuario no verificado");
-                    const verifyUrl = "/verify/" + response.data.verifyToken ;
+                    console.log(response.data.verifyToken);
+                    const verifyUrl = "/verifyReg?mailToken=" + response.data.verifyToken ;
                     navigate(verifyUrl);
                 }
 

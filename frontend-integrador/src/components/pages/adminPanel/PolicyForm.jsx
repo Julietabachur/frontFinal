@@ -4,6 +4,8 @@ import axios from 'axios';
 
 const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL;
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [newPolicy, setNewPolicy] = useState({policyName: '', description: ''})
 
@@ -19,7 +21,7 @@ const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
 
   //llamada a la api, peticion POST para agregar politica
   const addPolicy = (newPolicy) => {
-    axios.post("http://localhost:8080/api/v1/admin/policy", newPolicy, {
+    axios.post(`${adminUrl}/policy`, newPolicy, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

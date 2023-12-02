@@ -36,7 +36,7 @@ import Policies from "./Policies";
 
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  const frontUrl = import.meta.env.VITE_LOGIN_URL;
+  const frontUrl = import.meta.env.VITE_FRONT_URL;
   const { id } = useParams();
   const [detail, setDetail] = useState({});
   const navigate = useNavigate();
