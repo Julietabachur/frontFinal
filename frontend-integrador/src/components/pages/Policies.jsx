@@ -75,7 +75,7 @@ const Policies = () => {
         {(!isCollapsed || window.innerWidth >= 768) && (
             <VStack my={5} alignItems="flex-start">
                 <Text as='u' marginLeft={4} textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="black" fontSize={["1rem", "1.3rem"]}>
-                    POLITICAS DE USO DEL PRODUCTO
+                    POLÍTICAS DE USO DEL PRODUCTO
                 </Text>
                 <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['130px', '180px']} spacing={3}
                 >

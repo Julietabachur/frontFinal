@@ -243,7 +243,7 @@ const DetailPage = () => {
                   bg={"verde2"}
                   marginRight={5}
                 >
-                  Atras
+                  Atrás
                 </Button>
               </HStack>
             </HStack>
