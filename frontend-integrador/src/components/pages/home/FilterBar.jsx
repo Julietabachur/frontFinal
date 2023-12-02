@@ -89,7 +89,7 @@ const FilterBar = () => {
               src={category.imageUrl}
               fallbackSrc="https://via.placeholder.com/150"
             />
-            <Text fontSize={{ base: 10, sm:15, lg: 18 }} color={"negro"}>{category.categoryName}</Text>
+            <Text fontSize={{ base: 10, sm:15, lg: 18 }} color={"negro"}>{category.description}</Text>
           </Box>
         </Box>
       ))}
