@@ -13,10 +13,12 @@ import { useNavigate } from "react-router-dom";
 
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
 const clientNameRegex = /^[a-zA-Z0-9_]{5,}$/;
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-const REGISTER_URL = "http://localhost:8080/auth/register";
+
+const GETME_URL = import.meta.env.VITE_GETME_URL;
+const baseUrl = import.meta.env.VITE_SERVER_URL;
+const REGISTER_URL = import.meta.env.VITE_AUTH_URL + "/register";
 
 const Register = () => {
   //constantes del formulario
@@ -73,7 +75,7 @@ const Register = () => {
 
   const validateClientName = (clientName) => {
     return !clientNameRegex.test(clientName)
-      ? "El nombre de usuario puede contener letras, numeros y guión bajo, mínimo 5 y no tener espacios al inicio."
+      ? "El nombre de usuario puede contener letras, números y guión bajo, mínimo 5 y no tener espacios al inicio."
       : "";
   };
 
@@ -85,7 +87,7 @@ const Register = () => {
 
   const validatePassword = (password) => {
     return !passwordRegex.test(password)
-      ? "La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial."
+      ? "La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial."
       : "";
   };
 
@@ -126,7 +128,7 @@ const Register = () => {
   //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
-  const GETME_URL = import.meta.env.VITE_GETME_URL;
+
 
   const getUsername = async (token) => {
     try {
@@ -169,7 +171,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
   if (value !== undefined) {
     // Realizar una solicitud GET a la API con el valor del endpoint y el valor proporcionado
     const response = await axios.get(
-      `http://localhost:8080/auth/${endpoint}?${endpoint}=${value}`
+      `${baseUrl}/auth/${endpoint}?${endpoint}=${value}`
     );
 
     // Verificar si hay una respuesta del servidor
@@ -254,7 +256,8 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
           "Registro exitoso. Serás redirigido a la página de inicio."
         );
         setTimeout(() => {
-          navigate("/verify");
+          const targetUrl = "/verifyReg?mailToken=" + response.data.verifyToken ;
+          navigate(targetUrl);
           window.location.reload();
         }, 1000);
       } else {
@@ -414,7 +417,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
           <Box>
             {showEmailDuplicatedError && (
               <div style={{ color: "red", fontSize: "16px" }}>
-                El Email ingresado ya está en uso. Por favor, elige otro.
+                El e-mail ingresado ya está en uso. Por favor, elige otro.
               </div>
             )}
           </Box>
@@ -458,7 +461,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
             </div>
           )}
 
-          <Button w="500px" colorScheme="green" onClick={handleRegister}>
+          <Button w="500px" backgroundColor={"verde2"} onClick={handleRegister}>
             Registrarse
           </Button>
         </form>

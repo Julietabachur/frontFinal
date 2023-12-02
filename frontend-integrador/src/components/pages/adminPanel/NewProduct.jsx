@@ -15,6 +15,8 @@ import {
   List,
   ListItem,
   Select,
+  Heading,
+  FormLabel,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -43,9 +45,9 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
   const navigate = useNavigate();
 
-  console.log("COMIENZA NEW PRODUCT");
+  //console.log("COMIENZA NEW PRODUCT");
 
-  console.log("ProductToEdit: ", productToEdit);
+  //console.log("ProductToEdit: ", productToEdit);
 
 
    // LOGICA DE getCategoriesAll- LISTAR todas las categorias sin paginacion para usarlas en el select de productForm y EditProduct
@@ -247,25 +249,12 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
   };
 
 
-  /* 
-      const handleCancel = () => {
-      // Cierra el modal y resetea el formulario
-      onClose();
-      setProductData(initialProductState);
-      setInputValue(""); // Reinicia el valor del input
-      setNombreValido(true); // Reinicia la validación del nombre
-      setShowError(false); // Reinicia el estado de error
-  
-  */
-
-
-
   // LOGICA PARA EL GUARDADO DE DATOS
   const saveChanges = async () => {
 
     if (!productToEdit) {
       
-      console.log("PRODUCT DATA AGREGAR:" , productData);
+      //console.log("PRODUCT DATA AGREGAR:" , productData);
 
     // Realiza la solicitud POST al endpoint para agregar el producto usando Axios
     axios.post(`${baseUrl}/api/v1/admin/products`, productData, {
@@ -285,7 +274,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
     } else {
 
-      console.log("PRODUCT DATA EDITAR:" , productData);
+      //console.log("PRODUCT DATA EDITAR:" , productData);
 
     // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
     axios.put(`${baseUrl}/api/v1/admin/products/${productToEdit.id}`, productData, { headers: { Authorization: `Bearer ${token}` } })
@@ -339,42 +328,55 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
 
     closeForm === false && (
 
-      <VStack w={"98vw"} display={"flex"} justifyContent={"center"}>
+    <Box w={"100%"} display={"flex"} justifyContent={"center"} mt={10} >
+           
+      <VStack w={"95%"} spacing={7} bg={"gray.200"} p={10}>
 
-      <Text
+      <Heading
         fontFamily={"Saira"}
         color={"black"}
-        fontSize={"1rem"}
-        p={1}
+        fontSize={"1.3rem"}
+        
       >
         {productToEdit ? "EDITAR PRODUCTO" : "AGREGAR PRODUCTO"}
-      </Text>
+      </Heading>
 
-      <VStack color={"negro"} w={"90vw"} justifySelf={"center"}>
-        <HStack
-          w={"100%"}
+      <Box w={"100%"}
           border={"1px solid black"}
           alignContent={"center"}
-          padding={"10px"}
-          minW={"300px"}
-        >
+          padding={4}
+          minW={"300px"}>
+        <Text fontSize="sm" fontWeight="bold">
+        Nombre del producto:
+        </Text>
+        <HStack>
           <Input
+          border={"1px solid black"}
             name="productName"
-            mb={3}
+            p={3}
             placeholder="Nombre del producto"
             defaultValue={productData.productName}
             onChange={handleName}
           />
           {showError && (
-            <Text color="red" fontSize="sm" mt={1}>
-              ¡El nombre del producto ya existe en la base de datos!
+            <Text color="red" fontSize="sm" p={3}>
+              ¡El nombre del producto ya existe en la base de datos. Debe elegir otro nombre!
             </Text>
           )}
         </HStack>
+      </Box>
 
+      <Box w={"100%"}
+          border={"1px solid black"}
+          alignContent={"center"}
+          padding={4}
+          minW={"300px"} >
+        <Text fontSize="sm" fontWeight="bold">
+          Categoría del producto:
+        </Text>
         <Select
+        borderColor={"black"} 
           name="category"
-          mb={3}
           placeholder="Selecciona una categoría"
           value={productData.category}
           disabled={formDisabled}
@@ -386,35 +388,38 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
             </option>
           ))}
         </Select>
+      </Box>
 
-        <Stack border={"2px solid black"} w={"100%"}>
-          <VStack border={"1px solid black"} p={5}>
-            <Text
-              fontFamily={"Saira"}
-              color={"black"}
-              fontSize={"1rem"}
-              p={1}
-            >
-              DESCRIPCIÓN DEL PRODUCTO
-            </Text>
+      <Box w={"100%"}
+          border={"1px solid black"}
+          alignContent={"center"}
+          padding={4}
+          minW={"300px"}>
+          <Text fontSize="sm" fontWeight="bold">
+            Descripción del producto:
+          </Text>
             <Textarea
+            border={"1px solid black"}
+            p={3}
               name="detail"
-              fontFamily={"Podkova"}
-              color={"black"}
-              fontSize={"16px"}
-              marginTop={"10px"}
+              placeholder="Descripción del producto"
               defaultValue={productData.detail}
               disabled={formDisabled}
               onChange={handleInputChange}
               rows={10}
             />
+      </Box>
 
-          </VStack>
-          <Text fontSize="sm" fontWeight="bold">
+      <Box w={"100%"}
+          border={"1px solid black"}
+          alignContent={"center"}
+          padding={4}
+          minW={"300px"}>
+        <Text fontSize="sm" fontWeight="bold">
             Thumbnail:
-          </Text>
+        </Text>
 
-          <Input
+        <Input
             name="thumbnail"
             mb={3}
             placeholder="Enlace de la miniatura"
@@ -422,33 +427,41 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
             disabled={formDisabled}
             onChange={handleInputChange}
           />
+      </Box>
+
+      <Box w={"100%"}
+      border={"1px solid black"}
+      alignContent={"center"}
+      padding={4}
+      minW={"300px"}>
+          
           <Text fontSize="sm" fontWeight="bold">
             Galería de Imágenes:
           </Text>
 
-          <Flex align="center" mb={3}>
+          <HStack align="center" mb={3}>
             <Input
+            border={"1px solid black"}
               flex="1"
               placeholder="Enlace imágenes de la galería"
               value={galleryUrl}
               disabled={formDisabled}
               onChange={(e) => setGalleryUrl(e.target.value)}
-              marginRight={2}
+          
             />
             <Button colorScheme="green" disabled={formDisabled} onClick={handleAddGalleryImage}>+</Button>
-          </Flex>
+          </HStack>
 
-          <Box mb={3}>
+          <Box>
             <List>
               {productData.gallery.map((image, index) => (
                 <Flex key={index} align="center">
-                  <ListItem flex="1">
+                  <ListItem my={1} flex="1">
                     <a href={image} target="_blank" rel="noopener noreferrer">
                       {image}
                     </a>
                   </ListItem>
                   <Button
-                    size="sm"
                     colorScheme="red"
 
                     onClick={() => handleRemoveGalleryImage(index)}
@@ -460,26 +473,25 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
               ))}
             </List>
           </Box>
-        </Stack>
+      </Box>
+        
+      <Box w={"100%"}
+      border={"1px solid black"}
+      alignContent={"center"}
+      padding={4}
+      minW={"300px"}>
 
-        <VStack border={"1px solid black"} p={5} w="100%">
-          <Text
-            fontFamily={"Saira"}
-            color={"black"}
-            fontSize={"1rem"}
-            p={1}
-          >
-            CARACTERISTICAS
+          <Text fontSize="sm" fontWeight="bold">
+            Características del producto
           </Text>
-
-          <Flex align="center" mb={3}>
-            <Select
-              flex="1"
+          
+          <HStack align="center" mb={3}>
+            <Select 
+              borderColor={"black"} 
               placeholder="Nueva característica"
               value={newFeature}
               disabled={formDisabled}
               onChange={(e) => setNewFeature(e.target.value)}
-              marginRight={2}
             >
               {featuresList.map((feature) => (
                 <option key={feature.charName} value={feature.charName} >
@@ -488,66 +500,50 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
               ))}
             </Select>
             <Input
-              flex="1"
+              border={"1px solid black"} 
               placeholder="Nuevo charValue"
               value={newFeatureValue}
               disabled={formDisabled}
               onChange={(e) => setNewFeatureValue(e.target.value)}
-              marginRight={2}
             />
 
             <Button colorScheme="green" disabled={formDisabled} onClick={handleAddCharacteristic}>+</Button>
-          </Flex>
 
-          <Box mb={3}>
+          </HStack>  
+
+          <Box>
             <List>
               {productData.features && productData.features.map((prodFeature) => (
-                <Flex key={prodFeature.id} align="center">
-                  <HStack
-                    padding={4}
-                    border="1px solid green"
-                    marginBottom={4}
-                    boxShadow="xl"
-                    borderRadius={5}
-                  >
-                    <Text fontFamily="Saira" color="black" fontSize="1rem">
-                      {prodFeature.charIcon}
-                    </Text>
-                    <Text
-                      fontFamily="Saira"
-                      textShadow="1px 1px lightgreen"
-                      color="black"
-                      fontSize="1rem"
-                    >
-                      {prodFeature.charName}
-                    </Text>
+                <Flex key={prodFeature.id} align="center">         
+                    
+                    <Text  fontSize="1rem">
+                      {prodFeature.charIcon}  - {prodFeature.charName} :
+                      </Text>
                     {prodFeature.charValue && prodFeature.charValue.map((value, valueIndex) => (
                       <Text
                         key={valueIndex}
-                        fontFamily="Saira"
-                        color="gris1"
-                        fontSize="0.9rem"
                       >
-                        {value}
+                        {value}   
                       </Text>
                     ))}
-                  </HStack>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
 
+                    <Button
+                    ml={5}
+                    size={"sm"}
+                    colorScheme="red"
                     onClick={() => handleRemoveCharacteristic(prodFeature.id)}
                     disabled={formDisabled}
                   >
                     X
                   </Button>
+      
+                
                 </Flex>
               ))}
             </List>
-          </Box>
-        </VStack>
+          </Box>     
 
-      </VStack>
+      </Box>
 
 
       <HStack>
@@ -562,7 +558,8 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
         <Button onClick={() => handleCancel()}>Cancelar</Button>
       </HStack>
 
-    </VStack>
+      </VStack>
+    </Box>
 
     )
 

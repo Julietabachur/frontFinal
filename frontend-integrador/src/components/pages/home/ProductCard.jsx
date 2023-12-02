@@ -9,16 +9,14 @@ import {
   Text,
   Link,
 } from "@chakra-ui/react";
-import { FaHeart, FaRegHeart} from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useProductContext } from "./Global.context";
 import { Link as ReactRouterLink } from "react-router-dom";
-
-//me lamo esteban 
 
 const ProductCard = ({ item }) => {
   const [isHeartClicked, setHeartClicked] = useState(false);
   const { setFavorites, favorites } = useProductContext();
-  
+
   //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
@@ -32,7 +30,6 @@ const ProductCard = ({ item }) => {
   }, [item.id]);
 
   const handleHeartClick = (event) => {
-   
     // Cambiar el estado del clic del corazón
     setHeartClicked(!isHeartClicked);
 
@@ -45,14 +42,18 @@ const ProductCard = ({ item }) => {
   };
 
   return (
-    <Card h={500} w={300} color={"blanco"}>
+    <Card  
+    h={500}
+    w={330} 
+    color={"blanco"}>
+      
       <CardBody
         _hover={{
           transform: "scale(0.98)",
           cursor: "pointer",
         }}
-        border={"5px solid black"}
-        boxShadow={"2xl"}
+        border={"3px solid black"}
+        boxShadow={'2xl'}
         display={"flex"}
         justifyContent={"center"}
         h={["90%"]}
@@ -62,29 +63,35 @@ const ProductCard = ({ item }) => {
       >
         {/* Imagen */}
         <Link as={ReactRouterLink} to={`/detalle/${item.id}`}>
-          <Image src={item?.thumbnail} h={"100%"} w={"100%"} objectFit={"cover"} />
+          <Image
+            src={item?.thumbnail}
+            h={"100%"}
+            w={"100%"}
+            objectFit={"cover"}
+          />
         </Link>
         {/* Botón de corazón personalizado */}
         {token && (
-            <Box
-              position="absolute"
-              top={1.5}
-              right={1.5}
-              onClick={handleHeartClick}
-              color="green"
-              _hover={{
-                color: "green",
-              }}
-            >
-              {isFavorite ? <FaHeart size={30} /> : <FaRegHeart size={30} />}
-            </Box>
-          )}
+          <Box
+            position="absolute"
+            top={1.5}
+            right={1.5}
+            onClick={handleHeartClick}
+            color="green"
+            _hover={{
+              color: "green",
+            }}
+          >
+            {isFavorite ? <FaHeart size={30} /> : <FaRegHeart size={30} />}
+          </Box>
+        )}
       </CardBody>
 
       <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
         <Text
           fontFamily={"Saira"}
           color={"gris1"}
+          fontWeight="semibold"
           fontSize={["1rem", "1.2rem"]}
           whiteSpace="nowrap"
           overflow="hidden"
@@ -99,4 +106,3 @@ const ProductCard = ({ item }) => {
 };
 
 export default ProductCard;
-

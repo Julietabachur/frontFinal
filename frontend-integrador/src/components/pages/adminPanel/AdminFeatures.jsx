@@ -87,7 +87,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
       // Deberia volver a la pagina 1. Ver como ?
       getFeatures();
     } catch (error) {
-      console.error("Error al eliminar la caracteristica", error);
+      console.error("Error al eliminar la característica", error);
     }
   };
 
@@ -122,7 +122,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
               </Button>
             </div>
           </Box>
-          <TableContainer w={830} mt={3} /*border="2px" boxShadow='lg' bg='white'
+          <TableContainer w={830} mt={3}  /*border="2px" boxShadow='lg' bg='white'
               flexDirection="column"
               p={1}
               gap={5}
@@ -136,7 +136,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
                     <Text fontWeight="bold">Nombre</Text>
                   </Th>
                   <Th>
-                    <Text fontWeight="bold">Icono</Text>
+                    <Text fontWeight="bold">Ícono</Text>
                   </Th>
                   <Th>
                     <Text fontWeight="bold">Editar / Eliminar</Text>
@@ -191,7 +191,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
                 Confirmación
               </AlertDialogHeader>
               <AlertDialogBody>
-                ¿Seguro que quiere eliminar esta caracteristica?
+                ¿Seguro que quiere eliminar esta característica?
               </AlertDialogBody>
               <AlertDialogFooter>
                 <Button ref={cancelRef} onClick={closeDeleteDialog}>
@@ -218,7 +218,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent mt={150}>
-              <ModalHeader>Editar Caracteristica</ModalHeader>
+              <ModalHeader>Editar Característica</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 {featureToEdit !== null && (

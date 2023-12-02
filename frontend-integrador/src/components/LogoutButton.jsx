@@ -46,7 +46,7 @@ const LogoutButton = () => {
               No
             </Button>
             <Button colorScheme="red" ml={3} onClick={logoutHandle}>
-              Si
+              Sí
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
