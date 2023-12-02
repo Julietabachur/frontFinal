@@ -13,10 +13,12 @@ import { useNavigate } from "react-router-dom";
 
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
 const clientNameRegex = /^[a-zA-Z0-9_]{5,}$/;
-const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-const REGISTER_URL = "http://localhost:8080/auth/register";
+
+const GETME_URL = import.meta.env.VITE_GETME_URL;
+const baseUrl = import.meta.env.VITE_SERVER_URL;
+const REGISTER_URL = import.meta.env.VITE_AUTH_URL + "/register";
 
 const Register = () => {
   //constantes del formulario
@@ -126,7 +128,7 @@ const Register = () => {
   //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
-  const GETME_URL = import.meta.env.VITE_GETME_URL;
+
 
   const getUsername = async (token) => {
     try {
@@ -169,7 +171,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
   if (value !== undefined) {
     // Realizar una solicitud GET a la API con el valor del endpoint y el valor proporcionado
     const response = await axios.get(
-      `http://localhost:8080/auth/${endpoint}?${endpoint}=${value}`
+      `${baseUrl}/auth/${endpoint}?${endpoint}=${value}`
     );
 
     // Verificar si hay una respuesta del servidor
@@ -254,7 +256,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
           "Registro exitoso. Serás redirigido a la página de inicio."
         );
         setTimeout(() => {
-          const targetUrl = "/verify/" + response.data.verifyToken + "/";
+          const targetUrl = "/verifyReg?mailToken=" + response.data.verifyToken ;
           navigate(targetUrl);
           window.location.reload();
         }, 1000);

@@ -5,6 +5,8 @@ import axios from 'axios';
 
 const FeatureForm = ({token, getFeatures}) => {
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL;
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [newFeature, setNewFeature] = useState({charName: '', charIcon: ''})
 
@@ -21,7 +23,7 @@ const FeatureForm = ({token, getFeatures}) => {
 
   //llamada a la api, peticion POST para agregar caracteristica
   const addFeature = (newFeature) => {
-    axios.post("http://localhost:8080/api/v1/admin/char", newFeature, {
+    axios.post(`${adminUrl}/char`, newFeature, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

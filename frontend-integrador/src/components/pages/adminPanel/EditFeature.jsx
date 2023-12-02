@@ -10,6 +10,7 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
 
   const [dataEdit, setDataEdit] = useState (featureToEdit)
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
   console.log(dataEdit)
 
     // Realiza la solicitud PUT al endpoint para actualizar la caracteristica
-    axios.put(`http://localhost:8080/api/v1/admin/char/${featureToEdit.id}`, dataEdit, 
+    axios.put(`${adminUrl}/char/${featureToEdit.id}`, dataEdit, 
       { headers: 
         { Authorization: `Bearer ${token}` } 
       })
