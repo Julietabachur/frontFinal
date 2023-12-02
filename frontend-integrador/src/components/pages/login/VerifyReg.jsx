@@ -137,7 +137,7 @@ const VerifyReg = () => {
             // entonces aparece un alerta avisando que ya está verificado pero que debe ingresar.
             // y lo redirige a la pagina de login.
             if (error.response.status == 500 && !token) {
-                alert(error.response.data);
+                alert(error.response.data + ".\nDebe iniciar sesión.");
                 navigate("/login");
             }
         }
