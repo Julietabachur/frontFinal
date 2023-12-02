@@ -120,7 +120,7 @@ const Perfil = () => {
 
   return (
     <Grid
-      h={"auto"}
+      h={"80vh"}
       w={"99vw"}
       templateRows={{ base: "repeat(4, 1fr)", md: "repeat(3, 1fr)" }}
       templateColumns={{

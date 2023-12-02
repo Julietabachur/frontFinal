@@ -22,6 +22,8 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import { useProductContext } from "../home/Global.context";
 import RenderPagination from "../home/RenderPagination";
@@ -30,6 +32,7 @@ import axios from "axios";
 
 const ReservesPage = () => {
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
+  const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [product, setProduct] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,6 +42,7 @@ const ReservesPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [availableDates, setAvailableDates] = useState([]);
   const [user, setUser] = useState({});
+  const [userReserves, setUserReserves] = useState([]);
   const [error, setError] = useState({
     inicial: "",
     final: "",
@@ -53,6 +57,7 @@ const ReservesPage = () => {
     setStartDate,
     endDate,
     setEndDate,
+    banderaReservas,
   } = useProductContext();
   const navigate = useNavigate();
 
@@ -68,6 +73,50 @@ const ReservesPage = () => {
     );
     if (response.data) {
       setUser(response.data);
+    }
+  };
+
+  // Función asincrónica para obtener todas las reservas del usuario actual
+  const getReserves = async () => {
+    if (user.reserveIds.length > 0 && userReserves.length === 0) {
+      try {
+        //asegura que userReserveIds siempre sea un array, incluso si user o reserveIds son nulos.
+        const userReserveIds = user?.reserveIds || [];
+        //patrón de "mapeo concurrente". En lugar de esperar a que cada promesa se resuelva secuencialmente,
+        //se están generando todas las promesas al mismo tiempo y luego esperando a que todas se resuelvan con Promise.all.
+        // Esto puede mejorar el rendimiento al realizar las solicitudes en paralelo.
+        const promises = userReserveIds.map(async (reserveId) => {
+          try {
+            const response = await axios.get(`${RESERVES_URL}/${reserveId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            if (response.data) {
+              // Agrega la reserva obtenida al array de userReserves
+              setUserReserves((prevReserves) => [
+                ...prevReserves,
+                response.data,
+              ]);
+            } else {
+              console.error(`Error al obtener la reserva con ID ${reserveId}`);
+            }
+          } catch (error) {
+            console.error(
+              `Error en la solicitud para la reserva con ID ${reserveId}:`,
+              error.message
+            );
+          }
+        });
+        // Espera a que todas las solicitudes se completen antes de continuar
+        await Promise.all(promises);
+      } catch (error) {
+        console.error(
+          "Error al obtener las reservas del usuario:",
+          error.message
+        );
+      }
     }
   };
 
@@ -219,6 +268,12 @@ const ReservesPage = () => {
     getUser();
   }, [clientId]);
 
+  useEffect(() => {
+    if (Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
+      getReserves();
+    }
+  }, [user]);
+
   return (
     <VStack w={"100%"}>
       <Text
@@ -231,42 +286,68 @@ const ReservesPage = () => {
         Reservas
       </Text>
       <SearchBar />
-      //Muestra las cards de las reservas, aqui pondria el condicional
-      <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
-        {paginatedData.map((product) => (
-          <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
-            <Image
-              boxSize={"sm"}
-              src={product.thumbnail}
-              alt="imagen"
-              objectFit={"cover"}
-            />
+      {/* código de la lista de reservas se muestra cuando se toca mis reservas
+      condicional */}
+      {banderaReservas ? (
+        <Grid columns={2} w={"77%"} p={3}>
+          {userReserves.map((reserve) => (
+            <GridItem
+              key={reserve.id}
+              borderRadius={9}
+              mb={6}
+              boxShadow={"2xl"}
+              p={3}
+              
+            >
+              <HStack w={"100%"}>
+                <Image
+                  h={180}
+                  src={reserve.reserveImg}
+                  alt="imagen"
+                  objectFit={"cover"}
+                />
+                <VStack justify={"center"} w={"100%"}>
+                  <Text fontSize={'2rem'}>{reserve.productName}</Text>
+                  <Text fontSize={'1.3rem'}>{`Reservado desde el: ${reserve.startDate} hasta el ${reserve.endDate}`}</Text>
+                </VStack>
+              </HStack>
+            </GridItem>
+          ))}
+        </Grid>
+      ) : (
+        //Muestra las cards de las reservas, aqui pondria el condicional
+        <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
+          {paginatedData.map((product) => (
+            <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
+              <Image
+                boxSize={"sm"}
+                src={product.thumbnail}
+                alt="imagen"
+                objectFit={"cover"}
+              />
 
-            <HStack>
-              <Button
-                bg={"verde2"}
-                onClick={() => {
-                  navigate(`/detalle/${product.id}`);
-                }}
-              >
-                Detalle
-              </Button>
-              <Button
-                bg={"verde2"}
-                onClick={() => {
-                  setReservation(product.id);
-                }}
-              >
-                Reservar
-              </Button>
-            </HStack>
-          </VStack>
-        ))}
-      </SimpleGrid>
-
-      //código de la lista de reservas se muestra cuando se toca mis reservas (hacerlo contexto global)
-      
-
+              <HStack>
+                <Button
+                  bg={"verde2"}
+                  onClick={() => {
+                    navigate(`/detalle/${product.id}`);
+                  }}
+                >
+                  Detalle
+                </Button>
+                <Button
+                  bg={"verde2"}
+                  onClick={() => {
+                    setReservation(product.id);
+                  }}
+                >
+                  Reservar
+                </Button>
+              </HStack>
+            </VStack>
+          ))}
+        </SimpleGrid>
+      )}
       <Modal
         initialFocusRef={initialRef}
         isOpen={isOpen}
