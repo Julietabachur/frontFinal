@@ -4,6 +4,8 @@ import { FaFacebook,FaInstagram,FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => {
 
+  const whatsappLink = "https://wa.me/+573142523828";
+
   const [media, setMedia] = useState(false);
   const MIN_DESKTOP_WIDTH = 768;
 
@@ -90,12 +92,17 @@ const Footer = () => {
             <HStack spacing='16px' pb={'50px'} mr={7}>
               <Box w='40px' h='40px'>
                 <FaFacebook size={35} color={'#EDF2F7'}/>
+                
               </Box>
               <Box w='40px' h='40px'>
                 <FaInstagram size={35} color={'#EDF2F7'}/>
               </Box>
               <Box w='40px' h='40px'>
-                <FaWhatsapp size={35} color={'#EDF2F7'}/>
+
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+    <FaWhatsapp size={35} color={'#EDF2F7'} />
+  </a>
+              
               </Box>
             </HStack> 
             </HStack>
