@@ -201,7 +201,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
   const [newFeatureValue, setNewFeatureValue] = useState("");
 
   const handleAddCharacteristic = () => {
-    if (newFeature && productToEdit == null) {
+    if (newFeature && productToEdit !== null) {
       const existingFeatureIndex = productData.features.findIndex((feature) => feature.charName === newFeature);
 
       if (existingFeatureIndex !== -1) {
