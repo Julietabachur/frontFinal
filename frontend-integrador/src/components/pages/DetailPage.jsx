@@ -47,7 +47,7 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation } =
+  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn } =
     useProductContext();
   const [showError, setShowError] = useState(false);
 
@@ -89,6 +89,7 @@ const DetailPage = () => {
       setReservation(detail.id);
       navigate("/reserve");
     } else {
+      setIsSignIn(true)
       navigate("/login");
     }
   };
@@ -183,13 +184,13 @@ const DetailPage = () => {
               w={"100%"}
               h={"60px"}
               color={"blanco"}
-              border={"2px solid black"}
+              border={"1px solid black"}
               alignContent={"center"}
               justifyContent={"space-between"}
-              padding={"10px"}
+              padding={"5px"}
               minW={"300px"}
             >
-              <HStack ml={5} w="50%">
+              <HStack ml={3} w="50%">
                 {token && (
                   <Box
                     onClick={handleHeartClick}
@@ -218,8 +219,8 @@ const DetailPage = () => {
                   fontFamily={"Saira"}
                   color={"black"}
                   fontWeight={"semibold"}
-                  fontSize={"1.7rem"}
-                  marginLeft={"3%"}
+                  fontSize={"1.6rem"}
+                  marginLeft={"2%"}
                   style={{
                     caretColor: "transparent",
                     background: "transparent",
@@ -234,7 +235,6 @@ const DetailPage = () => {
                   onClick={handleReserve}
                   bg={"verde2"}
                   alignSelf={"flex-end"}
-                  w={40}
                 >
                   Reservar
                 </Button>
@@ -247,26 +247,26 @@ const DetailPage = () => {
                 </Button>
               </HStack>
             </HStack>
-            <VStack border={"2px solid black"} p={10}>
+            <VStack border={"1px solid black"} p={10}>
               <Text
                 textAlign={"center"}
                 fontFamily="Saira"
                 fontWeight={"semibold"}
                 color="black"
-                fontSize={["1rem", "1.3rem"]}
+                fontSize={["0.9rem", "1.2rem"]}
               >
                 DESCRIPCIÓN DEL PRODUCTO
               </Text>
               <Text
                 fontFamily={"Podkova"}
                 color={"black"}
-                fontSize={"20px"}
+                fontSize={"18px"}
                 marginTop={"20px"}
               >
                 {detail.detail}
               </Text>
             </VStack>
-            <Stack border={"2px solid black"} p={2}>
+            <Stack border={"1px solid black"} p={2}>
               <ProductGallery
                 thumbnail={detail.thumbnail}
                 gallery={detail.gallery}

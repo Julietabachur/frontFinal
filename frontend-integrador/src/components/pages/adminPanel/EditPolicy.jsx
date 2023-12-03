@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input} from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Input, Textarea} from '@chakra-ui/react';
 import React, { useState } from 'react'
 import axios from 'axios';
 
@@ -43,15 +43,18 @@ const EditPolicy = ({token, policyToEdit, getPolicyAll, handleCancel, handleChan
     <>
     <form>
         <FormControl>
-            <FormLabel> Nombre de la política</FormLabel>
+            <FormLabel> Nombre</FormLabel>
             <Input
             name="policyName"
+            placeholder='Nombre de la política'
             mb={3}
             value={dataEdit.policyName}
             onChange={(e) => setDataEdit({...dataEdit, policyName: (e.target.value).toUpperCase()})}
             />
             <FormLabel> Descripción </FormLabel>
-            <Input
+            <Textarea
+            placeholder="Descripción de la política"
+            rows={10}
             name="description"
             mb={3}
             value={dataEdit.description}

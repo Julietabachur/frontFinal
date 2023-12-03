@@ -39,6 +39,8 @@ const reducer = (state, action) => {
       return { ...state, reservation: action.payload };
     case "SET_BANDERA":
       return { ...state, banderaReservas: action.payload };
+    case "SET_IS_SIGN_IN":
+      return { ...state, isSignIn: action.payload };
     default:
       return state;
   }
@@ -60,6 +62,7 @@ const initialState = {
   reserves: [],
   reservation: "",
   banderaReservas: false,
+  isSignIn: false
 };
 
 const ProductContext = createContext(undefined); //useContext
@@ -89,6 +92,9 @@ const ProductProvider = ({ children }) => {
 
   const setSearchResults = (data) => {
     dispatch({ type: "SET_SEARCH_RESULTS", payload: data });
+  };
+  const setIsSignIn = (data) => {
+    dispatch({ type: "SET_IS_SIGN_IN", payload: data });
   };
   const setReserves = (data) => {
     dispatch({ type: "SET_RESERVE", payload: data });
@@ -271,6 +277,8 @@ const ProductProvider = ({ children }) => {
     showFav: state.showFav,
     reservation: state.reservation,
     banderaReservas: state.banderaReservas,
+    isSignIn:state.isSignIn, 
+    setIsSignIn,
     setReservation,
     setShowFav,
     getProducts,
@@ -286,8 +294,7 @@ const ProductProvider = ({ children }) => {
     setFavorites,
     setClientId,
     setBanderaReservas,
-
-    // Otros valores o funciones que puedas necesitar
+     // Otros valores o funciones que puedas necesitar
   };
 
   return (

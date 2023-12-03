@@ -32,6 +32,7 @@ const initialProductState = {
 
 const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setShowProdList }) => {
 
+
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   //const [isEditing, setIsEditing] = useState(false); // Nuevo estado para el modo edición
   const [productData, setProductData] = useState(initialProductState);
@@ -124,6 +125,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
         const { name, value } = e.target;
         setInputValue(value); // Actualiza inputValue en lugar de productData.productName
         setProductData({ ...productData, [name]: value });
+
       }
     } catch (error) {
       console.error("Error al hacer la solicitud GET:", error);
@@ -199,7 +201,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
   const [newFeatureValue, setNewFeatureValue] = useState("");
 
   const handleAddCharacteristic = () => {
-    if (newFeature) {
+    if (newFeature && productToEdit !== null) {
       const existingFeatureIndex = productData.features.findIndex((feature) => feature.charName === newFeature);
 
       if (existingFeatureIndex !== -1) {
@@ -282,11 +284,8 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
         console.log('Producto actualizado con éxito:', response.data);
         alert("Producto actualizado con exito")
 
-        // vuelve a listar productos
-        //getProducts();
-
         setProductData(initialProductState);
-        navigate("/admin");
+        //navigate("/admin");
       })
       .catch((error) => {
         // Maneja el error de la solicitud POST aquí
@@ -299,7 +298,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
     }
 
     setCloseForm(true);
-    navigate('/admin', { replace: true });
+    //navigate('/admin', { replace: true });
   };
 
 
@@ -356,7 +355,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
             p={3}
             placeholder="Nombre del producto"
             defaultValue={productData.productName}
-            onChange={handleName}
+            onChange={(e) => handleName(e)}
           />
           {showError && (
             <Text color="red" fontSize="sm" p={3}>
@@ -456,7 +455,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
             <List>
               {productData.gallery.map((image, index) => (
                 <Flex key={index} align="center">
-                  <ListItem my={1} flex="1">
+                  <ListItem my={1} flex="1" padding={2}>
                     <a href={image} target="_blank" rel="noopener noreferrer">
                       {image}
                     </a>
@@ -476,10 +475,10 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       </Box>
         
       <Box w={"100%"}
-      border={"1px solid black"}
-      alignContent={"center"}
-      padding={4}
-      minW={"300px"}>
+       border={"1px solid black"}
+       alignContent={"center"}
+       padding={4}
+       minW={"300px"}>
 
           <Text fontSize="sm" fontWeight="bold">
             Características del producto
@@ -507,42 +506,60 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
               onChange={(e) => setNewFeatureValue(e.target.value)}
             />
 
-            <Button colorScheme="green" disabled={formDisabled} onClick={handleAddCharacteristic}>+</Button>
+            <Button 
+            colorScheme="green" 
+            disabled={formDisabled} 
+            onClick={handleAddCharacteristic}>
+              +
+            </Button>
 
-          </HStack>  
+          </HStack>
 
-          <Box>
-            <List>
+          <Box my={2} >
+            <List >
               {productData.features && productData.features.map((prodFeature) => (
-                <Flex key={prodFeature.id} align="center">         
-                    
-                    <Text  fontSize="1rem">
-                      {prodFeature.charIcon}  - {prodFeature.charName} :
-                      </Text>
+                <Flex key={prodFeature.id} align="center" my={2}  >
+                  <HStack
+                    padding={3}
+                    border="1px solid green"
+                    borderRadius={5}
+                  >
+                    <Text fontFamily="Saira" color="black" fontSize="1rem">
+                      {prodFeature.charIcon}
+                    </Text>
+                    <Text
+                      fontFamily="Saira"
+                      textShadow="1px 1px lightgreen"
+                      color="black"
+                      fontSize="1rem"
+                    >
+                      {prodFeature.charName}
+                    </Text >
                     {prodFeature.charValue && prodFeature.charValue.map((value, valueIndex) => (
                       <Text
                         key={valueIndex}
+                        fontFamily="Saira"
+                        color="gris1"
+                        fontSize="0.9rem"
+                        ml={2}
                       >
-                        {value}   
+                        {value}
                       </Text>
                     ))}
-
-                    <Button
-                    ml={5}
-                    size={"sm"}
+                  </HStack>
+                  <Button
+                    size="sm"
+                    ml={2}
                     colorScheme="red"
                     onClick={() => handleRemoveCharacteristic(prodFeature.id)}
                     disabled={formDisabled}
                   >
                     X
                   </Button>
-      
-                
                 </Flex>
               ))}
             </List>
-          </Box>     
-
+          </Box>
       </Box>
 
 

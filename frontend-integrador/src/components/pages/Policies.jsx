@@ -62,7 +62,7 @@ const Policies = () => {
     }, []);
   
     return (
-      <Box width="100%" padding={4} h={"100%"} border={"2px solid black"}>
+      <Box width="100%" padding={2} h={"100%"} border={"1px solid black"}>
         <Button
           variant="outline"
           fontSize={"0.8rem"}
@@ -74,19 +74,20 @@ const Policies = () => {
   
         {(!isCollapsed || window.innerWidth >= 768) && (
             <VStack my={5} alignItems="flex-start">
-                <Text as='u' marginLeft={4} textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="black" fontSize={["1rem", "1.3rem"]}>
+                <Text as='u' marginLeft={4} textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
                     POLÍTICAS DE USO DEL PRODUCTO
+                    
                 </Text>
-                <SimpleGrid w={'100%'} h={'100%'} minChildWidth={['130px', '180px']} spacing={3}
+                <SimpleGrid w={'100%'} h={'100%'}  minChildWidth={['350px', "220px", '150px']} spacing={3}
                 >
                 {listPolicies.map((policy) => (
         
-
-                <Box   >
+                <Box  key={policy.id} >
                   <VStack
                     h={"100%"}
                     p={4}
                     alignItems="flex-start"
+                    key={policy.id}
                   >
                     <Text  fontFamily="Saira" fontWeight={"medium"} color="green" fontSize="1rem">
                       {policy.policyName}

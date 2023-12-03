@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, useDisclosure } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Textarea, useDisclosure } from '@chakra-ui/react';
 import React, { useState } from 'react'
 import axios from 'axios';
 
@@ -13,6 +13,7 @@ const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
       addPolicy(newPolicy);
+      onClose();
       setNewPolicy({policyName: "", description:""});
     }
     
@@ -25,8 +26,8 @@ const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        window.alert("Politica agregada con exito");
-        console.log("Politica agregada con éxito:", response.data)
+        window.alert("Política agregada con exito");
+        console.log("Política agregada con éxito:", response.data)
         getPolicyAll();
       })
       .catch((error) => {
@@ -35,7 +36,7 @@ const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
           window.alert(error.response.data.error);
           } else {
           // Para otros errores, muestra un mensaje de error genérico
-          console.error("Error al agregar la politica:", error);
+          console.error("Error al agregar la política:", error);
           }
       });
   };
@@ -55,18 +56,19 @@ const PolicyForm = ({token, getPolicy, getPolicyAll}) => {
           <ModalBody>
             <form>
             <FormControl>
-              <FormLabel> Nombre de la política</FormLabel>
+              <FormLabel> Nombre</FormLabel>
               <Input
                 type="text"
                 name="newPolicyName"
-                placeholder="Nombre"
+                placeholder="Nombre de la política"
                 mb={3}
                 value={newPolicy.policyName}
                 onChange={(e) => setNewPolicy({...newPolicy, policyName: (e.target.value).toUpperCase()})}
               />
               <FormLabel> Descripción </FormLabel>
-              <Input
-                type="text"
+              <Textarea
+                rows={10}
+                placeholder="Descripción de la política"
                 name="newDescription"
                 mb={3}
                 value={newPolicy.description}

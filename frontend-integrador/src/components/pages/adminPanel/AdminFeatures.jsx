@@ -57,7 +57,6 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
   const handleChange = () => {
     onClose();
     setFeatureToEdit(null);
-    getFeatures();
   }
 
   useEffect(() => {
@@ -227,6 +226,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
                     handleCancel={handleCancel}
                     handleChange={handleChange}
                     token={token}
+                    getFeatures={getFeatures}
                   />
                 )}
               </ModalBody>

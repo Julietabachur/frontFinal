@@ -16,7 +16,7 @@ import {
     const initialCategoryState = {
     categoryName: "",
     description: "",
-    imageUrl: "",
+    imageUrl: ""
     };
 
     const adminUrl = import.meta.env.VITE_ADMIN_URL;
@@ -107,6 +107,7 @@ import {
                 {errors.categoryName && errors.categoryName.blankError && (
                     <div style={{ color: "red" }}>{errors.categoryName.blankError}</div>
                 )}
+               
                 <Input
                     name="description"
                     mb={3}

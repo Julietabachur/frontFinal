@@ -61,7 +61,7 @@ const FilterBar = () => {
   return (
   
    <VStack w={'100%'} bg={'negro'} position={"relative"} bottom={2} p={8} shadow={'dark-lg'} spacing={5}>
-    <Heading color={"white"} fontFamily={"Podkova"} fontSize={[16, 24, 30]}>Descubrí nuestro catálogo</Heading>
+    <Heading color={"white"} fontFamily={"Podkova"} fontSize={[16, 24, 30]}>Descubre nuestro catálogo</Heading>
 
     <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={2}  >
     {categoryList.map((category) => (
@@ -89,7 +89,7 @@ const FilterBar = () => {
               src={category.imageUrl}
               fallbackSrc="https://via.placeholder.com/150"
             />
-            <Text fontSize={{ base: 10, sm:15, lg: 18 }} color={"negro"}>{category.categoryName}</Text>
+            <Text fontSize={{ base: 10, sm:15, lg: 18 }} color={"negro"}>{category.description}</Text>
           </Box>
         </Box>
       ))}

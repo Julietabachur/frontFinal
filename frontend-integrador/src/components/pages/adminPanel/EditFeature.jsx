@@ -6,7 +6,7 @@ import { Alert, Button,
 import React, { useState } from 'react'
 import axios from 'axios';
 
-const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
+const EditFeature = ({featureToEdit, token, handleCancel, handleChange, getFeatures}) => {
 
   const [dataEdit, setDataEdit] = useState (featureToEdit)
 
@@ -16,7 +16,7 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
     e.preventDefault();
     putFeature(dataEdit);
     handleChange();
-    }
+    } 
   
  const putFeature = () => {
 
@@ -31,6 +31,7 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
       })
       .then((response) => {
         window.alert("Característica actualizada con éxito");
+        getFeatures();
         console.log('Característica actualizada con éxito:', response.data);
       })
       .catch((error) => {

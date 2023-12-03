@@ -137,7 +137,7 @@ const SearchBar = () => {
       </GridItem>
       <GridItem py={2} px={[5,5,10]} gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
         <Text textShadow={'dark-lg'} textAlign={"center"} fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[12,13,16,18]}>
-          Descubre los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
+        Explora los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
       </GridItem>
       <GridItem px={2} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
         <Popover
