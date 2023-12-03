@@ -275,7 +275,7 @@ const ReservesPage = () => {
   }, [user]);
 
   return (
-    <VStack w={"100%"}>
+    <VStack h="auto" w={"100%"}>
       <Text
         fontFamily={"Saira"}
         color={"black"}
@@ -316,7 +316,7 @@ const ReservesPage = () => {
         </Grid>
       ) : (
         //Muestra las cards de las reservas, aqui pondria el condicional
-        <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
+        <SimpleGrid  w={"100%"} spacing={4} minChildWidth="300px">
           {paginatedData.map((product) => (
             <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
               <Image
