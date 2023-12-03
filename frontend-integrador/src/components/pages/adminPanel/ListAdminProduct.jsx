@@ -202,7 +202,7 @@ const ListAdminProduct = ({
               Confirmación
             </AlertDialogHeader>
             <AlertDialogBody>
-              ¿Seguro que quiere eliminar el item?
+              ¿Seguro que quiere eliminar este elemento?
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={closeDeleteDialog}>

@@ -12,11 +12,13 @@ import {
   Box,
   useDisclosure,
   Grid,
-  GridItem
+  GridItem,
+  Icon
 } from "@chakra-ui/react";
 import { CancelToken } from "axios";
 import { useProductContext } from "../Global.context";
 import { color } from "framer-motion";
+import {CloseIcon} from '@chakra-ui/icons'
 
 const SearchBar = () => {
   const {
@@ -30,12 +32,14 @@ const SearchBar = () => {
     setPaginatedData,
     searchResults,
     setSearchResults,
+    setBanderaReservas,
   } = useProductContext();
   const { isOpen, onToggle, onClose } = useDisclosure();
   const [cancelToken, setCancelToken] = useState(null);
 
   const token = import.meta.env.VITE_TOKEN;
   const baseUrl = import.meta.env.VITE_SERVER_URL;
+
 
   const handleSearch = async () => {
     try {
@@ -51,6 +55,7 @@ const SearchBar = () => {
         }
       );
       if (response) {
+        setBanderaReservas(false);
         setPaginatedData(response.data);
         setSearchResults([]);
       }
@@ -85,7 +90,7 @@ const SearchBar = () => {
         setSearchResults(response.data.content);
       } catch (error) {
         if (axios.isCancel(error)) {
-          return
+          return;
         } else {
           console.error("Error during search:", error);
         }
@@ -106,96 +111,118 @@ const SearchBar = () => {
   };
 
   return (
-    <Grid
-    top={21}
+
+    <Box
     position={"relative"}
     w={'100%'}
-    h={['250px','250px','150px']}
-    templateRows={['repeat(4, 1fr)','repeat(4, 1fr)','repeat(3, 1fr)']}
-    templateColumns={['repeat(2, 1fr)','repeat(4, 1fr)','repeat(7, 1fr)']}
-   
-    bg={'gris1'}
-    pb={3}
-    color={'blanco'}
-  >
-  <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,5,8]} px={3} >
-    <Text textShadow={'dark-lg'} textAlign={"center"}  fontSize={24}>¿Qué estás buscando?</Text></GridItem>
-  <GridItem  gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,5]} px={2} >
-    <Popover
+    h={['300px','300px','300px']}
+    bgGradient="linear(to-t, green, white)">
+
+    
+    <Grid
+    top={50}
+    left={"12%"}
+    position={"relative"}
+    w={'75%'}
+    h={['200px','200px','200px']}
+    templateRows={['15% 35% 20% 15% 15%','20% 35% 25% 20%','30% 40% 30%']}
+    templateColumns={['50% 50%','38% 38% 24%','50% 20% 20% 10%']}
+    bg={'whiteAlpha.800'}
+    p={5}
+    boxShadow={"dark-lg"}
+    >
+      <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]}  gridColumnEnd={[3,4,5]} >
+        <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[16,22,30]}>
+          ¿QUÉ ESTÁS BUSCANDO?</Text>
+      </GridItem>
+      <GridItem py={2} px={[5,5,10]} gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
+        <Text textShadow={'dark-lg'} textAlign={"center"} fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[12,13,16,18]}>
+        Explora los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
+      </GridItem>
+      <GridItem px={2} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
+        <Popover
         returnFocusOnClose={false}
         isOpen={searchResults && searchResults.length > 1}
         onClose={onClose}
         placement="bottom-start"
         closeOnBlur={false}
-      >
-        <PopoverTrigger>
-          <Input
-          my={2}
-          bg={'white'}
+        >
+          <PopoverTrigger>
+            <Input
             type="text"
+            maxHeight={["20px","30px", "40px"]}
             focusBorderColor='lime'
             value={productName}
             variant={'filled'}
             colorScheme="crimson"
             color={'verde1'}
-           boxShadow={'dark-lg'}
-            placeholder="Escribe aqui el nombre de la prenda que buscas"
+            boxShadow={'dark-lg'}
+            fontSize={[12,14]}
+            placeholder="Escribe aquí el nombre de la prenda que buscas"
             onChange={(e) => setProductName(e.target.value)}
-          />
-        </PopoverTrigger>
-        <PopoverContent minW={"150%"}>
-          <PopoverBody>
-            <VStack justify={"flex-start"} align={"flex-start"}>
-              {searchResults &&
+            />
+          </PopoverTrigger>
+          <PopoverContent /*</Popover>minW={"150%"}*/>
+            <PopoverBody >
+              <VStack justify={"flex-start"} align={"flex-start"}>
+                {searchResults &&
                 searchResults.map((item) => (
-                  <Box
-                    as={Button}
-                    w={"100%"}
-                    justifyContent={"flex-start"}
-                    bg={"white"}
-                    value={item.productName}
-                    onClick={(e) => setProductName(e.target.value)}
-                    color={"black"}
-                    key={item.id}
-                   
-                    _hover={{ backgroundColor: "green.200", cursor: "pointer" }}
+                  <Box 
+                  as={Button}
+                  w={"100%"}
+                  justifyContent={"flex-start"}
+                  bg={"white"}
+                  value={item.productName}
+                  onClick={(e) => setProductName(e.target.value)}
+                  color={"black"}
+                  key={item.id}
+                  _hover={{ backgroundColor: "green.200", cursor: "pointer" }}
                   >
                     {item.productName}
                   </Box>
                 ))}
-            </VStack>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+              </VStack>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
       </GridItem>
-  <GridItem pl={2} pr={1} gridRow={[3,3,2]} gridColumnStart={[2,1,5]} gridColumnEnd={[1,3,6]} >
-    <VStack my={2}  >
-    {/* <Text>Fecha inicial</Text> */}
-    <Input
-    focusBorderColor='lime'
-        type="date"
-        color={'verde1'}
-        min={startDate}
-        value={startDate}
-    boxShadow={'dark-lg'}
+      <GridItem px={2} gridRow={[4,4,3]} gridColumnStart={[1,1,2]} gridColumnEnd={[2,2,3]}>
+        <VStack  >
+        {/* <Text>Fecha inicial</Text> */}
+          <Input
+          focusBorderColor='lime'
+          type="date"
+          color={'verde1'}
+          fontSize={[12,14]}
+          maxHeight={["20px","30px", "40px"]}
+          value={startDate}
+          boxShadow={'dark-lg'}
+          variant={"filled"}
+          onChange={(e) => setStartDate(e.target.value)}
+          />
+        </VStack>
+      </GridItem>
+      <GridItem px={2}  gridRow={[4,4,3]} gridColumnStart={[2,2,3]} gridColumnEnd={[3,3,4]}> 
+        <VStack>
+        {/* <Text>Fecha final</Text> */}
+          <Input
+          maxHeight={["20px","30px", "40px"]}
+          focusBorderColor='lime'
+          boxShadow={'dark-lg'}
+          color={'verde1'}
+          variant={"filled"}
+          type="date"
+          fontSize={[12,14]}
+          onChange={(e) => setEndDate(e.target.value)}
+          />
+        </VStack>
+      </GridItem>
+      <GridItem px={2}  gridRow={[5,4,3]} gridColumnStart={[1,3,4]} gridColumnEnd={[3,4,5]} >
+        <Button maxHeight={["20px","30px", "40px"]} boxShadow={'dark-lg'} fontSize={[12,14]} focusBorderColor='lime' bg={"verde2"}  /*colorScheme="green"*/ w={'100%'} onClick={handleSearch}>Buscar</Button>
+      </GridItem>
+    </Grid>
+    </Box>
 
-        variant={"filled"}
-        onChange={(e) => setStartDate(e.target.value)}
-      /></VStack>
-      </GridItem>
-  <GridItem pr={2} pl={1} gridRow={[3,3,2]} gridColumnStart={[2,3,6]} gridColumnEnd={[3,5,7]} > 
-  <VStack my={2}>
-    {/* <Text>Fecha final</Text> */}
-    <Input
-    focusBorderColor='lime'
-    boxShadow={'dark-lg'}
-    color={'verde1'}
-    variant={"filled"}
-        type="date"
-        onChange={(e) => setEndDate(e.target.value)}
-      /></VStack></GridItem>
-  <GridItem pr={0} pl={[16,16,0]} pt={2}  gridRow={[4,4,2]} gridColumnStart={[1,2,7]} gridColumnEnd={[3,4,8]} ><Button background={'verde2'} w={'80%'} onClick={handleSearch}>Buscar</Button></GridItem>
-</Grid>
    
   );
 };

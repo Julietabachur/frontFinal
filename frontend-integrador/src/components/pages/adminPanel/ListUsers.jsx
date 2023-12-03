@@ -86,7 +86,7 @@ const ListUsers = ({
                   <Text fontWeight="bold">Username</Text>
                 </Th>
                 <Th>
-                  <Text fontWeight="bold">email</Text>
+                  <Text fontWeight="bold">Email</Text>
                 </Th>
                 <Th>
                   <Text fontWeight="bold">Admin</Text>

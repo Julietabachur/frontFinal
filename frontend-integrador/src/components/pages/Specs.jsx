@@ -34,9 +34,10 @@ function Specs({ detail }) {
   }, []);
 
   return (
-    <Box width="100%" padding={4} h={"100%"} mt={3} border={"2px solid black"}>
+    <Box width="100%" padding={2} h={"100%"} border={"1px solid black"}>
       <Button
         variant="outline"
+        fontSize={"0.8rem"}
         onClick={toggleCollapse}
         display={{ base: "block", md: "none" }}
       >
@@ -44,14 +45,19 @@ function Specs({ detail }) {
       </Button>
 
       {(!isCollapsed || window.innerWidth >= 768) && (
+        <VStack my={5} alignItems="flex-start" >
+          <Text as='u' fontFamily="Saira" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+            CARACTERÍSTICAS DEL PRODUCTO
+          </Text>
         <Grid
           w={"100%"}
+          p={4}
           templateColumns={{
             base: "1fr",
             lg: "repeat(2, 1fr)",
             xl: "repeat(3, 1fr)",
           }}
-          gap={6}
+          gap={5}
         >
           {detail && detail.features && detail.features.length > 0 ? (
             detail.features.map((feature, index) => (
@@ -59,8 +65,6 @@ function Specs({ detail }) {
                 <HStack
                   padding={4}
                   border="1px solid green"
-                  marginBottom={4}
-                  boxShadow="xl"
                   borderRadius={5}
                 >
                   <Text fontFamily="Saira" color="black" fontSize="1rem">
@@ -93,6 +97,7 @@ function Specs({ detail }) {
             </Text>
           )}
         </Grid>
+        </VStack>
       )}
     </Box>
   );

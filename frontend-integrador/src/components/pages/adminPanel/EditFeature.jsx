@@ -6,16 +6,17 @@ import { Alert, Button,
 import React, { useState } from 'react'
 import axios from 'axios';
 
-const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
+const EditFeature = ({featureToEdit, token, handleCancel, handleChange, getFeatures}) => {
 
   const [dataEdit, setDataEdit] = useState (featureToEdit)
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL;
 
   const onSubmit = (e) => {
     e.preventDefault();
     putFeature(dataEdit);
     handleChange();
-    }
+    } 
   
  const putFeature = () => {
 
@@ -24,13 +25,14 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
   console.log(dataEdit)
 
     // Realiza la solicitud PUT al endpoint para actualizar la caracteristica
-    axios.put(`http://localhost:8080/api/v1/admin/char/${featureToEdit.id}`, dataEdit, 
+    axios.put(`${adminUrl}/char/${featureToEdit.id}`, dataEdit, 
       { headers: 
         { Authorization: `Bearer ${token}` } 
       })
       .then((response) => {
-        window.alert("Caracteristica actualizada con exito");
-        console.log('Caracteristica actualizada con éxito:', response.data);
+        window.alert("Característica actualizada con éxito");
+        getFeatures();
+        console.log('Característica actualizada con éxito:', response.data);
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
@@ -38,7 +40,7 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
           window.alert(error.response.data.error);
           } else {
           // Para otros errores, muestra un mensaje de error genérico
-          console.error("Error al actualizar la caracteristica:", error);
+          console.error("Error al actualizar la característica:", error);
           }
       });
   }
@@ -48,14 +50,14 @@ const EditFeature = ({featureToEdit, token, handleCancel, handleChange}) => {
   <form>
             
               <FormControl>
-                <FormLabel> Nombre de la caracteristica</FormLabel>
+                <FormLabel> Nombre de la característica</FormLabel>
                 <Input
                   name="charName"
                   mb={3}
                   value={dataEdit.charName}
                   onChange={(e) => setDataEdit({...dataEdit, charName: (e.target.value).toUpperCase()})}
                 />
-                <FormLabel> Icono representativo </FormLabel>
+                <FormLabel> Ícono representativo </FormLabel>
                 <Input
                   name="charIcon"
                   mb={3}

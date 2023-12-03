@@ -15,11 +15,11 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProductContext } from "./pages/home/Global.context";
+import { useProductContext} from "./pages/home/Global.context";
 
 const NavbarMenu = ({ username, token, roles }) => {
-  const { getFavoriteProducts, getProducts } = useProductContext();
- const [admin,setAdmin] =useState(false)
+  const [admin, setAdmin] = useState(false);
+  const { favorites, getFavorites, setBanderaReservas} = useProductContext();
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
@@ -27,83 +27,82 @@ const NavbarMenu = ({ username, token, roles }) => {
     window.location.reload();
   };
 
-  useEffect(()=> {
-    if(roles.some(role => role == 'ADMIN')){
-      setAdmin(true)
-    }else{
-      setAdmin(false)
+  const handleFavorites = () => {
+    setBanderaReservas(false);
+    navigate('/')
+    getFavorites()
+    
+  };
+
+  const handleReserves = () => {
+    setBanderaReservas(true);
+    navigate('/reserve')
+    
+  };
+
+  useEffect(() => {
+    if (roles.some((role) => role == "ADMIN")) {
+      setAdmin(true);
+    } else {
+      setAdmin(false);
     }
-  },[])
+  }, []);
 
   return (
     <Menu  >
       <MenuButton as={Box}>
-        <Avatar name={username} />
+        <Avatar
+          bg={"gray.100"}
+          size="md"
+          color={"black"}
+          fontWeight={"black"}
+          name={username}
+        />
       </MenuButton>
-      <MenuList bg={'black'} px={2}>
-        <MenuGroup >
-          <MenuItem as={Button} 
-          onClick={()=>{
-            getProducts()
-            navigate(`/`)}} 
-          color={'verde2'} 
-          colorScheme={"black"} 
-          borderRadius={'0'} 
-          bg='{black}'
-          _hover={{ borderColor:'verde2' }}
-          >
-            Inicio
-          </MenuItem>
-          <MenuItem as={Button} 
-          onClick={()=>{
-            getFavoriteProducts()
-            navigate(`/perfil`)
-          }} 
-          color={'verde2'} 
-          colorScheme={"black"} 
-          borderRadius={'0'} 
-          bg='{black}'
-          _hover={{ borderColor:'verde2' }}
-          >
-            Mi perfil
-          </MenuItem>
-          
-          <MenuItem as={Button} 
-          onClick={()=>{
-            getFavoriteProducts()
-            navigate(`/favorites`)
-          }} 
-          color={'verde2'} 
-          colorScheme={"black"} 
-          borderRadius={'0'} 
-          bg='{black}'
-          _hover={{ borderColor:'verde2' }}
-
-          >
-            Mis favoritos
-          </MenuItem>          
-          {admin && <MenuItem as={Button} 
-          onClick={()=>{navigate(`/admin`)}} 
-          color={'verde2'} 
-          colorScheme={"black"} 
-          borderRadius={'0'} 
-          bg='{black}'
-          _hover={{ borderColor:'verde2' }}
-          >
-            Panel administrador
-          </MenuItem>}
+      <MenuList>
+        <MenuItem
+          as={Button}
+          onClick={() => {
+            navigate(`/perfil`);
+          }}
+        >
+          Mi perfil
+        </MenuItem>
+        {admin && (
           <MenuItem
             as={Button}
-            bg={"verde2"}
-            variant={"ghost"}
-            onClick={logoutHandle}
-            color={'black'}
-            borderRadius={'0'}
-            _hover={{ borderColor:'green', bgColor:'verde2' }}
+            onClick={() => {
+              navigate(`/admin`);
+            }}
           >
-            Salir
+            Panel administrador
           </MenuItem>
-        </MenuGroup>      
+        )}
+        <MenuItem
+          as={Button}
+          colorScheme="green"
+          variant={"ghost"}
+          onClick={() => handleReserves()}
+        >
+          Mis reservas{" "}
+        </MenuItem>
+        <MenuItem
+          as={Button}
+          colorScheme="green"
+          variant={"ghost"}
+          onClick={() => handleFavorites()}
+        >
+          Mis Favoritos{" "}
+        </MenuItem>
+
+        <MenuItem
+          as={Button}
+          colorScheme="red"
+          variant={"ghost"}
+          onClick={logoutHandle}
+        >
+          Salir
+        </MenuItem>
       </MenuList>
     </Menu>
   );

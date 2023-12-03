@@ -5,6 +5,8 @@ import axios from 'axios';
 
 const FeatureForm = ({token, getFeatures}) => {
 
+  const adminUrl = import.meta.env.VITE_ADMIN_URL;
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [newFeature, setNewFeature] = useState({charName: '', charIcon: ''})
 
@@ -12,8 +14,8 @@ const FeatureForm = ({token, getFeatures}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
       addFeature(newFeature);
+      onClose();
       setNewFeature({charName: "", charIcon:""});
-      getFeatures() 
     }
     
 
@@ -21,15 +23,13 @@ const FeatureForm = ({token, getFeatures}) => {
 
   //llamada a la api, peticion POST para agregar caracteristica
   const addFeature = (newFeature) => {
-    axios.post("http://localhost:8080/api/v1/admin/char", newFeature, {
+    axios.post(`${adminUrl}/char`, newFeature, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        window.alert("Caracteristica agregada con exito");
-        console.log("Caracteristica agregada con éxito:", response.data)
-        setTimeout(() =>{
-          onClose();   
-        }, 1000)
+        window.alert("Característica agregada con exito");
+        getFeatures();
+        console.log("Característica agregada con éxito:", response.data);
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {

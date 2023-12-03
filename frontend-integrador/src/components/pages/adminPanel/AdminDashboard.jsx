@@ -6,6 +6,7 @@ import ListUsers from "./ListUsers";
 import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
 import NewProduct from "./NewProduct";
+import AdminPolicy from "./AdminPolicy";
 
 const AdminDashboard = ({ token }) => {
   // Estado para controlar si muestra formulario "Agregar Producto"
@@ -15,6 +16,7 @@ const AdminDashboard = ({ token }) => {
   const [showUserList, setShowUserList] = useState(false);
   const [showCategoryList, setShowCategoyList] = useState(false);
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
+  const [showAdminPolicy, setShowAdminPolicy] = useState(false);
 
   const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
 
@@ -35,13 +37,16 @@ const AdminDashboard = ({ token }) => {
   const [totalCategoryPages, setTotalCategoryPages] = useState(1);
   const [featurePage, setFeaturePage] = useState(1);
   const [totalFeaturePages, setTotalFeaturesPages] = useState(1);
+  const [policyPage, setPolicyPage] = useState(1);
+  const [totalPolicyPages, setTotalPolicyPages] = useState(1);
+  const [policyList, setPolicyList] = useState ([]);
   const [featuresList, setFeaturesList] = useState([]);
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
   
-  const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de categorias
-
+  const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
+  const [policyListAll, setPolicyListAll] = useState([]); // array de lista de politicas
 
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
@@ -158,6 +163,51 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
+    //LOGICA de getPolicy. Listar Politicas.
+    const getPolicy = async () => {
+      console.log("Inicia getPolicy");
+      try {
+        const response = await axios.get(
+          //Petición GET a la api del listado de politicas
+          `${baseUrl}/api/v1/public/policy?page=${policyPage}`
+        );
+        if (response.data && response.data.content) {
+          // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+          setPolicyList(response.data.content);
+          setTotalPolicyPages(response.data.last);
+          setPolicyPage(response.data.current);
+          console.log(policyList);
+        }
+      } catch (error) {
+        //Manejo de errores
+        console.error(error);
+      }
+    };
+
+  // LOGICA DE getPolicyAll- LISTAR todas las politicas sin paginacion para usarlas en el select de productForm y EditProduct
+  //no se precisa el token porque es publico
+  const getPolicyAll = async () => {
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de productos
+        `${baseUrl}/api/v1/public/policy/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setPolicyListAll(response.data);
+        console.log(policyListAll);
+        //console.log("Datos recibidos:", response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
 
   // Control de Paginación en los productos
@@ -186,6 +236,12 @@ const AdminDashboard = ({ token }) => {
       setFeaturePage(newPage); // Actualiza el número de página
     }
   };
+  // Control de Paginación en las politicas
+  const handlePolicyPageChange = (newPage) => {
+      if (newPage <= totalPolicyPages && newPage >= 1) {
+        setPolicyPage(newPage); // Actualiza el número de página
+      }
+    };
 
   const handleShow = (origin) => {
     if (origin === "user") {
@@ -194,25 +250,37 @@ const AdminDashboard = ({ token }) => {
       setShowAdminFeatures(false);
       setShowCategoyList(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
     } else if (origin === "feature") {
       setShowUserList(false);
       setShowProdList(false);
       setShowAdminFeatures(true);
       setShowCategoyList(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
     } else if (origin === "item") {
       setShowUserList(false);
       setShowCategoyList(false);
       setShowProdList(true);
       setShowAdminFeatures(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
     } else if (origin === "category") {
       setShowCategoyList(true);
       setShowUserList(false);
       setShowProdList(false);
       setShowAdminFeatures(false);
       setShowAddProduct(false);
+      setShowAdminPolicy(false);
+    } else if (origin === "policy") {
+      setShowAdminPolicy(true);
+      setShowCategoyList(false);
+      setShowUserList(false);
+      setShowProdList(false);
+      setShowAdminFeatures(false);
+      setShowAddProduct(false);
     } else if (origin === "addProd") {
+      setShowAdminPolicy(false);
       setShowCategoyList(false);
       setShowUserList(false);
       setShowProdList(false);
@@ -249,6 +317,9 @@ const AdminDashboard = ({ token }) => {
         <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
           Administrar Características
         </Button>
+        <Button colorScheme="green" ml={4} onClick={() => handleShow("policy")}>
+          Administrar Políticas
+        </Button>
       </Box>
 
       {showAddProduct == true && (
@@ -258,7 +329,6 @@ const AdminDashboard = ({ token }) => {
           showSuccess={showSuccess}
           setShowAddProduct={setShowAddProduct}
           setShowProdList={setShowProdList}
-
         />
 
       )}
@@ -302,6 +372,18 @@ const AdminDashboard = ({ token }) => {
         />
       )}
 
+      {showAdminPolicy == true && (
+        <AdminPolicy
+          token={token}
+          getPolicy={getPolicy}
+          getPolicyAll={getPolicyAll}
+          policyListAll={policyListAll}
+          policyPage={policyPage}
+          handlePageChange={handlePolicyPageChange}
+          policyList={policyList}
+        />
+      )}
+
       {/* Logicas para mostrar las listas Categorias */}
 
       {showCategoryList == true && <ListCategories token={token} />}
@@ -323,7 +405,7 @@ const AdminDashboard = ({ token }) => {
             fontSize: "24px",
           }}
         >
-          Utilice un dispositivo desktop para acceder a la página de
+          Utilice un dispositivo de escritorio para acceder a la página de
           administración.
         </div>
       )}

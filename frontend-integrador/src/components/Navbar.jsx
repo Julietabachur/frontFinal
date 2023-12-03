@@ -9,10 +9,12 @@ import {
   MenuList,
   MenuItem,
   Avatar,
+  ButtonGroup,
+  Box,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
-import { useProductContext } from "./pages/home/Global.context";
+import { HamburgerIcon, Search2Icon } from "@chakra-ui/icons";
 
 
 const Navbar = ({ username, setUserName, roles }) => {
@@ -20,7 +22,6 @@ const Navbar = ({ username, setUserName, roles }) => {
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
   const MIN_DESKTOP_WIDTH = 768;
-  const { getProducts } = useProductContext();
 
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
@@ -54,121 +55,148 @@ const Navbar = ({ username, setUserName, roles }) => {
       top={0}
       /* minW={400} */
       w={"99vw"}
-      h={"120px"}
+      h={"100px"}
       zIndex={1000}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        {media ? (
-          <a
-          onClick={()=>{
-            navigate(`/`)
-            getProducts()
-          }} 
-            href=""
+      
+      
+      {media ? (
+        username ? (
+          <HStack>
+            <a
+            href="/"
             style={{
               textDecoration: "none",
               color: "white",
-              marginRight: "20px",
+            }}
+            >
+            <Image
+              src="https://images-g3.s3.amazonaws.com/logoHeader.png"
+              alt="Logo"
+              style={{
+                height: "40px",
+              }}
+            />
+          </a>
+          </HStack>          
+        ) :
+        <HStack>
+          <a
+            href="/"
+            style={{
+              textDecoration: "none",
+              color: "white",
             }}
           >
             <Image
               src="https://images-g3.s3.amazonaws.com/logoHeader.png"
               alt="Logo"
               style={{
-                height: "30px",
+                height: "40px",
               }}
             />
           </a>
-        ) : (
-          <>
-            <a
-              onClick={()=>{
-                navigate(`/`)
-                getProducts()
-              }} 
-                href=""
+        </HStack>                
+        ) : username? (          
+          <HStack>
+               <a
+              href="/"
               style={{
                 textDecoration: "none",
                 color: "white",
                 marginRight: "20px",
               }}
-            >
+              >
               <Image
-                src="https://images-g3.s3.amazonaws.com/dibujoHeader.png"
-                alt="Logo dibujo"
+                src="https://images-g3.s3.amazonaws.com/logoHeader.png"
+                alt="Logo"
                 style={{
-                  height: "60px",
+                  height: "40px",
                 }}
-                mr={3}
               />
-            </a>
-
-            <a
-             onClick={()=>{
-              navigate(`/`)
-              getProducts()
-            }} 
-              href=""
+              </a>
+              <a
+              href="/"
+              style={{
+                textDecoration: "none",
+                marginRight: "20px"
+              }}
+            >
+              <span
+                style={{
+                  color: "white",
+                  fontFamily: "Saira",
+                  fontSize: "14px",
+                  letterSpacing:"1px"
+                }}
+              >
+                Alquila tu estilo
+              </span>
+              </a>
+          </HStack>
+        ) : (
+          <HStack>
+              <a
+              href="/"
               style={{
                 textDecoration: "none",
                 color: "white",
                 marginRight: "20px",
+                
               }}
             >
               <Image
                 src="https://images-g3.s3.amazonaws.com/logoHeader.png"
                 alt="Logo"
                 style={{
-                  height: "30px",
+                  height: "40px",
                 }}
               />
-            </a>
-            <a
-              onClick={()=>{
-                navigate(`/`)
-                getProducts()
-              }} 
-                href=""
+             </a>
+              <a
+              href="/"
               style={{
                 textDecoration: "none",
-                color: "white",
-                marginRight: "20px",
+                marginRight: "20px"
               }}
             >
               <span
                 style={{
                   color: "white",
+                  fontFamily: "Saira",
+                  fontSize: "14px",
+                  letterSpacing:"1px"
                 }}
               >
-                Vestite con estilo
+                Alquila tu estilo
               </span>
-            </a>
-          </>
-        )}
-      </div>
+              </a>      
+          </HStack>   
+          )}
+
       {/**botones o nombre */}
       {media ? (
         username ? (
+          <HStack spacing={0}>
           <NavbarMenu username={username} roles={roles} />
+          </HStack>
         ) : (
-          <Menu>
+          <HStack spacing={0}>
+            <div>         
+            <Menu>
             <MenuButton
               color={"verde2"}
               p={3}
-              pl={5}
-              pr={5}
-              borderRadius={25}
+              px={5}
+              borderRadius={28}
               border={"1px solid green"}
+              colorScheme={"whatsapp"}
             >
-              Ingresar
+              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">INGRESAR</Text>
             </MenuButton>
 
-            <MenuList bg={"negro"}>
+            <MenuList 
+              bg={"negro"}>
               <MenuItem
                 bg={"negro"}
                 as="a"
@@ -177,7 +205,8 @@ const Navbar = ({ username, setUserName, roles }) => {
                   navigate("/login");
                 }}
               >
-                <Text color={"verde2"}>Iniciar sesión</Text>
+                <Text fontFamily={"Saira"} color="verde2" fontWeight="medium" fontSize="10px">INICIAR SESIÓN</Text>
+                
               </MenuItem>
               <MenuItem
                 bg={"negro"}
@@ -186,47 +215,47 @@ const Navbar = ({ username, setUserName, roles }) => {
                   navigate("/register");
                 }}
               >
-                <Text color={"verde2"}>Crear cuenta</Text>
+                <Text fontFamily={"Saira"} color="verde2" fontWeight="medium" fontSize="10px">CREAR CUENTA</Text>
               </MenuItem>
             </MenuList>
-          </Menu>
-        )
-      ) : username ? (
-        <HStack>
-          <Text mr={3} color={"verde2"} fontSize={20} fontFamily={"saira"}>
-            {username}
-          </Text>
+            </Menu>
+            </div>
+          </HStack>
+            
+        )) : username? (
+          
+          <HStack>
+          <Text mr={3} color={"verde2"} fontSize={20} fontWeight="semibold" fontFamily={"saira"}>{username}</Text>
           <NavbarMenu username={username} roles={roles} />
-        </HStack>
-      ) : (
-        <HStack>
-          <Button
+          </HStack>
+        ) : (
+          <HStack spacing={0}>
+            <Button
             onClick={() => {
               navigate("/login");
             }}
-            style={{
-              marginRight: "10px",
-            }}
             colorScheme={"whatsapp"}
             color={"verde2"}
-            borderRadius={20}
+            borderRadius={28}
             variant={"outline"}
-          >
-            Iniciar sesión
-          </Button>
-          <Button
+            >
+              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">INICIAR SESIÓN</Text>
+            </Button>
+            <Button
             onClick={() => {
               navigate("/register");
             }}
             colorScheme={"whatsapp"}
             color={"verde2"}
+            borderRadius={28}
             variant={"outline"}
-            borderRadius={20}
-          >
-            Crear cuenta
-          </Button>
-        </HStack>
-      )}
+            >
+              <Text fontFamily={"Saira"} fontWeight="medium" fontSize="14px">CREAR CUENTA</Text>
+            </Button>  
+        
+          </HStack>
+        )
+        }
     </HStack>
   );
 };

@@ -1,36 +1,22 @@
 import React  from "react";
 import { useProductContext } from "./Global.context";
-import { VStack, SimpleGrid, Link, Heading, Text, Button } from "@chakra-ui/react";
+import { VStack, SimpleGrid, Link,Text,Box } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
 import RenderPagination from "./RenderPagination";
-import { useNavigate } from "react-router-dom";
+const ShowList = () => {
+  const { paginatedData,showFav,favorites,setShowFav,getProducts } = useProductContext();
 
-const ShowList = ({titulo}) => {
-  var { paginatedData, getProducts } = useProductContext();
-  // paginatedData = [];
-  const navigate = useNavigate();
-console.log(paginatedData);
+  useEffect(()=>{
+    if(showFav && favorites.length === 0){
+      getProducts()
+    }
+  },[favorites,showFav])
 
   return (
     <VStack>
-       {titulo == 'Mis favoritos' && <Heading as='h2' mt={5}>{titulo}</Heading>}
-       {(titulo == '' && paginatedData.length == 0 ) &&         
-           <Heading as='h3' size='lg' mt={10}>No hay productos para mostrar</Heading>         
-        
-       }
-       {(titulo == 'Mis favoritos' && paginatedData.length == 0 ) &&
-         <VStack>
-           <Heading as='h3' size='lg'>Tu lista de favoritos está vacía</Heading>
-           <Button size='lg' bg={'verde2'} 
-           onClick={()=>{
-            navigate(`/`)
-            getProducts()}} mt='24px'>
-             Volver al inicio
-           </Button>
-         </VStack>
-       }  
+      {showFav && <Text fontSize={40} textShadow='1px 1px 10px #00cc00' >{favorites.length > 0 ? "Tus Favoritos":"No tienes ningun favorito" }</Text>}
       <SimpleGrid
         minH={"100vh"}
         columns={{ base: 1, md: 2 }}
@@ -38,11 +24,10 @@ console.log(paginatedData);
         spacing={20}
       >       
         {paginatedData.map((item) => (
-          
-            <ProductCardContainer key={item.id}>
-              <ProductCard item={item} />
-            </ProductCardContainer>
-        ))}           
+          <ProductCardContainer key={item.id}>
+            <ProductCard item={item} />
+          </ProductCardContainer>
+        ))}
       </SimpleGrid>
       {paginatedData && <RenderPagination />}
     </VStack>
@@ -50,4 +35,3 @@ console.log(paginatedData);
 };
 
 export default ShowList;
-
