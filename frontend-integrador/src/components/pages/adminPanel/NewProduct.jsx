@@ -201,7 +201,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
   const [newFeatureValue, setNewFeatureValue] = useState("");
 
   const handleAddCharacteristic = () => {
-    if (newFeature) {
+    if (newFeature && productToEdit == null) {
       const existingFeatureIndex = productData.features.findIndex((feature) => feature.charName === newFeature);
 
       if (existingFeatureIndex !== -1) {
@@ -506,7 +506,12 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
               onChange={(e) => setNewFeatureValue(e.target.value)}
             />
 
-            <Button colorScheme="green" disabled={formDisabled} onClick={handleAddCharacteristic}>+</Button>
+            <Button 
+            colorScheme="green" 
+            disabled={formDisabled} 
+            onClick={handleAddCharacteristic}>
+              +
+            </Button>
 
           </HStack>
 
