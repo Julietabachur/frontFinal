@@ -22,8 +22,10 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Spinner,
   Grid,
   GridItem,
+  useToast,
 } from "@chakra-ui/react";
 import { useProductContext } from "../home/Global.context";
 import RenderPagination from "../home/RenderPagination";
@@ -43,6 +45,7 @@ const ReservesPage = () => {
   const [availableDates, setAvailableDates] = useState([]);
   const [user, setUser] = useState({});
   const [userReserves, setUserReserves] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({
     inicial: "",
     final: "",
@@ -60,6 +63,7 @@ const ReservesPage = () => {
     banderaReservas,
   } = useProductContext();
   const navigate = useNavigate();
+  const reserveSuccess = useToast();
 
   const getUser = async () => {
     const response = await axios.get(
@@ -156,6 +160,7 @@ const ReservesPage = () => {
   };
 
   const handleReservation = async (id) => {
+    setIsLoading(true);
     const body = {
       clientId: clientId,
       productId: id,
@@ -175,6 +180,7 @@ const ReservesPage = () => {
         }
       );
       if (response.data) {
+        setIsLoading(false);
         setReservation("");
         setReserveList([]);
         setAvailableDates([]);
@@ -188,8 +194,18 @@ const ReservesPage = () => {
         onClose();
       }
     } catch (error) {
+      setIsLoading(false);
       setShowError(true);
     }
+  };
+
+  const handleReservationToast = async (id) => {
+    
+     reserveSuccess.promise(handleReservation(id), {
+      success: { title: "Reserva exitosa", description: "¡¡Felicidades!! , la reserva se realizo con exito " },
+      error: { title: "Error al reservar", description: "Lamentablemente no pudimos realizar su reserva, pruebe nuevamente" },
+      loading: { title: "Realizando reserva", description: "Por favor espere mientras se realiza la reserva" },
+    });
   };
 
   useEffect(() => {
@@ -211,6 +227,7 @@ const ReservesPage = () => {
 
   const handleClose = () => {
     setReservation("");
+    setIsLoading(false);
     setReserveList([]);
     setAvailableDates([]);
     setSelectedDate(null);
@@ -289,7 +306,7 @@ const ReservesPage = () => {
       {/* código de la lista de reservas se muestra cuando se toca mis reservas
       condicional */}
       {banderaReservas ? (
-        <Grid columns={2} w={"77%"} p={3}>
+        <Grid columns={2} w={"77%"} p={3} minH={"100vh"}>
           {userReserves.map((reserve) => (
             <GridItem
               key={reserve.id}
@@ -297,7 +314,6 @@ const ReservesPage = () => {
               mb={6}
               boxShadow={"2xl"}
               p={3}
-              
             >
               <HStack w={"100%"}>
                 <Image
@@ -307,8 +323,10 @@ const ReservesPage = () => {
                   objectFit={"cover"}
                 />
                 <VStack justify={"center"} w={"100%"}>
-                  <Text fontSize={'2rem'}>{reserve.productName}</Text>
-                  <Text fontSize={'1.3rem'}>{`Reservado desde el: ${reserve.startDate} hasta el ${reserve.endDate}`}</Text>
+                  <Text fontSize={"2rem"}>{reserve.productName}</Text>
+                  <Text
+                    fontSize={"1.3rem"}
+                  >{`Reservado desde el: ${reserve.startDate} hasta el ${reserve.endDate}`}</Text>
                 </VStack>
               </HStack>
             </GridItem>
@@ -316,7 +334,7 @@ const ReservesPage = () => {
         </Grid>
       ) : (
         //Muestra las cards de las reservas, aqui pondria el condicional
-        <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px">
+        <SimpleGrid w={"100%"} spacing={4} minChildWidth="300px" minH={"100vh"}>
           {paginatedData.map((product) => (
             <VStack key={product.id} borderRadius={6} boxShadow={"2xl"} p={3}>
               <Image
@@ -478,9 +496,10 @@ const ReservesPage = () => {
               bg={"verde2"}
               shadow={"2xl"}
               mr={3}
-              onClick={() => handleReservation(product.id)}
+              minW={100}
+              onClick={() => handleReservationToast(product.id)}
             >
-              Reservar
+              {isLoading ? <Spinner color="black" /> : "Reservar"}
             </Button>
             <Button
               shadow={"2xl"}
