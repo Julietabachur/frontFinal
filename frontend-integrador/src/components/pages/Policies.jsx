@@ -87,6 +87,7 @@ const Policies = () => {
                     h={"100%"}
                     p={4}
                     alignItems="flex-start"
+                    key={policy.id}
                   >
                     <Text  fontFamily="Saira" fontWeight={"medium"} color="green" fontSize="1rem">
                       {policy.policyName}

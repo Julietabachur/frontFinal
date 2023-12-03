@@ -14,8 +14,8 @@ const FeatureForm = ({token, getFeatures}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
       addFeature(newFeature);
+      onClose();
       setNewFeature({charName: "", charIcon:""});
-      getFeatures() 
     }
     
 
@@ -28,10 +28,8 @@ const FeatureForm = ({token, getFeatures}) => {
       })
       .then((response) => {
         window.alert("Característica agregada con exito");
-        console.log("Característica agregada con éxito:", response.data)
-        setTimeout(() =>{
-          onClose();   
-        }, 1000)
+        getFeatures();
+        console.log("Característica agregada con éxito:", response.data);
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
