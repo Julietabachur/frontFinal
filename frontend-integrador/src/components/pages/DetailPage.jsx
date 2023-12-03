@@ -47,7 +47,7 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation } =
+  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn } =
     useProductContext();
   const [showError, setShowError] = useState(false);
 
@@ -89,6 +89,7 @@ const DetailPage = () => {
       setReservation(detail.id);
       navigate("/reserve");
     } else {
+      setIsSignIn(true)
       navigate("/login");
     }
   };
