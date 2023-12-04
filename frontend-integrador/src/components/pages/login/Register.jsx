@@ -261,7 +261,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
         setTimeout(() => {
           const targetUrl = "/verifyReg?mailToken=" + response.data.verifyToken ;
           navigate(targetUrl);
-          window.location.reload();
+          //window.location.reload();
         }, 1000);
       } else {
         alert("Fallo el registro, recargue la página y pruebe nuevamente");
