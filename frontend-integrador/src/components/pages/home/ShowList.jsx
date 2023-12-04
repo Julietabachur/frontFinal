@@ -16,12 +16,12 @@ const ShowList = () => {
 
   return (
     <VStack>
-      {showFav && <Text fontSize={40} textShadow='1px 1px 10px #00cc00' >{favorites.length > 0 ? "Tus Favoritos":"No tienes ningun favorito" }</Text>}
+      {showFav && <Text mt={10} fontWeight="medium" as='u' fontFamily={"Saira"} fontSize={"1.8rem"} textShadow='1px 1px 10px #00cc00' >{favorites.length > 0 ? "TUS FAVORITOS":"NO TIENES NINGUN FAVORITO" }</Text>}
       <SimpleGrid
         minH={"100vh"}
         columns={{ base: 1, md: 2 }}
-        pt={16}
-        spacing={20}
+        pt={12}
+        spacing={[5,10,20]}
       >
         {paginatedData.map((item) => (
           <ProductCardContainer key={item.id}>

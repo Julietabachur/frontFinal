@@ -337,11 +337,11 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       shadow="md"
       border={"2px solid green"}
       justifyContent={"flex-start"}
-      m={10}>
+      m={10}
+      >
 
-        <Box
-          w="100%"
-          bg="green.200"
+        <Box w="100%"
+          bg="gray.300"
           display="flex"
           flexDirection="column"
           alignItems="flex-end"  
@@ -369,7 +369,9 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
         <Box w={"100%"}
           /*border={"1px solid black"}*/
           alignContent={"center"}
-          px={8}
+          px={10}
+          py={2}
+          pt={5}
           minW={"300px"}>
         <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
         Nombre del producto:
@@ -395,7 +397,8 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       <Box w={"100%"}
           /*border={"1px solid black"}*/
           alignContent={"center"}
-          padding={8}
+          px={10}
+          py={2}
           minW={"300px"} >
         <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
           Categoría del producto:
@@ -420,7 +423,8 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       <Box w={"100%"}
           /*border={"1px solid black"}*/
           alignContent={"center"}
-          padding={8}
+          px={10}
+          py={2}
           minW={"300px"}>
           <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Descripción del producto:
@@ -441,7 +445,8 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       <Box w={"100%"}
           /*border={"1px solid black"}*/
           alignContent={"center"}
-          padding={8}
+          px={10}
+          py={2}
           minW={"300px"}>
         <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Thumbnail - Imagen miniatura:
@@ -461,14 +466,15 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       <Box w={"100%"}
       /*border={"1px solid black"}*/
       alignContent={"center"}
-      padding={8}
+      px={10}
+      py={2}
       minW={"300px"}>
           
           <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Galería de Imágenes:
           </Text>
 
-          <HStack align="center" mb={3}>
+          <HStack align="center" mb={3} spacing={3}>
             <Input
             border={"1px solid black"}
               flex="1"
@@ -510,14 +516,15 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       <Box w={"100%"}
        /*border={"1px solid black"}*/
        alignContent={"center"}
-       padding={8}
+       px={10}
+       py={2}
        minW={"300px"}>
 
           <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Características del producto
           </Text>
           
-          <HStack align="center" mb={3}>
+          <HStack align="center" mb={3} spacing={3}>
             <Select 
             fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
               borderColor={"black"} 
@@ -592,21 +599,25 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       </Box>
 
 
-      <HStack
+      <Box
       w={"100%"}
-      bg={"green.200"}
-      p={8}
+      bg={"gray.300"}
+      p={5}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      gap={3}
       >
         {productToEdit ? (
-          <Button onClick={saveChanges} bg={"verde2"} fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold"  alignSelf={"flex-end"}>Guardar Cambios</Button>
+          <Button  onClick={saveChanges} colorScheme="green" fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold"  alignSelf={"flex-end"}>Guardar Cambios</Button>
 
         ) : (
-          <Button onClick={saveChanges} bg={"verde2"} fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold" alignSelf={"flex-end"}>Agregar</Button>
+          <Button onClick={saveChanges} colorScheme="green" fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold" alignSelf={"flex-end"}>Agregar</Button>
 
         )}
-
+        
         <Button fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold" onClick={() => handleCancel()}>Cancelar</Button>
-      </HStack>
+      </Box>
 
       </VStack>
 

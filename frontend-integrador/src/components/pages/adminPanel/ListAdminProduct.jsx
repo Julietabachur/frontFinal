@@ -89,9 +89,7 @@ const ListAdminProduct = ({
 
   const handleEdit = (product) => {
     setCloseList(true);  // cierra el listado 
-    setProductToEdit(product);
-    getProducts();
-    // pasa el objeto product a traves del prop
+    setProductToEdit(product); // pasa el objeto product a traves del prop
     //console.log("Producto para editar:", productToEdit);
     //console.log("Muestra Formulario", showAddProduct);
   };
@@ -135,6 +133,9 @@ const ListAdminProduct = ({
                         <Text fontWeight="bold">Nombre</Text>
                       </Th>
                       <Th>
+                        <Text fontWeight="bold">Categoría</Text>
+                      </Th>
+                      <Th>
                         <Text fontWeight="bold">Imagen</Text>
                       </Th>
                       <Th>
@@ -150,6 +151,7 @@ const ListAdminProduct = ({
                         <Tr key={item.id} h="10px">
                           <Td>{item.productId}</Td>
                           <Td>{item.productName}</Td>
+                          <Td>{item.category}</Td>
                           <Td>
                             <Img
                               src={item.thumbnail}

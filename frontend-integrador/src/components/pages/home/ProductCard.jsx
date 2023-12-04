@@ -43,8 +43,8 @@ const ProductCard = ({ item }) => {
 
   return (
     <Card  
-    h={500}
-    w={330} 
+    h={[300,400,500]}
+    w={[198,264,330]} 
     color={"blanco"}>
       
       <CardBody

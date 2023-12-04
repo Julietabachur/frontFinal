@@ -126,20 +126,21 @@ const SearchBar = () => {
     w={'75%'}
     h={['200px','200px','200px']}
     templateRows={['15% 35% 20% 15% 15%','20% 35% 25% 20%','30% 40% 30%']}
-    templateColumns={['50% 50%','38% 38% 24%','50% 20% 20% 10%']}
+    templateColumns={['50% 50%','38% 40% 22%','50% 20% 20% 10%']}
     bg={'whiteAlpha.800'}
-    p={5}
+    py={[5,5,8]}
+    px={[5,6,8]}
     boxShadow={"dark-lg"}
     >
       <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]}  gridColumnEnd={[3,4,5]} >
-        <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[16,22,30]}>
+        <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[16,22,28]}>
           ¿QUÉ ESTÁS BUSCANDO?</Text>
       </GridItem>
-      <GridItem py={2} px={[5,5,10]} gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
-        <Text textShadow={'dark-lg'} textAlign={"center"} fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[12,13,16,18]}>
+      <GridItem py={2} gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
+        <Text px={15} lineHeight={"5"} textShadow={'dark-lg'} textAlign={"center"} fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[12,13,16,18]}>
         Explora los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
       </GridItem>
-      <GridItem px={2} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
+      <GridItem px={[1,2]} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
         <Popover
         returnFocusOnClose={false}
         isOpen={searchResults && searchResults.length > 1}
@@ -186,7 +187,7 @@ const SearchBar = () => {
           </PopoverContent>
         </Popover>
       </GridItem>
-      <GridItem px={2} gridRow={[4,4,3]} gridColumnStart={[1,1,2]} gridColumnEnd={[2,2,3]}>
+      <GridItem px={[1,2]} gridRow={[4,4,3]} gridColumnStart={[1,1,2]} gridColumnEnd={[2,2,3]}>
         <VStack  >
         {/* <Text>Fecha inicial</Text> */}
           <Input
@@ -202,7 +203,7 @@ const SearchBar = () => {
           />
         </VStack>
       </GridItem>
-      <GridItem px={2}  gridRow={[4,4,3]} gridColumnStart={[2,2,3]} gridColumnEnd={[3,3,4]}> 
+      <GridItem px={[1,2]} gridRow={[4,4,3]} gridColumnStart={[2,2,3]} gridColumnEnd={[3,3,4]}> 
         <VStack>
         {/* <Text>Fecha final</Text> */}
           <Input
@@ -217,7 +218,7 @@ const SearchBar = () => {
           />
         </VStack>
       </GridItem>
-      <GridItem px={2}  gridRow={[5,4,3]} gridColumnStart={[1,3,4]} gridColumnEnd={[3,4,5]} >
+      <GridItem px={[1,2]} gridRow={[5,4,3]} gridColumnStart={[1,3,4]} gridColumnEnd={[3,4,5]} >
         <Button maxHeight={["20px","30px", "40px"]} boxShadow={'dark-lg'} fontSize={[12,14]} focusBorderColor='lime' bg={"verde2"}  /*colorScheme="green"*/ w={'100%'} onClick={handleSearch}>Buscar</Button>
       </GridItem>
     </Grid>

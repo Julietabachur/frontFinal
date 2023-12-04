@@ -61,9 +61,9 @@ const FilterBar = () => {
   return (
   
    <VStack w={'100%'} bg={'negro'} position={"relative"} bottom={2} p={8} shadow={'dark-lg'} spacing={5}>
-    <Heading color={"white"} fontFamily={"Podkova"} fontSize={[16, 24, 30]}>Descubre nuestro catálogo</Heading>
+    <Heading color={"white"} fontFamily={"Podkova"} letterSpacing={1} fontWeight="medium" fontSize={[16, 22, 28]}>Descubre nuestro catálogo</Heading>
 
-    <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={2}  >
+    <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={3}  >
     {categoryList.map((category) => (
         <Box
           key={category.id}
