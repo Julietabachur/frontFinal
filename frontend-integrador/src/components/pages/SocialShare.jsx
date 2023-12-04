@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   Textarea,
+  Icon,
   IconButton,
   Flex,
   Modal,
@@ -79,15 +80,10 @@ const SocialShare = ({
                   url={shareUrl}
                   title={shareTitle + '\n' + customMessage}
                   hashtag="riskko"
-
                 >
-                  <IconButton
-                    colorScheme="gray"
-                    variant="outline"
-                    size="lg"
-                    aria-label="Share"
-                    icon={<FaFacebookSquare />}
-                  />
+
+                  <Icon as={FaFacebookSquare} w={8} h={8} color='blue.900' />
+
                 </FacebookShareButton>
 
 
@@ -96,12 +92,8 @@ const SocialShare = ({
                   title={shareTitle + '\n' + customMessage}
                   hashtags={["riskko"]}
                 >
-                  <IconButton 
-                    colorScheme='gray' 
-                    variant='outline' 
-                    size='lg' 
-                    aria-label='Share' 
-                    icon={<FaTwitter />} />
+
+                  <Icon as={FaTwitter} w={8} h={8} color='blue.400' />
 
                 </TwitterShareButton>
 
@@ -110,13 +102,9 @@ const SocialShare = ({
                   url={shareUrl}
                   title={shareTitle + '\n' + customMessage}
                 >
-                  <IconButton
-                    colorScheme="gray"
-                    variant="outline"
-                    size="lg"
-                    aria-label="Share"
-                    icon={<FaWhatsapp />}
-                  />
+
+                  <Icon as={FaWhatsapp} w={8} h={8} color='green.600' />
+
                 </WhatsappShareButton>
 
               </HStack>

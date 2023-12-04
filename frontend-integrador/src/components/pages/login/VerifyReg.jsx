@@ -216,7 +216,7 @@ const VerifyReg = () => {
 
     return (
         <>
-            <Flex direction="column" align="center" justify="center" p={4}>
+            <Flex direction="column" align="center" justify="center" p={4} minH={450}>
 
                 {!verifyToken && !mailToken ? (
                     <Alert
@@ -241,7 +241,7 @@ const VerifyReg = () => {
                     <>
 
 
-                        <Box align='center' border='1px' w="60vw" borderRadius={15} minH={200}>
+                        <Box align='center' border='1px' w="60vw" borderRadius={15}>
                             <Heading size='lg'>
                                 Verificación de e-mail.
                             </Heading>
