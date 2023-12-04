@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Box, Alert, AlertIcon } from "@chakra-ui/react";
+import { Button, Flex, Box, Alert, AlertIcon, Text } from "@chakra-ui/react";
 import ListAdminProduct from "./ListAdminProduct";
 import ListUsers from "./ListUsers";
 import AdminFeatures from "./AdminFeatures";
@@ -39,12 +39,12 @@ const AdminDashboard = ({ token }) => {
   const [totalFeaturePages, setTotalFeaturesPages] = useState(1);
   const [policyPage, setPolicyPage] = useState(1);
   const [totalPolicyPages, setTotalPolicyPages] = useState(1);
-  const [policyList, setPolicyList] = useState ([]);
+  const [policyList, setPolicyList] = useState([]);
   const [featuresList, setFeaturesList] = useState([]);
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
-  
+
   const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
   const [policyListAll, setPolicyListAll] = useState([]); // array de lista de politicas
 
@@ -65,7 +65,7 @@ const AdminDashboard = ({ token }) => {
     };
   }, []); // La dependencia vacía [] asegura que el efecto solo se ejecute una vez, al montar el componente
 
- 
+
 
   // LOGICA DE getProducts - LISTAR
   const getProducts = async () => {
@@ -118,7 +118,7 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
-  
+
   //LOGICA de getFeatures. Listar Caracteristicas.
   const getFeatures = async () => {
     console.log("Inicia getFeatures");
@@ -140,7 +140,7 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
-   // LOGICA DE getFeaturesAll- LISTAR todas las caracteristicas sin paginacion para usarlas en el select de productForm y EditProduct
+  // LOGICA DE getFeaturesAll- LISTAR todas las caracteristicas sin paginacion para usarlas en el select de productForm y EditProduct
   //no se precisa el token porque es publico
   const getFeaturesAll = async () => {
     try {
@@ -163,26 +163,26 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
-    //LOGICA de getPolicy. Listar Politicas.
-    const getPolicy = async () => {
-      console.log("Inicia getPolicy");
-      try {
-        const response = await axios.get(
-          //Petición GET a la api del listado de politicas
-          `${baseUrl}/api/v1/public/policy?page=${policyPage}`
-        );
-        if (response.data && response.data.content) {
-          // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
-          setPolicyList(response.data.content);
-          setTotalPolicyPages(response.data.last);
-          setPolicyPage(response.data.current);
-          console.log(policyList);
-        }
-      } catch (error) {
-        //Manejo de errores
-        console.error(error);
+  //LOGICA de getPolicy. Listar Politicas.
+  const getPolicy = async () => {
+    console.log("Inicia getPolicy");
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de politicas
+        `${baseUrl}/api/v1/public/policy?page=${policyPage}`
+      );
+      if (response.data && response.data.content) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setPolicyList(response.data.content);
+        setTotalPolicyPages(response.data.last);
+        setPolicyPage(response.data.current);
+        console.log(policyList);
       }
-    };
+    } catch (error) {
+      //Manejo de errores
+      console.error(error);
+    }
+  };
 
   // LOGICA DE getPolicyAll- LISTAR todas las politicas sin paginacion para usarlas en el select de productForm y EditProduct
   //no se precisa el token porque es publico
@@ -238,10 +238,10 @@ const AdminDashboard = ({ token }) => {
   };
   // Control de Paginación en las politicas
   const handlePolicyPageChange = (newPage) => {
-      if (newPage <= totalPolicyPages && newPage >= 1) {
-        setPolicyPage(newPage); // Actualiza el número de página
-      }
-    };
+    if (newPage <= totalPolicyPages && newPage >= 1) {
+      setPolicyPage(newPage); // Actualiza el número de página
+    }
+  };
 
   const handleShow = (origin) => {
     if (origin === "user") {
@@ -291,125 +291,170 @@ const AdminDashboard = ({ token }) => {
 
   // Renderizado del componente
   return (
-    <Box pos={"relative"} top={8} w={"99vw"}  h={"199vh"}>
-      {console.log("AlertSuccess:", showSuccess)}
 
-      {showSuccess && (
-        <Alert status="success" variant="subtle">
-          <AlertIcon boxSize="20px" />
-          Producto agregado con éxito!
-        </Alert>
-      )}
 
-      <Box borderBottom="2px" p="10px" bg={"white"}>
-        <Button colorScheme="green" ml={4} onClick={() => handleShow("addProd")}>
-          Agregar Producto
-        </Button>
-        <Button colorScheme="green" ml={4} onClick={() => handleShow("item")}>
-          Listar Productos
-        </Button>
-        <Button colorScheme="green" ml={4} onClick={() => handleShow("user")}>
-          Listar Usuarios
-        </Button>
-        <Button colorScheme="green" ml={4} onClick={() => handleShow("category")}>
-          Listar Categorías
-        </Button>
-        <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
-          Administrar Características
-        </Button>
-        <Button colorScheme="green" ml={4} onClick={() => handleShow("policy")}>
-          Administrar Políticas
-        </Button>
-      </Box>
+    token ? (
 
-      {showAddProduct == true && (
 
-        <NewProduct
-          token={token}
-          showSuccess={showSuccess}
-          setShowAddProduct={setShowAddProduct}
-          setShowProdList={setShowProdList}
-        />
+      <Box pos={"relative"} top={8} w={"99vw"} h={"199vh"} >
+        {console.log("AlertSuccess:", showSuccess)}
 
-      )}
+        {showSuccess && (
+          <Alert status="success" variant="subtle">
+            <AlertIcon boxSize="20px" />
+            Producto agregado con éxito!
+          </Alert>
+        )}
 
-      {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
-      {showProdList == true && (
-        <ListAdminProduct
-          token={token}
-          getProducts={getProducts}
-          page={page}
-          handlePageChange={handlePageChange}
-          lista={lista}
-          featuresListAll={featuresListAll}
-          getFeaturesAll={getFeaturesAll}
-          showAddProduct={showAddProduct}
-          setShowAddProduct={setShowAddProduct}
-          showProdList={showProdList}
-          setShowProdList={setShowProdList}
-        />
-      )}
+        <Box borderBottom="2px" p="10px" bg={"white"}>
+          <Button colorScheme="green" ml={4} onClick={() => handleShow("addProd")}>
+            Agregar Producto
+          </Button>
+          <Button colorScheme="green" ml={4} onClick={() => handleShow("item")}>
+            Listar Productos
+          </Button>
+          <Button colorScheme="green" ml={4} onClick={() => handleShow("user")}>
+            Listar Usuarios
+          </Button>
+          <Button colorScheme="green" ml={4} onClick={() => handleShow("category")}>
+            Listar Categorías
+          </Button>
+          <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
+            Administrar Características
+          </Button>
+          <Button colorScheme="green" ml={4} onClick={() => handleShow("policy")}>
+            Administrar Políticas
+          </Button>
+        </Box>
 
-      {showUserList == true && (
-        <ListUsers
-          token={token}
-          getUsers={getUsers}
-          userPage={userPage}
-          handlePageChange={handleUserPageChange}
-          userList={userList}
-        />
-      )}
+        {
+          showAddProduct == true && (
 
-      {/* Logicas para mostrar las listas Features  */}
+            <NewProduct
+              token={token}
+              showSuccess={showSuccess}
+              setShowAddProduct={setShowAddProduct}
+              setShowProdList={setShowProdList}
+            />
 
-      {showAdminFeatures == true && (
-        <AdminFeatures
-          token={token}
-          getFeatures={getFeatures}
-          featurePage={featurePage}
-          handlePageChange={handleFeaturePageChange}
-          featuresList={featuresList}
-        />
-      )}
+          )
+        }
 
-      {showAdminPolicy == true && (
-        <AdminPolicy
-          token={token}
-          getPolicy={getPolicy}
-          getPolicyAll={getPolicyAll}
-          policyListAll={policyListAll}
-          policyPage={policyPage}
-          handlePageChange={handlePolicyPageChange}
-          policyList={policyList}
-        />
-      )}
+        {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
+        {
+          showProdList == true && (
+            <ListAdminProduct
+              token={token}
+              getProducts={getProducts}
+              page={page}
+              handlePageChange={handlePageChange}
+              lista={lista}
+              featuresListAll={featuresListAll}
+              getFeaturesAll={getFeaturesAll}
+              showAddProduct={showAddProduct}
+              setShowAddProduct={setShowAddProduct}
+              showProdList={showProdList}
+              setShowProdList={setShowProdList}
+            />
+          )
+        }
 
-      {/* Logicas para mostrar las listas Categorias */}
+        {
+          showUserList == true && (
+            <ListUsers
+              token={token}
+              getUsers={getUsers}
+              userPage={userPage}
+              handlePageChange={handleUserPageChange}
+              userList={userList}
+            />
+          )
+        }
 
-      {showCategoryList == true && <ListCategories token={token} />}
+        {/* Logicas para mostrar las listas Features  */}
 
-      {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
-      {showErrorMessage && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#fff",
-            fontSize: "24px",
-          }}
+        {
+          showAdminFeatures == true && (
+            <AdminFeatures
+              token={token}
+              getFeatures={getFeatures}
+              featurePage={featurePage}
+              handlePageChange={handleFeaturePageChange}
+              featuresList={featuresList}
+            />
+          )
+        }
+
+        {
+          showAdminPolicy == true && (
+            <AdminPolicy
+              token={token}
+              getPolicy={getPolicy}
+              getPolicyAll={getPolicyAll}
+              policyListAll={policyListAll}
+              policyPage={policyPage}
+              handlePageChange={handlePolicyPageChange}
+              policyList={policyList}
+            />
+          )
+        }
+
+        {/* Logicas para mostrar las listas Categorias */}
+
+        {showCategoryList == true && <ListCategories token={token} />}
+
+        {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
+        {
+          showErrorMessage && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "rgba(0, 0, 0, 0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "#fff",
+                fontSize: "24px",
+              }}
+            >
+              Utilice un dispositivo de escritorio para acceder a la página de
+              administración.
+            </div>
+          )
+        }
+      </Box >
+
+    ) : (
+
+      <Flex direction="column" align="center" justify="center" p={4} minH={500}>
+
+        <Alert
+          status="error"
+          variant="subtle"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
+          borderRadius="lg"
+          boxShadow="md"
+          w="60vw"
+          p={8}
         >
-          Utilice un dispositivo de escritorio para acceder a la página de
-          administración.
-        </div>
-      )}
-    </Box>
+          <AlertIcon boxSize={8} />
+
+          <Text>No está autorizado a acceder a esta página.</Text>
+          <Text>Regrese a la página de Inicio.</Text>
+
+        </Alert>
+
+      </Flex>
+
+    )
+
   );
 };
 
