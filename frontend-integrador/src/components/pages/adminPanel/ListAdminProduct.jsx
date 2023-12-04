@@ -89,7 +89,9 @@ const ListAdminProduct = ({
 
   const handleEdit = (product) => {
     setCloseList(true);  // cierra el listado 
-    setProductToEdit(product); // pasa el objeto product a traves del prop
+    setProductToEdit(product);
+    getProducts();
+    // pasa el objeto product a traves del prop
     //console.log("Producto para editar:", productToEdit);
     //console.log("Muestra Formulario", showAddProduct);
   };
