@@ -1,4 +1,4 @@
-import React  from "react";
+import React, { useEffect }  from "react";
 import { useProductContext } from "./Global.context";
 import { VStack, SimpleGrid, Link,Text,Box } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -11,12 +11,13 @@ const ShowList = () => {
   useEffect(()=>{
     if(showFav && favorites.length === 0){
       getProducts()
+      console.log('favs: ', favorites);
     }
   },[favorites,showFav])
 
   return (
     <VStack>
-      {showFav && <Text fontSize={40} textShadow='1px 1px 10px #00cc00' >{favorites.length > 0 ? "Tus Favoritos":"No tienes ningun favorito" }</Text>}
+      {showFav && <Text fontSize={40} textShadow='1px 1px 10px #00cc00' mt={'70px'} >{paginatedData.length != 0 ? "Tus Favoritos":"Tu lista de favoritos está vacía" }</Text>}
       <SimpleGrid
         minH={"100vh"}
         columns={{ base: 1, md: 2 }}

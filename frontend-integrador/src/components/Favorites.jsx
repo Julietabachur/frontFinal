@@ -6,7 +6,7 @@ const Favorites = props => {
   return (
     <Box w={"99vw"} bg={"blanco"} mt={10}>
       <VStack>
-        <ShowList titulo={'Mis favoritos'}/>
+        <ShowList/>
       </VStack>
     </Box>
   )

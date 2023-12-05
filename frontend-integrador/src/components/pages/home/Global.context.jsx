@@ -141,6 +141,9 @@ const ProductProvider = ({ children }) => {
     dispatch({ type: "SET_CATEGORIES", payload: data });
   };
 
+  const setFavorites = (data) => {
+    dispatch({ type: "SET_FAVORITES", payload: data });
+  };
 
   const setClientId = (data) => {
     dispatch({ type: "SET_CLIENT_ID", payload: data });
@@ -284,7 +287,6 @@ const ProductProvider = ({ children }) => {
     setCategories,
     setPaginatedData,
     getProductsByType,
-    getFavoriteProducts,
     setEndDate,
     setStartDate,
     setSearchResults,
