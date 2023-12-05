@@ -133,6 +133,9 @@ const ListAdminProduct = ({
                         <Text fontWeight="bold">Nombre</Text>
                       </Th>
                       <Th>
+                        <Text fontWeight="bold">Categoría</Text>
+                      </Th>
+                      <Th>
                         <Text fontWeight="bold">Imagen</Text>
                       </Th>
                       <Th>
@@ -148,6 +151,7 @@ const ListAdminProduct = ({
                         <Tr key={item.id} h="10px">
                           <Td>{item.productId}</Td>
                           <Td>{item.productName}</Td>
+                          <Td>{item.category}</Td>
                           <Td>
                             <Img
                               src={item.thumbnail}

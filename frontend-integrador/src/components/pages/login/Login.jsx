@@ -126,7 +126,7 @@ const Login = () => {
           }
         } else {
           console.log("Usuario no verificado");
-          console.log(response.data.verifyToken);
+          //console.log(response.data.verifyToken);
           const verifyUrl = "/verifyReg?mailToken=" + response.data.verifyToken;
           navigate(verifyUrl);
         }

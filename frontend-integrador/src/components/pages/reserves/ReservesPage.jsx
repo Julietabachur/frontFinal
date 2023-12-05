@@ -292,7 +292,7 @@ const ReservesPage = () => {
   }, [user]);
 
   return (
-    <VStack w={"100%"}>
+    <VStack h="auto" w={"100%"}>
       <Text
         fontFamily={"Saira"}
         color={"black"}

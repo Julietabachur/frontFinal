@@ -14,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
 const clientNameRegex = /^[a-zA-Z0-9_]{5,}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+//expresion regular que permite carácteres especiales que no sean alfanumérico.
+//^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,24}$
+
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const GETME_URL = import.meta.env.VITE_GETME_URL;
@@ -258,7 +261,7 @@ const CheckClientNameAndEmail = async (value, endpoint) => {
         setTimeout(() => {
           const targetUrl = "/verifyReg?mailToken=" + response.data.verifyToken ;
           navigate(targetUrl);
-          window.location.reload();
+          //window.location.reload();
         }, 1000);
       } else {
         alert("Fallo el registro, recargue la página y pruebe nuevamente");
