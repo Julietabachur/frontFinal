@@ -14,7 +14,7 @@ const HomePage = () => {
       <VStack >
         <SearchBar />
         <FilterBar />
-        <ShowList />
+        <ShowList titulo={''}/>
       </VStack>
     </Box>
     </div>

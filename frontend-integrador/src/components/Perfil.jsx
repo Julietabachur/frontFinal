@@ -20,6 +20,7 @@ import {
   Image,
   SimpleGrid,
   FormHelperText,
+  Heading,
 } from "@chakra-ui/react";
 import LogoutButton from "./LogoutButton";
 import { useProductContext } from "./pages/home/Global.context";
@@ -101,6 +102,13 @@ const Perfil = () => {
     }
   };
 
+  const handleFavorites = () => {
+    setBanderaReservas(false);
+    navigate('/')
+    getFavorites()
+    
+  };
+
   // Llamada a la función de obtener reservas del usuario cuando el componente se monta
   useEffect(() => {
     if (Array.isArray(user.reserveIds) && user?.reserveIds.length > 0) {
@@ -116,11 +124,12 @@ const Perfil = () => {
 
   useEffect(() => {
     getFavorites();
+    console.log('favs: ', paginatedData);
   }, []);
 
   return (
     <Grid
-      h={"80vh"}
+      h={"100vh"}
       w={"99vw"}
       templateRows={{ base: "repeat(4, 1fr)", md: "repeat(3, 1fr)" }}
       templateColumns={{
@@ -130,6 +139,7 @@ const Perfil = () => {
       }}
       gap={4}
       mt={5}
+      mb={{base:'600px', md:'100px'}}
       bg={"gray.200"}
     >
       <GridItem
@@ -146,11 +156,11 @@ const Perfil = () => {
             name={user?.clientName}
             justifySelf={"center"}
           />
-          <Text textAlign={"center"} color={"verde1"} fontSize={20}>
+          <Text textAlign={"center"} color={"verde2"} fontSize={20}>
             {user?.clientName}
           </Text>
-          <Text textAlign={"center"}>{user?.email}</Text>
-          <LogoutButton />
+          {/* <Text textAlign={"center"}>{user?.email}</Text>
+           */}
           <UnorderedList
             direction={{ base: "row", md: "column" }}
             listStyleType={"none"}
@@ -158,17 +168,23 @@ const Perfil = () => {
           >
             <ListItem textAlign={"center"}>Reservas</ListItem>
             <ListItem textAlign={"center"}>Editar Perfil</ListItem>
-            <ListItem textAlign={"center"}>Contactos</ListItem>
-            <ListItem textAlign={"center"}>Configuración</ListItem>
           </UnorderedList>
+          <LogoutButton
+            /* justifySelf={"center"}
+            w={"130px"}
+            bg={"red.400"}
+            color={"blanco"}
+            onClick={logoutHandle} */
+          />
         </SimpleGrid>
       </GridItem>
 
+      {/* datos personales */}
       <GridItem
         colSpan={{ base: 5, md: 2 }}
         rowSpan={{ base: 1, md: 2 }}
         bg="blanco"
-        minW={{ base: "300px", md: "500px" }}
+        minW={{ base: "100px", md: "300px" }}
       >
         <VStack
           p={5}
@@ -177,64 +193,87 @@ const Perfil = () => {
           align={"flex-start"}
         >
           <Box
-            color="verde1"
+            color="verde2"
             fontWeight="semibold"
             letterSpacing="wide"
             fontSize={{ base: "2xl", md: "4xl" }}
             alignSelf={{ base: "center", md: "flex-start" }}
-            textShadow={"10px 10px 10px gray"}
+            minW={{ base: "100px", md: "300px" }}
+            /*textShadow={"10px 10px 10px gray"}*/
           >
-            Información Personal
+            Información personal
           </Box>
           <Flex
-            boxShadow={"15px 15px 15px gray"}
+           /* boxShadow={"15px 15px 15px gray"}*/
             justify={"flex-start"}
             direction={"column"}
             align={"flex-start"}
             w={"100%"}
             mt={15}
-            p={5}
             borderRadius={6}
-            border={"1px solid lightblue"}
+            minH={{ base: "100px", md: "200px" }}
+            /*border={"1px solid lightblue"}*/
           >
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Nombre de usuario: {user?.username}
-            </Text>
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Nombre: {user?.firstName ? user.firstName : "John"}
-            </Text>
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Apellido: {user?.firstName ? user.lastName : "Doe"}
-            </Text>
-            <Text fontSize={{ base: 15, md: 20 }}>
-              Correo electrónico: {user?.email}
-            </Text>
-            <Stack>
-              <Divider m={3} />
+            <HStack>
+              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+                Usuario: 
+              </Text>
+              <Text fontSize={{ base: 15, lg: 20 }}>{user?.clientName}</Text>
+            </HStack>
+            <HStack>
+              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+                Nombre: 
+              </Text>
+              <Text fontSize={{ base: 15, lg: 20 }}>{user?.firstName ? user.firstName : "John"} {user?.lastName ? user.lastName : "Doe"}</Text>
+            </HStack>
+            {/* <Text fontSize={{ base: 15, md: 20 }}>
+              Apellido: {user?.lastName ? user.lastName : "Doe"}
+            </Text> */}
+            <HStack flexWrap={'wrap'}>
+              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+                Correo electrónico:
+              </Text>
+              <Text fontSize={{ base: 15, lg: 20 }}> {user?.email}</Text>
+            </HStack>
+            {/* <Stack> */}
+              {/* <Divider m={3} />
               <Text fontSize={{ base: 20, md: 25 }} color={"verde1"}>
-                Informarción de residencia
+                Informarcion de Residencia
+              </Text> */}
+              <HStack>
+                <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+                  Dirección:{" "}                 
+                </Text>
+                <Text fontSize={{ base: 15, lg: 20 }}> {user?.address
+                    ? user.address.calle + user.address.number
+                    : "Siempre viva 4354"}
+                    </Text>
+              </HStack>
+              <HStack>
+
+              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+                Ciudad: 
               </Text>
-              <Text fontSize={{ base: 15, md: 20 }}>
-                Dirección:{" "}
-                {user?.address
-                  ? user.address.calle + user.address.number
-                  : "Siempre viva 4354"}
-              </Text>
-              <Text fontSize={{ base: 15, md: 20 }}>
-                País: {user?.address ? user.address.country : "Uruguay"}
-              </Text>
-              <Text fontSize={{ base: 15, md: 20 }}>
-                Ciudad: {user?.address ? user.address.city : "Montevideo"}
-              </Text>
-            </Stack>
+              <Text fontSize={{ base: 15, lg: 20 }}>{user?.address ? user.address.city : "Montevideo"}</Text>
+              </HStack>
+              
+              <HStack>
+                <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+                  País: 
+                </Text>         
+                <Text fontSize={{ base: 15, lg: 20 }}>{user?.address ? user.address.country : "Uruguay"}</Text>    
+              </HStack>
+            {/* </Stack> */}
           </Flex>
         </VStack>
       </GridItem>
+
+      {/* //favoritos */}
       <GridItem
         colSpan={{ base: 5, md: 2 }}
         rowSpan={{ base: 1, md: 2 }}
         bg="blanco"
-        minW={{ base: "300px", md: "500px" }}
+        minW={{ base: "300px", md: "100px" }}
       >
         <VStack
           p={5}
@@ -243,15 +282,21 @@ const Perfil = () => {
           align={"flex-start"}
         >
           <Box
-            color="verde1"
+            color="verde2"
             fontWeight="semibold"
             letterSpacing="wide"
             fontSize={{ base: "2xl", md: "4xl" }}
             alignSelf={{ base: "center", md: "flex-start" }}
-            textShadow={"10px 10px 10px gray"}
+            minH={{ base: "100px", md: '50px' }}
           >
             Favoritos
           </Box>
+          {paginatedData != 0 &&
+            <Text fontSize='lg' onClick={() => handleFavorites()} display={{base:'none', md:'flex',lg:'none'}} as={'u'} cursor={'pointer'}>Ver mis favoritos</Text>
+          }
+          { paginatedData.length === 0 ? 
+            <Text fontSize='lg'>Tu lista de favoritos está vacía</Text>
+            :
           <Grid
             templateColumns="repeat(5, 1fr)"
             templateRows={"repeat(2, 1fr)"}
@@ -260,9 +305,8 @@ const Perfil = () => {
             spacing={2}
             w={"100%"}
             borderRadius={6}
-            border={"1px solid lightblue"}
-            boxShadow={"15px 15px 15px gray"}
-          >
+            display={{base:'flex', md:'none',lg:'flex'}}
+          >             
             {paginatedData.map((item) => (
               <Link
                 as={ReactRouterLink}
@@ -279,23 +323,28 @@ const Perfil = () => {
                   />
                 </Box>
               </Link>
-            ))}
-            <GridItem rowStart={3} colStart={1} colEnd={6} >
-              <RenderPagination />
-            </GridItem>
+            ))}            
           </Grid>
+          }
+          {paginatedData.length != 0 &&
+            <GridItem rowStart={3} colStart={1} colEnd={6} alignSelf={"center"} display={{base:'flex', md:'none',lg:'flex'}}>
+              <RenderPagination />          
+            </GridItem>
+            }
         </VStack>
       </GridItem>
 
+
+    {/* //reservas */}
       <GridItem colSpan={4} bg="blanco">
         <Box m={3}>
           <Box
-            color="verde1"
+            color="verde2"
             fontWeight="semibold"
             letterSpacing="wide"
             fontSize={{ base: "2xl", md: "4xl" }}
             alignSelf={{ base: "center", md: "flex-start" }}
-            textShadow={"10px 10px 10px gray"}
+            /*textShadow={"10px 10px 10px gray"}*/
           >
             Reservas
           </Box>
@@ -328,7 +377,6 @@ const Perfil = () => {
                     objectFit={"cover"}
                   />
 
-                  {/* Puedes agregar aquí los botones de editar o eliminar si es necesario */}
                 </Box>
               ))}
             </Flex>

@@ -15,6 +15,7 @@ import ReservesPage from "./components/pages/reserves/ReservesPage";
 import VerifyReg from "./components/pages/login/VerifyReg";
 
 function App() {
+
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
   const verifyToken = null;
@@ -76,8 +77,8 @@ function App() {
                   roles={roles}
                   username={username}
                   token={token ? token : ""}
-                />
-              }
+                />                
+              }              
             />
           </Routes>
           
