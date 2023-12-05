@@ -219,7 +219,7 @@ const DetailPage = () => {
                   fontFamily={"Saira"}
                   color={"black"}
                   fontWeight={"semibold"}
-                  fontSize={"1.6rem"}
+                  fontSize={["0.8rem","1.3rem","1.6rem"]}
                   marginLeft={"2%"}
                   style={{
                     caretColor: "transparent",
@@ -260,8 +260,8 @@ const DetailPage = () => {
               <Text
                 fontFamily={"Podkova"}
                 color={"black"}
-                fontSize={"18px"}
-                marginTop={"20px"}
+                fontSize={["12px","14px","18px"]}
+                marginTop={["5px","10px","20px"]}
               >
                 {detail.detail}
               </Text>

@@ -18,7 +18,7 @@ import {
 import { CancelToken } from "axios";
 import { useProductContext } from "../Global.context";
 import { color } from "framer-motion";
-import {CloseIcon} from '@chakra-ui/icons'
+import {CloseIcon, Search2Icon} from '@chakra-ui/icons'
 
 const SearchBar = () => {
   const {
@@ -115,32 +115,36 @@ const SearchBar = () => {
     <Box
     position={"relative"}
     w={'100%'}
-    h={['300px','300px','300px']}
+    h={['260px','300px','300px']}
     bgGradient="linear(to-t, green, white)">
 
     
     <Grid
-    top={50}
-    left={"12%"}
+    top={[10,50]}
+    left={"15%"}
     position={"relative"}
-    w={'75%'}
-    h={['200px','200px','200px']}
-    templateRows={['15% 35% 20% 15% 15%','20% 35% 25% 20%','30% 40% 30%']}
-    templateColumns={['50% 50%','38% 40% 22%','50% 20% 20% 10%']}
+    w={'70%'}
+    h={['180px','200px','200px']}
+    templateRows={['15% 35% 20% 15% 15%','20% 30% 22% 22%','30% 40% 30%']}
+    templateColumns={['50% 50%','42% 42% 16%','63% 15% 15% 7%']}
     bg={'whiteAlpha.800'}
     py={[5,5,8]}
-    px={[5,6,8]}
+    px={[2,4,8]}
     boxShadow={"dark-lg"}
+    alignContent="center"
+    alignItems={"center"}
     >
       <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]}  gridColumnEnd={[3,4,5]} >
-        <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[16,22,28]}>
+        <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} 
+        fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[15,22,28]}>
           ¿QUÉ ESTÁS BUSCANDO?</Text>
       </GridItem>
-      <GridItem py={2} gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
-        <Text px={15} lineHeight={"5"} textShadow={'dark-lg'} textAlign={"center"} fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[12,13,16,18]}>
+      <GridItem gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
+        <Text px={5} textShadow={'dark-lg'} textAlign={"center"} 
+        fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[11,13,16]}>
         Explora los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
       </GridItem>
-      <GridItem px={[1,2]} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
+      <GridItem px={[1]} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >
         <Popover
         returnFocusOnClose={false}
         isOpen={searchResults && searchResults.length > 1}
@@ -151,14 +155,14 @@ const SearchBar = () => {
           <PopoverTrigger>
             <Input
             type="text"
-            maxHeight={["20px","30px", "40px"]}
+            maxHeight={["20px","26px", "34px"]}
             focusBorderColor='lime'
+            bg={"blanco"}
+            color="negro"
             value={productName}
             variant={'filled'}
-            colorScheme="crimson"
-            color={'verde1'}
             boxShadow={'dark-lg'}
-            fontSize={[12,14]}
+            fontSize={[10,12,14]}
             placeholder="Escribe aquí el nombre de la prenda que buscas"
             onChange={(e) => setProductName(e.target.value)}
             />
@@ -187,15 +191,14 @@ const SearchBar = () => {
           </PopoverContent>
         </Popover>
       </GridItem>
-      <GridItem px={[1,2]} gridRow={[4,4,3]} gridColumnStart={[1,1,2]} gridColumnEnd={[2,2,3]}>
+      <GridItem px={[1]} gridRow={[4,4,3]} gridColumnStart={[1,1,2]} gridColumnEnd={[2,2,3]}>
         <VStack  >
         {/* <Text>Fecha inicial</Text> */}
           <Input
           focusBorderColor='lime'
           type="date"
-          color={'verde1'}
-          fontSize={[12,14]}
-          maxHeight={["20px","30px", "40px"]}
+          fontSize={[10,12,14]}
+          maxHeight={["18px","26px", "34px"]}
           value={startDate}
           boxShadow={'dark-lg'}
           variant={"filled"}
@@ -203,23 +206,24 @@ const SearchBar = () => {
           />
         </VStack>
       </GridItem>
-      <GridItem px={[1,2]} gridRow={[4,4,3]} gridColumnStart={[2,2,3]} gridColumnEnd={[3,3,4]}> 
+      <GridItem px={[1]} gridRow={[4,4,3]} gridColumnStart={[2,2,3]} gridColumnEnd={[3,3,4]}> 
         <VStack>
         {/* <Text>Fecha final</Text> */}
           <Input
-          maxHeight={["20px","30px", "40px"]}
+          maxHeight={["18px","26px", "34px"]}
           focusBorderColor='lime'
           boxShadow={'dark-lg'}
-          color={'verde1'}
           variant={"filled"}
           type="date"
-          fontSize={[12,14]}
+          fontSize={[10,12,14]}
           onChange={(e) => setEndDate(e.target.value)}
           />
         </VStack>
       </GridItem>
-      <GridItem px={[1,2]} gridRow={[5,4,3]} gridColumnStart={[1,3,4]} gridColumnEnd={[3,4,5]} >
-        <Button maxHeight={["20px","30px", "40px"]} boxShadow={'dark-lg'} fontSize={[12,14]} focusBorderColor='lime' bg={"verde2"}  /*colorScheme="green"*/ w={'100%'} onClick={handleSearch}>Buscar</Button>
+      <GridItem px={[1]} gridRow={[5,4,3]} gridColumnStart={[1,3,4]} gridColumnEnd={[3,4,5]} >
+        <Button maxHeight={["18px","26px", "34px"]} boxShadow={'dark-lg'} fontSize={[12]} 
+        focusBorderColor='lime' bg={"verde2"}  /*colorScheme="green"*/ 
+        w={'100%'} onClick={handleSearch}><Search2Icon></Search2Icon> </Button>
       </GridItem>
     </Grid>
     </Box>

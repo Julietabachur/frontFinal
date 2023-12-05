@@ -350,7 +350,6 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
             w="14px"
             onClick={() => handleCancel()}
             mx={4}
-            _hover=""
           />
   
           <Heading
