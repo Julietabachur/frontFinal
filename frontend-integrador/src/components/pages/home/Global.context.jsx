@@ -160,7 +160,9 @@ const ProductProvider = ({ children }) => {
         }
       );
       if (response) {
-        setPaginatedData(response.data);
+        let data = response.data
+        data.content.sort(() => Math.random() - 0.5);
+        setPaginatedData(data);
       }
     } catch (error) {
       console.error(error);
@@ -178,6 +180,7 @@ const ProductProvider = ({ children }) => {
         }
       );
       if (response) {
+
         setPaginatedData(response.data);
       }
     } catch (error) {
@@ -197,6 +200,7 @@ const ProductProvider = ({ children }) => {
         }
       );
       if (response.data) {
+        
         setPaginatedData(response.data);
       }
     } catch (error) {
