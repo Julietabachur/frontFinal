@@ -17,7 +17,7 @@ const ShowList = () => {
 
   return (
     <VStack>
-      {showFav && <Text fontSize={40} fontWeight="medium" fontFamily={"Saira"} fontSize={"1.8rem"} textShadow='1px 1px 10px #00cc00' mt={'70px'} >{paginatedData.length != 0 ? "Tus Favoritos":"Tu lista de favoritos está vacía" }</Text>}
+      {showFav && <Text fontWeight="medium" fontFamily={"Saira"} fontSize={"1.8rem"} textShadow='1px 1px 10px #00cc00' mt={'70px'} >{paginatedData.length != 0 ? "Tus Favoritos":"Tu lista de favoritos está vacía" }</Text>}
       <SimpleGrid
         minH={"100vh"}
         columns={{ base: 1, md: 2 }}

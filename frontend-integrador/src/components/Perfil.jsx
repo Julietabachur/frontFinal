@@ -229,7 +229,7 @@ const Perfil = () => {
             {/* <Text fontSize={{ base: 15, md: 20 }}>
               Apellido: {user?.lastName ? user.lastName : "Doe"}
             </Text> */}
-            <HStack>
+            <HStack flexWrap={'wrap'}>
               <Text fontSize={{ base: 15, lg: 20 }} as='b'>
                 Correo electrónico:
               </Text>
@@ -291,7 +291,9 @@ const Perfil = () => {
           >
             Favoritos
           </Box>
-          <Text fontSize='lg' onClick={() => handleFavorites()} display={{base:'none', md:'flex',lg:'none'}} as={'u'} cursor={'pointer'}>Ver mis favoritos</Text>
+          {paginatedData != 0 &&
+            <Text fontSize='lg' onClick={() => handleFavorites()} display={{base:'none', md:'flex',lg:'none'}} as={'u'} cursor={'pointer'}>Ver mis favoritos</Text>
+          }
           { paginatedData.length === 0 ? 
             <Text fontSize='lg'>Tu lista de favoritos está vacía</Text>
             :
@@ -324,7 +326,7 @@ const Perfil = () => {
             ))}            
           </Grid>
           }
-          {paginatedData &&
+          {paginatedData.length != 0 &&
             <GridItem rowStart={3} colStart={1} colEnd={6} alignSelf={"center"} display={{base:'flex', md:'none',lg:'flex'}}>
               <RenderPagination />          
             </GridItem>
