@@ -25,7 +25,7 @@ const LogoutButton = () => {
 
   return (
     <>
-      <Button onClick={onOpen} bg={'red.300'} minW={'200px'}>Desconectarse</Button>
+      <Button onClick={onOpen} bg={'red.300'} minW={'200px'}>Salir</Button>
       <AlertDialog
         motionPreset="slideInBottom"
         leastDestructiveRef={cancelRef}
@@ -36,17 +36,17 @@ const LogoutButton = () => {
         <AlertDialogOverlay />
 
         <AlertDialogContent>
-          <AlertDialogHeader>¿Desconectarse?</AlertDialogHeader>
+          <AlertDialogHeader>¿Estás seguro que querés cerrar sesión?</AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
+          {/* <AlertDialogBody>
             ¿Estas realmente seguro que quieres desconectarte?
-          </AlertDialogBody>
+          </AlertDialogBody> */}
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               No
             </Button>
             <Button colorScheme="red" ml={3} onClick={logoutHandle}>
-              Si
+              Sí
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

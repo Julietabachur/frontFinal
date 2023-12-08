@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import axios from "axios";
@@ -26,10 +27,19 @@ import ProductCard from "./ProductCard";
 import ProductCardContainer from "./ProductCardContainer";
 import RenderPagination from "./RenderPagination";
 //-
+=======
+import { VStack, Box } from "@chakra-ui/react";
+import SearchBar from "./searchBar/SearchBar";
+import ShowList from "./ShowList";
+import FilterBar from "./FilterBar";
+
+>>>>>>> da37b2d988761b80070cadace720dc6dcf24b5e2
 const HomePage = () => {
-  const token = import.meta.env.VITE_TOKEN;
+  //const token = import.meta.env.VITE_TOKEN;
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
+<<<<<<< HEAD
   const [lista, setLista] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [pageData, setPageData] = useState(null);
@@ -159,120 +169,18 @@ const HomePage = () => {
     },
   ];
 
+=======
+>>>>>>> da37b2d988761b80070cadace720dc6dcf24b5e2
   return (
-    <Box w={'99vw'} bg={"blanco"}  /*p={9}*/>
-      <VStack margin={"0px auto"} rowGap={0}>
-        {/* buscador */}
-        <HStack
-          color={"negro"}
-          w={"100%"}
-          bg={"#444444"}
-          justify={"center"}
-          h={"75px"}
-          align={"Center"}
-          /*p={9}*/
-          mt={2}
-          
-        >
-          {!media && <Text fontSize={"1.5rem"}>¿Que buscás?</Text>}
-          <Input
-            bg={"blanco"}
-            w={media ? "50%" : "30%"}
-            h={7}
-            placeholder="Buscar productos"
-            _placeholder={{ color: "inherit" }}
-            borderRadius={"15px"}
-            m={10}
-          />
-          <Button h={7} color={"blanco"} borderRadius={20} bg={"negro"}>
-            Buscar
-          </Button>
-        </HStack>
-
-        {/* categorias */}
-        {media && (
-          <Menu>
-            <MenuButton minW={'99vh'} bg={"negro"}>
-              
-                <Text
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  Categorias
-                </Text>
-            </MenuButton>
-            <MenuList bg={"negro"}>
-              {categoriesData.map((category) => (
-                <MenuItem
-                  bg={"negro"}
-                  key={category.id}
-                  textAlign="center"
-                  onClick={() => handleCategoryClick(category.type)}
-                >
-                  <Link
-                    fontFamily={"podkova"}
-                    color={"verde2"}
-                    fontSize={17}
-                    p={3}
-                  >
-                    {category.name}
-                  </Link>
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-        )}
-        {!media && (
-          <HStack justify={"space-around"} h={35} w={"100%"} bg={"negro"}>
-            {/* Muestra las tarjetas de categorías */}
-            {categoriesData.map((category) => (
-              <Box
-                key={category.id}
-                textAlign="center"
-                onClick={() => handleCategoryClick(category.type)}
-              >
-                {" "}
-                <Link
-                  fontFamily={"podkova"}
-                  color={"verde2"}
-                  fontSize={17}
-                  p={3}
-                >
-                  {category.name}
-                </Link>
-              </Box>
-            ))}
-          </HStack>
-        )}
-
-        <SimpleGrid minH={'100vh'} columns={{ sm: 1, md: 2 }} padding={20} spacing={20}>
-          {isLoading &&
-            Skeletons.map((Skeleton) => {
-              return (
-                <ProductCardContainer key={Skeleton}>
-                  <ProductCardSkeleton />
-                </ProductCardContainer>
-              );
-            })}
-          {lista.map((item) => (
-            <Link key={item.id} as={ReactRouterLink} to={`/detalle/${item.id}`}>
-              <ProductCardContainer key={item.id}>
-                <ProductCard item={item} />
-              </ProductCardContainer>
-            </Link>
-          ))}
-        </SimpleGrid>
-        {pageData && (
-          <RenderPagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        )}
+    <div>
+    <Box w={"99vw"} bg={"blanco"} >
+      <VStack >
+        <SearchBar />
+        <FilterBar />
+        <ShowList titulo={''}/>
       </VStack>
     </Box>
+    </div>
   );
 };
 
