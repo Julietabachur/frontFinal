@@ -46,7 +46,7 @@ function Specs({ detail }) {
 
       {(!isCollapsed || window.innerWidth >= 768) && (
         <VStack my={5} alignItems="flex-start" >
-          <Text as='u' fontFamily="Saira" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+          <Text as='u' fontFamily="Roboto" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
             CARACTERÍSTICAS DEL PRODUCTO
           </Text>
         <Grid
@@ -67,11 +67,11 @@ function Specs({ detail }) {
                   border="1px solid green"
                   borderRadius={5}
                 >
-                  <Text fontFamily="Saira" color="black" fontSize="1rem">
+                  <Text fontFamily="Roboto" color="black" fontSize="1rem">
                     {feature.charIcon}
                   </Text>
                   <Text
-                    fontFamily="Saira"
+                    fontFamily="Roboto"
                     textShadow="1px 1px lightgreen"
                     color="black"
                     fontSize="1rem"
@@ -81,7 +81,7 @@ function Specs({ detail }) {
                   {feature.charValue.map((value, valueIndex) => (
                     <Text
                       key={valueIndex}
-                      fontFamily="Saira"
+                      fontFamily="Roboto"
                       color="gris1"
                       fontSize="0.9rem"
                     >
@@ -92,7 +92,7 @@ function Specs({ detail }) {
               </GridItem>
             ))
           ) : (
-            <Text fontFamily="Saira" color="black" fontSize="1rem">
+            <Text fontFamily="Roboto" color="black" fontSize="1rem">
               No hay características disponibles para este producto.
             </Text>
           )}

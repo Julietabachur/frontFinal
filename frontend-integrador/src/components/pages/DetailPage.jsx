@@ -216,7 +216,7 @@ const DetailPage = () => {
                 />
                 <Text
                   readOnly={true}
-                  fontFamily={"Saira"}
+                  fontFamily={"Roboto"}
                   color={"black"}
                   fontWeight={"semibold"}
                   fontSize={["0.8rem","1.3rem","1.6rem"]}
@@ -250,7 +250,7 @@ const DetailPage = () => {
             <VStack border={"1px solid black"} p={10}>
               <Text
                 textAlign={"center"}
-                fontFamily="Saira"
+                fontFamily="Roboto"
                 fontWeight={"semibold"}
                 color="black"
                 fontSize={["0.9rem", "1.2rem"]}
@@ -258,7 +258,7 @@ const DetailPage = () => {
                 DESCRIPCIÓN DEL PRODUCTO
               </Text>
               <Text
-                fontFamily={"Podkova"}
+                fontFamily={"Roboto"}
                 color={"black"}
                 fontSize={["12px","14px","18px"]}
                 marginTop={["5px","10px","20px"]}

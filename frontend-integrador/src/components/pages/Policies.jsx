@@ -74,7 +74,7 @@ const Policies = () => {
   
         {(!isCollapsed || window.innerWidth >= 768) && (
             <VStack my={5} alignItems="flex-start">
-                <Text as='u' marginLeft={4} textAlign={"center"} fontFamily="Saira" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+                <Text as='u' marginLeft={4} textAlign={"center"} fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
                     POLÍTICAS DE USO DEL PRODUCTO
                     
                 </Text>
@@ -89,11 +89,11 @@ const Policies = () => {
                     alignItems="flex-start"
                     key={policy.id}
                   >
-                    <Text  fontFamily="Saira" fontWeight={"medium"} color="green" fontSize="1rem">
+                    <Text  fontFamily="Roboto" fontWeight={"medium"} color="green" fontSize="1rem">
                       {policy.policyName}
                     </Text>
                     <Text
-                      fontFamily="Podkova"
+                      fontFamily="Roboto"
                       color="black"
                       fontWeight={500}
                       fontSize="0.8rem"
