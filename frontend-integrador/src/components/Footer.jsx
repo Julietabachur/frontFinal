@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Box, Text, Image, VStack, Spacer, HStack } from '@chakra-ui/react';
-import { FaFacebook, FaInstagram, FaWhatsapp } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaWhatsapp, FaHeart  } from 'react-icons/fa';
 
 const Footer = () => {
 
@@ -37,78 +37,92 @@ const Footer = () => {
 
     <>
       {media ? (
-        <VStack bg={'#444444'} p={3} textAlign="center" w="99vw">
-          <HStack spacing='16px' py={'20px'}>
-            <Box w='40px' h='40px'>
-              <FaFacebook size={35} color={'#EDF2F7'} />
+        <VStack bg={'white'} p={3} textAlign="center" w="99vw" alignItems={'center'}>
+          <HStack spacing='16px' py={'20px'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <Box w='40px' h='40px' color={'verdeAgua'}>
+              <a href={facebookLink} target="_blank" rel="noopener noreferrer">
+                <FaFacebook size={25} color={'verdeAgua'} />
+              </a>
             </Box>
-            <Box w='40px' h='40px'>
-              <FaInstagram size={35} color={'#EDF2F7'} />
-            </Box>
-            <Box w='40px' h='40px'>
-              <Text>HOLA</Text>
-            </Box>
+
+            <Box w='40px' h='40px' color={'verdeAgua'}>
+              <a href={instagramLink} target="_blank" rel="noopener noreferrer">
+                <FaInstagram size={25}  />
+              </a>
+            </Box>           
           </HStack>
-          <VStack
-            spacing={4}
-            align='stretch'
-            d='flex'
-            justifyContent="center"
-            alignItems="center"
-            my={3}
-          >
-            <Box h='40px' d='flex' justifyContent="center" alignItems="center">
-              <Image ml={2} src="https://images-g3.s3.amazonaws.com/logoFooter.png" alt="Logo" />
-            </Box>
-            <Box h='40px' d='flex' justifyContent="center" alignItems="center">
-              <Text ml={2} fontSize="sm" color='gray.100' textAlign="left" as='b'>
-                Copyright - 2023 - Digital House
-              </Text>
-            </Box>
-          </VStack>
+          <HStack color={'verdeAgua'} fontWeight={'bold'} display={'flex'} fontSize={10}>
+              <Text >MADE WITH  </Text>
+              <FaHeart  size={25}  />
+              <Text>BY VALKIRIA</Text>
+            </HStack>
         </VStack>
       )
         :
-        (
-          <HStack bg={'#444444'} p={3} textAlign="center" w="99vw">
-            <VStack
-              spacing={4}
-              align='stretch'
-              d='flex'
-              justifyContent="center"
-              alignItems="start"
-              my={5}
+        (      
+      <HStack bg={'white'} p={3} px={10} textAlign="center" w="100vw"  boxShadow="0px 0px 6px 1px rgba(0, 0, 0, 0.25)" justifyContent={'space-between'}>
+        <HStack
+          spacing={4}
+          align='stretch'
+          d='flex'
+          justifyContent="center"
+          alignItems="start"
+          my={5}
 
-            >
-              <Box h='40px' d='flex' justifyContent="center" alignItems="start">
-                <Image ml={7} src="https://images-g3.s3.amazonaws.com/logoFooter.png" alt="Logo" />
-              </Box>
-              <Box h='40px' d='flex' justifyContent="center" alignItems="start">
-                <Text ml={7} fontSize="sm" color='gray.100' textAlign="left" as='b'>
-                  Copyright - 2023 - Digital House
-                </Text>
-              </Box>
-            </VStack>
-            <Spacer />
-            <HStack spacing='16px' pb={'50px'} mr={7}>
+        >
+          <a
+        href="/"
+        style={{
+          textDecoration: "none",
+          color: "black",
+        }}
+        // display={'flex'} alignItems={'center'} justifyContent={'center'}
+      >
+        <HStack display={'flex'} alignItems={'center'} justifyContent={'center'}>
+        <Image
+            src="../Isotipo-Valkiria-Sand.png"
+            alt="Logo Valkiria"
+          style={{
+            height: "40px",
+          }}
+        />
 
-              <Box w='40px' h='40px'>
-                <a href={facebookLink} target="_blank" rel="noopener noreferrer">
-                  <FaFacebook size={35} color={'#EDF2F7'} />
-                </a>
-              </Box>
+        <Text fontFamily={'Prociono'}  color={'verdeAgua'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text>
+        </HStack>
+      </a>
+          {/* <Box h='40px' d='flex' justifyContent="center" alignItems="start">
+            <Image ml={7} h={'50px'} src="../Isotipo-Valkiria-Sand.png" alt="Logo" />
+          </Box>
+        <Text fontFamily={'Prociono'}  color={'verdeAgua'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text> */}
 
-              <Box w='40px' h='40px'>
-                <a href={instagramLink} target="_blank" rel="noopener noreferrer">
-                  <FaInstagram size={35} color={'#EDF2F7'} />
-                </a>
-              </Box>
+          {/* <Box h='40px' d='flex' justifyContent="center" alignItems="start">
+            <Text ml={7} fontSize="sm" color='black' textAlign="left" as='b'>
+              Copyright - 2023 - Digital House
+            </Text>
+          </Box> */}
+        </HStack>
+        {/* <Spacer /> */}
+        <HStack color={'verdeAgua'} fontWeight={'bold'} display={'flex'}>
+          <Text >MADE WITH  </Text>
+          <FaHeart  size={25}  />
+          <Text>BY VALKIRIA</Text>
+        </HStack>
+        <HStack spacing='16px'>
 
-              <Box w='60px' h='40px'>
-              </Box>
+          <Box w='40px' h='40px' color={'verdeAgua'}>
+            <a href={facebookLink} target="_blank" rel="noopener noreferrer">
+              <FaFacebook size={35} color={'verdeAgua'} />
+            </a>
+          </Box>
 
-            </HStack>
-          </HStack>
+          <Box w='40px' h='40px' color={'verdeAgua'}>
+            <a href={instagramLink} target="_blank" rel="noopener noreferrer">
+              <FaInstagram size={35}  />
+            </a>
+          </Box>
+
+        </HStack>
+      </HStack>
         )
       }
     </>
