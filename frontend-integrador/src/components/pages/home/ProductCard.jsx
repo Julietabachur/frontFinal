@@ -89,7 +89,7 @@ const ProductCard = ({ item }) => {
 
       <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
         <Text
-          fontFamily={"Saira"}
+          fontFamily={"Roboto"}
           color={"gris1"}
           fontWeight="semibold"
           fontSize={["1rem", "1.2rem"]}
