@@ -10,9 +10,9 @@ const HomePage = () => {
 
   return (
     <div>
-    <Box w={"99vw"} bg={"blanco"} >
+    <Box w={"100vw"} bg={"blanco"} >
       <VStack >
-        <SearchBar />
+        {/* <SearchBar /> */}
         <FilterBar />
         <ShowList titulo={''}/>
       </VStack>
