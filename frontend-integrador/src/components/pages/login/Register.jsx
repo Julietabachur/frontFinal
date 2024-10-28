@@ -210,12 +210,15 @@ const Register = () => {
                 })}
               />
               <InputRightElement width="4.5rem">
-                <IconButton
+              <Button h="1.75rem" size="sm" onClick={toggleConfirmPasswordVisibility}>
+                  {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+                {/* <IconButton
                   icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
                   onClick={toggleConfirmPasswordVisibility}
                   variant="ghost"
                   aria-label="Toggle confirm password visibility"
-                />
+                />*/}
               </InputRightElement>
             </InputGroup>
             <FormErrorMessage>

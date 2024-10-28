@@ -209,6 +209,8 @@ const Login = () => {
               w="500px"
               placeholder="Email"
               value={email}
+              borderColor={"#e1bc6a"}
+              focusBorderColor="#e1bc6a"
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input
@@ -216,9 +218,11 @@ const Login = () => {
               placeholder="Contraseña"
               type="password"
               value={password}
+              borderColor={"#e1bc6a"}
+              focusBorderColor="#e1bc6a"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button w="500px" bg={"verde2"} onClick={handleLogin}>
+            <Button w="500px" bg={"#e1bc6a"} color="white" _hover={{ backgroundColor: "#d3a45a" }} onClick={handleLogin}>
               Iniciar Sesión
             </Button>
             {showAlert && invalidCredentials && (
