@@ -39,19 +39,19 @@ const Footer = () => {
       {media ? (
         <VStack bg={'white'} p={3} textAlign="center" w="99vw" alignItems={'center'}>
           <HStack spacing='16px' py={'20px'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-            <Box w='40px' h='40px' color={'verdeAgua'}>
+            <Box w='40px' h='40px' color={'color'}>
               <a href={facebookLink} target="_blank" rel="noopener noreferrer">
-                <FaFacebook size={25} color={'verdeAgua'} />
+                <FaFacebook size={25} color={'color'} />
               </a>
             </Box>
 
-            <Box w='40px' h='40px' color={'verdeAgua'}>
+            <Box w='40px' h='40px' color={'color'}>
               <a href={instagramLink} target="_blank" rel="noopener noreferrer">
                 <FaInstagram size={25}  />
               </a>
             </Box>           
           </HStack>
-          <HStack color={'verdeAgua'} fontWeight={'bold'} display={'flex'} fontSize={10}>
+          <HStack color={'color'} fontWeight={'bold'} display={'flex'} fontSize={10}>
               <Text >MADE WITH  </Text>
               <FaHeart  size={25}  />
               <Text>BY VALKIRIA</Text>
@@ -87,13 +87,13 @@ const Footer = () => {
           }}
         />
 
-        <Text fontFamily={'Prociono'}  color={'verdeAgua'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text>
+        <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text>
         </HStack>
       </a>
           {/* <Box h='40px' d='flex' justifyContent="center" alignItems="start">
             <Image ml={7} h={'50px'} src="../Isotipo-Valkiria-Sand.png" alt="Logo" />
           </Box>
-        <Text fontFamily={'Prociono'}  color={'verdeAgua'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text> */}
+        <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text> */}
 
           {/* <Box h='40px' d='flex' justifyContent="center" alignItems="start">
             <Text ml={7} fontSize="sm" color='black' textAlign="left" as='b'>
@@ -102,20 +102,20 @@ const Footer = () => {
           </Box> */}
         </HStack>
         {/* <Spacer /> */}
-        <HStack color={'verdeAgua'} fontWeight={'bold'} display={'flex'}>
+        <HStack color={'color'} fontWeight={'bold'} display={'flex'}>
           <Text >MADE WITH  </Text>
           <FaHeart  size={25}  />
           <Text>BY VALKIRIA</Text>
         </HStack>
         <HStack spacing='16px'>
 
-          <Box w='40px' h='40px' color={'verdeAgua'}>
+          <Box w='40px' h='40px' color={'color'}>
             <a href={facebookLink} target="_blank" rel="noopener noreferrer">
-              <FaFacebook size={35} color={'verdeAgua'} />
+              <FaFacebook size={35} color={'color'} />
             </a>
           </Box>
 
-          <Box w='40px' h='40px' color={'verdeAgua'}>
+          <Box w='40px' h='40px' color={'color'}>
             <a href={instagramLink} target="_blank" rel="noopener noreferrer">
               <FaInstagram size={35}  />
             </a>

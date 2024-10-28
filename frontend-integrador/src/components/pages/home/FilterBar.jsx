@@ -81,7 +81,7 @@ const FilterBar = () => {
               : "none",
           }}
         >
-          <Box bg={"verdeAgua"} /*bg={"gray.200"}*/ w={'100%'} h={'100%'}>
+          <Box bg={"color"} /*bg={"gray.200"}*/ w={'100%'} h={'100%'}>
             <Image
               w={'100%'}
               h={'80%'}
