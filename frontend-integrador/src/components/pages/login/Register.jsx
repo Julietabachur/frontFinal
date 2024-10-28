@@ -97,14 +97,14 @@ const Register = () => {
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
-      <Box w={"97vw"} maxW="500px" p={8} borderRadius="md" boxShadow="lg">
-        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+      <Box w={"97vw"} maxW="500px" p={8} borderRadius="md" boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)">
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" boxShadow="md">
           <FormControl isInvalid={errors.firstName} mb={4}>
             <Input
               placeholder="Nombre"
               autoComplete="off" // Desactiva la autocompletación
-              borderColor={errors.firstName ? "red.500" : "green.500"}
-              focusBorderColor="green.500" // Cambiar el color del borde al enfocar
+              borderColor={errors.firstName ? "red.500" :"#e1bc6a"}
+                focusBorderColor="#e1bc6a"  // Cambiar el color del borde al enfocar
               {...register("firstName", {
                 required: "Nombre es requerido",
                 pattern: {
@@ -120,8 +120,8 @@ const Register = () => {
             <Input
               placeholder="Apellido"
               autoComplete="off" // Desactiva la autocompletación
-              borderColor={errors.lastName ? "red.500" : "green.500"}
-              focusBorderColor="green.500" // Cambiar el color del borde al enfocar
+              borderColor={errors.lastName ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("lastName", {
                 required: "Apellido es requerido",
                 pattern: {
@@ -137,8 +137,8 @@ const Register = () => {
             <Input
               placeholder="Nombre de usuario"
               autoComplete="new-username" // Usa un valor alternativo
-              borderColor={errors.clientName ? "red.500" : "green.500"}
-              focusBorderColor="green.500" // Cambiar el color del borde al enfocar
+              borderColor={errors.clientName ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("clientName", {
                 required: "Nombre de usuario es requerido",
                 pattern: {
@@ -157,8 +157,8 @@ const Register = () => {
             <Input
               placeholder="Email"
               autoComplete="off" // Desactiva la autocompletación
-              borderColor={errors.email ? "red.500" : "green.500"}
-              focusBorderColor="green.500" // Cambiar el color del borde al enfocar
+              borderColor={errors.email ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("email", {
                 required: "Email es requerido",
                 pattern: {
@@ -177,8 +177,8 @@ const Register = () => {
                 placeholder="Contraseña"
                 autoComplete="new-password" // Usa un valor alternativo
                 type={showPassword ? "text" : "password"}
-                borderColor={errors.password ? "red.500" : "green.500"}
-                focusBorderColor="green.500" // Cambiar el color del borde al enfocar
+                borderColor={errors.password ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
                 {...register("password", {
                   required: "Contraseña es requerida",
                   pattern: {
@@ -201,8 +201,8 @@ const Register = () => {
               <Input
                 placeholder="Confirmar contraseña"
                 type={showConfirmPassword ? "text" : "password"}
-                borderColor={errors.confirmPassword ? "red.500" : "green.500"}
-                focusBorderColor="green.500" // Cambiar el color del borde al enfocar
+                borderColor={errors.confirmPassword ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
                 {...register("confirmPassword", {
                   required: "Confirmar contraseña es requerido",
                   validate: (value) =>
@@ -223,7 +223,7 @@ const Register = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <Button type="submit"  backgroundColor={"verde2"} w="full">
+          <Button type="submit"  backgroundColor={"#e1bc6a"} w="full" color="white" _hover={{ backgroundColor: "#d3a45a" }}>
             Registrarse
           </Button>
         </form>
