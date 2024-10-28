@@ -47,7 +47,8 @@ const RenderPagination = () => {
           key={number}
           onClick={() => setCurrentPage(number)}
           variant={number === currentPage ? "solid" : "outline"}
-          bg="verdeAgua"
+          bg={number === currentPage ? "verdeAgua" : "white" }
+          // bg="verdeAgua"
         >
           {number}
         </Button>

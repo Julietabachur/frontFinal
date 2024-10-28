@@ -60,8 +60,8 @@ const FilterBar = () => {
 
   return (
   
-   <VStack w={'100%'} bg={'negro'} position={"relative"} bottom={2} p={8} shadow={'dark-lg'} spacing={5}>
-    <Heading color={"white"} fontFamily={"Roboto"} letterSpacing={1} fontWeight="medium" fontSize={[16, 22, 28]}>Descubre nuestro catálogo</Heading>
+   <VStack w={'100%'} bg={'white'} position={"relative"} bottom={2} p={8}  spacing={5}>
+    <Heading color={"BLACK"} fontFamily={"Roboto"} letterSpacing={1} fontWeight="medium" fontSize={[16, 22, 28]}>Descubre nuestro catálogo</Heading>
 
     <SimpleGrid w={'100%'} h={'80%'} minChildWidth={['50px', '100px']} spacing={3}  >
     {categoryList.map((category) => (
@@ -81,7 +81,7 @@ const FilterBar = () => {
               : "none",
           }}
         >
-          <Box bg={"verde2"} /*bg={"gray.200"}*/ w={'100%'} h={'100%'}>
+          <Box bg={"verdeAgua"} /*bg={"gray.200"}*/ w={'100%'} h={'100%'}>
             <Image
               w={'100%'}
               h={'80%'}
@@ -95,19 +95,22 @@ const FilterBar = () => {
       ))}
     </SimpleGrid>
     
-    <HStack mt={4} spacing={4}>
-    <Button
+    {/* <HStack mt={4} spacing={4}>
+      {/* APLICAR FILTROS */}
+    {/* <Button
           h={[5,6,7]}
           color={"white"}
           bg={"verde2"}
           fontSize={{ base: 10, lg: 16 }}
           w={{ base: "80px", sm: "80px", md: '100px', lg: 40 }}
           /*w={{ base: "60px", lg: 40 }}*/
-          onClick={() => handleFilterSearch()}
-        >
-          Aplicar Filtros
-        </Button>
-        <Button
+        //   onClick={() => handleFilterSearch()}
+        // >
+        //   Aplicar Filtros
+       // </Button> */}
+    }
+{/* BORRAR FILTROS */}
+        {/* <Button
           h={[5,6,7]}
           color={"black"}
           bg={"gray.200"}
@@ -116,12 +119,13 @@ const FilterBar = () => {
           onClick={() => handleFiltros()}
         >
           Borrar Filtros
-        </Button>
-        <Text
+        </Button> */}
+
+        {/* <Text
           color={"verde2"}
           fontSize={{ base: 10, lg: 16 }}
         >{`Estás viendo ${totalElements} productos`}</Text>
-    </HStack>
+    </HStack>  */}
     
     
    </VStack>
