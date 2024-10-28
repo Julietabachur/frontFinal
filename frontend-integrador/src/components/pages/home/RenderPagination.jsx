@@ -26,7 +26,8 @@ const RenderPagination = () => {
      >
       <Button 
         isDisabled={currentPage < 2}
-        colorScheme="teal"
+        // colorScheme="teal"
+        bg="verdeAgua"
         onClick={() => setCurrentPage(1)}
       >
         <ArrowLeftIcon />
@@ -34,7 +35,8 @@ const RenderPagination = () => {
 
       <Button
         isDisabled={currentPage < 2}
-        colorScheme="teal"
+        // colorScheme="teal"
+        bg="verdeAgua"
         onClick={() => setCurrentPage(currentPage - 1)}
       >
         <ArrowBackIcon />
@@ -45,6 +47,7 @@ const RenderPagination = () => {
           key={number}
           onClick={() => setCurrentPage(number)}
           variant={number === currentPage ? "solid" : "outline"}
+          bg="verdeAgua"
         >
           {number}
         </Button>
@@ -52,14 +55,16 @@ const RenderPagination = () => {
 
       <Button
         isDisabled={currentPage === totalPages}
-        colorScheme="teal"
+        // colorScheme="teal"
+        bg="verdeAgua"
         onClick={() => setCurrentPage(currentPage + 1)}
       >
         <ArrowForwardIcon />
       </Button>
       <Button
         isDisabled={currentPage === totalPages}
-        colorScheme="teal"
+        // colorScheme="teal"
+        bg="verdeAgua"
         onClick={() => setCurrentPage(totalPages)}
       >
         <ArrowRightIcon />
