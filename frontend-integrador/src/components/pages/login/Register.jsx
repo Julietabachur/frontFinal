@@ -79,9 +79,23 @@ const Register = () => {
     reset(); // Resetea el formulario al montar el componente
   }, [token, reset]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
+    // Estructuramos el objeto data con los valores del formulario
+  const data = {
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    clientName: formData.clientName,
+    email: formData.email,
+    password: formData.password,
+  };
+    
     try {
-      const response = await axios.post(REGISTER_URL, data);
+      // Llamada a la API con los datos estructurados
+    const response = await axios.post(REGISTER_URL, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
       if (response.status === 200) {
         localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
         alert("Registro exitoso. Serás redirigido a la página de inicio.");
