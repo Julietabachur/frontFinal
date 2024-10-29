@@ -1,154 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Input,
   Button,
   Stack,
-  VStack,
   Flex,
   Alert,
   AlertIcon,
   Text,
-  AlertDescription,
+  FormControl,
+  FormErrorMessage,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { useProductContext } from "../home/Global.context";
 
 const authUrl = import.meta.env.VITE_AUTH_URL;
+const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const [invalidCredentials, setInvalidCredentials] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const navigate = useNavigate();
-  const [media, setMedia] = useState(false);
   const { isSignIn, setIsSignIn } = useProductContext();
   const MIN_DESKTOP_WIDTH = 768;
+  const [media, setMedia] = useState(window.innerWidth < MIN_DESKTOP_WIDTH);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Efecto para suscribirse al evento de redimensionamiento de la ventana
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm();
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  // Resizing effect
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < MIN_DESKTOP_WIDTH) {
-        setMedia(true);
-      } else {
-        setMedia(false);
-      }
+      setMedia(window.innerWidth < MIN_DESKTOP_WIDTH);
     };
-    if (window.innerWidth < MIN_DESKTOP_WIDTH) {
-      setMedia(true);
-    } else {
-      setMedia(false);
-    }
-
     window.addEventListener("resize", handleResize);
-
-    // Limpieza del event listener cuando el componente se desmonta
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [window.innerWidth]);
-
-  //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
-  const token = JSON.parse(localStorage.getItem("riskkojwt"));
-  //console.log(token)
-
-  const GETME_URL = import.meta.env.VITE_GETME_URL;
-
-  const getUsername = async (token) => {
-    try {
-      const response = await axios.get(GETME_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      //console.log(response);
-      console.log("Username Verified: ", response.data.isVerified);
-
-      if (response) {
-        if (response.data.isVerified === "true") {
-          navigate("/");
-        } else {
-          //navigate("/verify");
-        }
-      } else {
-        localStorage.removeItem("riskkojwt");
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (token) {
-      getUsername(token);
-    }
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
-      const response = await axios.post(`${authUrl}/login`, {
-        email,
-        password,
-      });
-
+      const response = await axios.post(`${authUrl}/login`, data);
       if (response.status === 200) {
-        // Inicio de sesión exitoso, guarda token y redirección a la página home
         setIsSignIn(false);
         localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
-
-        //console.log("logueado")
-        //console.log(response.data)
-
-        //console.log("HandleLogin Verified: ", response.data.isVerified);
-
-        if (response.data.isVerified === "true") {
-          console.log("Usuario verificado");
-
-          let isAdmin = false;
-
-          response.data.roles.forEach((rol) => {
-            if (rol === "ADMIN") {
-              isAdmin = true;
-            }
-          });
-
-          if (isAdmin) {
-            navigate("/");
-            // navigate("/admin"); // esta opcion permite direccionar al panel administrador si detecta ese rol.
-          } else {
-            navigate("/");
-          }
-        } else {
-          console.log("Usuario no verificado");
-          //console.log(response.data.verifyToken);
-          const verifyUrl = "/verifyReg?mailToken=" + response.data.verifyToken;
-          navigate(verifyUrl);
-        }
-
-        //window.location.reload()
-      } else {
-        // Maneja otros escenarios de respuesta según tu API
-        console.error("Inicio de sesión fallido");
-        console.log(response.config.data);
-        console.log(response.status);
+        navigate(
+          response.data.isVerified === "true"
+            ? "/"
+            : `/verifyReg?mailToken=${response.data.verifyToken}`
+        );
       }
     } catch (error) {
-      // Maneja errores de la solicitud
       if (error.response && error.response.status === 400) {
-        // El servidor respondió con un código de estado 400 (No autorizado)
         setInvalidCredentials(true);
-        setShowAlert(true); // Muestra la alerta cuando las credenciales son incorrectas
-        console.error(
-          "Credenciales incorrectas. Por favor, verifica tu correo electrónico y contraseña."
-        );
+        setShowAlert(true);
       } else {
-        // Otros errores de solicitud
         console.error("Error en el inicio de sesión:", error);
       }
     }
@@ -164,77 +82,76 @@ const Login = () => {
           </Alert>
         </Box>
       )}
-      {media ? (
-        <Box pos={"relative"} top={10} w={"97vw"} h={"100vh"}>
-          <Text fontSize="2xl" align="center" py={3}>
-            Iniciar sesión
-          </Text>
+      <Box pos={"relative"} top={10} w={media ? "97vw" : "500px"} h={"100vh"}>
+        <Text fontSize={media ? "2xl" : "4xl"} align="center" py={3}>
+          Iniciar sesión
+        </Text>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={4} align="center" justify="center">
-            <Input
-              w="250px"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              w="250px"
-              placeholder="Contraseña"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button w="200px" bg={"verde2"} onClick={handleLogin}>
+            <FormControl isInvalid={errors.email}>
+              <Input
+                placeholder="Email"
+                autoComplete="new-email"
+                borderColor={errors.email ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a"
+                {...register("email", {
+                  required: "El email es requerido",
+                  pattern: { value: emailRegex, message: "Email no válido" },
+                })}
+              />
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={errors.password}>
+              <InputGroup>
+                <Input
+                  placeholder="Contraseña"
+                  autoComplete="new-password"
+                  type={showPassword ? "text" : "password"}
+                  borderColor={errors.password ? "red.500" : "#e1bc6a"}
+                  focusBorderColor="#e1bc6a"
+                  {...register("password", {
+                    required: "La contraseña es requerida",
+                    minLength: {
+                      value: 8,
+                      message: "Debe tener al menos 8 caracteres",
+                    },
+                  })}
+                />
+                <InputRightElement width="4.5rem">
+                  <Button
+                    h="1.75rem"
+                    size="sm"
+                    bg="transparent" // Fondo transparente
+                    _hover={{ bg: "transparent" }} // Quitar fondo al pasar el ratón
+                    _active={{ bg: "transparent" }} // Quitar fondo al hacer clic
+                    _focus={{ boxShadow: "none" }} // Quitar el borde de enfoque
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+            </FormControl>
+            <Button
+              w={media ? "250px" : "500px"}
+              bg={"#e1bc6a"}
+              color="white"
+              _hover={{ backgroundColor: "#d3a45a" }}
+              type="submit"
+            >
               Iniciar Sesión
             </Button>
             {showAlert && invalidCredentials && (
-              <Alert status="error" w="300px" mt={4}>
-                <VStack>
-                  <AlertIcon />
-                  <p align="center">
-                    Credenciales incorrectas. Por favor, verifica tu correo
-                    electrónico y contraseña.
-                  </p>
-                </VStack>
-              </Alert>
-            )}
-          </Stack>
-        </Box>
-      ) : (
-        <Box pos={"relative"} top={10} w={"97vw"} h={"100vh"}>
-          <Text fontSize="4xl" align="center" py={3}>
-            Iniciar sesión
-          </Text>
-          <Stack spacing={4} align="center" justify="center">
-            <Input
-              w="500px"
-              placeholder="Email"
-              value={email}
-              borderColor={"#e1bc6a"}
-              focusBorderColor="#e1bc6a"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              w="500px"
-              placeholder="Contraseña"
-              type="password"
-              value={password}
-              borderColor={"#e1bc6a"}
-              focusBorderColor="#e1bc6a"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button w="500px" bg={"#e1bc6a"} color="white" _hover={{ backgroundColor: "#d3a45a" }} onClick={handleLogin}>
-              Iniciar Sesión
-            </Button>
-            {showAlert && invalidCredentials && (
-              <Alert status="error" w="500px" mt={4}>
+              <Alert status="error" w={media ? "300px" : "500px"} mt={4}>
                 <AlertIcon />
-                Credenciales incorrectas. Por favor, verifica tu correo
-                electrónico y contraseña.
+                Credenciales incorrectas. Por favor, verifica tu correo y
+                contraseña.
               </Alert>
             )}
           </Stack>
-        </Box>
-      )}
+        </form>
+      </Box>
     </Flex>
   );
 };
