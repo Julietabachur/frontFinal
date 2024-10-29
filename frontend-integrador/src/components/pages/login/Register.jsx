@@ -17,7 +17,8 @@ import { useNavigate } from "react-router-dom";
 
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
 const clientNameRegex = /^[a-zA-Z0-9._-]{5,}$/;
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const GETME_URL = import.meta.env.VITE_GETME_URL;
@@ -40,7 +41,8 @@ const Register = () => {
   } = useForm({ mode: "onBlur" });
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
 
   const checkClientNameAndEmail = async (value, field) => {
     try {
@@ -48,7 +50,10 @@ const Register = () => {
         `${REGISTER_URL}/${field}?${field}=${value}`
       );
       if (!response.data) {
-        setError(field, { type: "manual", message: `${field} ya está en uso.` });
+        setError(field, {
+          type: "manual",
+          message: `${field} ya está en uso.`,
+        });
       } else {
         clearErrors(field);
       }
@@ -111,14 +116,24 @@ const Register = () => {
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
-      <Box w={"97vw"} maxW="500px" p={8} borderRadius="md" boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)">
-        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" boxShadow="md">
+      <Box
+        w={"97vw"}
+        maxW="500px"
+        p={8}
+        borderRadius="md"
+        boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)"
+      >
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          autoComplete="off"
+          boxShadow="md"
+        >
           <FormControl isInvalid={errors.firstName} mb={4}>
             <Input
               placeholder="Nombre"
               autoComplete="off" // Desactiva la autocompletación
-              borderColor={errors.firstName ? "red.500" :"#e1bc6a"}
-                focusBorderColor="#e1bc6a"  // Cambiar el color del borde al enfocar
+              borderColor={errors.firstName ? "red.500" : "#e1bc6a"}
+              focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("firstName", {
                 required: "Nombre es requerido",
                 pattern: {
@@ -135,7 +150,7 @@ const Register = () => {
               placeholder="Apellido"
               autoComplete="off" // Desactiva la autocompletación
               borderColor={errors.lastName ? "red.500" : "#e1bc6a"}
-                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+              focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("lastName", {
                 required: "Apellido es requerido",
                 pattern: {
@@ -152,14 +167,15 @@ const Register = () => {
               placeholder="Nombre de usuario"
               autoComplete="new-username" // Usa un valor alternativo
               borderColor={errors.clientName ? "red.500" : "#e1bc6a"}
-                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+              focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("clientName", {
                 required: "Nombre de usuario es requerido",
                 pattern: {
                   value: clientNameRegex,
                   message: "Nombre de usuario no válido",
                 },
-                validate: (value) => checkClientNameAndEmail(value, "clientName"),
+                validate: (value) =>
+                  checkClientNameAndEmail(value, "clientName"),
               })}
             />
             {errors.clientName?.type === "manual" && (
@@ -172,7 +188,7 @@ const Register = () => {
               placeholder="Email"
               autoComplete="off" // Desactiva la autocompletación
               borderColor={errors.email ? "red.500" : "#e1bc6a"}
-                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+              focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
               {...register("email", {
                 required: "Email es requerido",
                 pattern: {
@@ -202,7 +218,15 @@ const Register = () => {
                 })}
               />
               <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={togglePasswordVisibility}>
+                <Button
+                  h="1.75rem"
+                  size="sm"
+                  bg="transparent" // Fondo transparente
+                  _hover={{ bg: "transparent" }} // Quitar fondo al pasar el ratón
+                  _active={{ bg: "transparent" }} // Quitar fondo al hacer clic
+                  _focus={{ boxShadow: "none" }} // Quitar el borde de enfoque onClick={togglePasswordVisibility}
+                  onClick={togglePasswordVisibility}
+                >
                   {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
               </InputRightElement>
@@ -224,7 +248,16 @@ const Register = () => {
                 })}
               />
               <InputRightElement width="4.5rem">
-              <Button h="1.75rem" size="sm" onClick={toggleConfirmPasswordVisibility}>
+                {/* <Button h="1.75rem" size="sm" onClick={toggleConfirmPasswordVisibility}> */}
+                <Button
+                  h="1.75rem"
+                  size="sm"
+                  bg="transparent" // Fondo transparente
+                  _hover={{ bg: "transparent" }} // Quitar fondo al pasar el ratón
+                  _active={{ bg: "transparent" }} // Quitar fondo al hacer clic
+                  _focus={{ boxShadow: "none" }} // Quitar el borde de enfoque
+                  onClick={toggleConfirmPasswordVisibility}
+                >
                   {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
                 {/* <IconButton
@@ -240,7 +273,13 @@ const Register = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <Button type="submit"  backgroundColor={"#e1bc6a"} w="full" color="white" _hover={{ backgroundColor: "#d3a45a" }}>
+          <Button
+            type="submit"
+            backgroundColor={"#e1bc6a"}
+            w="full"
+            color="white"
+            _hover={{ backgroundColor: "#d3a45a" }}
+          >
             Registrarse
           </Button>
         </form>
