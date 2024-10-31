@@ -1,145 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Input,
   Button,
-  Stack,
   Flex,
-  Spinner,
-  HStack,
+  FormControl,
+  FormErrorMessage,
+  InputGroup,
+  InputRightElement,
+  IconButton,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
-const clientNameRegex = /^[a-zA-Z0-9_]{5,}$/;
+const clientNameRegex = /^[a-zA-Z0-9._-]{5,}$/;
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
-//expresion regular que permite carácteres especiales que no sean alfanumérico.
-//^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,24}$
-
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const GETME_URL = import.meta.env.VITE_GETME_URL;
-const baseUrl = import.meta.env.VITE_SERVER_URL;
 const REGISTER_URL = import.meta.env.VITE_AUTH_URL + "/register";
 
 const Register = () => {
-  //constantes del formulario
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [clientName, setClientName] = useState("");
-  const [clientNameValid, setClientNameValid] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isNameLoading, setIsNameLoading] = useState(false);
-  const [isEmailLoading, setIsEmailLoading] = useState(false);
-
-  //constantes para manejo de errores en las validaciones
-  const [firstNameError, setFirstNameError] = useState("");
-  const [lastNameError, setLastNameError] = useState("");
-  const [clientNameError, setClientNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-  //constantes para manejo de errores cdo se valida duplicado en BE de clientName y email
-  const [showClientNameDuplicatedError, setShowClientNameDuplicatedError] =
-    useState(false);
-  const [showEmailDuplicatedError, setShowEmailDuplicatedError] =
-    useState(false);
-
   const navigate = useNavigate();
-
-  //metodo que atrasa la ejecucion de la funcion una medida de tiempo 'delay'
-  function debounce(func, delay) {
-    let timer;
-    // Acá esta cargando todos los argumentos de la función que voy a demorar CheckClientNameAndEmail
-    return function (...args) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, args);
-      }, delay);
-    };
-  }
-
-  //Funciones de cada validación
-  const validateName = (name) => {
-    return !nameRegex.test(name)
-      ? "El nombre debe contener solo letras, mínimo 4 y no tener espacios al inicio."
-      : "";
-  };
-
-  const validateLastName = (lastName) => {
-    return !nameRegex.test(lastName)
-      ? "El apellido debe contener solo letras, mínimo 4 y no tener espacios al inicio."
-      : "";
-  };
-
-  const validateClientName = (clientName) => {
-    return !clientNameRegex.test(clientName)
-      ? "El nombre de usuario puede contener letras, números y guión bajo, mínimo 5 y no tener espacios al inicio."
-      : "";
-  };
-
-  const validateEmail = (email) => {
-    return !emailRegex.test(email)
-      ? "Formato de correo electrónico no válido."
-      : "";
-  };
-
-  const validatePassword = (password) => {
-    return !passwordRegex.test(password)
-      ? "La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un caracter especial."
-      : "";
-  };
-
-  //Funciones para el manejo de errores en dependencia de las validaciones
-
-  const handleFirstNameChange = (firstName) => {
-    setFirstName(firstName);
-    setFirstNameError(validateName(firstName));
-  };
-
-  const handleLastNameChange = (lastName) => {
-    setLastName(lastName);
-    setLastNameError(validateLastName(lastName));
-  };
-
-  const handleClientNameChange = (clientName) => {
-    setClientName(clientName);
-    setClientNameError(validateClientName(clientName));
-  };
-
-  const handleEmailChange = (email) => {
-    setEmail(email);
-    setEmailError(validateEmail(email));
-  };
- 
-  const handlePasswordChange = (password) => {
-    setPassword(password);
-    setPasswordError(validatePassword(password));
-  };
-
-  const handleConfirmPasswordChange = (confirmPassword) => {
-    setConfirmPassword(confirmPassword);
-    setConfirmPasswordError(
-      password !== confirmPassword ? "Las contraseñas no coinciden." : ""
-    );
-  };
-
-  //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    reset,
+    watch,
+    formState: { errors, isValid },
+  } = useForm({ mode: "onBlur" });
 
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+
+  const checkClientNameAndEmail = async (value, field) => {
+    try {
+      const response = await axios.get(
+        `${REGISTER_URL}/${field}?${field}=${value}`
+      );
+      if (!response.data) {
+        setError(field, { type: "manual", message: `${field} ya está en uso.` });
+      } else {
+        clearErrors(field);
+      }
+    } catch (error) {
+      console.error(`Error al verificar ${field}:`, error);
+    }
+  };
 
   const getUsername = async (token) => {
     try {
       const response = await axios.get(GETME_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (response) {
         navigate("/");
@@ -155,316 +76,157 @@ const Register = () => {
     if (token) {
       getUsername(token);
     }
-  }, [token]);
+    reset(); // Resetea el formulario al montar el componente
+  }, [token, reset]);
 
-  // Función para revisar si el clientName o el email existe en el Backend (BE)
-const CheckClientNameAndEmail = async (value, endpoint) => {
-  if (endpoint === "clientName") {
-    // Activar la bandera de carga y manejar el cambio en el nombre del cliente
-    //setIsNameLoading(true);
-    handleClientNameChange(value);
-  }
-  else if (endpoint === "email") {
-    // Activar la bandera de carga y manejar el cambio en la dirección de correo electrónico del cliente
-    //setIsEmailLoading(true);
-    handleEmailChange(value);
-  }
-
-  // Verificar si el valor no es undefined
-  if (value !== undefined) {
-    // Realizar una solicitud GET a la API con el valor del endpoint y el valor proporcionado
-    const response = await axios.get(
-      `${baseUrl}/auth/${endpoint}?${endpoint}=${value}`
-    );
-
-    // Verificar si hay una respuesta del servidor
-    if (response) {
-      // Desactivar las banderas de carga basándose en el endpoint
-      if (endpoint === "clientName") {
-        //setIsNameLoading(false);
-      } else if (endpoint === "email") {
-        //setIsEmailLoading(false);
-      }
-
-      // Si el nombre no existe en la BD la response sería True y el endpoint es "clientName"
-      if (response.data && endpoint === "clientName") {
-        // Ocultar el error de nombre duplicado y establecer el nombre del cliente
-        setShowClientNameDuplicatedError(false);
-        setClientName(value);
-      }
-      // Si el email no existe en la BD la response sería True y el endpoint es "email"
-      else if (response.data && endpoint === "email") {
-        // Ocultar el error de correo electrónico duplicado y establecer la dirección de correo electrónico del cliente
-        setShowEmailDuplicatedError(false);
-        setEmail(value);
-      }
-      // Si existe el ClientName o el email existen la BD entonce la response es false
-      else if (!response.data) {
-        // Mostrar el error de nombre o correo electrónico duplicado basándose en el endpoint
-        if (endpoint === "clientName") {
-          setShowClientNameDuplicatedError(true);
-        } else if (endpoint === "email") {
-          setShowEmailDuplicatedError(true);
-        }
-      }
-    }
-  }
-};
-
-
-  //version demorada de del metodo checkName
-  const debouncedCheckClientNameAndEmail = debounce(CheckClientNameAndEmail, 2000);
-
-  //función para el Register similiar al onSubmit
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-
-    //Validar campos antes de continuar
-    setFirstNameError(validateName(firstName));
-    setLastNameError(validateLastName(lastName));
-    setClientNameError(validateClientName(clientName));
-    setEmailError(validateEmail(email));
-    setPasswordError(validatePassword(password));
-    setConfirmPasswordError(
-      password !== confirmPassword ? "Las contraseñas no coinciden." : ""
-    );
-
-    if (
-      firstNameError ||
-      lastNameError ||
-      clientNameError ||
-      emailError ||
-      passwordError ||
-      confirmPasswordError
-    ) {
-      // Evitar que el formulario se envíe*/
-      return;
-    }
-
+  const onSubmit = async (data) => {
     try {
-      // Lógica para enviar el formulario
-      const response = await axios.post(REGISTER_URL, {
-        firstName,
-        lastName,
-        clientName,
-        email,
-        password,
-      });
-
+      const response = await axios.post(REGISTER_URL, data);
       if (response.status === 200) {
-        console.log(response.data);
         localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
-        window.alert(
-          "Registro exitoso. Serás redirigido a la página de inicio."
-        );
-        setTimeout(() => {
-          const targetUrl = "/verifyReg?mailToken=" + response.data.verifyToken ;
-          navigate(targetUrl);
-          //window.location.reload();
-        }, 1000);
-      } else {
-        alert("Fallo el registro, recargue la página y pruebe nuevamente");
+        alert("Registro exitoso. Serás redirigido a la página de inicio.");
+        navigate(`/verifyReg?mailToken=${response.data.verifyToken}`);
       }
     } catch (error) {
-      // Manejar errores de la solicitud
       console.error("Error en el registro:", error);
     }
   };
 
-  //estilos compartidos por todos los inputs
-  const inputStyle = {
-    padding: "6px",
-    width: "500px",
-    borderRadius: "5px",
-    border: "0.5px solid lightgray",
-    color: "gray",
-    marginBottom: "10px",
-    autoComplete: "off",
-    paddingLeft: "15px",
-  };
-
-  const errorStyle = {
-    height: "50px",
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "column",
-    justifyContent: "center",
-  };
+  // Obtenemos la contraseña ingresada para la validación
+  const password = watch("password");
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
-      <Box pos={"relative"} top={100} w={"97vw"} h={"100vh"}>
-        <form
-          onSubmit={handleRegister}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <input
+      <Box w={"97vw"} maxW="500px" p={8} borderRadius="md" boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)">
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" boxShadow="md">
+          <FormControl isInvalid={errors.firstName} mb={4}>
+            <Input
               placeholder="Nombre"
-              style={inputStyle}
-              type="text"
-              value={firstName}
-              onChange={(e) => handleFirstNameChange(e.target.value)}
-              required
-              autoComplete="off"
+              autoComplete="off" // Desactiva la autocompletación
+              borderColor={errors.firstName ? "red.500" :"#e1bc6a"}
+                focusBorderColor="#e1bc6a"  // Cambiar el color del borde al enfocar
+              {...register("firstName", {
+                required: "Nombre es requerido",
+                pattern: {
+                  value: nameRegex,
+                  message: "El nombre no es válido",
+                },
+              })}
             />
-          </div>
-          {firstNameError && (
-            <div style={errorStyle}>
-              <div style={{ color: "red", fontSize: "16px" }}>
-                {firstNameError}
-              </div>
-            </div>
-          )}
+            <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
+          </FormControl>
 
-          <div>
-            <input
+          <FormControl isInvalid={errors.lastName} mb={4}>
+            <Input
               placeholder="Apellido"
-              type="text"
-              style={inputStyle}
-              value={lastName}
-              onChange={(e) => handleLastNameChange(e.target.value)}
-              required
-              autoComplete="off"
+              autoComplete="off" // Desactiva la autocompletación
+              borderColor={errors.lastName ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+              {...register("lastName", {
+                required: "Apellido es requerido",
+                pattern: {
+                  value: nameRegex,
+                  message: "El apellido no es válido",
+                },
+              })}
             />
-          </div>
-          {lastNameError && (
-            <div style={errorStyle}>
-              <div style={{ color: "red", fontSize: "16px" }}>
-                {lastNameError}
-              </div>
-            </div>
-          )}
+            <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
+          </FormControl>
 
-          <Box position={"relative"}>
-            <input
+          <FormControl isInvalid={errors.clientName} mb={4}>
+            <Input
               placeholder="Nombre de usuario"
-              type="text"
-              style={inputStyle}
-              onChange={(e) =>
-                debouncedCheckClientNameAndEmail(e.target.value, "clientName")
-              }
-              required
-              autoComplete="off"
+              autoComplete="new-username" // Usa un valor alternativo
+              borderColor={errors.clientName ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+              {...register("clientName", {
+                required: "Nombre de usuario es requerido",
+                pattern: {
+                  value: clientNameRegex,
+                  message: "Nombre de usuario no válido",
+                },
+                validate: (value) => checkClientNameAndEmail(value, "clientName"),
+              })}
             />
-            {isNameLoading && (
-              <Box
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  transform: "translateY(-50%)",
-                  zIndex: "10",
-                }}
-              >
-                <Spinner color="red.500" />
-              </Box>
+            {errors.clientName?.type === "manual" && (
+              <FormErrorMessage>{errors.clientName.message}</FormErrorMessage>
             )}
-          </Box>
-          <Box>
-            {clientNameError && (
-              <div style={errorStyle}>
-                <div style={{ color: "red", fontSize: "16px" }}>
-                  {clientNameError}
-                </div>
-              </div>
-            )}
-          </Box>
-          <Box>
-            {showClientNameDuplicatedError && (
-              <div style={{ color: "red", fontSize: "16px" }}>
-                El nombre de usuario ya está en uso. Por favor, elige otro.
-              </div>
-            )}
-          </Box>
+          </FormControl>
 
-          <Box>
-            <input
+          <FormControl isInvalid={errors.email} mb={4}>
+            <Input
               placeholder="Email"
-              style={inputStyle}
-              type="email"
-              onChange={(e) =>
-                debouncedCheckClientNameAndEmail(e.target.value, "email")
-              }
-              required
-              autoComplete="off"
+              autoComplete="off" // Desactiva la autocompletación
+              borderColor={errors.email ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+              {...register("email", {
+                required: "Email es requerido",
+                pattern: {
+                  value: emailRegex,
+                  message: "Email no válido",
+                },
+                validate: (value) => checkClientNameAndEmail(value, "email"),
+              })}
             />
-            {isEmailLoading && (
-              <Box
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "10px",
-                  transform: "translateY(-50%)",
-                  zIndex: "10",
-                }}
-              >
-                <Spinner color="red.500" />
-              </Box>
-            )}
-          </Box>
-          <Box>
-            {emailError && (
-              <div style={errorStyle}>
-                <div style={{ color: "red", fontSize: "16px" }}>
-                  {emailError}
-                </div>
-              </div>
-            )}
-          </Box>
-          <Box>
-            {showEmailDuplicatedError && (
-              <div style={{ color: "red", fontSize: "16px" }}>
-                El e-mail ingresado ya está en uso. Por favor, elige otro.
-              </div>
-            )}
-          </Box>
+            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+          </FormControl>
 
-          <div>
-            <input
-              placeholder="password"
-              style={inputStyle}
-              type="password"
-              value={password}
-              //onChange={(e) => setPassword(e.target.value)}
-              onChange={(e) => handlePasswordChange(e.target.value)}
-              required
-              autoComplete="off"
-            />
-          </div>
-          {passwordError && (
-            <div style={errorStyle}>
-              <div style={{ color: "red", fontSize: "16px" }}>
-                {passwordError}
-              </div>
-            </div>
-          )}
-          <div>
-            <input
-              placeholder="Confirm Password"
-              style={inputStyle}
-              type="password"
-              value={confirmPassword}
-              //onChange={(e) => setConfirmPassword(e.target.value)}
-              onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-              required
-              autoComplete="off"
-            />
-          </div>
-          {confirmPasswordError && (
-            <div style={errorStyle}>
-              <div style={{ color: "red", fontSize: "16px" }}>
-                {confirmPasswordError}
-              </div>
-            </div>
-          )}
+          <FormControl isInvalid={errors.password} mb={4}>
+            <InputGroup>
+              <Input
+                placeholder="Contraseña"
+                autoComplete="new-password" // Usa un valor alternativo
+                type={showPassword ? "text" : "password"}
+                borderColor={errors.password ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+                {...register("password", {
+                  required: "Contraseña es requerida",
+                  pattern: {
+                    value: passwordRegex,
+                    message: "Contraseña no válida",
+                  },
+                })}
+              />
+              <InputRightElement width="4.5rem">
+                <Button h="1.75rem" size="sm" onClick={togglePasswordVisibility}>
+                  {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+          </FormControl>
 
-          <Button w="500px" backgroundColor={"verde2"} onClick={handleRegister}>
+          <FormControl isInvalid={errors.confirmPassword} mb={4}>
+            <InputGroup>
+              <Input
+                placeholder="Confirmar contraseña"
+                type={showConfirmPassword ? "text" : "password"}
+                borderColor={errors.confirmPassword ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a" // Cambiar el color del borde al enfocar
+                {...register("confirmPassword", {
+                  required: "Confirmar contraseña es requerido",
+                  validate: (value) =>
+                    value === password || "Las contraseñas no coinciden", // Compara con el valor de la contraseña
+                })}
+              />
+              <InputRightElement width="4.5rem">
+              <Button h="1.75rem" size="sm" onClick={toggleConfirmPasswordVisibility}>
+                  {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+                {/* <IconButton
+                  icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  onClick={toggleConfirmPasswordVisibility}
+                  variant="ghost"
+                  aria-label="Toggle confirm password visibility"
+                />*/}
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>
+              {errors.confirmPassword?.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <Button type="submit"  backgroundColor={"#e1bc6a"} w="full" color="white" _hover={{ backgroundColor: "#d3a45a" }}>
             Registrarse
           </Button>
         </form>

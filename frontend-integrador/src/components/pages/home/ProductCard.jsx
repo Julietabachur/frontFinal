@@ -17,26 +17,25 @@ const ProductCard = ({ item }) => {
   const [isHeartClicked, setHeartClicked] = useState(false);
   const { setFavorites, favorites } = useProductContext();
 
-  //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
+ 
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
-  // Verificar si el item.id está en el array de favoritos
+
   const isFavorite = favorites.includes(item.id);
 
   useEffect(() => {
-    // Actualizar el estado del corazón basado en si el id está en favoritos
+    
     const isFavorite = favorites.includes(item.id);
     setHeartClicked(isFavorite);
   }, [item.id]);
 
   const handleHeartClick = (event) => {
-    // Cambiar el estado del clic del corazón
+    
     setHeartClicked(!isHeartClicked);
 
-    // Actualizar favoritos según el estado del corazón
     const updatedFavorites = isHeartClicked
-      ? favorites.filter((id) => id !== item.id) // Quitar de favoritos si estaba
-      : [...favorites, item.id]; // Agregar a favoritos si no estaba
+      ? favorites.filter((id) => id !== item.id) 
+      : [...favorites, item.id]; 
 
     setFavorites(updatedFavorites);
   };
@@ -61,7 +60,7 @@ const ProductCard = ({ item }) => {
         p={0}
         position="relative"
       >
-        {/* Imagen */}
+        {}
         <Link as={ReactRouterLink} to={`/detalle/${item.id}`}>
           <Image
             src={item?.thumbnail}
@@ -70,7 +69,7 @@ const ProductCard = ({ item }) => {
             objectFit={"cover"}
           />
         </Link>
-        {/* Botón de corazón personalizado */}
+        {}
         {token && (
           <Box
             position="absolute"
@@ -89,7 +88,7 @@ const ProductCard = ({ item }) => {
 
       <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
         <Text
-          fontFamily={"Saira"}
+          fontFamily={"Roboto"}
           color={"gris1"}
           fontWeight="semibold"
           fontSize={["1rem", "1.2rem"]}
