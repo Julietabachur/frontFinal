@@ -54,21 +54,17 @@ const NavbarMenu = ({ username, token, roles }) => {
         <Avatar
           bg={"gray.100"}
           size="md"
-          color={"color"}
+          color={"black"}
           fontWeight={"black"}
           name={username}
         />
       </MenuButton>
-      <MenuList bg={'white'} borderColor={'gray.200'}>
+      <MenuList bg={'black'} borderColor={'verde2'}>
         <MenuItem
-          color={'color'} 
+          color={'verde2'} 
           borderRadius={'0'} 
-          bg={'white'}
-          _hover={{
-            cursor: "pointer", // Cambia el cursor al pasar por encima
-            fontWeight:'semibold',
-            textDecorationLine:'underline'
-            }}
+          bg={'black'}
+          _hover={{ bgColor:'verde2', color:'black' }}
           onClick={() => {
             navigate(`/perfil`);
           }}
@@ -77,14 +73,10 @@ const NavbarMenu = ({ username, token, roles }) => {
         </MenuItem>
         {admin && (
           <MenuItem
-          color={'color'} 
+          color={'verde2'} 
           borderRadius={'0'} 
-          bg={'white'}
-          _hover={{
-            cursor: "pointer", // Cambia el cursor al pasar por encima
-            fontWeight:'semibold',
-            textDecorationLine:'underline'
-            }}
+          bg={'black'}
+          _hover={{ bgColor:'verde2', color:'black' }}
             onClick={() => {
               navigate(`/admin`);
             }}
@@ -93,27 +85,19 @@ const NavbarMenu = ({ username, token, roles }) => {
           </MenuItem>
         )}
         <MenuItem
-       color={'color'} 
+       color={'verde2'} 
        borderRadius={'0'} 
-       bg={'white'}
-       _hover={{
-        cursor: "pointer", // Cambia el cursor al pasar por encima
-        fontWeight:'semibold',
-        textDecorationLine:'underline'
-        }}
+       bg={'black'}
+       _hover={{ bgColor:'verde2', color:'black' }}
           onClick={() => handleReserves()}
         >
           Mis reservas{" "}
         </MenuItem>
         <MenuItem
-         color={'color'} 
+         color={'verde2'} 
          borderRadius={'0'} 
-         bg={'white'}
-         _hover={{
-          cursor: "pointer", // Cambia el cursor al pasar por encima
-          fontWeight:'semibold',
-          textDecorationLine:'underline'
-          }}
+         bg={'black'}
+         _hover={{ bgColor:'verde2', color:'black' }}
           onClick={() => handleFavorites()}
         >
           Mis Favoritos{" "}
@@ -121,16 +105,13 @@ const NavbarMenu = ({ username, token, roles }) => {
 
         <MenuItem
         //  as={Button}
-         bg={"white"}
+         bg={"black"}
         //  variant={"ghost"}
          onClick={logoutHandle}
-         color={'color'}
+         color={'verde2'}
          borderRadius={'0'}
-         _hover={{
-          cursor: "pointer", // Cambia el cursor al pasar por encima
-          fontWeight:'semibold',
-          textDecorationLine:'underline'
-          }}
+         _hover={{ bgColor:'red', color:'black' }}
+
         >
           Salir
         </MenuItem>

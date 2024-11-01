@@ -294,7 +294,7 @@ const ReservesPage = () => {
   return (
     <VStack h="auto" w={"100%"}>
       <Text
-        fontFamily={"Roboto"}
+        fontFamily={"Saira"}
         color={"black"}
         fontSize={"2.5rem"}
         w={"100%"}

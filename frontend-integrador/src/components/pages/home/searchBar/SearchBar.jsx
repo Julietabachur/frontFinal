@@ -136,12 +136,12 @@ const SearchBar = () => {
     >
       <GridItem gridRow={[1,1,1]} gridColumnStart={[1,1,1]}  gridColumnEnd={[3,4,5]} >
         <Text textShadow={'dark-lg'} color={"black"} textAlign={"center"} 
-        fontFamily={"Roboto"} fontWeight={"semibold"} fontSize={[15,22,28]}>
+        fontFamily={"Saira"} fontWeight={"semibold"} fontSize={[15,22,28]}>
           ¿QUÉ ESTÁS BUSCANDO?</Text>
       </GridItem>
       <GridItem gridRow={[2,2,2]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,5]}>
         <Text px={5} textShadow={'dark-lg'} textAlign={"center"} 
-        fontFamily={"Roboto"} fontWeight={["normal", "medium"]} fontSize={[11,13,16]}>
+        fontFamily={"Saira"} fontWeight={["normal", "medium"]} fontSize={[11,13,16]}>
         Explora los artículos disponibles en nuestra tienda dentro de un rango de fechas deseado.</Text>
       </GridItem>
       <GridItem px={[1]} gridRow={[3,3,3]} gridColumnStart={[1,1,1]} gridColumnEnd={[3,4,2]} >

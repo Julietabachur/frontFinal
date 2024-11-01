@@ -353,7 +353,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           />
   
           <Heading
-            fontFamily="Roboto"
+            fontFamily="Saira"
             fontWeight={"bold"}
             fontSize="1.3rem"
             letterSpacing={1}
@@ -372,7 +372,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           py={2}
           pt={5}
           minW={"300px"}>
-        <Text fontFamily={"Roboto"} m={1} fontSize="1rem" fontWeight="semibold">
+        <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
         Nombre del producto:
         </Text>
         <HStack spacing={3}>
@@ -380,13 +380,13 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           border={"1px solid black"}
             name="productName"
             p={3}
-            fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+            fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
             placeholder="Nombre del producto"
             defaultValue={productData.productName}
             onChange={(e) => handleName(e)}
           />
           {showError && (
-            <Text color="red" fontFamily={"Roboto"} fontSize="0.8rem" fontWeight="bold" p={2}>
+            <Text color="red" fontFamily={"Saira"} fontSize="0.8rem" fontWeight="bold" p={2}>
               ¡El nombre del producto ya existe en la base de datos. Debe elegir otro nombre!
             </Text>
           )}
@@ -399,13 +399,13 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           px={10}
           py={2}
           minW={"300px"} >
-        <Text fontFamily={"Roboto"} m={1} fontSize="1rem" fontWeight="semibold">
+        <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
           Categoría del producto:
         </Text>
         <Select
         borderColor={"black"} 
           name="category"
-          fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+          fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
           placeholder="Selecciona una categoría"
           value={productData.category}
           disabled={formDisabled}
@@ -425,13 +425,13 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           px={10}
           py={2}
           minW={"300px"}>
-          <Text fontFamily={"Roboto"} m={1} fontSize="1rem" fontWeight="semibold">
+          <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Descripción del producto:
           </Text>
             <Textarea
             border={"1px solid black"}
             p={3}
-            fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+            fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
               name="detail"
               placeholder="Descripción del producto"
               defaultValue={productData.detail}
@@ -447,14 +447,14 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
           px={10}
           py={2}
           minW={"300px"}>
-        <Text fontFamily={"Roboto"} m={1} fontSize="1rem" fontWeight="semibold">
+        <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Thumbnail - Imagen miniatura:
         </Text>
 
         <Input
             name="thumbnail"
             border={"1px solid black"}
-            fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+            fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
             placeholder="Enlace de la miniatura"
             defaultValue={productData.thumbnail}
             disabled={formDisabled}
@@ -469,7 +469,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       py={2}
       minW={"300px"}>
           
-          <Text fontFamily={"Roboto"} m={1} fontSize="1rem" fontWeight="semibold">
+          <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Galería de Imágenes:
           </Text>
 
@@ -477,7 +477,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
             <Input
             border={"1px solid black"}
               flex="1"
-              fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+              fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
               placeholder="Enlace imágenes de la galería"
               value={galleryUrl}
               disabled={formDisabled}
@@ -492,7 +492,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
               {productData.gallery.map((image, index) => (
                 <Flex key={index} align="center">
                   <ListItem py={3} ml={4} flex="1">
-                    <Text fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal">
+                    <Text fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal">
                       <span>✔ - </span>
                     <a href={image} target="_blank" rel="noopener noreferrer">
                       {image}
@@ -519,13 +519,13 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
        py={2}
        minW={"300px"}>
 
-          <Text fontFamily={"Roboto"} m={1} fontSize="1rem" fontWeight="semibold">
+          <Text fontFamily={"Saira"} m={1} fontSize="1rem" fontWeight="semibold">
             Características del producto
           </Text>
           
           <HStack align="center" mb={3} spacing={3}>
             <Select 
-            fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+            fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
               borderColor={"black"} 
               placeholder="Seleccione una característica"
               value={newFeature}
@@ -539,7 +539,7 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
               ))}
             </Select>
             <Input
-            fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+            fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
               border={"1px solid black"} 
               placeholder="Nuevo valor para la característica"
               value={newFeatureValue}
@@ -563,18 +563,18 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
                   <HStack
                   ml={4}
                   >
-                    <Text fontFamily="Roboto" color="black" fontSize="1rem">
+                    <Text fontFamily="Saira" color="black" fontSize="1rem">
                       {prodFeature.charIcon}
                     </Text>
                     <Text
-                      fontFamily={"Roboto"} fontSize="0.9rem" fontWeight="normal"
+                      fontFamily={"Saira"} fontSize="0.9rem" fontWeight="normal"
                     >
                       {prodFeature.charName}
                     </Text >
                     {prodFeature.charValue && prodFeature.charValue.map((value, valueIndex) => (
                       <Text
                         key={valueIndex}
-                        fontFamily="Roboto"
+                        fontFamily="Saira"
                         fontSize="0.9rem"
                         ml={2}
                       >
@@ -608,14 +608,14 @@ const NewProduct = ({ token, productToEdit, showSuccess, setShowAddProduct, setS
       gap={3}
       >
         {productToEdit ? (
-          <Button  onClick={saveChanges} colorScheme="green" fontFamily={"Roboto"} fontSize="1rem" fontWeight="semibold"  alignSelf={"flex-end"}>Guardar Cambios</Button>
+          <Button  onClick={saveChanges} colorScheme="green" fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold"  alignSelf={"flex-end"}>Guardar Cambios</Button>
 
         ) : (
-          <Button onClick={saveChanges} colorScheme="green" fontFamily={"Roboto"} fontSize="1rem" fontWeight="semibold" alignSelf={"flex-end"}>Agregar</Button>
+          <Button onClick={saveChanges} colorScheme="green" fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold" alignSelf={"flex-end"}>Agregar</Button>
 
         )}
         
-        <Button fontFamily={"Roboto"} fontSize="1rem" fontWeight="semibold" onClick={() => handleCancel()}>Cancelar</Button>
+        <Button fontFamily={"Saira"} fontSize="1rem" fontWeight="semibold" onClick={() => handleCancel()}>Cancelar</Button>
       </Box>
 
       </VStack>
