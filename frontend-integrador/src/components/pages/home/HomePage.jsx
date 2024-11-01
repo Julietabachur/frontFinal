@@ -1,23 +1,20 @@
 import { VStack, Box } from "@chakra-ui/react";
-import SearchBar from "./searchBar/SearchBar";
-import ShowList from "./ShowList";
 import FilterBar from "./FilterBar";
-
+import SearchBar from "./searchBar/SearchBar";
+import RandomProductSlider from "./RandomProductSlider";
+import ShowList from "./ShowList"; 
+import { useProductContext } from "./Global.context"; 
 const HomePage = () => {
-  //const token = import.meta.env.VITE_TOKEN;
-  const token = JSON.parse(localStorage.getItem("riskkojwt"));
-  const baseUrl = import.meta.env.VITE_SERVER_URL;
+  const { paginatedData } = useProductContext(); 
 
   return (
-    <div>
-    <Box w={"100vw"} bg={"blanco"} >
-      <VStack >
-        {/* <SearchBar /> */}
+    <Box w={"100vw"} bg={"blanco"}>
+      <VStack spacing={8}>
         <FilterBar />
-        <ShowList titulo={''}/>
+        <RandomProductSlider />
+        <ShowList products={paginatedData} /> 
       </VStack>
     </Box>
-    </div>
   );
 };
 
