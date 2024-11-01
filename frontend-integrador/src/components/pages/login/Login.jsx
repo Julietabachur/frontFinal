@@ -1,100 +1,158 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Input,
   Button,
   Stack,
+  VStack,
   Flex,
   Alert,
   AlertIcon,
   Text,
-  FormControl,
-  FormErrorMessage,
-  InputGroup,
-  InputRightElement,
+  AlertDescription,
 } from "@chakra-ui/react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { useProductContext } from "../home/Global.context";
 
 const authUrl = import.meta.env.VITE_AUTH_URL;
-const REGISTER_URL = import.meta.env.VITE_AUTH_URL;
-const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const Login = () => {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [invalidCredentials, setInvalidCredentials] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const navigate = useNavigate();
+  const [media, setMedia] = useState(false);
   const { isSignIn, setIsSignIn } = useProductContext();
   const MIN_DESKTOP_WIDTH = 768;
-  const [media, setMedia] = useState(window.innerWidth < MIN_DESKTOP_WIDTH);
-  const [showPassword, setShowPassword] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    clearErrors,
-    formState: { errors },
-  } = useForm();
-
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
-
-  // Resizing effect
+  // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
     const handleResize = () => {
-      setMedia(window.innerWidth < MIN_DESKTOP_WIDTH);
+      if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+        setMedia(true);
+      } else {
+        setMedia(false);
+      }
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+      setMedia(true);
+    } else {
+      setMedia(false);
+    }
 
-  const onSubmit = async (data) => {
+    window.addEventListener("resize", handleResize);
+
+    // Limpieza del event listener cuando el componente se desmonta
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [window.innerWidth]);
+
+  //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
+  const token = JSON.parse(localStorage.getItem("riskkojwt"));
+  //console.log(token)
+
+  const GETME_URL = import.meta.env.VITE_GETME_URL;
+
+  const getUsername = async (token) => {
     try {
-      const response = await axios.post(`${authUrl}/login`, data);
-      if (response.status === 200) {
-        setIsSignIn(false);
-        localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
-        navigate("/"
-          /*
-          response.data.isVerified === "true"
-            ? "/"
-            : `/verifyReg?mailToken=${response.data.verifyToken}`*/
-        );
+      const response = await axios.get(GETME_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      //console.log(response);
+      console.log("Username Verified: ", response.data.isVerified);
+
+      if (response) {
+        if (response.data.isVerified === "true") {
+          navigate("/");
+        } else {
+          //navigate("/verify");
+        }
+      } else {
+        localStorage.removeItem("riskkojwt");
       }
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        setInvalidCredentials(true);
-        setShowAlert(true);
+      console.error("Fetch error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      getUsername(token);
+    }
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`${authUrl}/login`, {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        // Inicio de sesión exitoso, guarda token y redirección a la página home
+        setIsSignIn(false);
+        localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
+
+        //console.log("logueado")
+        //console.log(response.data)
+
+        //console.log("HandleLogin Verified: ", response.data.isVerified);
+
+        if (response.data.isVerified === "true") {
+          console.log("Usuario verificado");
+
+          let isAdmin = false;
+
+          response.data.roles.forEach((rol) => {
+            if (rol === "ADMIN") {
+              isAdmin = true;
+            }
+          });
+
+          if (isAdmin) {
+            navigate("/");
+            // navigate("/admin"); // esta opcion permite direccionar al panel administrador si detecta ese rol.
+          } else {
+            navigate("/");
+          }
+        } else {
+          console.log("Usuario no verificado");
+          //console.log(response.data.verifyToken);
+          const verifyUrl = "/verifyReg?mailToken=" + response.data.verifyToken;
+          navigate(verifyUrl);
+        }
+
+        //window.location.reload()
       } else {
+        // Maneja otros escenarios de respuesta según tu API
+        console.error("Inicio de sesión fallido");
+        console.log(response.config.data);
+        console.log(response.status);
+      }
+    } catch (error) {
+      // Maneja errores de la solicitud
+      if (error.response && error.response.status === 400) {
+        // El servidor respondió con un código de estado 400 (No autorizado)
+        setInvalidCredentials(true);
+        setShowAlert(true); // Muestra la alerta cuando las credenciales son incorrectas
+        console.error(
+          "Credenciales incorrectas. Por favor, verifica tu correo electrónico y contraseña."
+        );
+      } else {
+        // Otros errores de solicitud
         console.error("Error en el inicio de sesión:", error);
       }
     }
   };
-
-  const validateEmail = async (value) => {
-    const result = await checkClientNameAndEmail(value, "email", "email");
-    return result || true; // Devuelve el mensaje si hay error, o true si no hay error
-  };
-
-  const checkClientNameAndEmail = async (value, field, path) => {
-    //console.log(`${REGISTER_URL}/${path}?${path}=${value}`)
-    try {
-      const response = await axios.get(`${REGISTER_URL}/${path}?${path}=${value}`);
-      if (response.data) {
-        //console.log(`${value} ya está en uso.`)
-        return `${value} no tiene una cuenta creada.`; // Devuelve un mensaje si existe
-      }
-      return null; // Devuelve null si todo está bien
-    } catch (error) {
-      console.error(`Error al verificar ${field}:`, error);
-      return `Error al verificar ${field}.`; // Mensaje de error en caso de fallo
-    }
-  };
-
-
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
@@ -106,78 +164,73 @@ const Login = () => {
           </Alert>
         </Box>
       )}
-      <Box pos={"relative"} top={10} w={media ? "97vw" : "500px"} h={"100vh"}>
-        <Text fontSize={media ? "2xl" : "4xl"} align="center" py={3}>
-          Iniciar sesión
-        </Text>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      {media ? (
+        <Box pos={"relative"} top={10} w={"97vw"} h={"100vh"}>
+          <Text fontSize="2xl" align="center" py={3}>
+            Iniciar sesión
+          </Text>
           <Stack spacing={4} align="center" justify="center">
-            <FormControl isInvalid={errors.email}>
-              <Input
-                placeholder="Email"
-                autoComplete="new-email"
-                borderColor={errors.email ? "red.500" : "#e1bc6a"}
-                focusBorderColor="#e1bc6a"
-                {...register("email", {
-                  required: "El email es requerido",
-                  pattern: { value: emailRegex, message: "Email no válido" },
-                  validate: validateEmail, // Asigna la función de validación
-                })}
-              />
-              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.password}>
-              <InputGroup>
-                <Input
-                  placeholder="Contraseña"
-                  autoComplete="new-password"
-                  type={showPassword ? "text" : "password"}
-                  borderColor={errors.password ? "red.500" : "#e1bc6a"}
-                  focusBorderColor="#e1bc6a"
-                  {...register("password", {
-                    required: "La contraseña es requerida",
-                    minLength: {
-                      value: 8,
-                      message: "La contraseña debe tener entre 8 y 24 caracteres, e incluir al menos: una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%*).",
-                    },
-                    
-                  })}
-                />
-                <InputRightElement width="4.5rem">
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    bg="transparent" // Fondo transparente
-                    _hover={{ bg: "transparent" }} // Quitar fondo al pasar el ratón
-                    _active={{ bg: "transparent" }} // Quitar fondo al hacer clic
-                    _focus={{ boxShadow: "none" }} // Quitar el borde de enfoque
-                    onClick={togglePasswordVisibility}
-                  >
-                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-            </FormControl>
-            <Button
-              w={media ? "250px" : "500px"}
-              bg={"#e1bc6a"}
-              color="white"
-              _hover={{ backgroundColor: "#d3a45a" }}
-              type="submit"
-            >
+            <Input
+              w="250px"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              w="250px"
+              placeholder="Contraseña"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button w="200px" bg={"verde2"} onClick={handleLogin}>
               Iniciar Sesión
             </Button>
             {showAlert && invalidCredentials && (
-              <Alert status="error" w={media ? "300px" : "500px"} mt={4}>
-                <AlertIcon />
-                Credenciales incorrectas. Por favor, verifica tu correo y
-                contraseña.
+              <Alert status="error" w="300px" mt={4}>
+                <VStack>
+                  <AlertIcon />
+                  <p align="center">
+                    Credenciales incorrectas. Por favor, verifica tu correo
+                    electrónico y contraseña.
+                  </p>
+                </VStack>
               </Alert>
             )}
           </Stack>
-        </form>
-      </Box>
+        </Box>
+      ) : (
+        <Box pos={"relative"} top={10} w={"97vw"} h={"100vh"}>
+          <Text fontSize="4xl" align="center" py={3}>
+            Iniciar sesión
+          </Text>
+          <Stack spacing={4} align="center" justify="center">
+            <Input
+              w="500px"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              w="500px"
+              placeholder="Contraseña"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button w="500px" bg={"verde2"} onClick={handleLogin}>
+              Iniciar Sesión
+            </Button>
+            {showAlert && invalidCredentials && (
+              <Alert status="error" w="500px" mt={4}>
+                <AlertIcon />
+                Credenciales incorrectas. Por favor, verifica tu correo
+                electrónico y contraseña.
+              </Alert>
+            )}
+          </Stack>
+        </Box>
+      )}
     </Flex>
   );
 };
