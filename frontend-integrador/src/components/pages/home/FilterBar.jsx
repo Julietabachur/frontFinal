@@ -40,7 +40,7 @@ const FilterBar = () => {
   }, []);
 
   const handleCategoryClick = (category) => {
-   /*  setCurrentPage(1); */
+   /*setCurrentPage(1); */
     if (!categories.includes(category)) {
       setCategories([...categories, category]);
     } else {
