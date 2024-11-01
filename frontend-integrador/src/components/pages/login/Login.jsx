@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { useProductContext } from "../home/Global.context";
 
 const authUrl = import.meta.env.VITE_AUTH_URL;
+const REGISTER_URL = import.meta.env.VITE_AUTH_URL;
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const Login = () => {
@@ -56,10 +57,11 @@ const Login = () => {
       if (response.status === 200) {
         setIsSignIn(false);
         localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
-        navigate(
+        navigate("/"
+          /*
           response.data.isVerified === "true"
             ? "/"
-            : `/verifyReg?mailToken=${response.data.verifyToken}`
+            : `/verifyReg?mailToken=${response.data.verifyToken}`*/
         );
       }
     } catch (error) {
@@ -71,6 +73,28 @@ const Login = () => {
       }
     }
   };
+
+  const validateEmail = async (value) => {
+    const result = await checkClientNameAndEmail(value, "email", "email");
+    return result || true; // Devuelve el mensaje si hay error, o true si no hay error
+  };
+
+  const checkClientNameAndEmail = async (value, field, path) => {
+    //console.log(`${REGISTER_URL}/${path}?${path}=${value}`)
+    try {
+      const response = await axios.get(`${REGISTER_URL}/${path}?${path}=${value}`);
+      if (response.data) {
+        //console.log(`${value} ya está en uso.`)
+        return `${value} no tiene una cuenta creada.`; // Devuelve un mensaje si existe
+      }
+      return null; // Devuelve null si todo está bien
+    } catch (error) {
+      console.error(`Error al verificar ${field}:`, error);
+      return `Error al verificar ${field}.`; // Mensaje de error en caso de fallo
+    }
+  };
+
+
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
@@ -97,6 +121,7 @@ const Login = () => {
                 {...register("email", {
                   required: "El email es requerido",
                   pattern: { value: emailRegex, message: "Email no válido" },
+                  validate: validateEmail, // Asigna la función de validación
                 })}
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
@@ -113,8 +138,9 @@ const Login = () => {
                     required: "La contraseña es requerida",
                     minLength: {
                       value: 8,
-                      message: "Debe tener al menos 8 caracteres",
+                      message: "La contraseña debe tener entre 8 y 24 caracteres, e incluir al menos: una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%*).",
                     },
+                    
                   })}
                 />
                 <InputRightElement width="4.5rem">

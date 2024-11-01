@@ -9,27 +9,38 @@ import {
   InputGroup,
   InputRightElement,
   IconButton,
+  Text,
+  
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+/*
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
 const clientNameRegex = /^[a-zA-Z0-9._-]{5,}$/;
+*/
+const nameRegex = /^[A-Za-zÀ-ÿ'-]{1,50}$/;
+const lastNameRegex = /^[A-Za-zÀ-ÿ'-]+(?: [A-Za-zÀ-ÿ'-]+)*$/;
+const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 const GETME_URL = import.meta.env.VITE_GETME_URL;
-const REGISTER_URL = import.meta.env.VITE_AUTH_URL + "/register";
+const REGISTER_URL = import.meta.env.VITE_AUTH_URL;
+const REGISTER_URL2 = import.meta.env.VITE_AUTH_URL+"/register";
+
 
 const Register = () => {
   const navigate = useNavigate();
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
   const [showPassword, setShowPassword] = useState(false);
+  const MIN_DESKTOP_WIDTH = 768;
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const [media, setMedia] = useState(window.innerWidth < MIN_DESKTOP_WIDTH);
+ 
+  
   const {
     register,
     handleSubmit,
@@ -37,6 +48,7 @@ const Register = () => {
     clearErrors,
     reset,
     watch,
+    setValue,
     formState: { errors, isValid },
   } = useForm({ mode: "onBlur" });
 
@@ -44,21 +56,27 @@ const Register = () => {
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
-  const checkClientNameAndEmail = async (value, field) => {
+   // Resizing effect
+   useEffect(() => {
+    const handleResize = () => {
+      setMedia(window.innerWidth < MIN_DESKTOP_WIDTH);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const checkClientNameAndEmail = async (value, field, path) => {
+    //console.log(`${REGISTER_URL}/${path}?${path}=${value}`)
     try {
-      const response = await axios.get(
-        `${REGISTER_URL}/${field}?${field}=${value}`
-      );
+      const response = await axios.get(`${REGISTER_URL}/${path}?${path}=${value}`);
       if (!response.data) {
-        setError(field, {
-          type: "manual",
-          message: `${field} ya está en uso.`,
-        });
-      } else {
-        clearErrors(field);
+        //console.log(`${value} ya está en uso.`)
+        return `${value} ya está en uso.`; // Devuelve un mensaje si existe
       }
+      return null; // Devuelve null si todo está bien
     } catch (error) {
       console.error(`Error al verificar ${field}:`, error);
+      return `Error al verificar ${field}.`; // Mensaje de error en caso de fallo
     }
   };
 
@@ -83,6 +101,16 @@ const Register = () => {
     }
     reset(); // Resetea el formulario al montar el componente
   }, [token, reset]);
+  
+  const validateClientName = async (value) => {
+    const result = await checkClientNameAndEmail(value, "clientName", "clientName");
+    return result || true; // Devuelve el mensaje si hay error, o true si no hay error
+  };
+  
+  const validateEmail = async (value) => {
+    const result = await checkClientNameAndEmail(value, "email", "email");
+    return result || true; // Devuelve el mensaje si hay error, o true si no hay error
+  };
 
   const onSubmit = async (formData) => {
     // Estructuramos el objeto data con los valores del formulario
@@ -93,10 +121,12 @@ const Register = () => {
     email: formData.email,
     password: formData.password,
   };
+
+  console.log(data);
     
     try {
       // Llamada a la API con los datos estructurados
-    const response = await axios.post(REGISTER_URL, data, {
+    const response = await axios.post(REGISTER_URL2, data, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -116,17 +146,23 @@ const Register = () => {
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
+      
       <Box
         w={"97vw"}
         maxW="500px"
         p={8}
         borderRadius="md"
         boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)"
+        
       >
+        <Text fontSize={media ? "2xl" : "4xl"} align="center" py={3}>
+          Crear Cuenta
+        </Text>
+         
         <form
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
-          boxShadow="md"
+          //boxShadow="md"
         >
           <FormControl isInvalid={errors.firstName} mb={4}>
             <Input
@@ -141,6 +177,8 @@ const Register = () => {
                   message: "El nombre no es válido",
                 },
               })}
+              onBlur={(e) => ("firstName", e.target.value.trim())} // Elimina espacios al hacer blur>
+            
             />
             <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
           </FormControl>
@@ -154,7 +192,7 @@ const Register = () => {
               {...register("lastName", {
                 required: "Apellido es requerido",
                 pattern: {
-                  value: nameRegex,
+                  value: lastNameRegex,
                   message: "El apellido no es válido",
                 },
               })}
@@ -174,13 +212,11 @@ const Register = () => {
                   value: clientNameRegex,
                   message: "Nombre de usuario no válido",
                 },
-                validate: (value) =>
-                  checkClientNameAndEmail(value, "clientName"),
+                validate: validateClientName, // Asigna la función de validación
+                
               })}
             />
-            {errors.clientName?.type === "manual" && (
-              <FormErrorMessage>{errors.clientName.message}</FormErrorMessage>
-            )}
+            <FormErrorMessage>{errors.clientName?.message}</FormErrorMessage>
           </FormControl>
 
           <FormControl isInvalid={errors.email} mb={4}>
@@ -195,7 +231,7 @@ const Register = () => {
                   value: emailRegex,
                   message: "Email no válido",
                 },
-                validate: (value) => checkClientNameAndEmail(value, "email"),
+                validate: validateEmail, // Asigna la función de validación
               })}
             />
             <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
@@ -213,7 +249,7 @@ const Register = () => {
                   required: "Contraseña es requerida",
                   pattern: {
                     value: passwordRegex,
-                    message: "Contraseña no válida",
+                    message: "La contraseña debe tener entre 8 y 24 caracteres, e incluir al menos: una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%*).",
                   },
                 })}
               />
