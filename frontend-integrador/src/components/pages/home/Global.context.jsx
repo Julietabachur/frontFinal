@@ -62,7 +62,8 @@ const initialState = {
   reserves: [],
   reservation: "",
   banderaReservas: false,
-  isSignIn: false
+  isSignIn: false,
+  productsFilterBAr: []
 };
 
 const ProductContext = createContext(undefined); //useContext
@@ -126,8 +127,10 @@ const ProductProvider = ({ children }) => {
       state.searchResults.length === 0
     ) {
       getProducts(page);
-    } else if (state.categories.length > 0 && !state.showFav) {
+    } else if (state.categories.length == 1 && !state.showFav) {
       getProductsByType(state.categories, page);
+    } else if  (state.categories.length > 1 && !state.showFav) {
+      getProductsByTypeFilterBar(state.categories, page);
     } else if (state.favorites.length > 0 && state.showFav) {
       getFavorites(page);
     }
@@ -187,6 +190,41 @@ const ProductProvider = ({ children }) => {
       console.error(error);
     }
   };
+
+  const getProductsByTypeFilterBar = async (categories, page = 1) => {
+    if (!categories || categories.length === 0) {
+      console.error("Debe proporcionar al menos una categoría.");
+      return []; 
+    }
+
+    try {
+      const categoriesQuery = categories.map(category => `categoryNames=${encodeURIComponent(category)}`).join('&');
+
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/categories?${categoriesQuery}&page=${page}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data && response.data.content) {
+      console.log(response);
+      let data = response.data;
+      console.log(data);
+      data.content.sort(() => Math.random() - 0.5);
+      setPaginatedData(data);
+    } else {
+      console.warn("No se encontraron productos para las categorías especificadas.");
+    }
+  } catch (error) {
+    console.error("Error al obtener los productos:", error);
+    return []; 
+  }
+  };
+
+
 
   const getFavorites = async (page = 1) => {
     try {
@@ -291,6 +329,7 @@ const ProductProvider = ({ children }) => {
     setCategories,
     setPaginatedData,
     getProductsByType,
+    getProductsByTypeFilterBar,
     setEndDate,
     setStartDate,
     setSearchResults,
