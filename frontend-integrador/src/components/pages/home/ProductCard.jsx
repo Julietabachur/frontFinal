@@ -17,91 +17,90 @@ const ProductCard = ({ item }) => {
   const [isHeartClicked, setHeartClicked] = useState(false);
   const { setFavorites, favorites } = useProductContext();
 
-  //confirma si riskkojkt existe es que la pesona ya esta registrado y si no va a home
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
-
-  // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(item.id);
 
   useEffect(() => {
-    // Actualizar el estado del corazón basado en si el id está en favoritos
     const isFavorite = favorites.includes(item.id);
     setHeartClicked(isFavorite);
   }, [item.id]);
 
   const handleHeartClick = (event) => {
-    // Cambiar el estado del clic del corazón
+    
+    event.stopPropagation();
     setHeartClicked(!isHeartClicked);
 
-    // Actualizar favoritos según el estado del corazón
+
     const updatedFavorites = isHeartClicked
-      ? favorites.filter((id) => id !== item.id) // Quitar de favoritos si estaba
-      : [...favorites, item.id]; // Agregar a favoritos si no estaba
+      ? favorites.filter((id) => id !== item.id)
+      : [...favorites, item.id]; 
 
     setFavorites(updatedFavorites);
   };
 
   return (
-    <Card  
-    h={[300,400,500]}
-    w={[198,264,330]} 
-    color={"blanco"}>
-      
-      <CardBody
-        _hover={{
-          transform: "scale(0.98)",
-          cursor: "pointer",
-        }}
-        border={"3px solid black"}
-        boxShadow={'2xl'}
-        display={"flex"}
-        justifyContent={"center"}
-        h={["90%"]}
-        w={["100%"]}
-        p={0}
-        position="relative"
+    <Link as={ReactRouterLink} to={`/detalle/${item.id}`} style={{ textDecoration: 'none' }}>
+      <Card  
+        h={[240, 300, 360]} 
+        w={[150, 200, 250]}  
+        color={"blanco"}
+        mx={2} 
       >
-        {/* Imagen */}
-        <Link as={ReactRouterLink} to={`/detalle/${item.id}`}>
+        <CardBody
+          _hover={{
+            transform: "scale(0.98)",
+            cursor: "pointer",
+          }}
+          border={"2px solid black"}
+          boxShadow={'xl'}
+          display={"flex"}
+          justifyContent={"center"}
+          h={"90%"}
+          w={"100%"}
+          p={0}
+          position="relative"
+        >
+          {/* Imagen */}
           <Image
             src={item?.thumbnail}
             h={"100%"}
             w={"100%"}
             objectFit={"cover"}
           />
-        </Link>
-        {/* Botón de corazón personalizado */}
-        {token && (
-          <Box
-            position="absolute"
-            top={1.5}
-            right={1.5}
-            onClick={handleHeartClick}
-            color="green"
-            _hover={{
-              color: "green",
-            }}
-          >
-            {isFavorite ? <FaHeart size={30} /> : <FaRegHeart size={30} />}
-          </Box>
-        )}
-      </CardBody>
 
-      <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
-        <Text
-          fontFamily={"Roboto"}
-          color={"gris1"}
-          fontWeight="semibold"
-          fontSize={["1rem", "1.2rem"]}
-          whiteSpace="nowrap"
-          overflow="hidden"
-          textOverflow="ellipsis"
-          maxWidth="100%"
-        >
-          {item.productName}
-        </Text>
-      </CardFooter>
-    </Card>
+          {/* Botón de corazón personalizado */}
+          {token && (
+            <Box
+              position="absolute"
+              top={1.5}
+              right={1.5}
+              onClick={handleHeartClick}
+              color="green"
+              _hover={{
+                color: "green",
+              }}
+            >
+              {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+            </Box>
+          )}
+        </CardBody>
+
+        <CardFooter color={"negro"} alignContent={"center"} justify={"center"}>
+          <Text
+            fontFamily={"Roboto"}
+            color={"gris1"}
+            fontWeight="semibold"
+            fontSize={["0.8rem", "1rem"]}
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            maxWidth="100%"
+          >
+            {item.productName}
+          </Text>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 };
 
