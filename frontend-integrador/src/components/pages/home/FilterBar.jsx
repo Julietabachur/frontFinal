@@ -71,7 +71,7 @@ const accessories = [
       </Heading> */}
 
       <SimpleGrid columns={3} spacing={4} w="100%">
-        {[{ title: 'Partes de Arriba', data: tops }, { title: 'Partes de Abajo', data: bottoms }, { title: 'Accesorios', data: accessories }].map((group) => (
+        {[{ title: 'Partes de Arriba', data: tops, imageUrl: '../Parte Arriba.jpg' }, { title: 'Partes de Abajo', data: bottoms, imageUrl: '../Parte Abajo.jpg' }, { title: 'Accesorios', data: accessories, imageUrl: '../Accesorios.jpg' }].map((group) => (
           <Box
             key={group.title}
             borderRadius="md"
@@ -86,7 +86,7 @@ const accessories = [
             height="400px"
           >
             <Image
-              src={group.data[0]?.imageUrl || 'https://via.placeholder.com/300'}
+              src={group.imageUrl || 'https://via.placeholder.com/300'}
               alt={group.title}
               objectFit="cover"
               width="100%"
