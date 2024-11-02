@@ -26,14 +26,12 @@ const ProductCard = ({ item }) => {
   }, [item.id]);
 
   const handleHeartClick = (event) => {
-    
     event.stopPropagation();
     setHeartClicked(!isHeartClicked);
 
-
     const updatedFavorites = isHeartClicked
       ? favorites.filter((id) => id !== item.id)
-      : [...favorites, item.id]; 
+      : [...favorites, item.id];
 
     setFavorites(updatedFavorites);
   };
@@ -75,9 +73,9 @@ const ProductCard = ({ item }) => {
               top={1.5}
               right={1.5}
               onClick={handleHeartClick}
-              color="green"
+              color="gold" // Cambiar a dorado
               _hover={{
-                color: "green",
+                color: "#DAA520", // Cambiar a amarillo oscuro
               }}
             >
               {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
