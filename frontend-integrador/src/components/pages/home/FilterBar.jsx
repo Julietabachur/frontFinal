@@ -9,44 +9,22 @@ const FilterBar = () => {
     setCategories,
     setCurrentPage,
     getProductsByType,
+    getProductsByTypeFilterBar,
     currentPage,
     totalElements,
+    setPaginatedData // Asegúrate de que esto esté importado
   } = useProductContext();
-  const [categoryList, setCategoryList] = useState([]);
-  const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
+  
 
-  const token = import.meta.env.VITE_TOKEN;
-  const baseUrl = import.meta.env.VITE_SERVER_URL;
 
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}/api/v1/public/category/all`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response) {
-          setCategoryList(response.data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getCategories();
-  }, []);
+  const handleCategoryClick = async (categoryGroup) => {
+    console.log(categoryGroup);
+    setCategories(categoryGroup);
+    setCurrentPage(0);
 
-  const handleCategoryClick = (category) => {
-   /*  setCurrentPage(1); */
-    if (!categories.includes(category)) {
-      setCategories([...categories, category]);
-    } else {
-      let updatedCategories = categories.filter((item) => item !== category);
-      setCategories(updatedCategories);
-    }
+    // await handleFilterSearch(categoryGroup);
+
+    await getProductsByTypeFilterBar(categoryGroup);
   };
 
   const handleFiltros = () => {
@@ -54,23 +32,34 @@ const FilterBar = () => {
     setSelectedCategoryGroup(null);
   };
 
-  const toggleCategoryGroup = (groupName) => {
-    setSelectedCategoryGroup(selectedCategoryGroup === groupName ? null : groupName);
-  };
 
-  const tops = categoryList.filter((category) =>
-    ["REMERA", "CAMISA", "BUZO", "CAMPERA", "PULLOVER"].includes(category.categoryName)
-  );
-  const bottoms = categoryList.filter((category) =>
-    ["PANTALÓN", "POLLERA"].includes(category.categoryName)
-  );
-  const accessories = categoryList.filter((category) =>
-    ["ACCESORIO"].includes(category.categoryName)
-  );
+  const tops = [
+  { categoryName: "T-SHIRT" },
+  { categoryName: "SHIRT" },
+  { categoryName: "HOODIE" },
+  { categoryName: "JACKET" },
+  { categoryName: "SWEATER" },
+];
+const bottoms = [
+  { categoryName: "PANT" },
+  { categoryName: "SKIRT" },
+];
+const accessories = [
+  { categoryName: "ACCESSORY" },
+];
+
+  // const handleFilterSearch = async (categories) => {
+
+  //   const response = await getProductsByTypeFilterBar(categories);
+
+  //   if (response && response.data) {
+  //     setPaginatedData(response.data);
+  //   }
+  // };
 
   return (
     <VStack w="100%" bg="white" p={8} spacing={5} align="flex-start">
-      <Heading
+      {/* <Heading
         color="black"
         fontFamily="Roboto"
         fontWeight="bold"
@@ -79,7 +68,7 @@ const FilterBar = () => {
         w="100%"
       >
         Descubre nuestro catálogo
-      </Heading>
+      </Heading> */}
 
       <SimpleGrid columns={3} spacing={4} w="100%">
         {[{ title: 'Partes de Arriba', data: tops }, { title: 'Partes de Abajo', data: bottoms }, { title: 'Accesorios', data: accessories }].map((group) => (
@@ -88,7 +77,10 @@ const FilterBar = () => {
             borderRadius="md"
             overflow="hidden"
             cursor="pointer"
-            onClick={() => toggleCategoryGroup(group.title)}
+            onClick={async (e) => {
+              e.stopPropagation();
+              await handleCategoryClick(group.data.map(category => category.categoryName)); 
+            }}
             position="relative"
             bg="gray.100"
             height="400px"
@@ -118,7 +110,7 @@ const FilterBar = () => {
             >
               {group.title}
             </Text>
-            <Collapse in={selectedCategoryGroup === group.title} animateOpacity>
+            {/* <Collapse in={selectedCategoryGroup === group.title} animateOpacity>
               <SimpleGrid columns={2} spacing={4} mt={2}>
                 {group.data.map((category) => (
                   <Box
@@ -148,12 +140,12 @@ const FilterBar = () => {
                   </Box>
                 ))}
               </SimpleGrid>
-            </Collapse>
+            </Collapse> */}
           </Box>
         ))}
       </SimpleGrid>
 
-      <HStack spacing={4} mt={8}>
+      {/* <HStack spacing={4} mt={8}>
         <Button
           h={10}
           px={6}
@@ -165,7 +157,7 @@ const FilterBar = () => {
         >
           Borrar Filtros
         </Button>
-      </HStack>
+      </HStack> */}
 
       <Text color={"gray.600"} fontSize={{ base: 12, md: 14, lg: 16 }} mt={6}>
         Mostrando <b>{totalElements}</b> resultados.
