@@ -80,11 +80,9 @@ const Login = () => {
   };
 
   const checkClientNameAndEmail = async (value, field, path) => {
-    //console.log(`${REGISTER_URL}/${path}?${path}=${value}`)
     try {
       const response = await axios.get(`${REGISTER_URL}/${path}?${path}=${value}`);
       if (response.data) {
-        //console.log(`${value} ya está en uso.`)
         return `${value} no tiene una cuenta creada.`; // Devuelve un mensaje si existe
       }
       return null; // Devuelve null si todo está bien
@@ -93,8 +91,6 @@ const Login = () => {
       return `Error al verificar ${field}.`; // Mensaje de error en caso de fallo
     }
   };
-
-
 
   return (
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
@@ -106,8 +102,14 @@ const Login = () => {
           </Alert>
         </Box>
       )}
-      <Box pos={"relative"} top={10} w={media ? "97vw" : "500px"} h={"100vh"}>
-        <Text fontSize={media ? "2xl" : "4xl"} align="center" py={3}>
+      <Box
+        pos="relative"
+        top={10}
+        w={{ base: "90vw", md: "500px" }}
+        h={{ base: "auto", md: "100vh" }}
+        p={{ base: 4, md: 8 }}
+      >
+        <Text fontSize={{ base: "2xl", md: "4xl" }} align="center" py={3}>
           Iniciar sesión
         </Text>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -118,39 +120,41 @@ const Login = () => {
                 autoComplete="new-email"
                 borderColor={errors.email ? "red.500" : "#e1bc6a"}
                 focusBorderColor="#e1bc6a"
+                w="100%" // Ancho completo del input para alinearse con el botón
                 {...register("email", {
                   required: "El email es requerido",
                   pattern: { value: emailRegex, message: "Email no válido" },
-                  validate: validateEmail, // Asigna la función de validación
+                  validate: validateEmail,
                 })}
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.password}>
-              <InputGroup>
+              <InputGroup w="100%"> {/* Ancho completo del grupo de input */}
                 <Input
                   placeholder="Contraseña"
                   autoComplete="new-password"
                   type={showPassword ? "text" : "password"}
                   borderColor={errors.password ? "red.500" : "#e1bc6a"}
                   focusBorderColor="#e1bc6a"
+                  w="100%" // Ancho completo del input
                   {...register("password", {
                     required: "La contraseña es requerida",
                     minLength: {
                       value: 8,
-                      message: "La contraseña debe tener entre 8 y 24 caracteres, e incluir al menos: una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%*).",
+                      message:
+                        "La contraseña debe tener entre 8 y 24 caracteres e incluir al menos: una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%*).",
                     },
-                    
                   })}
                 />
-                <InputRightElement width="4.5rem">
+                <InputRightElement width="3rem">
                   <Button
                     h="1.75rem"
                     size="sm"
-                    bg="transparent" // Fondo transparente
-                    _hover={{ bg: "transparent" }} // Quitar fondo al pasar el ratón
-                    _active={{ bg: "transparent" }} // Quitar fondo al hacer clic
-                    _focus={{ boxShadow: "none" }} // Quitar el borde de enfoque
+                    bg="transparent"
+                    _hover={{ bg: "transparent" }}
+                    _active={{ bg: "transparent" }}
+                    _focus={{ boxShadow: "none" }}
                     onClick={togglePasswordVisibility}
                   >
                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
@@ -160,8 +164,8 @@ const Login = () => {
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
             <Button
-              w={media ? "250px" : "500px"}
-              bg={"#e1bc6a"}
+              w="100%" // Ancho completo del botón
+              bg="#e1bc6a"
               color="white"
               _hover={{ backgroundColor: "#d3a45a" }}
               type="submit"
@@ -169,10 +173,9 @@ const Login = () => {
               Iniciar Sesión
             </Button>
             {showAlert && invalidCredentials && (
-              <Alert status="error" w={media ? "300px" : "500px"} mt={4}>
+              <Alert status="error" w="100%" mt={4}>
                 <AlertIcon />
-                Credenciales incorrectas. Por favor, verifica tu correo y
-                contraseña.
+                Credenciales incorrectas. Por favor, verifica tu correo y contraseña.
               </Alert>
             )}
           </Stack>

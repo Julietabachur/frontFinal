@@ -148,9 +148,8 @@ const Register = () => {
     <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
       
       <Box
-        w={"97vw"}
-        maxW="500px"
-        p={8}
+        w={media ? "90vw" : "500px"} // Ajuste de ancho para dispositivos móviles
+        p={media ? 6 : 8} // Ajuste de padding
         borderRadius="md"
         boxShadow="0 4px 30px rgba(0, 0, 0, 0.1)"
         

@@ -31,10 +31,10 @@ const RandomProductSlider = () => {
   };
 
   return (
-    <Flex direction="column" alignItems="center" m={8}>
+    <Flex direction="column" alignItems="center" m={{ base: 4, md: 8 }}>
       <ProductCardContainer>
-        <Flex direction="row" gap={4}>
-          {randomProducts.slice(currentIndex, currentIndex + 5).map((item, index) => (
+        <Flex direction={{ base: "column", md: "row" }} gap={4} wrap="wrap" justifyContent="center" >
+          {randomProducts.slice(currentIndex, currentIndex + (window.innerWidth < 768 ? 2 : 5)).map((item, index) => (
             <ProductCard key={index} item={item} />
           ))}
         </Flex>

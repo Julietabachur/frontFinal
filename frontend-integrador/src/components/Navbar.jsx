@@ -161,8 +161,7 @@ const Navbar = ({ username, setUserName, roles }) => {
           zIndex={1000}
           flexWrap={wrap}
         >
-          
-                
+                       
           
           
           {media ? (
