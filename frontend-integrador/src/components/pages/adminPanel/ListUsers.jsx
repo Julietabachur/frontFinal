@@ -59,16 +59,20 @@ const ListUsers = ({
             alignItems: "center",
           }}
         >
-          <Button colorScheme="green"
+          <Button
+            colorScheme="green"
             onClick={() =>
               handlePageChange(userPage > 1 ? userPage - 1 : userPage)
             }
             disabled={userPage === 0}
           >
             &lt;&lt;&lt;
-          </Button >
+          </Button>
           <Text>- {userPage} -</Text>
-          <Button colorScheme="green" onClick={() => handlePageChange(userPage + 1)}>
+          <Button
+            colorScheme="green"
+            onClick={() => handlePageChange(userPage + 1)}
+          >
             &gt;&gt;&gt;
           </Button>
         </div>
@@ -102,9 +106,16 @@ const ListUsers = ({
                     <Td>{user.clientName}</Td>
                     <Td>{user.email}</Td>
                     <Td>
-                      <Checkbox colorScheme="green" borderColor="gray.800" borderWidth="2px"
-                        isDisabled={user.clientName === 'admin1'}
-                        isChecked={user.roles[1] === "ADMIN"}
+                      <Checkbox
+                        colorScheme="green"
+                        borderColor="gray.800"
+                        borderWidth="2px"
+                        //isDisabled={user.clientName === "admin1"}
+                        isChecked={
+                          user.roles &&
+                          user.roles.length > 1 &&
+                          user.roles[1] === "ADMIN"
+                        }
                         onChange={() => adminHandle(user)}
                       />
                     </Td>
