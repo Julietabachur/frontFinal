@@ -34,7 +34,7 @@ function Specs({ detail }) {
   }, []);
 
   return (
-    <Box width="100%" padding={2} h={"100%"} border={"1px solid black"}>
+    <Box width="100%" padding={2} h={"100%"} borderBottom={'1px solid'} borderColor={'color'} mb={20}>
       <Button
         variant="outline"
         fontSize={"0.8rem"}
@@ -64,16 +64,17 @@ function Specs({ detail }) {
               <GridItem w="100%" colSpan={1}  key={index}>
                 <HStack
                   padding={4}
-                  border="1px solid green"
-                  borderRadius={5}
+                  // borderBottom="1px solid"
+                  // borderColor={'negro'}
+                  // borderRadius={5}
                 >
                   <Text fontFamily="Roboto" color="black" fontSize="1rem">
                     {feature.charIcon}
                   </Text>
                   <Text
                     fontFamily="Roboto"
-                    textShadow="1px 1px lightgreen"
-                    color="black"
+                    // textShadow="1px 1px lightgreen"
+                    color="negro"
                     fontSize="1rem"
                   >
                     {`${feature.charName}: `}
