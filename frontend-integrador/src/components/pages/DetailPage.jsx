@@ -27,6 +27,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import ProductGallery from "./ProductGallery";
+import InfoComponent from "../infoComponent";
 import { useProductContext } from "./home/Global.context";
 import axios from "axios";
 import Specs from "./Specs";
@@ -175,7 +176,7 @@ const DetailPage = () => {
         {detail && (
           <VStack
             spacing={4}
-            color={"blanco"}
+            color={"negro"}
             w={"70vw"}
             justifySelf={"center"}
           >
@@ -183,20 +184,22 @@ const DetailPage = () => {
               justify={"space-between"}
               w={"100%"}
               h={"60px"}
-              color={"blanco"}
-              border={"1px solid black"}
+              color={"negro"}
+              borderBottom={"1px solid"}
+              borderColor={'color'}
               alignContent={"center"}
               justifyContent={"space-between"}
               padding={"5px"}
+              pb='10'
               minW={"300px"}
             >
               <HStack ml={3} w="50%">
                 {token && (
                   <Box
                     onClick={handleHeartClick}
-                    color="green"
+                    color="color"
                     _hover={{
-                      color: "green",
+                       color:'black'
                     }}
                   >
                     {isFavorite ? (
@@ -231,42 +234,32 @@ const DetailPage = () => {
                 </Text>
               </HStack>
               <HStack>
-                <Button
+                {/* <Button
                   onClick={handleReserve}
                   bg={"verde2"}
                   alignSelf={"flex-end"}
                 >
                   Reservar
-                </Button>
+                </Button> */}
                 <Button
                   onClick={() => navigate(-1)}
-                  bg={"verde2"}
-                  marginRight={5}
+                  color={"color"}
+                  p={3}
+                  px={5}
+                  borderRadius={0}
+                  variant={"plain"}
+                  _hover={{
+                    cursor: "pointer", // Cambia el cursor al pasar por encima
+                    fontWeight:'bold',
+                    borderBottom:'1px solid',
+                    borderColor:' color'
+                    }}
                 >
                   Atrás
                 </Button>
               </HStack>
             </HStack>
-            <VStack border={"1px solid black"} p={10}>
-              <Text
-                textAlign={"center"}
-                fontFamily="Roboto"
-                fontWeight={"semibold"}
-                color="black"
-                fontSize={["0.9rem", "1.2rem"]}
-              >
-                DESCRIPCIÓN DEL PRODUCTO
-              </Text>
-              <Text
-                fontFamily={"Roboto"}
-                color={"black"}
-                fontSize={["12px","14px","18px"]}
-                marginTop={["5px","10px","20px"]}
-              >
-                {detail.detail}
-              </Text>
-            </VStack>
-            <Stack border={"1px solid black"} p={2}>
+            <Stack  p={2}>
               <ProductGallery
                 thumbnail={detail.thumbnail}
                 gallery={detail.gallery}
@@ -275,7 +268,7 @@ const DetailPage = () => {
                 <>
                   <Button
                     onClick={handleGallery}
-                    bg={"verde2"}
+                    bg={"color"}
                     alignSelf={"flex-end"}
                     w={20}
                     mr={5}
@@ -308,8 +301,29 @@ const DetailPage = () => {
                 </>
               )}
             </Stack>
+            <VStack  p={10}>
+              <Text
+                textAlign={"center"}
+                fontFamily="Roboto"
+                fontWeight={"semibold"}
+                color="black"
+                fontSize={["0.9rem", "1.2rem"]}
+              >
+                DESCRIPCIÓN DEL PRODUCTO
+              </Text>
+              <Text
+                fontFamily={"Roboto"}
+                color={"black"}
+                fontSize={["12px","14px","18px"]}
+                marginTop={["5px","10px","20px"]}
+              >
+                {detail.detail}
+              </Text>
+            </VStack>
+            
             <Specs detail={detail}></Specs>
-            <Policies></Policies>
+            {/* <Policies></Policies> */}
+            <InfoComponent/>
           </VStack>
         )}
       </VStack>

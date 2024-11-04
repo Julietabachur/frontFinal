@@ -9,15 +9,18 @@ const FilterBar = () => {
     setCurrentPage,
     getProductsByTypeFilterBar,
     totalElements,
+    setSeason
   } = useProductContext();
 
   const handleCategoryClick = async (categoryGroup) => {
+    setSeason('')
     setCategories(categoryGroup);
-    setCurrentPage(0);
-    await getProductsByTypeFilterBar(categoryGroup);
+    // setCurrentPage(1);
   };
+  // await getProductsByTypeFilterBar(categoryGroup);
 
   const handleFiltros = () => {
+    setSeason('Primavera')
     setCategories([]);
     setCurrentPage(0);
   };
@@ -116,7 +119,7 @@ export default FilterBar;
  */
 
 return (
-  <VStack w="100%" bg="white" p={8} spacing={5} align="flex-start">
+  <VStack w="100%" bg="white" p={8} pb={0} spacing={5} align="flex-start">
     <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4} w="100%">
       {[{ title: 'Partes de Arriba', data: tops }, { title: 'Partes de Abajo', data: bottoms }, { title: 'Accesorios', data: accessories }].map((group) => (
         <Box
@@ -131,11 +134,11 @@ return (
           position="relative"
           bg="gray.100"
           height={{ base: "auto", md: "400px" }} // Cambiar height para ser automático en pantallas pequeñas
-          border={categories.includes(group.title) ? "3px solid gold" : "1px solid #e0e0e0"}
-          bgColor={categories.includes(group.title) ? "yellow.100" : "white"}
-          boxShadow={categories.includes(group.title) ? "0 0 20px rgba(255, 215, 0, 0.5)" : "none"}
+          border={categories.includes(group.title) ? "3px solid color" : "1px solid #e0e0e0"}
+          bgColor={categories.includes(group.title) ? "color" : "white"}
+          boxShadow={categories.includes(group.title) ? "0px 7px 17px 0px #e1bc6a;" : "none"}
           transition="border 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease"
-          _hover={{ transform: "scale(1.05)", boxShadow: "0 0 20px rgba(255, 215, 0, 0.5)" }}
+          _hover={{ transform: "scale(1.05)", boxShadow: "0px 7px 17px 0px #e1bc6a;" }}
         >
           <Box position="relative" width="100%" height="0" paddingBottom={{ base: "150%", md: "100%" }} borderRadius="md"> {/* Cambiar paddingBottom para pantallas pequeñas */}
             <Image
@@ -172,9 +175,9 @@ return (
       <Button
         h={{ base: 8, md: 10 }} 
         px={4}
-        colorScheme="yellow"
+        // colorScheme="yellow"
         fontSize={{ base: 12, lg: 14 }}
-        bg="gold"
+        bg="color"
         color="white"
         _hover={{ bg: "yellow.500" }}
         onClick={handleFiltros}

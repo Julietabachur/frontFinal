@@ -15,8 +15,18 @@ const reducer = (state, action) => {
         totalPages: action.payload.last,
         totalElements: action.payload.totalElements,
       };
+    case "SET_PAGINATED_DATA_BY_SEASON":
+      return {
+        ...state,
+        paginatedDataBySeason: action.payload.content,
+        currentPage: action.payload.current,
+        totalPages: action.payload.last,
+        totalElements: action.payload.totalElements,
+      };
     case "SET_CURRENT_PAGE":
       return { ...state, currentPage: action.payload };
+    case "SET_SEASON":
+      return { ...state, season: action.payload };
     case "SET_CATEGORIES":
       return { ...state, categories: action.payload };
     case "SET_START_DATE":
@@ -48,6 +58,8 @@ const reducer = (state, action) => {
 // Estado inicial del contexto global
 const initialState = {
   paginatedData: [],
+  season: '',
+  paginatedDataBySeason:[],
   currentPage: 1,
   totalPages: 1,
   totalElements: 0,
@@ -106,6 +118,12 @@ const ProductProvider = ({ children }) => {
   const setEndDate = (date) => {
     dispatch({ type: "SET_END_DATE", payload: date });
   };
+  const setSeason = (data) => {
+    dispatch({ type: "SET_SEASON", payload: data });
+  };
+  const setPaginatedDataBySeason = (data) => {
+    dispatch({ type: "SET_PAGINATED_DATA_BY_SEASON", payload: data });
+  };
   const setPaginatedData = (data) => {
     dispatch({ type: "SET_PAGINATED_DATA", payload: data });
   };
@@ -124,15 +142,19 @@ const ProductProvider = ({ children }) => {
     if (
       state.categories.length === 0 &&
       !state.showFav &&
-      state.searchResults.length === 0
+      state.searchResults.length === 0 && state.season == ''
     ) {
       getProducts(page);
     } else if (state.categories.length == 1 && !state.showFav) {
+      setPaginatedDataBySeason([])
       getProductsByType(state.categories, page);
     } else if  (state.categories.length > 1 && !state.showFav) {
+      setPaginatedDataBySeason([])
       getProductsByTypeFilterBar(state.categories, page);
     } else if (state.favorites.length > 0 && state.showFav) {
       getFavorites(page);
+    } else if(state.season != '' && !state.showFav){
+      getProductsBySeason(page)
     }
   };
 
@@ -165,6 +187,7 @@ const ProductProvider = ({ children }) => {
       if (response) {
         let data = response.data
         data.content.sort(() => Math.random() - 0.5);
+        setPaginatedDataBySeason([])
         setPaginatedData(data);
       }
     } catch (error) {
@@ -191,11 +214,33 @@ const ProductProvider = ({ children }) => {
     }
   };
 
+  const getProductsBySeason = async (page = 1) => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${page}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        console.log('Productos segun temporada', response.data);   
+        setPaginatedData([])     
+        setPaginatedDataBySeason(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const getProductsByTypeFilterBar = async (categories, page = 1) => {
     if (!categories || categories.length === 0) {
       console.error("Debe proporcionar al menos una categoría.");
       return []; 
     }
+
+    setPaginatedDataBySeason([])
 
     try {
       const categoriesQuery = categories.map(category => `categoryNames=${encodeURIComponent(category)}`).join('&');
@@ -229,6 +274,7 @@ const ProductProvider = ({ children }) => {
   const getFavorites = async (page = 1) => {
     try {
       setShowFav(true);
+      setPaginatedDataBySeason([])
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}&page=${page}`,
         {
@@ -246,11 +292,26 @@ const ProductProvider = ({ children }) => {
     }
   };
 
+  // useEffect(() => {
+  //   debugger
+  //   if (state.categories.length === 0) {
+  //     getProducts();
+  //   }
+  // }, [state.categories]);
+
   useEffect(() => {
-    if (state.categories.length === 0) {
-      getProducts();
+    // Ejecutar getProductsBySeason si hay una temporada establecida
+    debugger
+    if (state.season) {
+      getProductsBySeason();
+    } else if (state.categories.length === 0) {
+      getProducts(); // Solo ejecuta esto si no hay categoría
+    } else if(state.categories.length > 0){
+      getProductsByTypeFilterBar(state.categories)
     }
-  }, [state.categories]);
+  }, [state.season, state.categories]);
+
+
   useEffect(() => {
     if (state.showFav) {
       if (state.favorites.length === 0) {
@@ -306,6 +367,8 @@ const ProductProvider = ({ children }) => {
 
   const value = {
     paginatedData: state.paginatedData,
+    paginatedDataBySeason: state.paginatedDataBySeason,
+    season: state.season,
     totalPages: state.totalPages,
     totalElements: state.totalElements,
     currentPage: state.currentPage,
@@ -327,7 +390,10 @@ const ProductProvider = ({ children }) => {
     setCurrentPage,
     getFavorites,
     setCategories,
+    getProductsBySeason,
     setPaginatedData,
+    setSeason,
+    setPaginatedDataBySeason,
     getProductsByType,
     getProductsByTypeFilterBar,
     setEndDate,
