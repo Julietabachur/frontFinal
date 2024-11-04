@@ -549,7 +549,7 @@ const NewProduct = ({
             />
             <Button
               backgroundColor="#e1bc6a"
-              color={"white"}
+              color={"black"}
               disabled={formDisabled}
               onClick={handleAddGalleryImage}
             >
@@ -646,7 +646,8 @@ const NewProduct = ({
             />
 
             <Button
-              colorScheme="#e1bc6a"
+              backgroundColor="#e1bc6a"
+              color={"black"}
               disabled={formDisabled}
               onClick={handleAddCharacteristic}
             >
