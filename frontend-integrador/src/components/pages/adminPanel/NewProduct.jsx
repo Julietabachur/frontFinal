@@ -548,7 +548,8 @@ const NewProduct = ({
               onChange={(e) => setGalleryUrl(e.target.value)}
             />
             <Button
-              colorScheme="#e1bc6a"
+              backgroundColor="#e1bc6a"
+              color={"white"}
               disabled={formDisabled}
               onClick={handleAddGalleryImage}
             >
