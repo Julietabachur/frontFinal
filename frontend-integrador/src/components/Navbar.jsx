@@ -40,7 +40,10 @@ const Navbar = ({ username, setUserName, roles }) => {
     totalElements,
     setProductName,
     productName,
-    setPaginatedData
+    setPaginatedData,
+    setPaginatedDataBySeason,
+    getProducts,
+    setSeason
   } = useProductContext();
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -101,7 +104,7 @@ const Navbar = ({ username, setUserName, roles }) => {
 
   const handleShowSearchBar = async () => {
     if(showSearchBar){
-      await setShowSearchBar(false)
+      // await setShowSearchBar(false)
       handleSearch()
     } else{
       await setShowSearchBar(true);
@@ -118,25 +121,30 @@ const Navbar = ({ username, setUserName, roles }) => {
         {
           params: {
             productName: productName.toUpperCase(),
-            // startDate: startDate,
-            // endDate: endDate || null,
             currentPage,
           },
         }
       );
       if (response) {
-        debugger
-        // setBanderaReservas(false);
-        console.log('Productos segun busqueda', response.data);
-        
+        console.log('Productos segun busqueda por nombre', response.data);
+        setPaginatedDataBySeason([])
         setPaginatedData(response.data);
-        // setSearchResults([]);
+        setSearchResults([]);
       }
     } catch (error) {
       console.error("Error during search:", error);
       // Manejar el error en tu aplicación, posiblemente mostrar un mensaje al usuario
     }
+    
   };
+
+  const handleSeeAll = async () => {
+    debugger
+    setPaginatedDataBySeason([])
+    setCategories([])
+    setSeason('')
+    getProducts()
+  }
 
   return (
       <VStack 
@@ -254,6 +262,19 @@ const Navbar = ({ username, setUserName, roles }) => {
                       </MenuItem>   
 
                               ))}
+                        <MenuItem
+                          bg={"white"}
+                          as="a"
+                          href="#"
+                          onClick={() => handleSeeAll()}
+                        >
+                          <Text fontFamily={"Roboto"} color="color" fontWeight="medium" fontSize="14px" _hover={{
+                            cursor: "pointer", // Cambia el cursor al pasar por encima
+                            fontWeight:'semibold',
+                            textDecorationLine:'underline'
+                            }}>VER TODOS</Text>
+                          
+                        </MenuItem> 
                       </MenuList>
                   </Menu>
                 </div>
@@ -398,6 +419,19 @@ const Navbar = ({ username, setUserName, roles }) => {
                                 
                               </MenuItem>   
                                       ))}
+                                      <MenuItem
+                          bg={"white"}
+                          as="a"
+                          href="#"
+                          onClick={() => handleSeeAll()}
+                        >
+                          <Text fontFamily={"Roboto"} color="color" fontWeight="medium" fontSize="14px" _hover={{
+                            cursor: "pointer", // Cambia el cursor al pasar por encima
+                            fontWeight:'semibold',
+                            textDecorationLine:'underline'
+                            }}>VER TODOS</Text>
+                          
+                        </MenuItem> 
                           
                             </MenuList >
                             {/* </MenuButton> */}
@@ -599,6 +633,19 @@ const Navbar = ({ username, setUserName, roles }) => {
                   </MenuItem>   
 
                   ))}
+                  <MenuItem
+                          bg={"white"}
+                          as="a"
+                          href="#"
+                          onClick={() => handleSeeAll()}
+                        >
+                          <Text fontFamily={"Roboto"} color="color" fontWeight="medium" fontSize="14px" _hover={{
+                            cursor: "pointer", // Cambia el cursor al pasar por encima
+                            fontWeight:'semibold',
+                            textDecorationLine:'underline'
+                            }}>VER TODOS</Text>
+                          
+                        </MenuItem> 
                 </MenuList>
               </Menu>
             </div>
