@@ -48,7 +48,6 @@ const AdminDashboard = ({ token }) => {
   const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
   const [policyListAll, setPolicyListAll] = useState([]); // array de lista de politicas
 
-
   // Efecto para suscribirse al evento de redimensionamiento de la ventana
   useEffect(() => {
     const handleResize = () => {
@@ -64,8 +63,6 @@ const AdminDashboard = ({ token }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []); // La dependencia vacía [] asegura que el efecto solo se ejecute una vez, al montar el componente
-
-
 
   // LOGICA DE getProducts - LISTAR
   const getProducts = async () => {
@@ -117,7 +114,6 @@ const AdminDashboard = ({ token }) => {
       console.log(error);
     }
   };
-
 
   //LOGICA de getFeatures. Listar Caracteristicas.
   const getFeatures = async () => {
@@ -208,8 +204,6 @@ const AdminDashboard = ({ token }) => {
     }
   };
 
-
-
   // Control de Paginación en los productos
   const handlePageChange = (newPage) => {
     console.log(newPage);
@@ -290,171 +284,186 @@ const AdminDashboard = ({ token }) => {
   };
 
   // Renderizado del componente
-  return (
+  return token ? (
+    <Box pos={"relative"} top={8} w={"99vw"} h={"199vh"}>
+      {console.log("AlertSuccess:", showSuccess)}
 
-
-    token ? (
-
-
-      <Box pos={"relative"} top={8} w={"99vw"} h={"199vh"} >
-        {console.log("AlertSuccess:", showSuccess)}
-
-        {showSuccess && (
-          <Alert status="success" variant="subtle">
-            <AlertIcon boxSize="20px" />
-            Producto agregado con éxito!
-          </Alert>
-        )}
-
-        <Box borderBottom="2px" p="10px" bg={"white"}>
-          <Button colorScheme="green" ml={4} onClick={() => handleShow("addProd")}>
-            Agregar Producto
-          </Button>
-          <Button colorScheme="green" ml={4} onClick={() => handleShow("item")}>
-            Listar Productos
-          </Button>
-          <Button colorScheme="green" ml={4} onClick={() => handleShow("user")}>
-            Listar Usuarios
-          </Button>
-          <Button colorScheme="green" ml={4} onClick={() => handleShow("category")}>
-            Listar Categorías
-          </Button>
-          <Button colorScheme="green" ml={4} onClick={() => handleShow("feature")}>
-            Administrar Características
-          </Button>
-          <Button colorScheme="green" ml={4} onClick={() => handleShow("policy")}>
-            Administrar Políticas
-          </Button>
-        </Box>
-
-        {
-          showAddProduct == true && (
-
-            <NewProduct
-              token={token}
-              showSuccess={showSuccess}
-              setShowAddProduct={setShowAddProduct}
-              setShowProdList={setShowProdList}
-            />
-
-          )
-        }
-
-        {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
-        {
-          showProdList == true && (
-            <ListAdminProduct
-              token={token}
-              getProducts={getProducts}
-              page={page}
-              handlePageChange={handlePageChange}
-              lista={lista}
-              featuresListAll={featuresListAll}
-              getFeaturesAll={getFeaturesAll}
-              showAddProduct={showAddProduct}
-              setShowAddProduct={setShowAddProduct}
-              showProdList={showProdList}
-              setShowProdList={setShowProdList}
-            />
-          )
-        }
-
-        {
-          showUserList == true && (
-            <ListUsers
-              token={token}
-              getUsers={getUsers}
-              userPage={userPage}
-              handlePageChange={handleUserPageChange}
-              userList={userList}
-            />
-          )
-        }
-
-        {/* Logicas para mostrar las listas Features  */}
-
-        {
-          showAdminFeatures == true && (
-            <AdminFeatures
-              token={token}
-              getFeatures={getFeatures}
-              featurePage={featurePage}
-              handlePageChange={handleFeaturePageChange}
-              featuresList={featuresList}
-            />
-          )
-        }
-
-        {
-          showAdminPolicy == true && (
-            <AdminPolicy
-              token={token}
-              getPolicy={getPolicy}
-              getPolicyAll={getPolicyAll}
-              policyListAll={policyListAll}
-              policyPage={policyPage}
-              handlePageChange={handlePolicyPageChange}
-              policyList={policyList}
-            />
-          )
-        }
-
-        {/* Logicas para mostrar las listas Categorias */}
-
-        {showCategoryList == true && <ListCategories token={token} />}
-
-        {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
-        {
-          showErrorMessage && (
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "rgba(0, 0, 0, 0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "#fff",
-                fontSize: "24px",
-              }}
-            >
-              Utilice un dispositivo de escritorio para acceder a la página de
-              administración.
-            </div>
-          )
-        }
-      </Box >
-
-    ) : (
-
-      <Flex direction="column" align="center" justify="center" p={4} minH={500}>
-
-        <Alert
-          status="error"
-          variant="subtle"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          textAlign="center"
-          borderRadius="lg"
-          boxShadow="md"
-          w="60vw"
-          p={8}
-        >
-          <AlertIcon boxSize={8} />
-
-          <Text>No está autorizado a acceder a esta página.</Text>
-          <Text>Regrese a la página de Inicio.</Text>
-
+      {showSuccess && (
+        <Alert status="success" variant="subtle">
+          <AlertIcon boxSize="20px" />
+          Producto agregado con éxito!
         </Alert>
+      )}
 
-      </Flex>
+      <Box borderBottom="2px" p="10px" bg={"white"}>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("addProd")}
+        >
+          Agregar Producto
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("item")}
+        >
+          Listar Productos
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("user")}
+        >
+          Listar Usuarios
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("category")}
+        >
+          Listar Categorías
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("feature")}
+        >
+          Administrar Características
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("policy")}
+        >
+          Administrar Políticas
+        </Button>
+      </Box>
 
-    )
+      {showAddProduct == true && (
+        <NewProduct
+          token={token}
+          showSuccess={showSuccess}
+          setShowAddProduct={setShowAddProduct}
+          setShowProdList={setShowProdList}
+        />
+      )}
 
+      {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
+      {showProdList == true && (
+        <ListAdminProduct
+          token={token}
+          getProducts={getProducts}
+          page={page}
+          handlePageChange={handlePageChange}
+          lista={lista}
+          featuresListAll={featuresListAll}
+          getFeaturesAll={getFeaturesAll}
+          showAddProduct={showAddProduct}
+          setShowAddProduct={setShowAddProduct}
+          showProdList={showProdList}
+          setShowProdList={setShowProdList}
+        />
+      )}
+
+      {showUserList == true && (
+        <ListUsers
+          token={token}
+          getUsers={getUsers}
+          userPage={userPage}
+          handlePageChange={handleUserPageChange}
+          userList={userList}
+        />
+      )}
+
+      {/* Logicas para mostrar las listas Features  */}
+
+      {showAdminFeatures == true && (
+        <AdminFeatures
+          token={token}
+          getFeatures={getFeatures}
+          featurePage={featurePage}
+          handlePageChange={handleFeaturePageChange}
+          featuresList={featuresList}
+        />
+      )}
+
+      {showAdminPolicy == true && (
+        <AdminPolicy
+          token={token}
+          getPolicy={getPolicy}
+          getPolicyAll={getPolicyAll}
+          policyListAll={policyListAll}
+          policyPage={policyPage}
+          handlePageChange={handlePolicyPageChange}
+          policyList={policyList}
+        />
+      )}
+
+      {/* Logicas para mostrar las listas Categorias */}
+
+      {showCategoryList == true && <ListCategories token={token} />}
+
+      {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
+      {showErrorMessage && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "#fff",
+            fontSize: "24px",
+          }}
+        >
+          Utilice un dispositivo de escritorio para acceder a la página de
+          administración.
+        </div>
+      )}
+    </Box>
+  ) : (
+    <Flex direction="column" align="center" justify="center" p={4} minH={500}>
+      <Alert
+        status="error"
+        variant="subtle"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        borderRadius="lg"
+        boxShadow="md"
+        w="60vw"
+        p={8}
+      >
+        <AlertIcon boxSize={8} />
+
+        <Text>No está autorizado a acceder a esta página.</Text>
+        <Text>Regrese a la página de Inicio.</Text>
+      </Alert>
+    </Flex>
   );
 };
 
