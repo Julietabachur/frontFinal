@@ -34,7 +34,7 @@ function Specs({ detail }) {
   }, []);
 
   return (
-    <Box width="100%" padding={2} h={"100%"} borderBottom={'1px solid'} borderColor={'color'} mb={20}>
+    <Box width="100%" padding={2} h={"100%"} >
       <Button
         variant="outline"
         fontSize={"0.8rem"}
@@ -54,8 +54,8 @@ function Specs({ detail }) {
           p={4}
           templateColumns={{
             base: "1fr",
-            lg: "repeat(2, 1fr)",
-            xl: "repeat(3, 1fr)",
+            // lg: "repeat(2, 1fr)",
+            // xl: "repeat(3, 1fr)",
           }}
           gap={5}
         >
