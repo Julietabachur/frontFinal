@@ -307,9 +307,7 @@ const DetailPage = () => {
                 </HStack>
               )}
             </Stack>
-            <Specs detail={detail}></Specs>
-
-            <VStack  p={10} borderBottom={'1px solid'} borderColor={'color'} mb={20} alignItems={'start'}>
+            <VStack  p={10}  alignItems={'start'}>
             <Text as='u' fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
 
                 DESCRIPCIÓN DEL PRODUCTO
@@ -323,6 +321,8 @@ const DetailPage = () => {
                 {detail.detail}
               </Text>
             </VStack>
+            <Specs detail={detail}></Specs>
+
             
             <InfoComponent/>
             {/* <Policies></Policies> */}
