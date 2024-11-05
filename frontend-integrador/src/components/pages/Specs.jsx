@@ -34,7 +34,7 @@ function Specs({ detail }) {
   }, []);
 
   return (
-    <Box width="100%" padding={2} h={"100%"} >
+    <Box width="100%" padding={2} h={"100%"} borderBottom={'1px solid'} borderColor={'color'} mb={20}>
       <Button
         variant="outline"
         fontSize={"0.8rem"}
@@ -46,7 +46,7 @@ function Specs({ detail }) {
 
       {(!isCollapsed || window.innerWidth >= 768) && (
         <VStack my={5} alignItems="flex-start" >
-          <Text as='u' fontFamily="Roboto" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+          <Text as='u' fontFamily="Roboto" marginLeft={8} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
             CARACTERÍSTICAS DEL PRODUCTO
           </Text>
         <Grid
