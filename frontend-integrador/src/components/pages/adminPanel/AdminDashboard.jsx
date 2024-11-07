@@ -295,6 +295,8 @@ const AdminDashboard = ({ token }) => {
         </Alert>
       )}
 
+<Flex justifyContent="center" alignItems="center" gap={4}>
+
       <Box borderBottom="2px" p="10px" bg={"white"}>
         <Button
           colorScheme="white"
@@ -346,7 +348,8 @@ const AdminDashboard = ({ token }) => {
         >
           Administrar Características
         </Button>
-        <Button
+       
+       {/*  <Button
           colorScheme="white"
           borderColor="#e1bc6a"
           borderWidth="2px"
@@ -355,8 +358,9 @@ const AdminDashboard = ({ token }) => {
           onClick={() => handleShow("policy")}
         >
           Administrar Políticas
-        </Button>
+        </Button> */}
       </Box>
+      </Flex>
 
       {showAddProduct == true && (
         <NewProduct

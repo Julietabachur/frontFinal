@@ -330,6 +330,7 @@ const NewProduct = ({
 
   return (
     closeForm === false && (
+      <Flex justify={"center"}>
       <VStack
         display={"flex"}
         w={"80%"}
@@ -574,7 +575,9 @@ const NewProduct = ({
                     </Text>
                   </ListItem>
                   <Button
-                    colorScheme="red"
+                    size="sm"
+                    backgroundColor="black"
+                    color={"white"}
                     onClick={() => handleRemoveGalleryImage(index)}
                     disabled={formDisabled}
                   >
@@ -686,7 +689,8 @@ const NewProduct = ({
                     <Button
                       size="sm"
                       ml={5}
-                      colorScheme="red"
+                      backgroundColor="black"
+                      color={"white"}
                       onClick={() => handleRemoveCharacteristic(prodFeature.id)}
                       disabled={formDisabled}
                     >
@@ -748,6 +752,7 @@ const NewProduct = ({
           </Button>
         </Box>
       </VStack>
+      </Flex>
     )
   );
 };

@@ -92,7 +92,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
 
   // renderizado del componente
   return (
-    <>
+    
       <Flex justify={"center"}>
         <Box mt={10} >
           <Box display={"flex"} justifyContent={"space-between"}>
@@ -108,16 +108,26 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
                 alignItems: "center",
               }}
             >
-              <Button colorScheme="green"
+              <Button border={"1px solid #e1bc6a"}
+            _focus={{
+              borderColor: "#e1bc6a",
+              backgroungColor: "#e1bc6a",
+            }}
                 onClick={() => handlePageChange(featurePage > 1 ? featurePage - 1 : featurePage)
                 }
                 disabled={featurePage === 0}
               >
-                &lt;&lt;&lt;
+                &lt;&lt;
               </Button >
               <Text>- {featurePage} -</Text>
-              <Button colorScheme="green" onClick={() => handlePageChange(featurePage + 1)}
-              > &gt;&gt;&gt;
+              <Button
+               border={"1px solid #e1bc6a"}
+               _focus={{
+                 borderColor: "#e1bc6a",
+                 backgroungColor: "#e1bc6a",
+               }}
+               onClick={() => handlePageChange(featurePage + 1)}
+              > &gt;&gt;
               </Button>
             </div>
           </Box>
@@ -128,7 +138,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
               overflowY="scroll"
               maxHeight="50vh"*/
           >
-            <Table variant="striped" colorScheme="green">
+            <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
               <Thead /*borderBottom="2px"*/ >
                 <Tr>
                   <Th>
@@ -152,7 +162,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
                         <FaEdit
                           style={{
                             cursor: "pointer",
-                            color: "green",
+                            color: "black",
                             fontSize: "1.2em",
                             marginBottom: "10px",
                             marginLeft: "40px"
@@ -164,7 +174,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
                         <FaTrash
                           style={{
                             cursor: "pointer",
-                            color: "red",
+                            color: "black",
                             fontSize: "1.2em",
                             marginbottom: "10px",
                             marginLeft: "40px"
@@ -234,7 +244,7 @@ const AdminFeatures = ({ getFeatures, featurePage, handlePageChange, featuresLis
           </Modal>
         </Box>
       </Flex>
-    </>
+    
   );
 };
 
