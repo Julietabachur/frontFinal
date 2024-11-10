@@ -197,10 +197,8 @@ const DetailPage = () => {
                 {token && (
                   <Box
                     onClick={handleHeartClick}
-                    color="color"
-                    _hover={{
-                       cursor:'pointer'
-                    }}
+                    color={isFavorite ? "red.500" : "gray.400"}
+                    _hover={{ color: isFavorite ? "red.600" : "gray.500",cursor:'pointer' }}                   
                   >
                     {isFavorite ? (
                       <FaHeart size={30} />
