@@ -28,7 +28,7 @@ import { Link as ReactRouterLink,useNavigate } from "react-router-dom";
 import RenderPagination from "./pages/home/RenderPagination";
 
 const Perfil = () => {
-  const { getFavorites, paginatedData, clientId, setBanderaReservas } =
+  const { getFavorites, paginatedData, clientId, setShowFav, setBanderaReservas } =
     useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
@@ -123,6 +123,8 @@ const Perfil = () => {
   }, [clientId, token]);
 
   useEffect(() => {
+    debugger
+    setShowFav(true)
     getFavorites();
     console.log('favs: ', paginatedData);
   }, []);
@@ -166,7 +168,7 @@ const Perfil = () => {
             listStyleType={"none"}
             m={0}
           >
-            <ListItem textAlign={"center"}>Reservas</ListItem>
+            {/* <ListItem textAlign={"center"}>Reservas</ListItem> */}
             <ListItem textAlign={"center"}>Editar Perfil</ListItem>
           </UnorderedList>
           <LogoutButton
@@ -294,7 +296,7 @@ const Perfil = () => {
           {paginatedData != 0 &&
             <Text fontSize='lg' onClick={() => handleFavorites()} display={{base:'none', md:'flex',lg:'none'}} as={'u'} cursor={'pointer'}>Ver mis favoritos</Text>
           }
-          { paginatedData.length === 0 ? 
+          { paginatedData == 0 ? 
             <Text fontSize='lg'>Tu lista de favoritos está vacía</Text>
             :
           <Grid
@@ -336,28 +338,28 @@ const Perfil = () => {
 
 
     {/* //reservas */}
-      <GridItem colSpan={4} bg="blanco">
+      {/* <GridItem colSpan={4} bg="blanco">
         <Box m={3}>
           <Box
             color="verde2"
             fontWeight="semibold"
             letterSpacing="wide"
             fontSize={{ base: "2xl", md: "4xl" }}
-            alignSelf={{ base: "center", md: "flex-start" }}
-            /*textShadow={"10px 10px 10px gray"}*/
-          >
+            alignSelf={{ base: "center", md: "flex-start" }} */}
+            {/* /*textShadow={"10px 10px 10px gray"} */}
+          {/* >
             Reservas
-          </Box>
-          {userReserves.length > 0 ? (
-            <Flex
+          </Box> */}
+          {/* {userReserves.length > 0 ? ( */}
+            {/* <Flex
               justify={"flex-start"}
               align={"center"}
               borderRadius={6}
               border={"1px solid lightblue"}
               boxShadow={"15px 15px 15px gray"}
               overflow={"scroll"}
-            >
-              {userReserves.map((reserve) => (
+            > */}
+              {/* {userReserves.map((reserve) => (
                 <Box
                   key={reserve.id}
                   boxShadow={"5px 5px 15px gray"}
@@ -378,10 +380,10 @@ const Perfil = () => {
                   />
 
                 </Box>
-              ))}
-            </Flex>
-          ) : (
-            // Muestra el mensaje solo si no hay reservas y el estado es true
+              ))} */}
+            {/* </Flex>
+          ) : ( */}
+            {/* // Muestra el mensaje solo si no hay reservas y el estado es true
             Array.isArray(user.reserveIds) &&
             user?.reserveIds.length === 0 && (
               <Text fontSize={30}>
@@ -390,7 +392,7 @@ const Perfil = () => {
             )
           )}
         </Box>
-      </GridItem>
+      </GridItem> */}
     </Grid>
   );
 };
