@@ -73,7 +73,7 @@ const NavbarMenu = ({ username, token, roles }) => {
             navigate(`/perfil`);
           }}
         >
-          Mi perfil
+          Mi Perfil
         </MenuItem>
         {admin && (
           <MenuItem
@@ -103,7 +103,7 @@ const NavbarMenu = ({ username, token, roles }) => {
         }}
           onClick={() => handleReserves()}
         >
-          Mis reservas{" "}
+          Mi Carrito{" "}
         </MenuItem>
         <MenuItem
          color={'color'} 

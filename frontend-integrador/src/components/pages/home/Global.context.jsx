@@ -51,15 +51,21 @@ const reducer = (state, action) => {
       return { ...state, banderaReservas: action.payload };
     case "SET_IS_SIGN_IN":
       return { ...state, isSignIn: action.payload };
+    case "SET_TITULO":
+      return { ...state, titulo: action.payload };
+    case "SET_IS_FILTERED_BY_CATEGORY":
+      return { ...state, isFilteredByCategory: action.payload };
     default:
       return state;
   }
 };
 // Estado inicial del contexto global
 const initialState = {
+  titulo:'',
   paginatedData: [],
   season: '',
   paginatedDataBySeason:[],
+  isFilteredByCategory: false,
   currentPage: 1,
   totalPages: 1,
   totalElements: 0,
@@ -106,8 +112,14 @@ const ProductProvider = ({ children }) => {
   const setSearchResults = (data) => {
     dispatch({ type: "SET_SEARCH_RESULTS", payload: data });
   };
+  const setTitulo = (data) => {
+    dispatch({ type: "SET_TITULO", payload: data });
+  };
   const setIsSignIn = (data) => {
     dispatch({ type: "SET_IS_SIGN_IN", payload: data });
+  };
+  const setIsFilteredByCategory = (data) => {
+    dispatch({ type: "SET_IS_FILTERED_BY_CATEGORY", payload: data });
   };
   const setReserves = (data) => {
     dispatch({ type: "SET_RESERVE", payload: data });
@@ -189,6 +201,8 @@ const ProductProvider = ({ children }) => {
         data.content.sort(() => Math.random() - 0.5);
         setPaginatedDataBySeason([])
         setPaginatedData(data);
+        setIsFilteredByCategory(true)
+        setTitulo('Todos nuestros productos')
       }
     } catch (error) {
       console.error(error);
@@ -208,6 +222,8 @@ const ProductProvider = ({ children }) => {
       if (response) {
 
         setPaginatedData(response.data);
+        setIsFilteredByCategory(true)
+        setTitulo(`Categoría: ${categories}`)
       }
     } catch (error) {
       console.error(error);
@@ -215,6 +231,8 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsBySeason = async (page = 1) => {
+    debugger
+    setPaginatedData([])   
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${page}`,
@@ -226,8 +244,11 @@ const ProductProvider = ({ children }) => {
       );
       if (response) {
         console.log('Productos segun temporada', response.data);   
-        setPaginatedData([])     
-        setPaginatedDataBySeason(response.data);
+        setIsFilteredByCategory(false)          
+        setTimeout(() => {
+          setPaginatedDataBySeason(response.data); // setear productor por temp después de un pequeño retraso
+        }, 100); // 100ms de retraso        
+        setTitulo('')
       }
     } catch (error) {
       console.error(error);
@@ -255,11 +276,13 @@ const ProductProvider = ({ children }) => {
       );
 
       if (response.data && response.data.content) {
-      console.log(response);
       let data = response.data;
-      console.log(data);
       data.content.sort(() => Math.random() - 0.5);
       setPaginatedData(data);
+      setIsFilteredByCategory(true)
+      setTitulo(`Categorías seleccionadas: ${categories.join(", ")}`)
+      console.log(state.titulo);
+      
     } else {
       console.warn("No se encontraron productos para las categorías especificadas.");
     }
@@ -301,7 +324,7 @@ const ProductProvider = ({ children }) => {
 
   useEffect(() => {
     // Ejecutar getProductsBySeason si hay una temporada establecida
-    debugger
+    // debugger
     if (state.season) {
       getProductsBySeason();
     } else if (state.categories.length === 0) {
@@ -321,7 +344,7 @@ const ProductProvider = ({ children }) => {
         getFavorites();
       }
     }
-  }, [state.favorites]);
+  }, [state.favorites, state.showFav]);
 
   //Use Effect para cargar los favoritos en el estado del cliente
 
@@ -369,6 +392,7 @@ const ProductProvider = ({ children }) => {
     paginatedData: state.paginatedData,
     paginatedDataBySeason: state.paginatedDataBySeason,
     season: state.season,
+    isFilteredByCategory: state.isFilteredByCategory,
     totalPages: state.totalPages,
     totalElements: state.totalElements,
     currentPage: state.currentPage,
@@ -383,6 +407,8 @@ const ProductProvider = ({ children }) => {
     reservation: state.reservation,
     banderaReservas: state.banderaReservas,
     isSignIn:state.isSignIn, 
+    titulo: state.titulo,
+    setTitulo,
     setIsSignIn,
     setReservation,
     setShowFav,
@@ -390,6 +416,7 @@ const ProductProvider = ({ children }) => {
     setCurrentPage,
     getFavorites,
     setCategories,
+    setIsFilteredByCategory,
     getProductsBySeason,
     setPaginatedData,
     setSeason,

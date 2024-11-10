@@ -197,10 +197,8 @@ const DetailPage = () => {
                 {token && (
                   <Box
                     onClick={handleHeartClick}
-                    color="color"
-                    _hover={{
-                       color:'black'
-                    }}
+                    color={isFavorite ? "red.500" : "gray.400"}
+                    _hover={{ color: isFavorite ? "red.600" : "gray.500",cursor:'pointer' }}                   
                   >
                     {isFavorite ? (
                       <FaHeart size={30} />
@@ -265,14 +263,20 @@ const DetailPage = () => {
                 gallery={detail.gallery}
               />
               {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
-                <>
+                <HStack justifyContent={'end'}>
                   <Button
                     onClick={handleGallery}
-                    bg={"color"}
-                    alignSelf={"flex-end"}
-                    w={20}
-                    mr={5}
-                    mb={5}
+                    color={"color"}
+                    p={3}
+                    px={5}
+                    borderRadius={0}
+                    variant={"plain"}
+                    _hover={{
+                      cursor: "pointer", // Cambia el cursor al pasar por encima
+                      fontWeight:'bold',
+                      borderBottom:'1px solid',
+                      borderColor:' color'
+                      }}
                   >
                     Ver más
                   </Button>
@@ -298,17 +302,12 @@ const DetailPage = () => {
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>
-                </>
+                </HStack>
               )}
             </Stack>
-            <VStack  p={10}>
-              <Text
-                textAlign={"center"}
-                fontFamily="Roboto"
-                fontWeight={"semibold"}
-                color="black"
-                fontSize={["0.9rem", "1.2rem"]}
-              >
+            <VStack  p={10}  alignItems={'start'}>
+            <Text as='u' fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+
                 DESCRIPCIÓN DEL PRODUCTO
               </Text>
               <Text
@@ -320,10 +319,11 @@ const DetailPage = () => {
                 {detail.detail}
               </Text>
             </VStack>
-            
             <Specs detail={detail}></Specs>
-            {/* <Policies></Policies> */}
+
+            
             <InfoComponent/>
+            {/* <Policies></Policies> */}
           </VStack>
         )}
       </VStack>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useProductContext } from "./Global.context";
 import { VStack, Icon, SimpleGrid, Text, Box } from "@chakra-ui/react";
 import ProductCard from "./ProductCard"; // Componente para mostrar cada producto
@@ -7,7 +7,8 @@ import RenderPagination from "./RenderPagination"; // Componente de paginación 
 
 
 const ShowList = () => {
-  const { paginatedData, showFav, favorites, getFavorites, setShowFav, getProducts } = useProductContext();
+  const { paginatedData, showFav, favorites, getFavorites, isFilteredByCategory, getProducts, categories, productName, titulo} = useProductContext();
+  // const [title, setTitle] = useState("");
 
   useEffect(() => {
     // Efecto que obtiene los productos si se están mostrando favoritos y no hay favoritos disponibles
@@ -19,23 +20,49 @@ const ShowList = () => {
     }
   }, [favorites, showFav]);
 
+//  useEffect(() => {
+//   debugger
+//     const getTitle = () => {
+//       if (isFilteredByCategory) {
+//         if (productName && productName !== "") {
+//           return productName; // Si hay un nombre de producto, muestra ese
+//         }
+//         if (categories && categories.length > 0) {
+//           return `Categorías seleccionadas: ${categories.join(", ")}`; // Muestra las categorías si productName está vacío
+//         }
+//       }
+//       return "Productos"; // Título por defecto si no está filtrado por categoría
+//     };
+
+//     // Actualiza el título cuando las dependencias cambien
+//     setTitle(getTitle());
+
+//   }, [isFilteredByCategory, productName, categories]); // Se ejecuta cuando estas variables cambian
+
+
   return (
     <VStack>
       {showFav && (
         // Este mensaje indica si hay favoritos o no
-        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} textShadow='1px 1px 10px #00cc00' mt={'70px'}>
+        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'20px'}>
           {/* Se desactiva la visualización de favoritos */}
           {favorites.length > 0 ? "Tus Favoritos" : "Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos"}
+        </Text>
+      )}
+      {isFilteredByCategory && (
+        // Este mensaje indica si hay favoritos o no
+        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'20px'}>
+           {titulo} {/* Aquí se aplica la lógica para el título */}
         </Text>
       )}
 
       {paginatedData ? (
       <>
         <SimpleGrid
-        minH={"100vh"} // Altura mínima del contenedor
-        columns={{ base: 1, md: 4 }} // Definición de columnas responsivas
+        // minH={"100vh"} // Altura mínima del contenedor
+        columns={{ base: 1, sm:2, md: 3, lg: 4 }} // Definición de columnas responsivas
         pt={12} // Padding en la parte superior
-        spacing={[5, 10, 20]} // Espaciado entre los elementos
+        spacing={[5, 10, 15]} // Espaciado entre los elementos
         >
           {paginatedData.map((item) => (
             <ProductCardContainer key={item.id}>
