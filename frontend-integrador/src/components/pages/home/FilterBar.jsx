@@ -1,6 +1,7 @@
 import { Text, VStack, Button, SimpleGrid, Box, Image, HStack } from "@chakra-ui/react";
 import React from "react";
 import { useProductContext } from "./Global.context";
+import { useNavigate } from "react-router-dom";
 
 const FilterBar = () => {
   const {
@@ -13,21 +14,22 @@ const FilterBar = () => {
     setShowFav,
     setIsFilteredByCategory
   } = useProductContext();
-
+  const navigate = useNavigate();
   const handleCategoryClick = async (categoryGroup) => {
+    // debugger
     setSeason('')
     setShowFav(false)
     setCategories(categoryGroup);
-    // setCurrentPage(1);
   };
-  // await getProductsByTypeFilterBar(categoryGroup);
 
   const handleFiltros = () => {
     setSeason('Primavera')
     setCategories([]);
     setIsFilteredByCategory(false); // Desactiva el filtro de categoría
     setShowFav(false)
-    setCurrentPage(0);
+    setTimeout(() => {
+      navigate("/"); // Redirigir después de un pequeño retraso
+    }, 100); // 100ms de retraso
   };
 
   const tops = [
@@ -125,7 +127,10 @@ export default FilterBar;
 
 return (
   <VStack w="100%" bg="white" p={2} pb={0} spacing={5} align="flex-start">
-    <SimpleGrid columns={{ base: 3, sm: 3, md: 3 }} spacing={4} w="100%">
+    <SimpleGrid columns={{ base: 3, sm: 3, md: 3 }} spacing={4}  justifyContent="center" // Centra horizontalmente
+  alignItems="center" // Centra verticalmente, si es necesario
+  w="80%" // Establece el ancho del contenedor al 80%
+  margin="0 auto">
       {[{ title: 'Partes de Arriba', data: tops }, { title: 'Partes de Abajo', data: bottoms }, { title: 'Accesorios', data: accessories }].map((group) => (
         <Box
           key={group.title}
@@ -138,7 +143,7 @@ return (
           }}
           position="relative"
           bg="gray.100"
-          height={{ base: "200px", md: "250px" }} // Cambiar height para ser automático en pantallas pequeñas
+          height={{ base: "180px", md: "200px" }} // Cambiar height para ser automático en pantallas pequeñas
           border={categories.includes(group.title) ? "3px solid color" : "1px solid #e0e0e0"}
           bgColor={categories.includes(group.title) ? "color" : "white"}
           // boxShadow={categories.includes(group.title) ? "0px 7px 17px 0px #e1bc6a;" : "none"}
