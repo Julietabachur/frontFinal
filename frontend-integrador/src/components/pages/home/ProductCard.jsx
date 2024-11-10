@@ -115,7 +115,7 @@ const ProductCard = ({ item }) => {
     // </Link>
 
     <Card
-      w={[160, 200, 240]}
+      w={[160, 200]}
       bg="blanco"
       borderRadius="16px"
       boxShadow="md"
