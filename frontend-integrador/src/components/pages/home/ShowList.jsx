@@ -23,7 +23,7 @@ const ShowList = () => {
     <VStack>
       {showFav && (
         // Este mensaje indica si hay favoritos o no
-        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} textShadow='1px 1px 10px #00cc00' mt={'70px'}>
+        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'70px'}>
           {/* Se desactiva la visualización de favoritos */}
           {favorites.length > 0 ? "Tus Favoritos" : "Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos"}
         </Text>
@@ -33,9 +33,9 @@ const ShowList = () => {
       <>
         <SimpleGrid
         minH={"100vh"} // Altura mínima del contenedor
-        columns={{ base: 1, md: 4 }} // Definición de columnas responsivas
+        columns={{ base: 1, sm:2, md: 3, lg: 4 }} // Definición de columnas responsivas
         pt={12} // Padding en la parte superior
-        spacing={[5, 10, 20]} // Espaciado entre los elementos
+        spacing={[5, 10, 15]} // Espaciado entre los elementos
         >
           {paginatedData.map((item) => (
             <ProductCardContainer key={item.id}>
