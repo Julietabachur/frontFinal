@@ -9,11 +9,14 @@ const FilterBar = () => {
     setCurrentPage,
     getProductsByTypeFilterBar,
     totalElements,
-    setSeason
+    setSeason,
+    setShowFav,
+    setIsFilteredByCategory
   } = useProductContext();
 
   const handleCategoryClick = async (categoryGroup) => {
     setSeason('')
+    setShowFav(false)
     setCategories(categoryGroup);
     // setCurrentPage(1);
   };
@@ -22,6 +25,8 @@ const FilterBar = () => {
   const handleFiltros = () => {
     setSeason('Primavera')
     setCategories([]);
+    setIsFilteredByCategory(false); // Desactiva el filtro de categoría
+    setShowFav(false)
     setCurrentPage(0);
   };
 
@@ -119,8 +124,8 @@ export default FilterBar;
  */
 
 return (
-  <VStack w="100%" bg="white" p={8} pb={0} spacing={5} align="flex-start">
-    <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={4} w="100%">
+  <VStack w="100%" bg="white" p={2} pb={0} spacing={5} align="flex-start">
+    <SimpleGrid columns={{ base: 3, sm: 3, md: 3 }} spacing={4} w="100%">
       {[{ title: 'Partes de Arriba', data: tops }, { title: 'Partes de Abajo', data: bottoms }, { title: 'Accesorios', data: accessories }].map((group) => (
         <Box
           key={group.title}
@@ -133,14 +138,14 @@ return (
           }}
           position="relative"
           bg="gray.100"
-          height={{ base: "auto", md: "400px" }} // Cambiar height para ser automático en pantallas pequeñas
+          height={{ base: "200px", md: "250px" }} // Cambiar height para ser automático en pantallas pequeñas
           border={categories.includes(group.title) ? "3px solid color" : "1px solid #e0e0e0"}
           bgColor={categories.includes(group.title) ? "color" : "white"}
-          boxShadow={categories.includes(group.title) ? "0px 7px 17px 0px #e1bc6a;" : "none"}
+          // boxShadow={categories.includes(group.title) ? "0px 7px 17px 0px #e1bc6a;" : "none"}
           transition="border 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease"
-          _hover={{ transform: "scale(1.05)", boxShadow: "0px 7px 17px 0px #e1bc6a;" }}
+          _hover={{ transform: "scale(1.01)", boxShadow: "lg" }}
         >
-          <Box position="relative" width="100%" height="0" paddingBottom={{ base: "150%", md: "100%" }} borderRadius="md"> {/* Cambiar paddingBottom para pantallas pequeñas */}
+          <Box width="100%" height="0" paddingBottom={{ base: "75%", sm: "50%", md: "50%" }} borderRadius="md"> {/* Cambiar paddingBottom para pantallas pequeñas */}
             <Image
               src={group.data[0]?.imageUrl || 'https://via.placeholder.com/300'}
               alt={group.title}

@@ -14,7 +14,7 @@ import {
   VStack,
   Input,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
 import { useProductContext } from "../components/pages/home/Global.context";
 import axios from "axios";
@@ -43,7 +43,10 @@ const Navbar = ({ username, setUserName, roles }) => {
     setPaginatedData,
     setPaginatedDataBySeason,
     getProducts,
-    setSeason
+    setSeason,
+    setIsFilteredByCategory,
+    isFilteredByCategory,
+    setShowFav
   } = useProductContext();
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -96,6 +99,9 @@ const Navbar = ({ username, setUserName, roles }) => {
 
   const handleFilterSearch = async (category) => {
     await getProductsByType(category);
+    setIsFilteredByCategory(true);
+    setShowFav(false)
+    navigate("/");
   };
 
   const handleInput = (productName) => {
@@ -103,18 +109,26 @@ const Navbar = ({ username, setUserName, roles }) => {
   }; 
 
   const handleShowSearchBar = async () => {
-    if(showSearchBar){
-      // await setShowSearchBar(false)
-      handleSearch()
+    if(showSearchBar && productName){
+      await handleSearch()
     } else{
-      await setShowSearchBar(true);
-
-    }
-    
+      await setShowSearchBar(!showSearchBar);
+    }    
   };
 
-  
+  const handleKeyPress = async (e) => {
+    debugger
+    console.log('Tecla presionada:', e.key);
+    if (e.key === 'Enter' && productName.trim() !== "") {
+      console.log('Ejecutando búsqueda para:', productName);
+      await handleSearch();
+    }
+  };
+
   const handleSearch = async () => {
+    if (productName.trim() === "") {
+      return; // No hacer nada si el input está vacío
+    }
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/searchByName?`,
@@ -130,6 +144,9 @@ const Navbar = ({ username, setUserName, roles }) => {
         setPaginatedDataBySeason([])
         setPaginatedData(response.data);
         setSearchResults([]);
+        setIsFilteredByCategory(true);
+        setShowFav(false)
+        navigate("/");
       }
     } catch (error) {
       console.error("Error during search:", error);
@@ -144,7 +161,17 @@ const Navbar = ({ username, setUserName, roles }) => {
     setCategories([])
     setSeason('')
     getProducts()
+    setIsFilteredByCategory(true);
+    setShowFav(false)
+    navigate("/");
   }
+
+  const handleClickLogo = () => {
+    setIsFilteredByCategory(false); // Desactiva el filtro de categoría
+    setShowFav(false)
+    setSeason('Primavera')
+    navigate("/"); // Redirige al homepage
+  };
 
   return (
       <VStack 
@@ -199,8 +226,8 @@ const Navbar = ({ username, setUserName, roles }) => {
             // ) :      
               
             <HStack display={'flex'} alignItems={'center'} justifyContent={'center'}>
-              <a
-                href="/"
+              <Link
+                onClick={handleClickLogo}
                 style={{
                   textDecoration: "none",
                   color: "color",
@@ -218,7 +245,7 @@ const Navbar = ({ username, setUserName, roles }) => {
 
                 <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text>
                 </HStack>
-              </a>
+              </Link>
             </HStack>             
                   
             ) :       
@@ -285,8 +312,8 @@ const Navbar = ({ username, setUserName, roles }) => {
                 justifyContent:'center'
               }}>
                 
-                  <a
-                  href="/"
+                  <Link
+                  onClick={handleClickLogo}
                   style={{
                     textDecoration: "none",
                     color: "color",
@@ -310,7 +337,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                     }}
                   />
                 </HStack>
-                </a>
+                </Link>
                 
               </HStack> 
               </>
@@ -339,6 +366,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                 fontSize={[10,12,14]}
                 placeholder="¿Qué buscás?"
                 onChange={(e) => setProductName(e.target.value)}
+                onKeyUp={handleKeyPress}
                 />
               }
 

@@ -51,6 +51,8 @@ const reducer = (state, action) => {
       return { ...state, banderaReservas: action.payload };
     case "SET_IS_SIGN_IN":
       return { ...state, isSignIn: action.payload };
+    case "SET_IS_FILTERED_BY_CATEGORY":
+      return { ...state, isFilteredByCategory: action.payload };
     default:
       return state;
   }
@@ -60,6 +62,7 @@ const initialState = {
   paginatedData: [],
   season: '',
   paginatedDataBySeason:[],
+  isFilteredByCategory: false,
   currentPage: 1,
   totalPages: 1,
   totalElements: 0,
@@ -108,6 +111,9 @@ const ProductProvider = ({ children }) => {
   };
   const setIsSignIn = (data) => {
     dispatch({ type: "SET_IS_SIGN_IN", payload: data });
+  };
+  const setIsFilteredByCategory = (data) => {
+    dispatch({ type: "SET_IS_FILTERED_BY_CATEGORY", payload: data });
   };
   const setReserves = (data) => {
     dispatch({ type: "SET_RESERVE", payload: data });
@@ -321,7 +327,7 @@ const ProductProvider = ({ children }) => {
         getFavorites();
       }
     }
-  }, [state.favorites]);
+  }, [state.favorites, state.showFav]);
 
   //Use Effect para cargar los favoritos en el estado del cliente
 
@@ -369,6 +375,7 @@ const ProductProvider = ({ children }) => {
     paginatedData: state.paginatedData,
     paginatedDataBySeason: state.paginatedDataBySeason,
     season: state.season,
+    isFilteredByCategory: state.isFilteredByCategory,
     totalPages: state.totalPages,
     totalElements: state.totalElements,
     currentPage: state.currentPage,
@@ -390,6 +397,7 @@ const ProductProvider = ({ children }) => {
     setCurrentPage,
     getFavorites,
     setCategories,
+    setIsFilteredByCategory,
     getProductsBySeason,
     setPaginatedData,
     setSeason,
