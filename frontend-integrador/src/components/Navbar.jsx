@@ -46,7 +46,9 @@ const Navbar = ({ username, setUserName, roles }) => {
     setSeason,
     setIsFilteredByCategory,
     isFilteredByCategory,
-    setShowFav
+    setShowFav,
+    setCurrentPage,
+    setTitulo
   } = useProductContext();
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -141,11 +143,14 @@ const Navbar = ({ username, setUserName, roles }) => {
       );
       if (response) {
         console.log('Productos segun busqueda por nombre', response.data);
+        console.log('prodcuto buscado: ', productName);
+        
         setPaginatedDataBySeason([])
         setPaginatedData(response.data);
-        setSearchResults([]);
+        // setSearchResults([]);
         setIsFilteredByCategory(true);
         setShowFav(false)
+        setTitulo(`Resultados para la búsqueda: ${productName}`);
         navigate("/");
       }
     } catch (error) {
@@ -168,10 +173,16 @@ const Navbar = ({ username, setUserName, roles }) => {
 
   const handleClickLogo = () => {
     setIsFilteredByCategory(false); // Desactiva el filtro de categoría
+    setCategories([])
     setShowFav(false)
     setSeason('Primavera')
-    navigate("/"); // Redirige al homepage
+    setCurrentPage();
+    setTimeout(() => {
+      navigate("/"); // Redirigir después de un pequeño retraso
+    }, 100); // 100ms de retraso
   };
+
+  
 
   return (
       <VStack 
