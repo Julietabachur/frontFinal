@@ -123,6 +123,8 @@ const ProductCard = ({ item }) => {
       transition="0.3s"
       mx={2}
       position="relative"
+      overflow="hidden"
+      height={'fit-content'}
     >
       {/* Imagen enlazada al detalle */}
       <Box h="300px" overflow="hidden" borderTopRadius="16px">
