@@ -80,6 +80,15 @@ const FeatureForm = ({ token, getFeatures }) => {
                   name="newCharName"
                   placeholder="Nombre"
                   mb={3}
+                  border={"1px solid #e1bc6a"}
+                  _focus={{
+                    borderColor: "#e1bc6a",
+                    boxShadow: "0 0 0 1px #e1bc6a",
+                  }}
+                  p={3}
+                  fontFamily={"Roboto"}
+                  fontSize="0.9rem"
+                  fontWeight="normal"
                   value={newFeature.charName}
                   onChange={(e) =>
                     setNewFeature({
@@ -93,16 +102,41 @@ const FeatureForm = ({ token, getFeatures }) => {
                   type="text"
                   name="newCharIcon"
                   mb={3}
+                  border={"1px solid #e1bc6a"}
+                  _focus={{
+                    borderColor: "#e1bc6a",
+                    boxShadow: "0 0 0 1px #e1bc6a",
+                  }}
+                  p={3}
+                  fontFamily={"Roboto"}
+                  fontSize="0.9rem"
+                  fontWeight="normal"
                   value={newFeature.charIcon}
                   onChange={(e) =>
                     setNewFeature({ ...newFeature, charIcon: e.target.value })
                   }
                 />
-                <Button type="reset" mr={3} onClick={onClose}>
+                <Button
+                  border={"1px solid #e1bc6a"}
+                  _focus={{
+                    borderColor: "#e1bc6a",
+                    backgroungColor: "#e1bc6a",
+                  }}
+                  type="reset"
+                  mr={3}
+                  onClick={onClose}
+                >
                   {" "}
                   Cancelar
                 </Button>
-                <Button colorScheme="green" onClick={handleSubmit}>
+                <Button
+                  border={"1px solid #e1bc6a"}
+                  _focus={{
+                    borderColor: "#e1bc6a",
+                    backgroungColor: "#e1bc6a",
+                  }}
+                  onClick={handleSubmit}
+                >
                   Guardar
                 </Button>
               </FormControl>
