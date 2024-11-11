@@ -160,7 +160,7 @@ const ProductCard = ({ item }) => {
         {/* Precio y corazón */}
         <HStack justify="space-between" w="100%">
           <Text fontSize="lg" color="gray.800" fontWeight="bold">
-            $2000
+            $ {item.precio}
           </Text>
           {token && (
             <Box

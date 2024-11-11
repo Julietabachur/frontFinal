@@ -19,6 +19,11 @@ import {
   FormLabel,
   Spacer,
   CloseButton,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { CloseIcon } from "@chakra-ui/icons";
@@ -30,6 +35,7 @@ const initialProductState = {
   thumbnail: "",
   gallery: [],
   features: [],
+  precio: 1,
 };
 
 const NewProduct = ({
@@ -175,7 +181,12 @@ const NewProduct = ({
     setInputValue(value);
     setProductData({ ...productData, [name]: value });
   };
-
+  // Manejador de cambios para el precio
+  const handlePrecioChange = (valueString) => {
+    const value = parseInt(valueString); // Convierte el valor en número
+    setProductData({ ...productData, precio: value });
+    console.log(productData);
+  };
   // LOGICA MANEJO GALERIA IMAGENES
   const handleAddGalleryImage = () => {
     if (galleryUrl) {
@@ -273,7 +284,7 @@ const NewProduct = ({
         })
         .then((response) => {
           console.log("Producto agregado con éxito:", response.data);
-          getProducts();
+          //getProducts();
           window.alert("Producto agregado con exito");
         })
         .catch((error) => {
@@ -284,13 +295,14 @@ const NewProduct = ({
         });
     } else {
       //console.log("PRODUCT DATA EDITAR:" , productData);
-
+      console.log("test"+productData.precio)
       // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
       axios
         .put(
           `${baseUrl}/api/v1/admin/products/${productToEdit.id}`,
           productData,
           { headers: { Authorization: `Bearer ${token}` } }
+          
         )
         .then((response) => {
           console.log("Producto actualizado con éxito:", response.data);
@@ -331,295 +343,112 @@ const NewProduct = ({
   return (
     closeForm === false && (
       <Flex justify={"center"}>
-      <VStack
-        display={"flex"}
-        w={"80%"}
-        bg={"white"}
-        shadow="md"
-        border={"2px solid #e1bc6a"}
-        justifyContent={"flex-start"}
-        m={10}
-      >
-        <Box
-          w="100%"
-          bg="white"
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-end"
+        <VStack
+          display={"flex"}
+          w={"80%"}
+          bg={"white"}
+          shadow="md"
+          border={"2px solid #e1bc6a"}
+          justifyContent={"flex-start"}
+          m={10}
         >
-          <CloseButton w="14px" onClick={() => handleCancel()} mx={4} />
-
-          <Heading
-            fontFamily="Roboto"
-            fontWeight={"bold"}
-            fontSize="1.3rem"
-            letterSpacing={1}
-            textAlign="center"
+          <Box
             w="100%"
-            mb={5}
+            bg="white"
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-end"
           >
-            {productToEdit ? "EDITAR PRODUCTO" : "AGREGAR PRODUCTO"}
-          </Heading>
-        </Box>
+            <CloseButton w="14px" onClick={() => handleCancel()} mx={4} />
 
-        <Box
-          w={"100%"}
-          /* border={"1px solid #e1bc6a"} */
-          alignContent={"center"}
-          px={10}
-          py={2}
-          pt={5}
-          minW={"300px"}
-        >
-          <Text
-            fontFamily={"Roboto"}
-            m={1}
-            fontSize="1rem"
-            fontWeight="semibold"
-          >
-            Nombre del producto:
-          </Text>
-          <HStack spacing={3}>
-            <Input
-              border={"1px solid #e1bc6a"}
-              _focus={{
-                borderColor: "#e1bc6a",
-                boxShadow: "0 0 0 1px #e1bc6a",
-              }}
-              name="productName"
-              p={3}
-              fontFamily={"Roboto"}
-              fontSize="0.9rem"
-              fontWeight="normal"
-              placeholder="Nombre del producto"
-              defaultValue={productData.productName}
-              onChange={(e) => handleName(e)}
-            />
-            {showError && (
-              <Text
-                color="red"
-                fontFamily={"Roboto"}
-                fontSize="0.8rem"
-                fontWeight="bold"
-                p={2}
-              >
-                ¡El nombre del producto ya existe en la base de datos. Debe
-                elegir otro nombre!
-              </Text>
-            )}
-          </HStack>
-        </Box>
-
-        <Box
-          w={"100%"}
-          /*border={"1px solid black"}*/
-          alignContent={"center"}
-          px={10}
-          py={2}
-          minW={"300px"}
-        >
-          <Text
-            fontFamily={"Roboto"}
-            m={1}
-            fontSize="1rem"
-            fontWeight="semibold"
-          >
-            Categoría del producto:
-          </Text>
-          <Select
-            borderColor={"#e1bc6a"}
-            focusBorderColor="#e1bc6a" // Esto mantiene el borde dorado en focus
-            name="category"
-            fontFamily={"Roboto"}
-            fontSize="0.9rem"
-            fontWeight="normal"
-            placeholder="Selecciona una categoría"
-            value={productData.category}
-            disabled={formDisabled}
-            onChange={handleInputChange}
-            sx={{
-              "& option:checked": {
-                backgroundColor: "#e1bc6a", // Color de fondo para la opción seleccionada
-                color: "white", // Color del texto si es necesario
-              },
-            }}
-          >
-            {categoryListAll?.map((category) => (
-              <option key={category.id} value={category.categoryName}>
-                {category.categoryName}
-              </option>
-            ))}
-          </Select>
-        </Box>
-
-        <Box
-          w={"100%"}
-          /*border={"1px solid black"}*/
-          alignContent={"center"}
-          px={10}
-          py={2}
-          minW={"300px"}
-        >
-          <Text
-            fontFamily={"Roboto"}
-            m={1}
-            fontSize="1rem"
-            fontWeight="semibold"
-          >
-            Descripción del producto:
-          </Text>
-          <Textarea
-            border={"1px solid #e1bc6a"}
-            _focus={{ borderColor: "#e1bc6a", boxShadow: "0 0 0 1px #e1bc6a" }}
-            p={3}
-            fontFamily={"Roboto"}
-            fontSize="0.9rem"
-            fontWeight="normal"
-            name="detail"
-            placeholder="Descripción del producto"
-            defaultValue={productData.detail}
-            disabled={formDisabled}
-            onChange={handleInputChange}
-            rows={7}
-          />
-        </Box>
-
-        <Box
-          w={"100%"}
-          /*border={"1px solid black"}*/
-          alignContent={"center"}
-          px={10}
-          py={2}
-          minW={"300px"}
-        >
-          <Text
-            fontFamily={"Roboto"}
-            m={1}
-            fontSize="1rem"
-            fontWeight="semibold"
-          >
-            Thumbnail - Imagen miniatura:
-          </Text>
-
-          <Input
-            name="thumbnail"
-            border={"1px solid #e1bc6a"}
-            _focus={{ borderColor: "#e1bc6a", boxShadow: "0 0 0 1px #e1bc6a" }}
-            fontFamily={"Roboto"}
-            fontSize="0.9rem"
-            fontWeight="normal"
-            placeholder="Enlace de la miniatura"
-            defaultValue={productData.thumbnail}
-            disabled={formDisabled}
-            onChange={handleInputChange}
-          />
-        </Box>
-
-        <Box
-          w={"100%"}
-          /*border={"1px solid black"}*/
-          alignContent={"center"}
-          px={10}
-          py={2}
-          minW={"300px"}
-        >
-          <Text
-            fontFamily={"Roboto"}
-            m={1}
-            fontSize="1rem"
-            fontWeight="semibold"
-          >
-            Galería de Imágenes:
-          </Text>
-
-          <HStack align="center" mb={3} spacing={3}>
-            <Input
-              border={"1px solid #e1bc6a"}
-              _focus={{
-                borderColor: "#e1bc6a",
-                boxShadow: "0 0 0 1px #e1bc6a",
-              }}
-              flex="1"
-              fontFamily={"Roboto"}
-              fontSize="0.9rem"
-              fontWeight="normal"
-              placeholder="Enlace imágenes de la galería"
-              value={galleryUrl}
-              disabled={formDisabled}
-              onChange={(e) => setGalleryUrl(e.target.value)}
-            />
-            <Button
-              backgroundColor="#e1bc6a"
-              color={"black"}
-              disabled={formDisabled}
-              onClick={handleAddGalleryImage}
+            <Heading
+              fontFamily="Roboto"
+              fontWeight={"bold"}
+              fontSize="1.3rem"
+              letterSpacing={1}
+              textAlign="center"
+              w="100%"
+              mb={5}
             >
-              +
-            </Button>
-          </HStack>
-
-          <Box>
-            <List>
-              {productData.gallery.map((image, index) => (
-                <Flex key={index} align="center">
-                  <ListItem py={3} ml={4} flex="1">
-                    <Text
-                      fontFamily={"Roboto"}
-                      fontSize="0.9rem"
-                      fontWeight="normal"
-                    >
-                      <span>✔ - </span>
-                      <a href={image} target="_blank" rel="noopener noreferrer">
-                        {image}
-                      </a>
-                    </Text>
-                  </ListItem>
-                  <Button
-                    size="sm"
-                    backgroundColor="black"
-                    color={"white"}
-                    onClick={() => handleRemoveGalleryImage(index)}
-                    disabled={formDisabled}
-                  >
-                    X
-                  </Button>
-                </Flex>
-              ))}
-            </List>
+              {productToEdit ? "EDITAR PRODUCTO" : "AGREGAR PRODUCTO"}
+            </Heading>
           </Box>
-        </Box>
 
-        <Box
-          w={"100%"}
-          /*border={"1px solid black"}*/
-          alignContent={"center"}
-          px={10}
-          py={2}
-          minW={"300px"}
-        >
-          <Text
-            fontFamily={"Roboto"}
-            m={1}
-            fontSize="1rem"
-            fontWeight="semibold"
+          <Box
+            w={"100%"}
+            /* border={"1px solid #e1bc6a"} */
+            alignContent={"center"}
+            px={10}
+            py={2}
+            pt={5}
+            minW={"300px"}
           >
-            Características del producto
-          </Text>
-
-          <HStack align="center" mb={3} spacing={3}>
-            <Select
+            <Text
               fontFamily={"Roboto"}
-              _focus={{
-                borderColor: "#e1bc6a",
-                boxShadow: "0 0 0 1px #e1bc6a",
-              }}
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
+            >
+              Nombre del producto:
+            </Text>
+            <HStack spacing={3}>
+              <Input
+                border={"1px solid #e1bc6a"}
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  boxShadow: "0 0 0 1px #e1bc6a",
+                }}
+                name="productName"
+                p={3}
+                fontFamily={"Roboto"}
+                fontSize="0.9rem"
+                fontWeight="normal"
+                placeholder="Nombre del producto"
+                defaultValue={productData.productName}
+                onChange={(e) => handleName(e)}
+              />
+              {showError && (
+                <Text
+                  color="red"
+                  fontFamily={"Roboto"}
+                  fontSize="0.8rem"
+                  fontWeight="bold"
+                  p={2}
+                >
+                  ¡El nombre del producto ya existe en la base de datos. Debe
+                  elegir otro nombre!
+                </Text>
+              )}
+            </HStack>
+          </Box>
+
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
+              fontFamily={"Roboto"}
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
+            >
+              Categoría del producto:
+            </Text>
+            <Select
+              borderColor={"#e1bc6a"}
+              focusBorderColor="#e1bc6a" // Esto mantiene el borde dorado en focus
+              name="category"
+              fontFamily={"Roboto"}
               fontSize="0.9rem"
               fontWeight="normal"
-              borderColor={"#e1bc6a"}
-              placeholder="Seleccione una característica"
-              value={newFeature}
+              placeholder="Selecciona una categoría"
+              value={productData.category}
               disabled={formDisabled}
-              onChange={(e) => setNewFeature(e.target.value)}
+              onChange={handleInputChange}
               sx={{
                 "& option:checked": {
                   backgroundColor: "#e1bc6a", // Color de fondo para la opción seleccionada
@@ -627,131 +456,366 @@ const NewProduct = ({
                 },
               }}
             >
-              {featuresList.map((feature) => (
-                <option key={feature.charName} value={feature.charName}>
-                  {feature.charName}
+              {categoryListAll?.map((category) => (
+                <option key={category.id} value={category.categoryName}>
+                  {category.categoryName}
                 </option>
               ))}
             </Select>
-            <Input
+          </Box>
+
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
               fontFamily={"Roboto"}
-              fontSize="0.9rem"
-              fontWeight="normal"
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
+            >
+              Descripción del producto:
+            </Text>
+            <Textarea
               border={"1px solid #e1bc6a"}
               _focus={{
                 borderColor: "#e1bc6a",
                 boxShadow: "0 0 0 1px #e1bc6a",
               }}
-              placeholder="Nuevo valor para la característica"
-              value={newFeatureValue}
+              p={3}
+              fontFamily={"Roboto"}
+              fontSize="0.9rem"
+              fontWeight="normal"
+              name="detail"
+              placeholder="Descripción del producto"
+              defaultValue={productData.detail}
               disabled={formDisabled}
-              onChange={(e) => setNewFeatureValue(e.target.value)}
+              onChange={handleInputChange}
+              rows={7}
             />
-
-            <Button
-              backgroundColor="#e1bc6a"
-              color={"black"}
-              disabled={formDisabled}
-              onClick={handleAddCharacteristic}
+          </Box>
+          {/*/////////////////////////////////////////////////////////////*/}
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
+              fontFamily={"Roboto"}
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
             >
-              +
-            </Button>
-          </HStack>
+              Precio:
+            </Text>
+            <NumberInput
+              width="200px"
+              value={productData.precio}
+              min={1}
+              border={"#e1bc6a"}
+              onChange={handlePrecioChange}
 
-          <Box my={2}>
-            <List>
-              {productData.features &&
-                productData.features.map((prodFeature) => (
-                  <Flex key={prodFeature.id} align="center" my={2}>
-                    <HStack ml={4}>
-                      <Text fontFamily="Roboto" color="black" fontSize="1rem">
-                        {prodFeature.charIcon}
-                      </Text>
+            >
+              <NumberInputField
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  boxShadow: "0 0 0 1px #e1bc6a",
+                }}
+                name="precio"
+                
+              />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </Box>
+
+          {/*/////////////////////////////////////*/}
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
+              fontFamily={"Roboto"}
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
+            >
+              Thumbnail - Imagen miniatura:
+            </Text>
+
+            <Input
+              name="thumbnail"
+              border={"1px solid #e1bc6a"}
+              _focus={{
+                borderColor: "#e1bc6a",
+                boxShadow: "0 0 0 1px #e1bc6a",
+              }}
+              fontFamily={"Roboto"}
+              fontSize="0.9rem"
+              fontWeight="normal"
+              placeholder="Enlace de la miniatura"
+              defaultValue={productData.thumbnail}
+              disabled={formDisabled}
+              onChange={handleInputChange}
+            />
+          </Box>
+
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
+              fontFamily={"Roboto"}
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
+            >
+              Galería de Imágenes:
+            </Text>
+
+            <HStack align="center" mb={3} spacing={3}>
+              <Input
+                border={"1px solid #e1bc6a"}
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  boxShadow: "0 0 0 1px #e1bc6a",
+                }}
+                flex="1"
+                fontFamily={"Roboto"}
+                fontSize="0.9rem"
+                fontWeight="normal"
+                placeholder="Enlace imágenes de la galería"
+                value={galleryUrl}
+                disabled={formDisabled}
+                onChange={(e) => setGalleryUrl(e.target.value)}
+              />
+              <Button
+                backgroundColor="#e1bc6a"
+                color={"black"}
+                disabled={formDisabled}
+                onClick={handleAddGalleryImage}
+              >
+                +
+              </Button>
+            </HStack>
+
+            <Box>
+              <List>
+                {productData.gallery.map((image, index) => (
+                  <Flex key={index} align="center">
+                    <ListItem py={3} ml={4} flex="1">
                       <Text
                         fontFamily={"Roboto"}
                         fontSize="0.9rem"
                         fontWeight="normal"
                       >
-                        {prodFeature.charName}
+                        <span>✔ - </span>
+                        <a
+                          href={image}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {image}
+                        </a>
                       </Text>
-                      {prodFeature.charValue &&
-                        prodFeature.charValue.map((value, valueIndex) => (
-                          <Text
-                            key={valueIndex}
-                            fontFamily="Roboto"
-                            fontSize="0.9rem"
-                            ml={2}
-                          >
-                            {value}
-                          </Text>
-                        ))}
-                    </HStack>
+                    </ListItem>
                     <Button
                       size="sm"
-                      ml={5}
                       backgroundColor="black"
                       color={"white"}
-                      onClick={() => handleRemoveCharacteristic(prodFeature.id)}
+                      onClick={() => handleRemoveGalleryImage(index)}
                       disabled={formDisabled}
                     >
                       X
                     </Button>
                   </Flex>
                 ))}
-            </List>
+              </List>
+            </Box>
           </Box>
-        </Box>
 
-        <Box
-          w={"100%"}
-          bg={"white"}
-          p={5}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          gap={3}
-        >
-          {productToEdit ? (
-            <Button
-              onClick={saveChanges}
-              backgroundColor="#e1bc6a"
-              color="black"
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
               fontFamily={"Roboto"}
+              m={1}
               fontSize="1rem"
               fontWeight="semibold"
-              alignSelf={"flex-end"}
             >
-              Guardar Cambios
-            </Button>
-          ) : (
+              Características del producto
+            </Text>
+
+            <HStack align="center" mb={3} spacing={3}>
+              <Select
+                fontFamily={"Roboto"}
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  boxShadow: "0 0 0 1px #e1bc6a",
+                }}
+                fontSize="0.9rem"
+                fontWeight="normal"
+                borderColor={"#e1bc6a"}
+                placeholder="Seleccione una característica"
+                value={newFeature}
+                disabled={formDisabled}
+                onChange={(e) => setNewFeature(e.target.value)}
+                sx={{
+                  "& option:checked": {
+                    backgroundColor: "#e1bc6a", // Color de fondo para la opción seleccionada
+                    color: "white", // Color del texto si es necesario
+                  },
+                }}
+              >
+                {featuresList.map((feature) => (
+                  <option key={feature.charName} value={feature.charName}>
+                    {feature.charName}
+                  </option>
+                ))}
+              </Select>
+              <Input
+                fontFamily={"Roboto"}
+                fontSize="0.9rem"
+                fontWeight="normal"
+                border={"1px solid #e1bc6a"}
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  boxShadow: "0 0 0 1px #e1bc6a",
+                }}
+                placeholder="Nuevo valor para la característica"
+                value={newFeatureValue}
+                disabled={formDisabled}
+                onChange={(e) => setNewFeatureValue(e.target.value)}
+              />
+
+              <Button
+                backgroundColor="#e1bc6a"
+                color={"black"}
+                disabled={formDisabled}
+                onClick={handleAddCharacteristic}
+              >
+                +
+              </Button>
+            </HStack>
+
+            <Box my={2}>
+              <List>
+                {productData.features &&
+                  productData.features.map((prodFeature) => (
+                    <Flex key={prodFeature.id} align="center" my={2}>
+                      <HStack ml={4}>
+                        <Text fontFamily="Roboto" color="black" fontSize="1rem">
+                          {prodFeature.charIcon}
+                        </Text>
+                        <Text
+                          fontFamily={"Roboto"}
+                          fontSize="0.9rem"
+                          fontWeight="normal"
+                        >
+                          {prodFeature.charName}
+                        </Text>
+                        {prodFeature.charValue &&
+                          prodFeature.charValue.map((value, valueIndex) => (
+                            <Text
+                              key={valueIndex}
+                              fontFamily="Roboto"
+                              fontSize="0.9rem"
+                              ml={2}
+                            >
+                              {value}
+                            </Text>
+                          ))}
+                      </HStack>
+                      <Button
+                        size="sm"
+                        ml={5}
+                        backgroundColor="black"
+                        color={"white"}
+                        onClick={() =>
+                          handleRemoveCharacteristic(prodFeature.id)
+                        }
+                        disabled={formDisabled}
+                      >
+                        X
+                      </Button>
+                    </Flex>
+                  ))}
+              </List>
+            </Box>
+          </Box>
+
+          <Box
+            w={"100%"}
+            bg={"white"}
+            p={5}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            gap={3}
+          >
+            {productToEdit ? (
+              <Button
+                onClick={saveChanges}
+                backgroundColor="#e1bc6a"
+                color="black"
+                fontFamily={"Roboto"}
+                fontSize="1rem"
+                fontWeight="semibold"
+                alignSelf={"flex-end"}
+              >
+                Guardar Cambios
+              </Button>
+            ) : (
+              <Button
+                onClick={saveChanges}
+                backgroundColor="#e1bc6a" // Fondo del botón
+                borderColor="#e1bc6a"
+                color="black" // Color del texto
+                borderWidth="2px"
+                fontFamily={"Roboto"}
+                fontSize="1rem"
+                fontWeight="semibold"
+                alignSelf={"flex-end"}
+              >
+                Agregar
+              </Button>
+            )}
+
             <Button
-              onClick={saveChanges}
               backgroundColor="#e1bc6a" // Fondo del botón
               borderColor="#e1bc6a"
               color="black" // Color del texto
-              borderWidth="2px"
               fontFamily={"Roboto"}
               fontSize="1rem"
               fontWeight="semibold"
-              alignSelf={"flex-end"}
+              onClick={() => handleCancel()}
             >
-              Agregar
+              Cancelar
             </Button>
-          )}
-
-          <Button
-            backgroundColor="#e1bc6a" // Fondo del botón
-            borderColor="#e1bc6a"
-            color="black" // Color del texto
-            fontFamily={"Roboto"}
-            fontSize="1rem"
-            fontWeight="semibold"
-            onClick={() => handleCancel()}
-          >
-            Cancelar
-          </Button>
-        </Box>
-      </VStack>
+          </Box>
+        </VStack>
       </Flex>
     )
   );
