@@ -53,6 +53,8 @@ const reducer = (state, action) => {
       return { ...state, isSignIn: action.payload };
     case "SET_TITULO":
       return { ...state, titulo: action.payload };
+    case "SET_CARRITO":
+      return { ...state, carrito: action.payload };
     case "SET_IS_FILTERED_BY_CATEGORY":
       return { ...state, isFilteredByCategory: action.payload };
     default:
@@ -73,6 +75,7 @@ const initialState = {
   startDate: "",
   endDate: "",
   productName: "",
+  carrito:[],
   searchResults: [],
   favorites: [],
   showFav: false,
@@ -184,6 +187,9 @@ const ProductProvider = ({ children }) => {
 
   const setClientId = (data) => {
     dispatch({ type: "SET_CLIENT_ID", payload: data });
+  };
+  const setCarrito = (data) => {
+    dispatch({ type: "SET_CARRITO", payload: data });
   };
 
   const getProducts = async (page = 1) => {
@@ -408,6 +414,8 @@ const ProductProvider = ({ children }) => {
     banderaReservas: state.banderaReservas,
     isSignIn:state.isSignIn, 
     titulo: state.titulo,
+    carrito:state.carrito,
+    setCarrito,
     setTitulo,
     setIsSignIn,
     setReservation,

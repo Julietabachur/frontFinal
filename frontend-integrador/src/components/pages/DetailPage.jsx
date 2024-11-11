@@ -35,6 +35,7 @@ import SocialShare from "./SocialShare";
 registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
+import { wrap } from "framer-motion";
 
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -48,7 +49,7 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn } =
+  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn, setCarrito, carrito } =
     useProductContext();
   const [showError, setShowError] = useState(false);
 
@@ -113,6 +114,15 @@ const DetailPage = () => {
     setAvailableDates((prevDates) => [...prevDates, ...updatedAvailableDates]);
   };
 
+  const addToCart = (product) =>{
+    console.log('agrego producto al carrito: ', product);
+    
+    setCarrito([...carrito, product])
+
+    console.log('carrito: ',carrito);
+    
+  }
+
   useEffect(() => {
     getReserved();
   }, [reserveList]);
@@ -144,6 +154,8 @@ const DetailPage = () => {
     );
     if (response) {
       setDetail(response.data);
+      console.log('detail producto',response.data);
+      
     }
   };
 
@@ -230,8 +242,9 @@ const DetailPage = () => {
                 >
                   {detail.productName}
                 </Text>
+             
               </HStack>
-              <HStack>
+              <HStack display={'flex'} justifyContent={'center'} alignContent={'center'} wrap={'wrap'}>
                 {/* <Button
                   onClick={handleReserve}
                   bg={"verde2"}
@@ -239,6 +252,24 @@ const DetailPage = () => {
                 >
                   Reservar
                 </Button> */}
+                   <Button
+                  onClick={()=>addToCart(detail)}
+                  color={"color"}
+                  p={3}
+                  px={5}
+                  borderRadius={0}
+                  variant={"plain"}
+                  _hover={{
+                    cursor: "pointer", // Cambia el cursor al pasar por encima
+                    fontWeight:'bold',
+                    borderBottom:'1px solid',
+                    borderColor:' color'
+                    }}
+                >
+                  AGREGAR AL CARRITO
+                </Button>
+              <Text color={'color'}>|</Text>   
+
                 <Button
                   onClick={() => navigate(-1)}
                   color={"color"}
@@ -253,7 +284,7 @@ const DetailPage = () => {
                     borderColor:' color'
                     }}
                 >
-                  Atrás
+                  ATRÁS
                 </Button>
               </HStack>
             </HStack>
@@ -278,7 +309,7 @@ const DetailPage = () => {
                       borderColor:' color'
                       }}
                   >
-                    Ver más
+                    VER MÁS
                   </Button>
                   <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
                     <DrawerOverlay />
