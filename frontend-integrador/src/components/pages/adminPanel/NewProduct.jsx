@@ -36,6 +36,7 @@ const initialProductState = {
   gallery: [],
   features: [],
   precio: 1,
+  stock: 1,
 };
 
 const NewProduct = ({
@@ -187,6 +188,17 @@ const NewProduct = ({
     setProductData({ ...productData, precio: value });
     console.log(productData);
   };
+
+   // Manejador de cambios para el stock
+  const handleStockChange = (valueString) => {
+    const value = parseInt(valueString); // Convierte el valor en número
+    setProductData({ ...productData, stock: value });
+    console.log(productData);
+  };
+
+
+
+
   // LOGICA MANEJO GALERIA IMAGENES
   const handleAddGalleryImage = () => {
     if (galleryUrl) {
@@ -197,6 +209,7 @@ const NewProduct = ({
       setGalleryUrl("");
     }
   };
+
 
   const handleRemoveGalleryImage = (index) => {
     const updatedGallery = [...productData.gallery];
@@ -296,7 +309,10 @@ const NewProduct = ({
     } else {
       //console.log("PRODUCT DATA EDITAR:" , productData);
       console.log("test"+productData.precio)
+      console.log("test"+productData.stock)
       // Realiza la solicitud PUT al endpoint para actualizar el producto usando Axios
+
+      console.log("Datos del producto antes de actualizar:", productData);
       axios
         .put(
           `${baseUrl}/api/v1/admin/products/${productToEdit.id}`,
@@ -529,6 +545,45 @@ const NewProduct = ({
                   boxShadow: "0 0 0 1px #e1bc6a",
                 }}
                 name="precio"
+                
+              />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </Box>
+
+          <Box
+            w={"100%"}
+            /*border={"1px solid black"}*/
+            alignContent={"center"}
+            px={10}
+            py={2}
+            minW={"300px"}
+          >
+            <Text
+              fontFamily={"Roboto"}
+              m={1}
+              fontSize="1rem"
+              fontWeight="semibold"
+            >
+              Stock:
+            </Text>
+            <NumberInput
+              width="200px"
+              value={productData.stock}
+              min={0}
+              border={"#e1bc6a"}
+              onChange={handleStockChange}
+
+            >
+              <NumberInputField
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  boxShadow: "0 0 0 1px #e1bc6a",
+                }}
+                name="stock"
                 
               />
               <NumberInputStepper>
