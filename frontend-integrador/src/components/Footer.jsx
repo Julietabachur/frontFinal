@@ -60,7 +60,7 @@ const Footer = () => {
       )
         :
         (      
-      <HStack bg={'white'} p={3} px={10} textAlign="center" w="100vw"  boxShadow="0px 0px 6px 1px rgba(0, 0, 0, 0.25)" justifyContent={'space-between'}>
+      <HStack bg={'white'} p={3} px={10} textAlign="center" w="99vw"  boxShadow="0px 0px 6px 1px rgba(0, 0, 0, 0.25)" justifyContent={'space-between'}>
         <HStack
           spacing={4}
           align='stretch'

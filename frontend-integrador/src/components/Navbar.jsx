@@ -190,7 +190,7 @@ const Navbar = ({ username, setUserName, roles }) => {
       bg={"blanco"}
       justify={"space-between"}
       top={0}
-      w={"100vw"}
+      w={"99vw"}
       h={"100%"}
       >
         <HStack
@@ -202,7 +202,7 @@ const Navbar = ({ username, setUserName, roles }) => {
           position={"fixed"}
           top={0}
           /* minW={400} */
-          w={"100vw"}
+          w={"99vw"}
           h={"100px"}
           zIndex={1000}
           flexWrap={wrap}
