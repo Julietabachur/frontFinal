@@ -70,7 +70,7 @@ function App() {
             <Route path="/verifyReg" element={<VerifyReg />} />
             <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
             <Route path="/reserve" element={<ReservesPage />} />
-            <Route path="/detalle/:id" element={<DetailPage />} />
+            <Route path="/detalle/:id" element={<DetailPage username={username} />} />
             <Route path="/perfil"
               element={
                 <Perfil

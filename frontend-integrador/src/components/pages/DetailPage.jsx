@@ -38,7 +38,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
 import { wrap } from "framer-motion";
 
-const DetailPage = () => {
+const DetailPage = ({username}) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const frontUrl = import.meta.env.VITE_FRONT_URL;
   const { id } = useParams();
@@ -390,48 +390,67 @@ const DetailPage = () => {
                 >
                   {/* Nombre del producto */}
                   <Text fontSize="2xl" fontWeight="bold">{detail.productName}</Text>
+
+                  {/* DETALLE PRODUCTO */}
+                  <VStack  alignItems={'start'}>
+                    <Text  fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["10px", "12px"]}>
+
+                    Descripción del producto:
+                    </Text>
+                    <Text
+                      fontFamily={"Roboto"}
+                      color={"black"}
+                      fontSize={["8px","12px"]}
+                      marginTop={["3px","6px"]}
+                    >
+                      {detail.detail}
+                    </Text>
+                  </VStack>
                   
                   {/* Precio del producto */}
                   <Text fontSize="xl" color="gray.500">{`$${detail.precio}`}</Text>
                   
                       
-                  {/* Talles */}
-                  {detail.features && detail.features.find(f => f.charName === "TALLE")?.charValue && (
-                <HStack spacing={2}>
-                  {detail.features.find(f => f.charName === "TALLE").charValue.map((talle, index) => (
-                    <Button
-                      key={index}
-                      // variant={size === talle ? "solid" : "outline"}              
-                      backgroundColor={size === talle ? "color" : "white"}     
-                      color={size === talle ? "white" : "black"}     
-                      border={'1px solid'}
-                      borderColor={'color'}  
-                      onClick={()=>handleSize(talle)}
-                      _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
-                    >
-                      {talle}
-                    </Button>
-                  ))}
-                </HStack>
-              )}
+                  {/* Talles */}                
+                  {username && detail.features && detail.features.find(f => f.charName === "TALLE")?.charValue && (
+                    <HStack spacing={2}>
+                      {detail.features.find(f => f.charName === "TALLE").charValue.map((talle, index) => (
+                        <Button
+                          key={index}
+                          // variant={size === talle ? "solid" : "outline"}              
+                          backgroundColor={size === talle ? "color" : "white"}     
+                          color={size === talle ? "white" : "black"}     
+                          border={'1px solid'}
+                          borderColor={'color'}  
+                          onClick={()=>handleSize(talle)}
+                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                        >
+                          {talle}
+                        </Button>
+                      ))}
+                    </HStack>
+                  )}
+             
 
                   {/* Botón agregar al carrito */}
-                  <Button
-                    onClick={() => addToCart(detail)}
-                    // colorScheme="teal"
-                    backgroundColor={'white'}
-                    variant="solid"
-                    width="250px"                      
-                    border={'1px solid'}
-                    borderColor={'color'}
-                    marginTop={10}
-                    _hover={{
-                      backgroundColor:'color',
-                      color:'white'
-                    }}
-                  >
-                    AGREGAR AL CARRITO
-                  </Button>
+                  {username &&
+                    <Button
+                      onClick={() => addToCart(detail)}
+                      // colorScheme="teal"
+                      backgroundColor={'white'}
+                      variant="solid"
+                      width="250px"                      
+                      border={'1px solid'}
+                      borderColor={'color'}
+                      marginTop={10}
+                      _hover={{
+                        backgroundColor:'color',
+                        color:'white'
+                      }}
+                    >
+                      AGREGAR AL CARRITO
+                    </Button>
+                  }
 
                   
                   {/* Botones de "like" y "compartir" */}
@@ -448,7 +467,7 @@ const DetailPage = () => {
                     />
 
                        {/* Corazón */}
-                       {token && (
+                       {username && (
                       <Box
                         onClick={handleHeartClick}
                         color={isFavorite ? "red.500" : "gray.400"}
@@ -470,7 +489,7 @@ const DetailPage = () => {
                     objectFit="cover"
                     w="100%"
                     h="100%"
-                    maxH={{ base: "300px", md: "500px" }} // Ajusta la altura máxima en diferentes pantallas
+                    maxH={ "500px"} // Ajusta la altura máxima en diferentes pantallas
                   />
                 </Box>
               </Grid>
@@ -519,20 +538,7 @@ const DetailPage = () => {
                 </HStack>
               )}
             </VStack>
-            <VStack  p={10}  alignItems={'start'}>
-            <Text as='u' fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
-
-                DESCRIPCIÓN DEL PRODUCTO
-              </Text>
-              <Text
-                fontFamily={"Roboto"}
-                color={"black"}
-                fontSize={["12px","14px","18px"]}
-                marginTop={["5px","10px","20px"]}
-              >
-                {detail.detail}
-              </Text>
-            </VStack>
+         
             <Specs detail={detail}></Specs>
 
             
