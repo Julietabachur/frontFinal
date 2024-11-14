@@ -45,7 +45,6 @@ const ListAdminProduct = ({
   const [productToEdit, setProductToEdit] = useState(null);
 
   // constantes del Alert Box
-
   const cancelRef = useRef(); // permite cancelar en el box de alerta
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
   const [itemToDelete, setItemToDelete] = useState(null); // pasa la variable del item a eliminar
@@ -73,7 +72,6 @@ const ListAdminProduct = ({
       });
       // Vuelve a obtener la lista de productos después de eliminar.
       getProducts();
-      //console.log(lista);
     } catch (error) {
       console.error("Error al eliminar el producto", error);
     }
@@ -140,6 +138,9 @@ const ListAdminProduct = ({
                       <Text fontWeight="bold">Imagen</Text>
                     </Th>
                     <Th>
+                      <Text fontWeight="bold">Stock Total</Text> {/* Columna de Stock */}
+                    </Th>
+                    <Th>
                       <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
                         Editar / Eliminar
                       </Text>
@@ -161,6 +162,7 @@ const ListAdminProduct = ({
                             h={50}
                           />
                         </Td>
+                        <Td>{item.stock}</Td> {/* Mostrar el stock */}
                         <Td>
                           <FaEdit
                             style={{
@@ -168,7 +170,7 @@ const ListAdminProduct = ({
                               color: "black",
                               fontSize: "1.2em",
                               marginLeft: "40px",
-                              marginBotton: "10px",
+                              marginBottom: "10px",
                             }}
                             onClick={() => handleEdit(item)}
                           />
