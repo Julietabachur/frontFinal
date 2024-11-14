@@ -9,7 +9,7 @@ import axios from "axios";
 
 
 const RandomProductSlider = () => {
-  const { paginatedDataBySeason, setSeason, getProductsBySeason, setPaginatedData, totalElements} = useProductContext();
+  const { paginatedDataBySeason, setSeason, getProductsBySeason, setPaginatedData, totalElements, setCurrentPage} = useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
 
@@ -17,6 +17,7 @@ const RandomProductSlider = () => {
     console.log('totalElements: ', totalElements);
     setSeason('Primavera')
     setPaginatedData([])
+    setCurrentPage()
   }, []);
 
 //   useEffect(() => {

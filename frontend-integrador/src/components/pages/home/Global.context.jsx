@@ -244,10 +244,11 @@ const ProductProvider = ({ children }) => {
 
   const getProductsBySeason = async (page = 1) => {
     debugger
+    const validPage = isNaN(page) || page <= 0 ? 1 : page; 
     setPaginatedData([])   
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${page}`,
+        `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${validPage}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -259,7 +260,7 @@ const ProductProvider = ({ children }) => {
         setIsFilteredByCategory(false)          
         setTimeout(() => {
           setPaginatedDataBySeason(response.data); // setear productor por temp después de un pequeño retraso
-        }, 100); // 100ms de retraso        
+        }, 1000); // 100ms de retraso        
         setTitulo('')
       }
     } catch (error) {
