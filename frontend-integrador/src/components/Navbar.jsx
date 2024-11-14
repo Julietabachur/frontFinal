@@ -191,9 +191,12 @@ const Navbar = ({ username, setUserName, roles }) => {
       justify={"space-between"}
       top={0}
       w={"99vw"}
-      h={"100%"}
+      // minH={media ? '200px' : "100px"}
+      // position="fixed"
+      zIndex={1000}
       >
         <HStack
+         shadow={media ? 'none':'md'} 
           bg={"blanco"}
           pl={2}
           pr={10}
@@ -210,31 +213,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                        
           
           
-          {media ? (
-            // username ? (
-            //   <HStack>
-            //    <a
-            //     href="/"
-            //     style={{
-            //       textDecoration: "none",
-            //       color: "black",
-            //     }}            
-            //   >
-                  
-            //     <HStack display={'flex'} alignItems={'center'} justifyContent={'center'}>
-            //     <Image
-            //         src="../Isotipo-Valkiria-Sand.png"
-            //         alt="Logo Valkiria"
-            //       style={{
-            //         height: "40px",
-            //       }}
-            //     />
-
-            //     <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text>
-            //     </HStack>
-            //   </a>
-            //   </HStack>          
-            // ) :      
+          {media ? (           
               
             <HStack display={'flex'} alignItems={'center'} justifyContent={'center'}>
               <Link
@@ -361,43 +340,7 @@ const Navbar = ({ username, setUserName, roles }) => {
               <NavbarMenu username={username} roles={roles} />
               </HStack>
             ) : (
-              <HStack spacing={0}>
-                <div>      
-                { showSearchBar &&
-                <Input
-                type="text"
-                maxHeight={["20px","26px", "34px"]}
-                maxWidth={["150px"]}
-                focusBorderColor='color'
-                bg={"blanco"}
-                color="negro"
-                value={productName}
-                variant={'filled'}
-                boxShadow={'md'}
-                fontSize={[10,12,14]}
-                placeholder="¿Qué buscás?"
-                onChange={(e) => setProductName(e.target.value)}
-                onKeyUp={handleKeyPress}
-                />
-              }
-
-                <Button
-                onClick={() => handleShowSearchBar()}
-                colorScheme={"whatsapp"}
-                color={"color"}
-                borderRadius={0}
-                variant={"plain"}
-                _hover={{
-                  cursor: "pointer", // Cambia el cursor al pasar por encima
-                  fontWeight:'bold',
-                  borderBottom:'1px solid',
-                  borderColor:' color'
-                  }}
-                >
-                  <FaSearch />
-                  {/* <Text fontFamily={"Roboto"} fontWeight="medium" fontSize="14px">INICIAR SESIÓN</Text> */}
-                </Button>
-              <Text color={'color'}>|</Text>   
+              <HStack spacing={0}>     
                   <Menu>
                     <MenuButton
                       color={"color"}
@@ -509,7 +452,6 @@ const Navbar = ({ username, setUserName, roles }) => {
 
 
                   </Menu>
-                </div>
               </HStack>
                 
             )) : username? (
@@ -578,14 +520,13 @@ const Navbar = ({ username, setUserName, roles }) => {
                 borderRadius={0}
                 variant={"plain"}
                 _hover={{
-                  cursor: "pointer", // Cambia el cursor al pasar por encima
+                  cursor: "pointer", 
                   fontWeight:'bold',
                   borderBottom:'1px solid',
                   borderColor:' color'
                   }}
                 >
                   <FaSearch />
-                  {/* <Text fontFamily={"Roboto"} fontWeight="medium" fontSize="14px">INICIAR SESIÓN</Text> */}
                 </Button>
               <Text color={'color'}>|</Text>
 
@@ -632,8 +573,9 @@ const Navbar = ({ username, setUserName, roles }) => {
             }
         </HStack>
 
-        { (media && username) && 
-          <HStack flexWrap={'wrap'}>
+        { media  &&           
+          <HStack flexWrap={'wrap'}  w={"99vw"}
+          h={"100px"} >
             <div style={{flex:'1'}}>         
               <Menu>
                 <MenuButton
