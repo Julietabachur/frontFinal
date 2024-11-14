@@ -121,8 +121,8 @@ const ListCategories = ({ token }) => {
   };
 
   return (
-    <Flex justify={"center"}>
-      <Box mt={10}>
+    <Flex justify="center" align="center" minH="100vh">
+    <Box mt={10} w="full" maxW="830px">
         <div
           style={{
             display: "flex",
@@ -133,9 +133,9 @@ const ListCategories = ({ token }) => {
           <Button
             border={"1px solid #e1bc6a"}
             _focus={{
-                borderColor: "#e1bc6a",
-                backgroungColor: "#e1bc6a",
-              }}
+              borderColor: "#e1bc6a",
+              backgroungColor: "#e1bc6a",
+            }}
             onClick={() => setIsModalCategoriaOpen(true)}
             marginRight="520px"
             marginBottom={5}
@@ -209,7 +209,7 @@ const ListCategories = ({ token }) => {
                       <FaEdit
                         style={{
                           cursor: "pointer",
-                          color: "#e1bc6a80",
+                          color: "black",
                           fontSize: "1.2em",
                           marginBottom: "10px",
                           marginLeft: "20px",

@@ -29,6 +29,7 @@ const RenderPagination = () => {
         // colorScheme="teal"
         bg="color"
         onClick={() => setCurrentPage(1)}
+        size={{ base: "sm", sm: "sm", md: "md" }} // Ajustar tamaño según el tamaño de la pantalla
       >
         <ArrowLeftIcon />
       </Button>
@@ -38,6 +39,7 @@ const RenderPagination = () => {
         // colorScheme="teal"
         bg="color"
         onClick={() => setCurrentPage(currentPage - 1)}
+        size={{ base: "sm", sm: "sm", md: "md" }} // Ajustar tamaño según el tamaño de la pantalla
       >
         <ArrowBackIcon />
       </Button>
@@ -48,7 +50,7 @@ const RenderPagination = () => {
           onClick={() => setCurrentPage(number)}
           variant={number === currentPage ? "solid" : "outline"}
           bg={number === currentPage ? "color" : "white" }
-          // bg="color"
+          size={{ base: "sm", sm: "sm", md: "md" }} // Ajustar tamaño según el tamaño de la pantalla
         >
           {number}
         </Button>
@@ -59,6 +61,7 @@ const RenderPagination = () => {
         // colorScheme="teal"
         bg="color"
         onClick={() => setCurrentPage(currentPage + 1)}
+        size={{ base: "sm", sm: "sm", md: "md" }} // Ajustar tamaño según el tamaño de la pantalla
       >
         <ArrowForwardIcon />
       </Button>
@@ -67,6 +70,7 @@ const RenderPagination = () => {
         // colorScheme="teal"
         bg="color"
         onClick={() => setCurrentPage(totalPages)}
+        size={{ base: "sm", sm: "sm", md: "md" }} // Ajustar tamaño según el tamaño de la pantalla
       >
         <ArrowRightIcon />
       </Button>

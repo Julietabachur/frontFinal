@@ -21,6 +21,7 @@ import {
   SimpleGrid,
   FormHelperText,
   Heading,
+  useBreakpointValue 
 } from "@chakra-ui/react";
 import LogoutButton from "./LogoutButton";
 import { useProductContext } from "./pages/home/Global.context";
@@ -28,7 +29,7 @@ import { Link as ReactRouterLink,useNavigate } from "react-router-dom";
 import RenderPagination from "./pages/home/RenderPagination";
 
 const Perfil = () => {
-  const { getFavorites, paginatedData, clientId, setBanderaReservas } =
+  const { getFavorites, paginatedData, clientId, setShowFav, setBanderaReservas } =
     useProductContext();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const RESERVES_URL = import.meta.env.VITE_RESERVES_URL;
@@ -37,6 +38,7 @@ const Perfil = () => {
   // Estado para almacenar la lista de reservas del usuario
   const [userReserves, setUserReserves] = useState([]);
   const navigate = useNavigate();
+  const avatarSize = useBreakpointValue({ base: "md", md: "lg" }); // Tamaño de avatar adaptable
 
   const handleReserves = () => {
     setBanderaReservas(true);
@@ -122,276 +124,357 @@ const Perfil = () => {
     }
   }, [clientId, token]);
 
-  useEffect(() => {
-    getFavorites();
-    console.log('favs: ', paginatedData);
-  }, []);
+  // useEffect(() => {
+  //   debugger
+  //   setShowFav(true)
+  //   getFavorites();
+  //   console.log('favs: ', paginatedData);
+  // }, []);
 
   return (
-    <Grid
+    // // <Grid
+    // //   h={"100vh"}
+    // //   w={"99vw"}
+    // //   templateRows={{ base: "repeat(4, 1fr)", md: "repeat(3, 1fr)" }}
+    // //   templateColumns={{
+    // //     base: "repeat(1, 1fr)",
+    // //     md: "repeat(3, 1fr)",
+    // //     lg: "repeat(5, 1fr)",
+    // //   }}
+    // //   gap={4}
+    // //   mt={5}
+    // //   mb={{base:'600px', md:'100px'}}
+    // //   bg={"gray.200"}    >
+    //   {/* <GridItem
+    //     as={"aside"}
+    //     rowSpan={{ base: 1, md: 3 }}
+    //     colSpan={{ base: 5, md: 1 }}
+    //     bg="blanco"
+    //     p={7}
+    //   > */}
+    //     //  <SimpleGrid spacing={2} mt={7} w={"100%"} justifyContent={"center"}>
+    //     //   <Avatar
+    //     //     boxSize={{ base: "50px", md: 100 }}
+    //     //     size={{ base: "lg", md: "2xl" }}
+    //     //     name={user?.clientName}
+    //     //     justifySelf={"center"}
+    //     //   /> 
+    //       //{/* <Text textAlign={"center"} color={"verde2"} fontSize={20}>  {user?.clientName} </Text> */}
+
+    //       {/* <Text textAlign={"center"}>{user?.email}</Text>
+    //        */}
+    //       {/* <UnorderedList
+    //         direction={{ base: "row", md: "column" }}
+    //         listStyleType={"none"}
+    //         m={0}
+    //       > */}
+    //         {/* <ListItem textAlign={"center"}>Reservas</ListItem> */}
+    //         {/* <ListItem textAlign={"center"}>Editar Perfil</ListItem>
+    //       </UnorderedList> */}
+    //       {/* <LogoutButton */}
+    //         {/* /* justifySelf={"center"}
+    //         w={"130px"}
+    //         bg={"red.400"}
+    //         color={"blanco"}
+    //         onClick={logoutHandle} 
+    //       {/* /> */}
+    //     {/* </SimpleGrid>
+    //   </GridItem> */}
+
+    //   {/* datos personales */}
+    //   {/* <GridItem
+    //     colSpan={{ base: 5, md: 2 }}
+    //     rowSpan={{ base: 1, md: 2 }}
+    //     bg="blanco"
+    //     minW={{ base: "100px", md: "300px" }}
+    //   >
+    //     <VStack
+    //       p={5}
+    //       justify={"flex-start"}
+    //       direction={"column"}
+    //       align={"flex-start"}
+    //     > */}
+    //       {/* <Box
+    //         color="verde2"
+    //         fontWeight="semibold"
+    //         letterSpacing="wide"
+    //         fontSize={{ base: "2xl", md: "4xl" }}
+    //         alignSelf={{ base: "center", md: "flex-start" }}
+    //         minW={{ base: "100px", md: "300px" }}
+    //       >
+    //         Información personal
+    //       </Box>
+    //       <Flex */}{/*           
+    //         justify={"flex-start"}
+    //         direction={"column"}
+    //         align={"flex-start"}
+    //         w={"100%"}
+    //         mt={15}
+    //         borderRadius={6}
+    //         minH={{ base: "100px", md: "200px" }} */}      
+    //       {/* >
+    //         <HStack>
+    //           <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+    //             Usuario: 
+    //           </Text>
+    //           <Text fontSize={{ base: 15, lg: 20 }}>{user?.clientName}</Text>
+    //         </HStack>
+    //         <HStack>
+    //           <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+    //             Nombre: 
+    //           </Text>
+    //           <Text fontSize={{ base: 15, lg: 20 }}>{user?.firstName ? user.firstName : "John"} {user?.lastName ? user.lastName : "Doe"}</Text>
+    //         </HStack> */}
+    //         {/* <Text fontSize={{ base: 15, md: 20 }}>
+    //           Apellido: {user?.lastName ? user.lastName : "Doe"}
+    //         </Text> */}
+    //         {/* <HStack flexWrap={'wrap'}>
+    //           <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+    //             Correo electrónico:
+    //           </Text>
+    //           <Text fontSize={{ base: 15, lg: 20 }}> {user?.email}</Text>
+    //         </HStack> */}
+    //         {/* <Stack> */}
+    //           {/* <Divider m={3} />
+    //           <Text fontSize={{ base: 20, md: 25 }} color={"verde1"}>
+    //             Informarcion de Residencia
+    //           </Text> */}
+    //           {/* <HStack>
+    //             <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+    //               Dirección:{" "}                 
+    //             </Text>
+    //             <Text fontSize={{ base: 15, lg: 20 }}> {user?.address
+    //                 ? user.address.calle + user.address.number
+    //                 : "Siempre viva 4354"}
+    //                 </Text>
+    //           </HStack>
+    //           <HStack>
+
+    //           <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+    //             Ciudad: 
+    //           </Text>
+    //           <Text fontSize={{ base: 15, lg: 20 }}>{user?.address ? user.address.city : "Montevideo"}</Text>
+    //           </HStack>
+    //            */}
+    //           {/* <HStack>
+    //             <Text fontSize={{ base: 15, lg: 20 }} as='b'>
+    //               País: 
+    //             </Text>         
+    //             <Text fontSize={{ base: 15, lg: 20 }}>{user?.address ? user.address.country : "Uruguay"}</Text>    
+    //           </HStack>
+    //       </Flex>
+    //     </VStack>
+    //   </GridItem> */}
+
+    //   {/* //favoritos */}
+    //   {/* <GridItem
+    //     colSpan={{ base: 5, md: 2 }}
+    //     rowSpan={{ base: 1, md: 2 }}
+    //     bg="blanco"
+    //     minW={{ base: "300px", md: "100px" }}
+    //   >
+    //     <VStack
+    //       p={5}
+    //       justify={"flex-start"}
+    //       direction={"column"}
+    //       align={"flex-start"}
+    //     >
+    //       <Box
+    //         color="verde2"
+    //         fontWeight="semibold"
+    //         letterSpacing="wide"
+    //         fontSize={{ base: "2xl", md: "4xl" }}
+    //         alignSelf={{ base: "center", md: "flex-start" }}
+    //         minH={{ base: "100px", md: '50px' }}
+    //       >
+    //         Favoritos
+    //       </Box>
+    //       {paginatedData != 0 &&
+    //         <Text fontSize='lg' onClick={() => handleFavorites()} display={{base:'none', md:'flex',lg:'none'}} as={'u'} cursor={'pointer'}>Ver mis favoritos</Text>
+    //       }
+    //       { paginatedData == 0 ? 
+    //         <Text fontSize='lg'>Tu lista de favoritos está vacía</Text>
+    //         :
+    //       <Grid
+    //         templateColumns="repeat(5, 1fr)"
+    //         templateRows={"repeat(2, 1fr)"}
+    //         mt={"15px"}
+    //         p={4}
+    //         spacing={2}
+    //         w={"100%"}
+    //         borderRadius={6}
+    //         display={{base:'flex', md:'none',lg:'flex'}}
+    //       >             
+    //         {paginatedData.map((item) => (
+    //           <Link
+    //             as={ReactRouterLink}
+    //             key={item.id}
+    //             to={`/detalle/${item.id}`}
+    //           >
+    //             <Box boxShadow={"5px 5px 15px gray"} m={3} borderRadius={8}>
+    //               <Image
+    //                 boxSize={20}
+    //                 w={"100%"}
+    //                 src={item.thumbnail}
+    //                 borderRadius={8}
+    //                 objectFit={"cover"}
+    //               />
+    //             </Box>
+    //           </Link>
+    //         ))}            
+    //       </Grid>
+    //       }
+    //       {paginatedData.length != 0 &&
+    //         <GridItem rowStart={3} colStart={1} colEnd={6} alignSelf={"center"} display={{base:'flex', md:'none',lg:'flex'}}>
+    //           <RenderPagination />          
+    //         </GridItem>
+    //         }
+    //     </VStack>
+    //   </GridItem> */}
+
+
+    // {/* //reservas */}
+    //   {/* <GridItem colSpan={4} bg="blanco">
+    //     <Box m={3}>
+    //       <Box
+    //         color="verde2"
+    //         fontWeight="semibold"
+    //         letterSpacing="wide"
+    //         fontSize={{ base: "2xl", md: "4xl" }}
+    //         alignSelf={{ base: "center", md: "flex-start" }} */}
+    //         {/* /*textShadow={"10px 10px 10px gray"} */}
+    //       {/* >
+    //         Reservas
+    //       </Box> */}
+    //       {/* {userReserves.length > 0 ? ( */}
+    //         {/* <Flex
+    //           justify={"flex-start"}
+    //           align={"center"}
+    //           borderRadius={6}
+    //           border={"1px solid lightblue"}
+    //           boxShadow={"15px 15px 15px gray"}
+    //           overflow={"scroll"}
+    //         > */}
+    //           {/* {userReserves.map((reserve) => (
+    //             <Box
+    //               key={reserve.id}
+    //               boxShadow={"5px 5px 15px gray"}
+    //               m={3}
+    //               borderRadius={8}
+    //               minWidth={"150px"}
+    //               h={100}
+    //               onClick={() => handleReserves()}
+    //               cursor={'pointer'}
+    //             >
+    //               <Image
+    //                 boxSize={20}
+    //                 w={"100%"}
+    //                 h={"100%"}
+    //                 src={reserve.reserveImg}
+    //                 borderRadius={8}
+    //                 objectFit={"cover"}
+    //               />
+
+    //             </Box>
+    //           ))} */}
+    //         {/* </Flex>
+    //       ) : ( */}
+    //         {/* // Muestra el mensaje solo si no hay reservas y el estado es true
+    //         Array.isArray(user.reserveIds) &&
+    //         user?.reserveIds.length === 0 && (
+    //           <Text fontSize={30}>
+    //             No hay reservas del usuario para mostrar.
+    //           </Text>
+    //         )
+    //       )}
+    //     </Box>
+    //   </GridItem> */}
+    // {/* </Grid> */}
+
+    <VStack
+      w="100%"
       h={"100vh"}
-      w={"99vw"}
-      templateRows={{ base: "repeat(4, 1fr)", md: "repeat(3, 1fr)" }}
-      templateColumns={{
-        base: "repeat(1, 1fr)",
-        md: "repeat(3, 1fr)",
-        lg: "repeat(5, 1fr)",
-      }}
-      gap={4}
-      mt={5}
-      mb={{base:'600px', md:'100px'}}
-      bg={"gray.200"}
+      maxWidth="1200px"
+      spacing={8}
+      align="center"
+      p={6}
+      margin="auto"
+      // display={'flex'} justifyContent={'center'} alignItems={'center'}
+      // bg="gray.100"
+      // borderRadius="lg"
+      // boxShadow="xl"
     >
-      <GridItem
-        as={"aside"}
-        rowSpan={{ base: 1, md: 3 }}
-        colSpan={{ base: 5, md: 1 }}
-        bg="blanco"
-        p={7}
+      {/* Avatar y Nombre del Usuario */}
+      <HStack
+        w="100%"
+        justify="center"
+        spacing={4}
+        align="center"
+        p={4}
+        bg="white"
+      borderBottom={'1px solid'}
+      borderColor={'color'}
       >
-        <SimpleGrid spacing={2} mt={7} w={"100%"} justifyContent={"center"}>
-          <Avatar
-            boxSize={{ base: "50px", md: 100 }}
-            size={{ base: "lg", md: "2xl" }}
-            name={user?.clientName}
-            justifySelf={"center"}
-          />
-          <Text textAlign={"center"} color={"verde2"} fontSize={20}>
-            {user?.clientName}
+        <Avatar
+          size={avatarSize}
+          name={user?.clientName || "Juan Pérez"}
+          bg="color"
+        />
+        <VStack spacing={1} align="flex-start">
+          <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="bold">
+            {user?.clientName || "Juan Pérez"}
           </Text>
-          {/* <Text textAlign={"center"}>{user?.email}</Text>
-           */}
-          <UnorderedList
-            direction={{ base: "row", md: "column" }}
-            listStyleType={"none"}
-            m={0}
-          >
-            <ListItem textAlign={"center"}>Reservas</ListItem>
-            <ListItem textAlign={"center"}>Editar Perfil</ListItem>
-          </UnorderedList>
-          <LogoutButton
-            /* justifySelf={"center"}
-            w={"130px"}
-            bg={"red.400"}
-            color={"blanco"}
-            onClick={logoutHandle} */
-          />
-        </SimpleGrid>
-      </GridItem>
-
-      {/* datos personales */}
-      <GridItem
-        colSpan={{ base: 5, md: 2 }}
-        rowSpan={{ base: 1, md: 2 }}
-        bg="blanco"
-        minW={{ base: "100px", md: "300px" }}
-      >
-        <VStack
-          p={5}
-          justify={"flex-start"}
-          direction={"column"}
-          align={"flex-start"}
-        >
-          <Box
-            color="verde2"
-            fontWeight="semibold"
-            letterSpacing="wide"
-            fontSize={{ base: "2xl", md: "4xl" }}
-            alignSelf={{ base: "center", md: "flex-start" }}
-            minW={{ base: "100px", md: "300px" }}
-            /*textShadow={"10px 10px 10px gray"}*/
-          >
-            Información personal
-          </Box>
-          <Flex
-           /* boxShadow={"15px 15px 15px gray"}*/
-            justify={"flex-start"}
-            direction={"column"}
-            align={"flex-start"}
-            w={"100%"}
-            mt={15}
-            borderRadius={6}
-            minH={{ base: "100px", md: "200px" }}
-            /*border={"1px solid lightblue"}*/
-          >
-            <HStack>
-              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
-                Usuario: 
-              </Text>
-              <Text fontSize={{ base: 15, lg: 20 }}>{user?.clientName}</Text>
-            </HStack>
-            <HStack>
-              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
-                Nombre: 
-              </Text>
-              <Text fontSize={{ base: 15, lg: 20 }}>{user?.firstName ? user.firstName : "John"} {user?.lastName ? user.lastName : "Doe"}</Text>
-            </HStack>
-            {/* <Text fontSize={{ base: 15, md: 20 }}>
-              Apellido: {user?.lastName ? user.lastName : "Doe"}
-            </Text> */}
-            <HStack flexWrap={'wrap'}>
-              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
-                Correo electrónico:
-              </Text>
-              <Text fontSize={{ base: 15, lg: 20 }}> {user?.email}</Text>
-            </HStack>
-            {/* <Stack> */}
-              {/* <Divider m={3} />
-              <Text fontSize={{ base: 20, md: 25 }} color={"verde1"}>
-                Informarcion de Residencia
-              </Text> */}
-              <HStack>
-                <Text fontSize={{ base: 15, lg: 20 }} as='b'>
-                  Dirección:{" "}                 
-                </Text>
-                <Text fontSize={{ base: 15, lg: 20 }}> {user?.address
-                    ? user.address.calle + user.address.number
-                    : "Siempre viva 4354"}
-                    </Text>
-              </HStack>
-              <HStack>
-
-              <Text fontSize={{ base: 15, lg: 20 }} as='b'>
-                Ciudad: 
-              </Text>
-              <Text fontSize={{ base: 15, lg: 20 }}>{user?.address ? user.address.city : "Montevideo"}</Text>
-              </HStack>
-              
-              <HStack>
-                <Text fontSize={{ base: 15, lg: 20 }} as='b'>
-                  País: 
-                </Text>         
-                <Text fontSize={{ base: 15, lg: 20 }}>{user?.address ? user.address.country : "Uruguay"}</Text>    
-              </HStack>
-            {/* </Stack> */}
-          </Flex>
+          <Text color="color">{user?.email || "email@example.com"}</Text>
         </VStack>
-      </GridItem>
+      </HStack>
 
-      {/* //favoritos */}
-      <GridItem
-        colSpan={{ base: 5, md: 2 }}
-        rowSpan={{ base: 1, md: 2 }}
-        bg="blanco"
-        minW={{ base: "300px", md: "100px" }}
-      >
-        <VStack
-          p={5}
-          justify={"flex-start"}
-          direction={"column"}
-          align={"flex-start"}
-        >
-          <Box
-            color="verde2"
-            fontWeight="semibold"
-            letterSpacing="wide"
-            fontSize={{ base: "2xl", md: "4xl" }}
-            alignSelf={{ base: "center", md: "flex-start" }}
-            minH={{ base: "100px", md: '50px' }}
-          >
-            Favoritos
-          </Box>
-          {paginatedData != 0 &&
-            <Text fontSize='lg' onClick={() => handleFavorites()} display={{base:'none', md:'flex',lg:'none'}} as={'u'} cursor={'pointer'}>Ver mis favoritos</Text>
-          }
-          { paginatedData.length === 0 ? 
-            <Text fontSize='lg'>Tu lista de favoritos está vacía</Text>
-            :
-          <Grid
-            templateColumns="repeat(5, 1fr)"
-            templateRows={"repeat(2, 1fr)"}
-            mt={"15px"}
-            p={4}
-            spacing={2}
-            w={"100%"}
-            borderRadius={6}
-            display={{base:'flex', md:'none',lg:'flex'}}
-          >             
-            {paginatedData.map((item) => (
-              <Link
-                as={ReactRouterLink}
-                key={item.id}
-                to={`/detalle/${item.id}`}
-              >
-                <Box boxShadow={"5px 5px 15px gray"} m={3} borderRadius={8}>
-                  <Image
-                    boxSize={20}
-                    w={"100%"}
-                    src={item.thumbnail}
-                    borderRadius={8}
-                    objectFit={"cover"}
-                  />
-                </Box>
-              </Link>
-            ))}            
-          </Grid>
-          }
-          {paginatedData.length != 0 &&
-            <GridItem rowStart={3} colStart={1} colEnd={6} alignSelf={"center"} display={{base:'flex', md:'none',lg:'flex'}}>
-              <RenderPagination />          
-            </GridItem>
-            }
+      {/* Información Personal */}
+      <Box w="50%" bg="white" p={6} borderRadius="lg" boxShadow="md" >
+        <Text fontSize="2xl" fontWeight="semibold" color="color" mb={4} textAlign={'start'}>
+          Información Personal
+        </Text>
+        <VStack spacing={4} align="start">
+            <Text fontWeight="medium" color="gray.600" mb={2}>
+              Usuario: <Text as="span" fontWeight="normal" color="gray.500">{user?.clientName || "Juan Pérez"}</Text>
+            </Text>
+
+            <Text fontWeight="medium" color="gray.600" mb={2}>
+            Nombre:{" "}
+            <Text as="span" fontWeight="normal" color="gray.500">
+              {user?.firstName || "John"} {user?.lastName || "Doe"}
+            </Text>
+          </Text>
+
+          <Text fontWeight="medium" color="gray.600" mb={2}>
+            Correo Electrónico:{" "}
+            <Text as="span" fontWeight="normal" color="gray.500">
+              {user?.email || "email@example.com"}
+            </Text>
+          </Text>
+
+          <Text fontWeight="medium" color="gray.600" mb={2}>
+            Dirección:{" "}
+            <Text as="span" fontWeight="normal" color="gray.500">
+              {user?.address ? `${user.address.calle} ${user.address.number}` : "Siempre Viva 123"}
+            </Text>
+          </Text>
+
+          <Text fontWeight="medium" color="gray.600" mb={2}>
+            Ciudad:{" "}
+            <Text as="span" fontWeight="normal" color="gray.500">
+              {user?.address?.city || "Montevideo"}
+            </Text>
+          </Text>
+
+          <Text fontWeight="medium" color="gray.600" mb={2}>
+            País:{" "}
+            <Text as="span" fontWeight="normal" color="gray.500">
+              {user?.address?.country || "Uruguay"}
+            </Text>
+          </Text>
         </VStack>
-      </GridItem>
-
-
-    {/* //reservas */}
-      <GridItem colSpan={4} bg="blanco">
-        <Box m={3}>
-          <Box
-            color="verde2"
-            fontWeight="semibold"
-            letterSpacing="wide"
-            fontSize={{ base: "2xl", md: "4xl" }}
-            alignSelf={{ base: "center", md: "flex-start" }}
-            /*textShadow={"10px 10px 10px gray"}*/
-          >
-            Reservas
-          </Box>
-          {userReserves.length > 0 ? (
-            <Flex
-              justify={"flex-start"}
-              align={"center"}
-              borderRadius={6}
-              border={"1px solid lightblue"}
-              boxShadow={"15px 15px 15px gray"}
-              overflow={"scroll"}
-            >
-              {userReserves.map((reserve) => (
-                <Box
-                  key={reserve.id}
-                  boxShadow={"5px 5px 15px gray"}
-                  m={3}
-                  borderRadius={8}
-                  minWidth={"150px"}
-                  h={100}
-                  onClick={() => handleReserves()}
-                  cursor={'pointer'}
-                >
-                  <Image
-                    boxSize={20}
-                    w={"100%"}
-                    h={"100%"}
-                    src={reserve.reserveImg}
-                    borderRadius={8}
-                    objectFit={"cover"}
-                  />
-
-                </Box>
-              ))}
-            </Flex>
-          ) : (
-            // Muestra el mensaje solo si no hay reservas y el estado es true
-            Array.isArray(user.reserveIds) &&
-            user?.reserveIds.length === 0 && (
-              <Text fontSize={30}>
-                No hay reservas del usuario para mostrar.
-              </Text>
-            )
-          )}
-        </Box>
-      </GridItem>
-    </Grid>
+      </Box>
+    </VStack>
   );
 };
 

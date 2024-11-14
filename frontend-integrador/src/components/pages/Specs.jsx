@@ -46,7 +46,7 @@ function Specs({ detail }) {
 
       {(!isCollapsed || window.innerWidth >= 768) && (
         <VStack my={5} alignItems="flex-start" >
-          <Text as='u' fontFamily="Roboto" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+          <Text as='u' fontFamily="Roboto" marginLeft={8} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
             CARACTERÍSTICAS DEL PRODUCTO
           </Text>
         <Grid
@@ -54,8 +54,8 @@ function Specs({ detail }) {
           p={4}
           templateColumns={{
             base: "1fr",
-            lg: "repeat(2, 1fr)",
-            xl: "repeat(3, 1fr)",
+            // lg: "repeat(2, 1fr)",
+            // xl: "repeat(3, 1fr)",
           }}
           gap={5}
         >

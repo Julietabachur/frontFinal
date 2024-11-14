@@ -19,7 +19,7 @@ import { useProductContext} from "./pages/home/Global.context";
 
 const NavbarMenu = ({ username, token, roles }) => {
   const [admin, setAdmin] = useState(false);
-  const { favorites, getFavorites, setBanderaReservas} = useProductContext();
+  const { favorites, getFavorites, setBanderaReservas, carrito} = useProductContext();
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
@@ -73,7 +73,7 @@ const NavbarMenu = ({ username, token, roles }) => {
             navigate(`/perfil`);
           }}
         >
-          Mi perfil
+          Mi Perfil
         </MenuItem>
         {admin && (
           <MenuItem
@@ -103,7 +103,7 @@ const NavbarMenu = ({ username, token, roles }) => {
         }}
           onClick={() => handleReserves()}
         >
-          Mis reservas{" "}
+          Mi Carrito ({carrito.length})
         </MenuItem>
         <MenuItem
          color={'color'} 

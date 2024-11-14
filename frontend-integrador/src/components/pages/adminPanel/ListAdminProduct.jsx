@@ -165,7 +165,7 @@ const ListAdminProduct = ({
                           <FaEdit
                             style={{
                               cursor: "pointer",
-                              color: "#e1bc6a",
+                              color: "black",
                               fontSize: "1.2em",
                               marginLeft: "40px",
                               marginBotton: "10px",
@@ -210,7 +210,7 @@ const ListAdminProduct = ({
                 Cancelar
               </Button>
               <Button
-                colorScheme="red"
+                color="red"
                 onClick={() => {
                   handleDelete(itemToDelete.id);
                   closeDeleteDialog();

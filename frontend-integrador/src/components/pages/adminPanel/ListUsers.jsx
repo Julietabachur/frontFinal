@@ -60,24 +60,32 @@ const ListUsers = ({
           }}
         >
           <Button
-            colorScheme="green"
+            border={"1px solid #e1bc6a"}
+            _focus={{
+              borderColor: "#e1bc6a",
+              backgroungColor: "#e1bc6a",
+            }}
             onClick={() =>
               handlePageChange(userPage > 1 ? userPage - 1 : userPage)
             }
             disabled={userPage === 0}
           >
-            &lt;&lt;&lt;
+            &lt;&lt;
           </Button>
           <Text>- {userPage} -</Text>
           <Button
-            colorScheme="green"
+            border={"1px solid #e1bc6a"}
+            _focus={{
+              borderColor: "#e1bc6a",
+              backgroungColor: "#e1bc6a",
+            }}
             onClick={() => handlePageChange(userPage + 1)}
           >
-            &gt;&gt;&gt;
+            &gt;&gt;
           </Button>
         </div>
         <Box w={830} mt={3}>
-          <Table variant="striped" colorScheme="green">
+          <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
             <Thead>
               <Tr>
                 {/*<Th>
@@ -107,7 +115,7 @@ const ListUsers = ({
                     <Td>{user.email}</Td>
                     <Td>
                       <Checkbox
-                        colorScheme="green"
+                        colorScheme="gray"
                         borderColor="gray.800"
                         borderWidth="2px"
                         //isDisabled={user.clientName === "admin1"}

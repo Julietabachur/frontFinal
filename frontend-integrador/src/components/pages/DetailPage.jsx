@@ -35,6 +35,7 @@ import SocialShare from "./SocialShare";
 registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
+import { wrap } from "framer-motion";
 
 const DetailPage = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -48,7 +49,7 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn } =
+  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn, setCarrito, carrito } =
     useProductContext();
   const [showError, setShowError] = useState(false);
 
@@ -113,6 +114,15 @@ const DetailPage = () => {
     setAvailableDates((prevDates) => [...prevDates, ...updatedAvailableDates]);
   };
 
+  const addToCart = (product) =>{
+    console.log('agrego producto al carrito: ', product);
+    
+    setCarrito([...carrito, product])
+
+    console.log('carrito: ',carrito);
+    
+  }
+
   useEffect(() => {
     getReserved();
   }, [reserveList]);
@@ -144,6 +154,8 @@ const DetailPage = () => {
     );
     if (response) {
       setDetail(response.data);
+      console.log('detail producto',response.data);
+      
     }
   };
 
@@ -197,10 +209,8 @@ const DetailPage = () => {
                 {token && (
                   <Box
                     onClick={handleHeartClick}
-                    color="color"
-                    _hover={{
-                       color:'black'
-                    }}
+                    color={isFavorite ? "red.500" : "gray.400"}
+                    _hover={{ color: isFavorite ? "red.600" : "gray.500",cursor:'pointer' }}                   
                   >
                     {isFavorite ? (
                       <FaHeart size={30} />
@@ -232,8 +242,9 @@ const DetailPage = () => {
                 >
                   {detail.productName}
                 </Text>
+             
               </HStack>
-              <HStack>
+              <HStack display={'flex'} justifyContent={'center'} alignContent={'center'} wrap={'wrap'}>
                 {/* <Button
                   onClick={handleReserve}
                   bg={"verde2"}
@@ -241,6 +252,24 @@ const DetailPage = () => {
                 >
                   Reservar
                 </Button> */}
+                   <Button
+                  onClick={()=>addToCart(detail)}
+                  color={"color"}
+                  p={3}
+                  px={5}
+                  borderRadius={0}
+                  variant={"plain"}
+                  _hover={{
+                    cursor: "pointer", // Cambia el cursor al pasar por encima
+                    fontWeight:'bold',
+                    borderBottom:'1px solid',
+                    borderColor:' color'
+                    }}
+                >
+                  AGREGAR AL CARRITO
+                </Button>
+              <Text color={'color'}>|</Text>   
+
                 <Button
                   onClick={() => navigate(-1)}
                   color={"color"}
@@ -255,7 +284,7 @@ const DetailPage = () => {
                     borderColor:' color'
                     }}
                 >
-                  Atrás
+                  ATRÁS
                 </Button>
               </HStack>
             </HStack>
@@ -265,16 +294,22 @@ const DetailPage = () => {
                 gallery={detail.gallery}
               />
               {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
-                <>
+                <HStack justifyContent={'end'}>
                   <Button
                     onClick={handleGallery}
-                    bg={"color"}
-                    alignSelf={"flex-end"}
-                    w={20}
-                    mr={5}
-                    mb={5}
+                    color={"color"}
+                    p={3}
+                    px={5}
+                    borderRadius={0}
+                    variant={"plain"}
+                    _hover={{
+                      cursor: "pointer", // Cambia el cursor al pasar por encima
+                      fontWeight:'bold',
+                      borderBottom:'1px solid',
+                      borderColor:' color'
+                      }}
                   >
-                    Ver más
+                    VER MÁS
                   </Button>
                   <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
                     <DrawerOverlay />
@@ -298,17 +333,12 @@ const DetailPage = () => {
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>
-                </>
+                </HStack>
               )}
             </Stack>
-            <VStack  p={10}>
-              <Text
-                textAlign={"center"}
-                fontFamily="Roboto"
-                fontWeight={"semibold"}
-                color="black"
-                fontSize={["0.9rem", "1.2rem"]}
-              >
+            <VStack  p={10}  alignItems={'start'}>
+            <Text as='u' fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+
                 DESCRIPCIÓN DEL PRODUCTO
               </Text>
               <Text
@@ -320,10 +350,11 @@ const DetailPage = () => {
                 {detail.detail}
               </Text>
             </VStack>
-            
             <Specs detail={detail}></Specs>
-            {/* <Policies></Policies> */}
+
+            
             <InfoComponent/>
+            {/* <Policies></Policies> */}
           </VStack>
         )}
       </VStack>
