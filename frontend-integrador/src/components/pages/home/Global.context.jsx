@@ -157,7 +157,9 @@ const ProductProvider = ({ children }) => {
 
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-    if (
+    if(state.season != '' && !state.showFav){
+      getProductsBySeason(page)
+    }else if(
       state.categories.length === 0 &&
       !state.showFav &&
       state.searchResults.length === 0 && state.season == ''
@@ -171,8 +173,6 @@ const ProductProvider = ({ children }) => {
       getProductsByTypeFilterBar(state.categories, page);
     } else if (state.favorites.length > 0 && state.showFav) {
       getFavorites(page);
-    } else if(state.season != '' && !state.showFav){
-      getProductsBySeason(page)
     }
   };
 
