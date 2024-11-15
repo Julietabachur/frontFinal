@@ -19,10 +19,11 @@ import { useProductContext} from "./pages/home/Global.context";
 
 const NavbarMenu = ({ username, token, roles }) => {
   const [admin, setAdmin] = useState(false);
-  const { favorites, getFavorites, setBanderaReservas, carrito} = useProductContext();
+  const { favorites, getFavorites, setBanderaReservas, carrito, setSeason} = useProductContext();
   const navigate = useNavigate();
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
+    setSeason('Primavera')
     navigate("/");
     window.location.reload();
   };

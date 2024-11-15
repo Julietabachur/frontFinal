@@ -27,7 +27,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [invalidCredentials, setInvalidCredentials] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const { isSignIn, setIsSignIn } = useProductContext();
+  const { isSignIn, setIsSignIn, setSeason } = useProductContext();
   const MIN_DESKTOP_WIDTH = 768;
   const [media, setMedia] = useState(window.innerWidth < MIN_DESKTOP_WIDTH);
   const [showPassword, setShowPassword] = useState(false);
@@ -57,6 +57,7 @@ const Login = () => {
       if (response.status === 200) {
         setIsSignIn(false);
         localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
+        setSeason('Primavera')
         navigate("/"
           /*
           response.data.isVerified === "true"
