@@ -46,18 +46,18 @@ function Specs({ detail }) {
 
       {(!isCollapsed || window.innerWidth >= 768) && (
         <VStack my={5} alignItems="flex-start" >
-          <Text as='u' fontFamily="Roboto" marginLeft={8} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+          <Text as={'u'} fontFamily="Roboto" marginLeft={8} fontWeight={"medium"} color="black" fontSize={["12px", "14px"]}>
             CARACTERÍSTICAS DEL PRODUCTO
           </Text>
         <Grid
           w={"100%"}
-          p={4}
+          pl={4}
           templateColumns={{
             base: "1fr",
             // lg: "repeat(2, 1fr)",
             // xl: "repeat(3, 1fr)",
           }}
-          gap={5}
+          gap={1}
         >
           {detail && detail.features && detail.features.length > 0 ? (
             detail.features.map((feature, index) => (
@@ -68,14 +68,14 @@ function Specs({ detail }) {
                   // borderColor={'negro'}
                   // borderRadius={5}
                 >
-                  <Text fontFamily="Roboto" color="black" fontSize="1rem">
+                  <Text fontFamily="Roboto" color="black" fontSize={["10px", "12px"]}>
                     {feature.charIcon}
                   </Text>
                   <Text
                     fontFamily="Roboto"
-                    // textShadow="1px 1px lightgreen"
+                    fontWeight={"medium"}
                     color="negro"
-                    fontSize="1rem"
+                    fontSize={["10px", "12px"]}
                   >
                     {`${feature.charName}: `}
                   </Text>
@@ -84,7 +84,7 @@ function Specs({ detail }) {
                       key={valueIndex}
                       fontFamily="Roboto"
                       color="gris1"
-                      fontSize="0.9rem"
+                      fontSize={["10px", "12px"]}
                     >
                       {value}
                     </Text>

@@ -25,6 +25,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
   SimpleGrid,
+  Grid,
 } from "@chakra-ui/react";
 import ProductGallery from "./ProductGallery";
 import InfoComponent from "../infoComponent";
@@ -37,7 +38,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
 import { wrap } from "framer-motion";
 
-const DetailPage = () => {
+const DetailPage = ({username}) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const frontUrl = import.meta.env.VITE_FRONT_URL;
   const { id } = useParams();
@@ -49,9 +50,10 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn, setCarrito, carrito } =
+  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn, setCarrito, carrito, size, setSize } =
     useProductContext();
   const [showError, setShowError] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(false);
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
@@ -174,7 +176,29 @@ const DetailPage = () => {
 
   useEffect(() => {
     getDetail();
+    console.log('talle cuando carg la pagina: ', size);
+    setSize('')
+    
   }, []);
+
+  const handleSize = (talle)=>{
+    if(!selectedSize){
+      // setSelectedSize(true)
+      // Retrasa el log de size con un timeout  
+      setTimeout(() => {
+        setSize(talle)
+        console.log('Talle seleccionado:', size);
+      }, 500); // Ajusta el tiempo en milisegundos según sea necesario
+    }else {
+      // setSelectedSize(false)
+      // Retrasa el log de size con un timeout
+      setTimeout(() => {
+          setSize('')
+          console.log('Talle seleccionado:', size);
+        }, 500); // Ajusta el tiempo en milisegundos según sea necesario
+        }
+    
+  }
 
   return (
     <>
@@ -197,8 +221,8 @@ const DetailPage = () => {
               w={"100%"}
               h={"60px"}
               color={"negro"}
-              borderBottom={"1px solid"}
-              borderColor={'color'}
+              // borderBottom={"1px solid"}
+              // borderColor={'color'}
               alignContent={"center"}
               justifyContent={"space-between"}
               padding={"5px"}
@@ -206,7 +230,8 @@ const DetailPage = () => {
               minW={"300px"}
             >
               <HStack ml={3} w="50%">
-                {token && (
+                {/* corazon like */}
+                {/* {token && (
                   <Box
                     onClick={handleHeartClick}
                     color={isFavorite ? "red.500" : "gray.400"}
@@ -218,16 +243,18 @@ const DetailPage = () => {
                       <FaRegHeart size={30} />
                     )}
                   </Box>
-                )}
-                <IconButton
+                )} */}
+                {/* compartir */}
+                {/* <IconButton
                   colorScheme="gray"
                   variant="outline"
                   size="lg"
                   aria-label="Share"
                   icon={<FcShare />}
                   onClick={() => setOpenShareModal(true)}
-                />
-                <Text
+                /> */}
+                {/* nombre producto */}
+                {/* <Text
                   readOnly={true}
                   fontFamily={"Roboto"}
                   color={"black"}
@@ -241,7 +268,7 @@ const DetailPage = () => {
                   }}
                 >
                   {detail.productName}
-                </Text>
+                </Text> */}
              
               </HStack>
               <HStack display={'flex'} justifyContent={'center'} alignContent={'center'} wrap={'wrap'}>
@@ -252,24 +279,10 @@ const DetailPage = () => {
                 >
                   Reservar
                 </Button> */}
-                   <Button
-                  onClick={()=>addToCart(detail)}
-                  color={"color"}
-                  p={3}
-                  px={5}
-                  borderRadius={0}
-                  variant={"plain"}
-                  _hover={{
-                    cursor: "pointer", // Cambia el cursor al pasar por encima
-                    fontWeight:'bold',
-                    borderBottom:'1px solid',
-                    borderColor:' color'
-                    }}
-                >
-                  AGREGAR AL CARRITO
-                </Button>
-              <Text color={'color'}>|</Text>   
-
+                {/* btn agregar al carrito */}
+                
+              {/* <Text color={'color'}>|</Text>    */}
+                {/* btn atras */}
                 <Button
                   onClick={() => navigate(-1)}
                   color={"color"}
@@ -288,13 +301,202 @@ const DetailPage = () => {
                 </Button>
               </HStack>
             </HStack>
-            <Stack  p={2}>
-              <ProductGallery
-                thumbnail={detail.thumbnail}
-                gallery={detail.gallery}
-              />
+            <VStack  p={2}>
+              {/* <HStack> */}
+
+                {/* fotos detalle */}
+                {/* <ProductGallery
+                  thumbnail={detail.thumbnail}
+                  gallery={detail.gallery}
+                /> */}
+                {/* <Box width={'50%'}>
+                  <Image h={"100%"} objectFit={"cover"} src={detail.thumbnail} alt="photo" />
+                </Box>
+                <VStack width={'50%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                  {/* nombre prod */}
+                  {/* <Text>{detail.productName}</Text> */}
+                  {/* preci prod */}
+                  {/* <Text>{detail.precio}</Text> */}
+                  {/* btn comprar */}
+                  {/* <Button
+                    onClick={()=>addToCart(detail)}
+                    color={"color"}
+                    p={3}
+                    px={5}
+                    borderRadius={0}
+                    variant={"plain"}
+                    _hover={{
+                      cursor: "pointer", // Cambia el cursor al pasar por encima
+                      fontWeight:'bold',
+                      borderBottom:'1px solid',
+                      borderColor:' color'
+                      }}
+                  >
+                    AGREGAR AL CARRITO
+                  </Button> */}
+                  {/* talles */}
+                  {/* <HStack spacing={2}>
+                    {sizes.map((size, index) => (
+                      <Button
+                        key={index}
+                        variant={selectedSize === size ? "solid" : "outline"}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </Button>
+                    ))}
+                  </HStack> */}
+                  {/* botones like y compartir */}
+                  {/* <HStack> */}
+                    {/* corazon like */}
+                    {/* {token && (
+                    <Box
+                      onClick={handleHeartClick}
+                      color={isFavorite ? "red.500" : "gray.400"}
+                      _hover={{ color: isFavorite ? "red.600" : "gray.500",cursor:'pointer' }}                   
+                    >
+                      {isFavorite ? (
+                        <FaHeart size={30} />
+                      ) : (
+                        <FaRegHeart size={30} />
+                      )}
+                    </Box>
+                    )} */}
+                    {/* compartir */}
+                    {/* <IconButton
+                      colorScheme="gray"
+                      variant="outline"
+                      size="lg"
+                      aria-label="Share"
+                      icon={<FcShare />}
+                      onClick={() => setOpenShareModal(true)}
+                    />
+                  </HStack> */}
+                {/* </VStack> */}
+              {/* </HStack>  */}
+
+              <Grid
+                templateColumns={{ base: "1fr", md: "1fr 1fr" }}
+                h={["auto"]}
+                w={["auto", "100%"]}
+                gap={4}
+                p={4}
+              >
+                {/* Detalles del producto (columna derecha en pantallas grandes, arriba en pantallas pequeñas) */}
+                <VStack
+                  order={{ base: 1, md: 2 }}  // Coloca los detalles primero en pantallas pequeñas
+                  align="start"
+                  spacing={4}
+                >
+                  {/* Nombre del producto */}
+                  <Text fontSize="2xl" fontWeight="bold">{detail.productName}</Text>
+
+                  {/* DETALLE PRODUCTO */}
+                  <VStack  alignItems={'start'}>
+                    <Text  fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["10px", "12px"]}>
+
+                    Descripción del producto:
+                    </Text>
+                    <Text
+                      fontFamily={"Roboto"}
+                      color={"black"}
+                      fontSize={["8px","12px"]}
+                      marginTop={["3px","6px"]}
+                    >
+                      {detail.detail}
+                    </Text>
+                  </VStack>
+                  
+                  {/* Precio del producto */}
+                  <Text fontSize="xl" color="gray.500">{`$${detail.precio}`}</Text>
+                  
+                      
+                  {/* Talles */}                
+                  {username && detail.features && detail.features.find(f => f.charName === "TALLE")?.charValue && (
+                    <HStack spacing={2}>
+                      {detail.features.find(f => f.charName === "TALLE").charValue.map((talle, index) => (
+                        <Button
+                          key={index}
+                          // variant={size === talle ? "solid" : "outline"}              
+                          backgroundColor={size === talle ? "color" : "white"}     
+                          color={size === talle ? "white" : "black"}     
+                          border={'1px solid'}
+                          borderColor={'color'}  
+                          onClick={()=>handleSize(talle)}
+                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                        >
+                          {talle}
+                        </Button>
+                      ))}
+                    </HStack>
+                  )}
+             
+
+                  {/* Botón agregar al carrito */}
+                  {username &&
+                    <Button
+                      onClick={() => addToCart(detail)}
+                      // colorScheme="teal"
+                      backgroundColor={'white'}
+                      variant="solid"
+                      width="250px"                      
+                      border={'1px solid'}
+                      borderColor={'color'}
+                      marginTop={10}
+                      _hover={{
+                        backgroundColor:'color',
+                        color:'white'
+                      }}
+                    >
+                      AGREGAR AL CARRITO
+                    </Button>
+                  }
+
+                  
+                  {/* Botones de "like" y "compartir" */}
+                  <HStack spacing={4}>
+                 
+                    
+                    {/* Botón de compartir */}
+                    <IconButton
+                      icon={<FcShare />}
+                      aria-label="Share"
+                      variant="outline"
+                      size="md"
+                      onClick={() => setOpenShareModal(true)}
+                    />
+
+                       {/* Corazón */}
+                       {username && (
+                      <Box
+                        onClick={handleHeartClick}
+                        color={isFavorite ? "red.500" : "gray.400"}
+                        _hover={{ color: isFavorite ? "red.600" : "gray.500", cursor: "pointer" }}
+                      >
+                        {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+                      </Box>
+                    )}
+                  </HStack>
+                  
+                
+                </VStack>
+
+                {/* Imagen del producto (columna izquierda en pantallas grandes, abajo en pantallas pequeñas) */}
+                <Box order={{ base: 2, md: 1 }}>
+                  <Image
+                    src={detail.thumbnail}
+                    alt={detail.productName}
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
+                    maxH={ "500px"} // Ajusta la altura máxima en diferentes pantallas
+                  />
+                </Box>
+              </Grid>
+
+              {/* btn ver más fotos + modal galeria */}
               {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
-                <HStack justifyContent={'end'}>
+                <HStack justifyContent={'start'} display={"flex"} alignSelf="flex-start">
                   <Button
                     onClick={handleGallery}
                     color={"color"}
@@ -335,21 +537,8 @@ const DetailPage = () => {
                   </Drawer>
                 </HStack>
               )}
-            </Stack>
-            <VStack  p={10}  alignItems={'start'}>
-            <Text as='u' fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
-
-                DESCRIPCIÓN DEL PRODUCTO
-              </Text>
-              <Text
-                fontFamily={"Roboto"}
-                color={"black"}
-                fontSize={["12px","14px","18px"]}
-                marginTop={["5px","10px","20px"]}
-              >
-                {detail.detail}
-              </Text>
             </VStack>
+         
             <Specs detail={detail}></Specs>
 
             

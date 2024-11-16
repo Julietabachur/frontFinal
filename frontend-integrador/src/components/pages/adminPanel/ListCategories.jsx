@@ -11,6 +11,7 @@ import {
   Th,
   Td,
   Flex,
+  VStack,
 } from "@chakra-ui/react";
 import CategoryForm from "./CategoryForm";
 import EditCategory from "./EditCategory";
@@ -177,16 +178,16 @@ const ListCategories = ({ token }) => {
             <Thead>
               <Tr>
                 <Th>
-                  <Text fontWeight="bold">Nombre de la categoría</Text>
+                  <Text textAlign={'center'} fontWeight="bold">Nombre de la categoría</Text>
                 </Th>
                 <Th>
-                  <Text fontWeight="bold">Descripción</Text>
+                  <Text textAlign={'center'} fontWeight="bold">Descripción</Text>
                 </Th>
                 <Th>
-                  <Text fontWeight="bold">Imagen</Text>
+                  <Text textAlign={'center'} fontWeight="bold">Imagen</Text>
                 </Th>
                 <Th>
-                  <Text fontWeight="bold">Acciones</Text>
+                  <Text textAlign={'center'} fontWeight="bold">Acciones</Text>
                 </Th>
               </Tr>
             </Thead>
@@ -194,25 +195,28 @@ const ListCategories = ({ token }) => {
               {categoryList &&
                 categoryList.map((category) => (
                   <Tr key={category.id} h="10px">
-                    <Td>{category.categoryName}</Td>
-                    <Td>{category.description}</Td>
-                    <Td>
+                    <Td textAlign={'center'}>{category.categoryName}</Td>
+                    <Td textAlign={'center'}>{category.description}</Td>
+                    <Td alignItems={'center'}>
                       <Image
                         src={category.imageUrl}
                         alt={category.categoryName}
                         w={50}
                         h={50}
+                        position={'relative'}
+                        left={'30%'}
                       />
                     </Td>
-                    <Td>
+                    <Td display={'flex'} alignContent={'center'} justifyContent={'center'}>
                       {/* Botones de editar y borrar */}
+                      <VStack marginBottom={'10px'}>
                       <FaEdit
                         style={{
                           cursor: "pointer",
                           color: "black",
                           fontSize: "1.2em",
-                          marginBottom: "10px",
-                          marginLeft: "20px",
+                          // marginBottom: "10px",
+                          // marginLeft: "20px",
                         }}
                         onClick={() => handleEditCategory(category)}
                       />
@@ -221,18 +225,20 @@ const ListCategories = ({ token }) => {
                           cursor: "pointer",
                           color: "black",
                           fontSize: "1.2em",
-                          marginbottom: "10px",
-                          marginLeft: "20px",
+                          // marginbottom: "10px",
+                          // marginLeft: "20px",
                         }}
                         onClick={() => openDeleteDialog(category)}
                       />
+                      </VStack>
                     </Td>
                   </Tr>
                 ))}
             </Tbody>
           </Table>
         </Box>
-      </Box>
+    </Box>
+    {isModalCategoriaOpen && 
       <Flex
         justifyContent="flex-end" // Alinea el botón a la derecha
         w={250} // Ancho igual al ancho de la tabla
@@ -247,6 +253,7 @@ const ListCategories = ({ token }) => {
           onClose={() => setIsModalCategoriaOpen(false)}
         />
       </Flex>
+      }
       {/* Componente del modal para editar categoría */}
       {selectedCategory && (
         <EditCategory

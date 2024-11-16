@@ -55,6 +55,8 @@ const reducer = (state, action) => {
       return { ...state, titulo: action.payload };
     case "SET_CARRITO":
       return { ...state, carrito: action.payload };
+    case "SET_SIZE":
+      return { ...state, size: action.payload };
     case "SET_IS_FILTERED_BY_CATEGORY":
       return { ...state, isFilteredByCategory: action.payload };
     default:
@@ -76,6 +78,7 @@ const initialState = {
   endDate: "",
   productName: "",
   carrito:[],
+  size:'',
   searchResults: [],
   favorites: [],
   showFav: false,
@@ -154,7 +157,9 @@ const ProductProvider = ({ children }) => {
 
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-    if (
+    if(state.season != '' && !state.showFav){
+      getProductsBySeason(page)
+    }else if(
       state.categories.length === 0 &&
       !state.showFav &&
       state.searchResults.length === 0 && state.season == ''
@@ -168,8 +173,6 @@ const ProductProvider = ({ children }) => {
       getProductsByTypeFilterBar(state.categories, page);
     } else if (state.favorites.length > 0 && state.showFav) {
       getFavorites(page);
-    } else if(state.season != '' && !state.showFav){
-      getProductsBySeason(page)
     }
   };
 
@@ -190,6 +193,9 @@ const ProductProvider = ({ children }) => {
   };
   const setCarrito = (data) => {
     dispatch({ type: "SET_CARRITO", payload: data });
+  };
+  const setSize = (data) => {
+    dispatch({ type: "SET_SIZE", payload: data });
   };
 
   const getProducts = async (page = 1) => {
@@ -238,10 +244,11 @@ const ProductProvider = ({ children }) => {
 
   const getProductsBySeason = async (page = 1) => {
     debugger
+    const validPage = isNaN(page) || page <= 0 ? 1 : page; 
     setPaginatedData([])   
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${page}`,
+        `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${validPage}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -253,7 +260,7 @@ const ProductProvider = ({ children }) => {
         setIsFilteredByCategory(false)          
         setTimeout(() => {
           setPaginatedDataBySeason(response.data); // setear productor por temp después de un pequeño retraso
-        }, 100); // 100ms de retraso        
+        }, 1000); // 100ms de retraso        
         setTitulo('')
       }
     } catch (error) {
@@ -415,7 +422,9 @@ const ProductProvider = ({ children }) => {
     isSignIn:state.isSignIn, 
     titulo: state.titulo,
     carrito:state.carrito,
+    size:state.size,
     setCarrito,
+    setSize,
     setTitulo,
     setIsSignIn,
     setReservation,
