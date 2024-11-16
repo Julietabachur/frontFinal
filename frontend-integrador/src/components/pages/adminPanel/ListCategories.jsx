@@ -64,7 +64,7 @@ const ListCategories = ({ token }) => {
   // Función para abrir la ventana de confirmación y borrar la categoría si es aceptada
   const openDeleteDialog = (category) => {
     const isConfirmed = window.confirm(
-      "¿Está seguro de que desea eliminar esta categoría?"
+      "¿Está seguro de que desea eliminar esta categoría, verifique que la misma no contenga productos antes de eliminarla?"
     );
     if (isConfirmed) {
       handleDeleteCategory(category);
