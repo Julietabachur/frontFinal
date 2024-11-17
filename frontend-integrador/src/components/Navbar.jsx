@@ -360,64 +360,6 @@ const Navbar = ({ username, setUserName, roles }) => {
 
                     <MenuList 
                       bg={"white"} border={'none'} >
-
-                      
-                        {/* <Text fontFamily={"Roboto"} color="color" fontWeight="medium" fontSize="10px" _hover={{
-                          cursor: "pointer", // Cambia el cursor al pasar por encima
-                          fontWeight:'semibold',
-                          textDecorationLine:'underline'
-                          }}>CATEGORÍAS</Text> */}
-                          <Menu>
-                            <MenuButton
-                              color={"color"}
-                              px={3}
-                              // px={5}
-                              borderRadius={0}
-                              variant={"plain"}
-                              _hover={{
-                                cursor: "pointer", // Cambia el cursor al pasar por encima
-                                fontWeight:'bold',
-                                borderBottom:'1px solid',
-                                borderColor:' color'
-                                }}
-                            >
-                              <Text fontFamily={"Roboto"} fontWeight="medium" fontSize="10px">CATEGORÍAS</Text>
-                            </MenuButton>
-                            <MenuList 
-                              bg={"white"} border={'none'} >
-                                {categoryList.map((category) => (
-                              <MenuItem
-                                bg={"white"}
-                                as="a"
-                                href="#"
-                                onClick={() => handleFilterSearch(category.categoryName)}
-                                key={category.id}
-                              >
-                                <Text fontFamily={"Roboto"} color="color" fontWeight="medium" fontSize="10px" _hover={{
-                                  cursor: "pointer", // Cambia el cursor al pasar por encima
-                                  fontWeight:'semibold',
-                                  textDecorationLine:'underline'
-                                  }}>{category.categoryName}</Text>
-                                
-                              </MenuItem>   
-                                      ))}
-                                      <MenuItem
-                          bg={"white"}
-                          as="a"
-                          href="#"
-                          onClick={() => handleSeeAll()}
-                        >
-                          <Text fontFamily={"Roboto"} color="color" fontWeight="medium" fontSize="14px" _hover={{
-                            cursor: "pointer", // Cambia el cursor al pasar por encima
-                            fontWeight:'semibold',
-                            textDecorationLine:'underline'
-                            }}>VER TODOS</Text>
-                          
-                        </MenuItem> 
-                          
-                            </MenuList >
-                            {/* </MenuButton> */}
-                          </Menu>                    
                       
                       <MenuItem
                         bg={"white"}

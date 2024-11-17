@@ -51,7 +51,7 @@ const ShowList = () => {
       )}
       {isFilteredByCategory && (
         // Este mensaje indica si hay favoritos o no
-        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'20px'}>
+        <Text mx={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
            {titulo} {/* Aquí se aplica la lógica para el título */}
         </Text>
       )}

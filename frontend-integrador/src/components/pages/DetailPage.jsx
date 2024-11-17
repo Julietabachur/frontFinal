@@ -489,7 +489,7 @@ const DetailPage = ({username}) => {
                     objectFit="cover"
                     w="100%"
                     h="100%"
-                    maxH={ "500px"} // Ajusta la altura máxima en diferentes pantallas
+                    maxH={ "700px"} // Ajusta la altura máxima en diferentes pantallas
                   />
                 </Box>
               </Grid>
