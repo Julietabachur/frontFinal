@@ -57,7 +57,7 @@ const InfoComponent = () => {
     flexDirection={'column'}
   >
     <Icon as={FaWhatsapp} boxSize={{base:'10', lg:'16'}} mb={2} color="black" />
-    <Text fontSize={{base:'sm', lg:"lg"}} fontWeight="semibold">1134567987 <br />Lu-Sa <br />de 10-17 hs</Text>
+    <Text fontSize={{base:'sm', lg:"lg"}} fontWeight="semibold">1140363611 <br />Lu-Sa <br />de 10-17 hs</Text>
   </Box>
 </SimpleGrid>
 
