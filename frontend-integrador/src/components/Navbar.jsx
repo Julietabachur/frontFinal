@@ -148,12 +148,8 @@ const Navbar = ({ username, setUserName, roles }) => {
 
   const handleSeeAll = async () => {
     debugger
-    // setPaginatedDataBySeason([])
-    // setCategories([])
-    // setSeason('')
-    getProducts()
-    // setIsFilteredByCategory(true);
     setShowFav(false)
+    getProducts()
     navigate("/");
   }
 

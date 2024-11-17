@@ -42,13 +42,13 @@ const ShowList = () => {
 
   return (
     <VStack>
-      {showFav && (
+      {/* {showFav && ( */}
         // Este mensaje indica si hay favoritos o no
-        <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'20px'}>
+        {/* <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'20px'}> */}
           {/* Se desactiva la visualización de favoritos */}
-          {favorites.length > 0 ? "Tus Favoritos" : "Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos"}
-        </Text>
-      )}
+          {/* {favorites.length > 0 ? "Tus Favoritos" : "Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos"} */}
+        {/* </Text> */}
+      {/* )} */}
       {isFilteredByCategory && (
         // Este mensaje indica si hay favoritos o no
         <Text mx={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>

@@ -196,7 +196,13 @@ const ProductProvider = ({ children }) => {
   const getProducts = async (page = 1) => {
     debugger
     setSeason('')
-    setShowFav(false)
+    if(state.showFav && state.favorites.length === 0){
+      setTitulo('Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos')
+    }else{
+      setTitulo('Todos nuestros productos')
+    }
+
+    // setShowFav(false)
     setPaginatedDataBySeason([])
     setIsFilteredByCategory(true)
     if (state.categories.length >0) {
@@ -215,7 +221,6 @@ const ProductProvider = ({ children }) => {
       if (response) {
         let data = response.data       
         setPaginatedData(data);
-        setTitulo('Todos nuestros productos')
 
       }
     } catch (error) {
@@ -327,9 +332,10 @@ const ProductProvider = ({ children }) => {
   const getFavorites = async (page = 1) => {
     try {
       setPaginatedDataBySeason([])
-      setTitulo('')
+      // setTitulo('')
       setIsFilteredByCategory(false)
       setShowFav(true);
+      setTitulo('Mis favoritos')
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}&page=${page}`,
         {
@@ -364,7 +370,7 @@ const ProductProvider = ({ children }) => {
   useEffect(() => {
     if (state.showFav) {
       if (state.favorites.length === 0) {
-        setShowFav(false);
+        // setShowFav(false);
         getProducts();
       } else {
         getFavorites();
