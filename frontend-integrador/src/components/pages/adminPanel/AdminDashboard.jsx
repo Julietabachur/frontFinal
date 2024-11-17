@@ -7,8 +7,22 @@ import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
 import NewProduct from "./NewProduct";
 import AdminPolicy from "./AdminPolicy";
+import { Link, useNavigate } from "react-router-dom";
 
-const AdminDashboard = ({ token }) => {
+
+const AdminDashboard = ({ token, roles }) => {
+  const navigate = useNavigate();
+
+  
+  useEffect(() => {
+    debugger
+    console.log('roles en admindash: ', roles);
+    
+    if (!roles.includes("ADMIN")) {
+      navigate('/')
+    } 
+  }, []);
+
   // Estado para controlar si muestra formulario "Agregar Producto"
   const [showAddProduct, setShowAddProduct] = useState(false);
   // Estado para mostrar el listado de productos, categorias, usuarios y caracteristicas cuando se clickea en el botón
