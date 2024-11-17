@@ -29,9 +29,9 @@ const NavbarMenu = ({ username, token, roles }) => {
   };
 
   const handleFavorites = () => {
-    setBanderaReservas(false);
-    navigate('/')
+    // setBanderaReservas(false);
     getFavorites()
+    navigate('/')
     
   };
 

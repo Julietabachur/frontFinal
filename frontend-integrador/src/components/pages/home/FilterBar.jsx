@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const FilterBar = () => {
   const {
     categories,
+    showFav,
     setCategories,
     setCurrentPage,
     getProductsByTypeFilterBar,
@@ -14,22 +15,26 @@ const FilterBar = () => {
     setShowFav,
     setIsFilteredByCategory
   } = useProductContext();
+
   const navigate = useNavigate();
+
   const handleCategoryClick = async (categoryGroup) => {
-    // debugger
+    debugger
     setSeason('')
     setShowFav(false)
     setCategories(categoryGroup);
   };
 
   const handleFiltros = () => {
-    setSeason('Primavera')
     setCategories([]);
     setIsFilteredByCategory(false); // Desactiva el filtro de categoría
+    setSeason('Primavera')
     setShowFav(false)
+
     setTimeout(() => {
       navigate("/"); // Redirigir después de un pequeño retraso
     }, 100); // 100ms de retraso
+    
   };
 
   const tops = [
@@ -192,7 +197,7 @@ return (
         _hover={{ bg: "yellow.500" }}
         onClick={handleFiltros}
         boxShadow="lg"
-        display={categories.length > 0 ? "block" : "none"}
+        display={categories.length > 0 || showFav ? "block" : "none"}
       >
         Borrar Filtros
       </Button>

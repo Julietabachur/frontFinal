@@ -50,7 +50,7 @@ const DetailPage = ({username}) => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn, setCarrito, carrito, size, setSize } =
+  const { setFavorites, favorites, currentPage, setCurrentPage, clientId, setReservation,setIsSignIn, setCarrito, carrito, size, setSize } =
     useProductContext();
   const [showError, setShowError] = useState(false);
   const [selectedSize, setSelectedSize] = useState(false);
@@ -65,10 +65,11 @@ const DetailPage = ({username}) => {
     // Actualizar el estado del corazón basado en si el id está en favoritos
     const isFavorite = favorites.includes(id);
     setHeartClicked(isFavorite);
-  }, [id]);
+  }, [id])
+
 
   const handleGallery = () => {
-    onOpen();
+    onOpen()
   };
 
   const getReserveList = async () => {
@@ -125,13 +126,13 @@ const DetailPage = ({username}) => {
     
   }
 
-  useEffect(() => {
-    getReserved();
-  }, [reserveList]);
+  // useEffect(() => {
+  //   getReserved();
+  // }, [reserveList]);
 
-  useEffect(() => {
-    getReserveList();
-  }, [detail]);
+  // useEffect(() => {
+  //   getReserveList();
+  // }, [detail]);
 
   const handleHeartClick = (event) => {
     // Cambiar el estado del clic del corazón
@@ -161,18 +162,18 @@ const DetailPage = ({username}) => {
     }
   };
 
-  useEffect(() => {
-    const isDateIncluded = availableDates.some((item) => {
-      return (
-        item?.getFullYear() === selectedDate?.getFullYear() &&
-        item?.getMonth() === selectedDate?.getMonth() &&
-        item?.getDate() === selectedDate?.getDate()
-      );
-    });
+  // useEffect(() => {
+  //   const isDateIncluded = availableDates.some((item) => {
+  //     return (
+  //       item?.getFullYear() === selectedDate?.getFullYear() &&
+  //       item?.getMonth() === selectedDate?.getMonth() &&
+  //       item?.getDate() === selectedDate?.getDate()
+  //     );
+  //   });
 
-    if (isDateIncluded) {
-    }
-  }, [selectedDate, availableDates]);
+  //   if (isDateIncluded) {
+  //   }
+  // }, [selectedDate, availableDates]);
 
   useEffect(() => {
     getDetail();
@@ -200,6 +201,17 @@ const DetailPage = ({username}) => {
     
   }
 
+  const navigateBackwards = () =>{
+    debugger
+    console.log('current page en detail antes de ir atras: ', currentPage);
+    setCurrentPage(currentPage)
+    console.log('current page en detail despues de ir atras: ', currentPage);
+
+    setTimeout(() => {
+      navigate(-1)      
+    }, 1000);
+  }
+
   return (
     <>
       <VStack
@@ -207,7 +219,8 @@ const DetailPage = ({username}) => {
         w={"98vw"}
         display={"flex"}
         justifyContent={"center"}
-        p={20}
+        px={20}
+        py={4}
       >
         {detail && (
           <VStack
@@ -284,7 +297,7 @@ const DetailPage = ({username}) => {
               {/* <Text color={'color'}>|</Text>    */}
                 {/* btn atras */}
                 <Button
-                  onClick={() => navigate(-1)}
+                  onClick={() => navigateBackwards()}
                   color={"color"}
                   p={3}
                   px={5}

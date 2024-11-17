@@ -100,15 +100,10 @@ const Navbar = ({ username, setUserName, roles }) => {
   }, []);
 
   const handleFilterSearch = async (category) => {
-    await getProductsByType(category);
-    setIsFilteredByCategory(true);
+    debugger
+    setCategories([category])
     setShowFav(false)
-    navigate("/");
   };
-
-  const handleInput = (productName) => {
-    setProductName(productName);
-  }; 
 
   const handleShowSearchBar = async () => {
     if(showSearchBar && productName){
@@ -117,16 +112,7 @@ const Navbar = ({ username, setUserName, roles }) => {
       await setShowSearchBar(!showSearchBar);
     }    
   };
-
-  const handleKeyPress = async (e) => {
-    debugger
-    console.log('Tecla presionada:', e.key);
-    if (e.key === 'Enter' && productName.trim() !== "") {
-      console.log('Ejecutando búsqueda para:', productName);
-      await handleSearch();
-    }
-  };
-
+ 
   const handleSearch = async () => {
     if (productName.trim() === "") {
       return; // No hacer nada si el input está vacío
@@ -162,24 +148,22 @@ const Navbar = ({ username, setUserName, roles }) => {
 
   const handleSeeAll = async () => {
     debugger
-    setPaginatedDataBySeason([])
-    setCategories([])
-    setSeason('')
+    // setPaginatedDataBySeason([])
+    // setCategories([])
+    // setSeason('')
     getProducts()
-    setIsFilteredByCategory(true);
+    // setIsFilteredByCategory(true);
     setShowFav(false)
     navigate("/");
   }
 
   const handleClickLogo = () => {
-    setIsFilteredByCategory(false); // Desactiva el filtro de categoría
+    debugger
+    setIsFilteredByCategory(false); 
     setCategories([])
     setShowFav(false)
     setSeason('Primavera')
-    setCurrentPage();
-    setTimeout(() => {
-      navigate("/"); // Redirigir después de un pequeño retraso
-    }, 100); // 100ms de retraso
+    navigate("/"); 
   };
 
   
