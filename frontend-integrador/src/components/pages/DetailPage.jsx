@@ -508,7 +508,7 @@ const DetailPage = ({username}) => {
               </Grid>
 
               {/* btn ver más fotos + modal galeria */}
-              {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
+              {Array.isArray(detail.gallery) && detail.gallery.length != 0 && (
                 <HStack justifyContent={'start'} display={"flex"} alignSelf="flex-start">
                   <Button
                     onClick={handleGallery}
