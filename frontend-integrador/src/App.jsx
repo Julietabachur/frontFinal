@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import HomePage from "./components/pages/home/HomePage";
 import Login from "./components/pages/login/Login";
 import Register from "./components/pages/login/Register";
@@ -13,9 +13,14 @@ import Perfil from "./components/Perfil";
 import { useProductContext } from "./components/pages/home/Global.context";
 import ReservesPage from "./components/pages/reserves/ReservesPage";
 import VerifyReg from "./components/pages/login/VerifyReg";
+import Payments from "./components/pages/cart/PaymentsTemp";
+import Shipping from "./components/pages/cart/Shipping";
+import CartTest from "./components/pages/cart/CartTest";
+import Succes from "./components/pages/cart/Succes";
+import CheckoutStepper from "./components/pages/cart/Stepper";
+
 
 function App() {
-
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
   const verifyToken = null;
@@ -53,6 +58,14 @@ function App() {
     }
   }, [token]);
 
+  // const CheckoutLayout = () => {
+  //   return (
+  //     <Box>
+  //       <CheckoutStepper />
+  //       <Outlet /> {/* This renders the child routes */}
+  //     </Box>
+  //   );}
+
   return (
     <HStack>
       <Box position={"relative"} top={"100px"}>
@@ -68,20 +81,33 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verifyReg" element={<VerifyReg />} />
-            <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
+            <Route
+              path="/admin"
+              element={<AdminDashboard token={token ? token : ""} />}
+            />
             <Route path="/reserve" element={<ReservesPage />} />
-            <Route path="/detalle/:id" element={<DetailPage username={username} />} />
-            <Route path="/perfil"
+            <Route
+              path="/detalle/:id"
+              element={<DetailPage username={username} />}
+            />
+            <Route
+              path="/perfil"
               element={
                 <Perfil
                   roles={roles}
                   username={username}
                   token={token ? token : ""}
-                />                
-              }              
+                />
+              }
             />
+            <Route path="/checkout" element={<CheckoutStepper />}>
+              <Route path="cart" element={<CartTest />} />
+              <Route path="shipping" element={<Shipping />} />
+              <Route path="payment" element={<Payments />} />
+              <Route path="success" element={<Succes />} />
+            </Route>
           </Routes>
-          
+
           {<Footer />}
         </Router>
       </Box>
