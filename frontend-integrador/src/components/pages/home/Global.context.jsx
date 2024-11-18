@@ -193,6 +193,51 @@ const ProductProvider = ({ children }) => {
     dispatch({ type: "SET_SIZE", payload: data });
   };
 
+  const getCarrito = async ()=>{
+    debugger
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/private/car/${state.clientId}`,       
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data) {
+        
+        setCarrito(response.data);
+      }
+    } catch (error) {
+      console.log("error con getCarrito", error);
+    }
+  }
+
+  const saveCarrito = async ()=>{
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/v1/private/car`,     
+        {
+          carrito: state.carrito,
+        },  
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+    } catch (error) {
+      console.log("error con saveCarrito", error);
+    }
+  }
+
+  useEffect(() => {
+    saveCarrito()     
+  }, [state.carrito])
+  
+
   const getProducts = async (page = 1) => {
     debugger
     setSeason('')
@@ -451,6 +496,7 @@ const ProductProvider = ({ children }) => {
     getProducts,
     setCurrentPage,
     getFavorites,
+    getCarrito,
     setCategories,
     setIsFilteredByCategory,
     getProductsBySeason,
