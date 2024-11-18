@@ -172,13 +172,26 @@ const Login = () => {
               type="submit"
             >
               Iniciar Sesión
-            </Button>
+              </Button>
             {showAlert && invalidCredentials && (
               <Alert status="error" w="100%" mt={4}>
                 <AlertIcon />
                 Credenciales incorrectas. Por favor, verifica tu correo y contraseña.
               </Alert>
             )}
+            <Text fontSize="sm" textAlign="center" mt={4}>
+              Si no tienes cuenta,{" "}
+              <Text
+                as="span"
+                color="blue.500"
+                cursor="pointer"
+                onClick={() => navigate("/register")}
+                _hover={{ textDecoration: "underline" }}
+              >
+                regístrate
+              </Text>
+              .
+            </Text>
           </Stack>
         </form>
       </Box>

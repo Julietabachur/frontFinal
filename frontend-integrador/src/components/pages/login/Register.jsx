@@ -20,8 +20,8 @@ import { useNavigate } from "react-router-dom";
 const nameRegex = /^[a-zA-Z][a-zA-Z_-]{2,22}$/;
 const clientNameRegex = /^[a-zA-Z0-9._-]{5,}$/;
 */
-const nameRegex = /^[A-Za-zÀ-ÿ'-]{1,50}$/;
-const lastNameRegex = /^[A-Za-zÀ-ÿ'-]+(?: [A-Za-zÀ-ÿ'-]+)*$/;
+const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+(?: [A-Za-zÀ-ÖØ-öø-ÿ' -]+)*$/;
+const lastNameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+(?: [A-Za-zÀ-ÖØ-öø-ÿ' -]+)*$/;
 const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;

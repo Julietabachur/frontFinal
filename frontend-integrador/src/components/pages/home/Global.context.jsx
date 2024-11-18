@@ -59,6 +59,8 @@ const reducer = (state, action) => {
       return { ...state, size: action.payload };
     case "SET_IS_FILTERED_BY_CATEGORY":
       return { ...state, isFilteredByCategory: action.payload };
+    case "SET_CATEGORY_ADDED":
+      return { ...state, categoryAdded: action.payload };
     default:
       return state;
   }
@@ -87,7 +89,8 @@ const initialState = {
   reservation: "",
   banderaReservas: false,
   isSignIn: false,
-  productsFilterBAr: []
+  productsFilterBAr: [],
+  categoryAdded: false,
 };
 
 const ProductContext = createContext(undefined); //useContext
@@ -191,6 +194,9 @@ const ProductProvider = ({ children }) => {
   };
   const setSize = (data) => {
     dispatch({ type: "SET_SIZE", payload: data });
+  };
+  const setCategoryAdded = (data) => {
+    dispatch({ type: "SET_CATEGORY_ADDED", payload: data });
   };
 
   const getCarrito = async ()=>{
@@ -300,7 +306,7 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsBySeason = async (page = 1) => {
-    debugger
+    //debugger
     const validPage = isNaN(page) || page <= 0 ? 1 : page; 
     setPaginatedData([])  
     setTitulo('')
@@ -487,6 +493,8 @@ const ProductProvider = ({ children }) => {
     titulo: state.titulo,
     carrito:state.carrito,
     size:state.size,
+    categoryAdded: state.categoryAdded,
+    setCategoryAdded,
     setCarrito,
     setSize,
     setTitulo,
