@@ -101,7 +101,7 @@ const NavbarMenu = ({ username, token, roles }) => {
         fontWeight:'semibold',
         textDecorationLine:'underline'
         }}
-          // onClick={() => handleReserves()}
+          onClick={() => navigate('/carrito')}
         >
           Mi Carrito ({carrito.length})
         </MenuItem>
