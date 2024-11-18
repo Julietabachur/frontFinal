@@ -13,18 +13,6 @@ const RandomProductSlider = () => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
 
-  useEffect(() => {
-    console.log('totalElements: ', totalElements);
-    setSeason('Primavera')
-    setPaginatedData([])
-    setCurrentPage()
-  }, []);
-
-//   useEffect(() => {
-//   getProductsBySeason(currentPage)
-   
-//  }, [currentPage]);
-
   return (
     paginatedDataBySeason ? (
       <Flex direction="column" alignItems="center" m={{ base: 4, md: 8 }}>

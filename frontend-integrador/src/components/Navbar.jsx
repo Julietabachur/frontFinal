@@ -132,15 +132,12 @@ const Navbar = ({ username, setUserName, roles }) => {
   //useEffect(() => {},[]
 
   const handleFilterSearch = async (category) => {
-    await getProductsByType(category);
-    setIsFilteredByCategory(true);
+    debugger
+    setCategories([category])
     setShowFav(false)
     navigate("/");
-  };
 
-  const handleInput = (productName) => {
-    setProductName(productName);
-  }; 
+  };
 
   const handleShowSearchBar = async () => {
     if(showSearchBar && productName){
@@ -149,16 +146,7 @@ const Navbar = ({ username, setUserName, roles }) => {
       await setShowSearchBar(!showSearchBar);
     }    
   };
-
-  const handleKeyPress = async (e) => {
-    //debugger
-    console.log('Tecla presionada:', e.key);
-    if (e.key === 'Enter' && productName.trim() !== "") {
-      console.log('Ejecutando búsqueda para:', productName);
-      await handleSearch();
-    }
-  };
-
+  
   const handleSearch = async () => {
     if (productName.trim() === "") {
       return; // No hacer nada si el input está vacío
@@ -176,14 +164,13 @@ const Navbar = ({ username, setUserName, roles }) => {
       if (response) {
         console.log('Productos segun busqueda por nombre', response.data);
         console.log('prodcuto buscado: ', productName);
-        
         setPaginatedDataBySeason([])
         setPaginatedData(response.data);
-        // setSearchResults([]);
         setIsFilteredByCategory(true);
         setShowFav(false)
         setTitulo(`Resultados para la búsqueda: ${productName}`);
         navigate("/");
+        setProductName('')
       }
     } catch (error) {
       console.error("Error during search:", error);
@@ -194,24 +181,20 @@ const Navbar = ({ username, setUserName, roles }) => {
 
   const handleSeeAll = async () => {
     debugger
-    setPaginatedDataBySeason([])
-    setCategories([])
-    setSeason('')
-    getProducts()
-    setIsFilteredByCategory(true);
     setShowFav(false)
+    getProducts()
     navigate("/");
   }
 
   const handleClickLogo = () => {
-    setIsFilteredByCategory(false); // Desactiva el filtro de categoría
+    debugger
+    setIsFilteredByCategory(false); 
     setCategories([])
     setShowFav(false)
     setSeason('Primavera')
-    setCurrentPage();
     setTimeout(() => {
-      navigate("/"); // Redirigir después de un pequeño retraso
-    }, 100); // 100ms de retraso
+      navigate("/");
+    }, 1000);
   };
 
   
@@ -257,13 +240,13 @@ const Navbar = ({ username, setUserName, roles }) => {
               >
                   
                 <HStack display={'flex'} alignItems={'center'} justifyContent={'center'}>
-                <Image
+                {/* <Image
                     src="../Isotipo-Valkiria-Sand.png"
                     alt="Logo Valkiria"
                   style={{
                     height: "40px",
                   }}
-                />
+                /> */}
 
                 <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize={'30px'}>VALKIRIA</Text>
                 </HStack>
@@ -350,7 +333,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                       height: "50px",
                     }}
                   />
-                  <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize={'40px'}>VALKIRIA</Text>
+                  <Text fontFamily={'Prociono'}  color={'color'} fontWeight={"bold"} fontSize= {{base:'25px',lg: "40px"}}>VALKIRIA</Text>
                   <Image
                     src="../Isotipo-Valkiria-2-Sand.png"
                     alt="VALKIRIA"
@@ -430,12 +413,12 @@ const Navbar = ({ username, setUserName, roles }) => {
                 
             )) : username? (
               
-              <HStack flex={1} justifyContent={'end'}>
+              <HStack flex={showSearchBar ? 2 : 1} justifyContent={'end'}>
                   { showSearchBar &&
                 <Input
                 type="text"
                 maxHeight={["20px","26px", "34px"]}
-                maxWidth={["150px"]}
+                maxWidth={["200px"]}
                 focusBorderColor='color'
                 bg={"blanco"}
                 color="negro"

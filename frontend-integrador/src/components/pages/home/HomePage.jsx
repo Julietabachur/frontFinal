@@ -6,7 +6,7 @@ import ShowList from "./ShowList";
 import { useProductContext } from "./Global.context"; 
 import InfoComponent from "../../infoComponent";
 const HomePage = () => {
-  const { paginatedData, isFilteredByCategory } = useProductContext(); 
+  const { paginatedData, isFilteredByCategory} = useProductContext(); 
 
   return (
     <Box w={"97vw"} bg={"blanco"}>
