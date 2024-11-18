@@ -31,8 +31,11 @@ const Navbar = ({ username, setUserName, roles }) => {
   const navigate = useNavigate();
   const GETME_URL = import.meta.env.VITE_GETME_URL;
   const MIN_DESKTOP_WIDTH = 768;
+  const [isCategoryLoaded, setIsCategoryLoaded] = useState(false);
 
   const {
+    categoryAdded,
+    setCategoryAdded,
     categories,
     setCategories,
     getProductsByType,
@@ -99,6 +102,35 @@ const Navbar = ({ username, setUserName, roles }) => {
     
   }, []);
 
+  //UseEffect para cargar las categorias luego de haber agregado una categoria
+  useEffect(() => {
+    if (categoryAdded && !isCategoryLoaded) {
+      const getCategories = async () => {
+        try {
+          const response = await axios.get(
+            `${baseUrl}/api/v1/public/category/all`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response) {
+            setCategoryList(response.data);
+            setIsCategoryLoaded(true);  // Establece el estado local para evitar un loop infinito
+            // Después de cargar, puedes restablecer el flag en el contexto global
+            setCategoryAdded(false);  // Aquí lo pones a false para evitar que vuelva a cargar
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getCategories();
+    }
+  }, [categoryAdded, isCategoryLoaded]); // Depende de `categoryAdded` y `isCategoryLoaded`
+
+  //useEffect(() => {},[]
+
   const handleFilterSearch = async (category) => {
     await getProductsByType(category);
     setIsFilteredByCategory(true);
@@ -119,7 +151,7 @@ const Navbar = ({ username, setUserName, roles }) => {
   };
 
   const handleKeyPress = async (e) => {
-    debugger
+    //debugger
     console.log('Tecla presionada:', e.key);
     if (e.key === 'Enter' && productName.trim() !== "") {
       console.log('Ejecutando búsqueda para:', productName);

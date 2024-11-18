@@ -32,7 +32,7 @@ const ListUsers = ({
     getUsers();
   }, [userPage]);
 
-  const adminHandle = async (user) => {
+  /* const adminHandle = async (user) => {
     const updatedUser = { ...user };
     const response = await axios.put(
       `${baseUrl}/api/v1/admin/clients/${updatedUser.id}`,
@@ -47,8 +47,49 @@ const ListUsers = ({
     if (response.data) {
       getUsers();
     }
-  };
+  }; */
 
+  const handleCheckboxChange = async (user, isChecked) => {
+    const confirmationMessage = isChecked
+      ? "¿Está seguro de que desea que el usuario sea administrador?"
+      : "¿Está seguro de que desea que el usuario deje de ser administrador?";
+  
+    const isConfirmed = window.confirm(confirmationMessage);
+  
+    if (isConfirmed) {
+      // Clonamos el objeto user
+      const updatedUser = { ...user };
+  
+      // Actualizamos la propiedad roles según el estado del checkbox
+      updatedUser.roles = isChecked
+        ? [...(updatedUser.roles || []), "ADMIN"]
+        : (updatedUser.roles || []).filter((role) => role !== "ADMIN");
+  
+      try {
+        const response = await axios.put(
+          `${baseUrl}/api/v1/admin/clients/${updatedUser.id}`,
+          updatedUser, // Cambiado para enviar el objeto actualizado
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Usuario actualizado:", response.data);
+  
+        // Refrescar la lista de usuarios tras una actualización exitosa
+        getUsers();
+      } catch (error) {
+        if (error.response) {
+          console.error(`Error ${error.response.status}:`, error.response.data);
+        } else {
+          console.error("Error desconocido:", error.message);
+        }
+      }
+    }
+  };
+  
   return (
     <Flex justify={"center"}>
       <Box mt={10}>
@@ -124,7 +165,7 @@ const ListUsers = ({
                           user.roles.length > 1 &&
                           user.roles[1] === "ADMIN"
                         }
-                        onChange={() => adminHandle(user)}
+                        onChange={(e) => handleCheckboxChange(user, e.target.checked)}
                       />
                     </Td>
                   </Tr>
