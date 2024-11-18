@@ -49,7 +49,7 @@ const ShowList = () => {
           {/* {favorites.length > 0 ? "Tus Favoritos" : "Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos"} */}
         {/* </Text> */}
       {/* )} */}
-      {isFilteredByCategory && (
+      {titulo && (
         // Este mensaje indica si hay favoritos o no
         <Text mx={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
            {titulo} {/* Aquí se aplica la lógica para el título */}

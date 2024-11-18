@@ -29,7 +29,6 @@ const NavbarMenu = ({ username, token, roles }) => {
   };
 
   const handleFavorites = () => {
-    // setBanderaReservas(false);
     getFavorites()
     navigate('/')
     
@@ -117,7 +116,7 @@ const NavbarMenu = ({ username, token, roles }) => {
           }}
           onClick={() => handleFavorites()}
         >
-          Mis Favoritos{" "}
+          Mis Favoritos ({favorites.length})
         </MenuItem>
 
         <MenuItem

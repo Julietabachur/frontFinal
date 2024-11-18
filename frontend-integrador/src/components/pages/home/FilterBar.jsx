@@ -33,7 +33,7 @@ const FilterBar = () => {
 
     setTimeout(() => {
       navigate("/"); // Redirigir después de un pequeño retraso
-    }, 100); // 100ms de retraso
+    }, 50); // 100ms de retraso
     
   };
 
