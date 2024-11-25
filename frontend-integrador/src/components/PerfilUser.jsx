@@ -15,6 +15,15 @@ import {
   FormErrorMessage,
   useBreakpointValue,
   Divider,
+  Modal, 
+  ModalOverlay, 
+  ModalContent, 
+  ModalHeader, 
+  ModalFooter, 
+  ModalBody, 
+  ModalCloseButton,
+  useDisclosure, 
+  useToast
 } from "@chakra-ui/react";
 import { useProductContext } from "./pages/home/Global.context";
 import { useForm } from "react-hook-form";
@@ -53,7 +62,7 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
         postalCode: "",
       },
   });
-
+  const toast = useToast();
   const [originalClientName, setOriginalClientName] = useState("");
   const {
     register,
@@ -116,21 +125,32 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
   }, [user, setValue]);
 
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [formDataToSubmit, setFormDataToSubmit] = useState(null);
+
   const onSubmit = async (formData) => {
-    const data = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      clientName: formData.clientName,
-      email: formData.email,
-      cel: formData.cel,
-      address: {
-        street: formData.address.street, 
-        number: formData.address.number,
-        city: formData.address.city,
-        country: formData.address.country,
-        postalCode: formData.address.postalCode,}
-        
-    };
+    // Instead of directly submitting, open modal and store data
+    setFormDataToSubmit(formData);
+    onOpen();
+  };
+
+
+  const handleConfirmSubmit = async (formData) => {
+    if (formDataToSubmit) {
+      const data = {
+        firstName: formDataToSubmit.firstName,
+        lastName: formDataToSubmit.lastName,
+        clientName: formDataToSubmit.clientName,
+        email: formDataToSubmit.email,
+        cel: formDataToSubmit.cel,
+        address: {
+          street: formDataToSubmit.address.street, 
+          number: formDataToSubmit.address.number,
+          city: formDataToSubmit.address.city,
+          country: formDataToSubmit.address.country,
+          postalCode: formDataToSubmit.address.postalCode,
+        }
+      };
 
     console.log("Datos enviados:", data);
     console.log(clientId);
@@ -142,12 +162,28 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
         },
       });
       if (response.status === 200) {
-        alert("Datos actualizados con éxito.");
+        //alert("Datos actualizados con éxito.");
+        toast({
+          title: "Datos actualizados con éxito.",
+          status: "success",
+          duration: 3000,
+          position: "top-right",
+          isClosable: true,
+        });
+        onClose(); 
       }
     } catch (error) {
+      toast({
+        title: "Error al modificar datos",
+        status: "error",
+        duration: 3000,
+        position: "top-right",
+        isClosable: true,
+      });
       console.error("Error al modificar datos:", error);
     }
-  };
+  };}
+
   const validateClientName = async (value) => {
     // Solo validar si el clientName ha cambiado
   if (value !== originalClientName) {
@@ -407,6 +443,34 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
               >
                 Modificar
               </Button>
+              {/* Confirmation Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmar Modificación</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            ¿Está seguro que desea modificar sus datos?
+          </ModalBody>
+          <ModalFooter>
+            <Button 
+              colorScheme="gray" 
+              mr={3} 
+              onClick={onClose}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              backgroundColor="#e1bc6a"
+              color="white"
+              _hover={{ backgroundColor: "#d3a45a" }}
+              onClick={handleConfirmSubmit}
+            >
+              Confirmar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
             </Flex>
           </form>
         </Box>
