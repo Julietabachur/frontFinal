@@ -18,6 +18,7 @@ import Shipping from "./components/pages/cart/Shipping";
 import CartTest from "./components/pages/cart/CartTest";
 import Succes from "./components/pages/cart/Succes";
 import CheckoutStepper from "./components/pages/cart/Stepper";
+import PerfilUser from "./components/PerfilUser";
 
 
 function App() {
@@ -90,10 +91,18 @@ function App() {
               path="/detalle/:id"
               element={<DetailPage username={username} />}
             />
-            <Route
+            {/* <Route
               path="/perfil"
               element={
                 <Perfil
+                  roles={roles}
+                  username={username}
+                  token={token ? token : ""}
+                /> */}
+                <Route
+              path="/perfil"
+              element={
+                <PerfilUser
                   roles={roles}
                   username={username}
                   token={token ? token : ""}
