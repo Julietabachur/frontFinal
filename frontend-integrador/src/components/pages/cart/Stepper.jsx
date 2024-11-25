@@ -22,6 +22,12 @@ const steps = [
   { title: "Payment", path: "/checkout/payment" },
   { title: "Success", path: "/checkout/success" },
 ];
+const buttonLabels = [
+  "Confirmar carrito",
+  "Confirmar envío",
+  "Confirmar compra",
+  "Finalizar",
+];
 
 const CheckoutStepper = () => {
   const navigate = useNavigate();
@@ -56,7 +62,7 @@ const CheckoutStepper = () => {
         <Stepper index={activeStep} mb={8}>
           {steps.map((step, index) => (
             <Step key={index}>
-              <StepIndicator style={{ backgroundColor: "#e1bc6a" }}>
+              <StepIndicator>
                 <StepStatus
                   complete={<StepIcon />}
                   incomplete={<StepNumber />}
@@ -64,16 +70,11 @@ const CheckoutStepper = () => {
                   title={
                     <Box display="flex" alignItems="center">
                       <Text ml={2}>{step.title}</Text>{" "}
-                    
                     </Box>
                   }
                 />
               </StepIndicator>
-              <StepSeparator
-                style={{
-                  backgroundColor: "#e1bc6a" 
-                }}
-              />
+              <StepSeparator />
             </Step>
           ))}
         </Stepper>
@@ -85,11 +86,19 @@ const CheckoutStepper = () => {
         </Box>
       </Box>
       <HStack justify="center" spacing={4}>
-        <Button onClick={goToPrev} isDisabled={activeStep === 0}>
-          Anterior
-        </Button>
-        <Button onClick={goToNext} isDisabled={activeStep === steps.length - 1}>
-          Siguiente
+        {activeStep !== steps.length - 1 && ( // Condición para ocultar "Anterior" en el último paso
+          <Button onClick={goToPrev} isDisabled={activeStep === 0}>
+            Anterior
+          </Button>
+        )}
+        <Button
+          onClick={goToNext}
+          isDisabled={
+            activeStep === steps.length - 1 &&
+            buttonLabels[activeStep] !== "Finalizar"
+          }
+        >
+          {buttonLabels[activeStep]}
         </Button>
       </HStack>
     </Box>
