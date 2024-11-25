@@ -86,7 +86,7 @@ function App() {
             <Route path="/admin" element={<AdminDashboard token={token ? token : ""} roles={roles}/>} />
             <Route path="/carrito" element={<CarritoPage username={username} />} />
             <Route path="/detalle/:id" element={<DetailPage username={username} />} />   
-            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/>            
+            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/> } />        
             <Route path="/checkout" element={<CheckoutStepper />}>
               <Route path="cart" element={<CartTest />} />
               <Route path="shipping" element={<Shipping />} />
