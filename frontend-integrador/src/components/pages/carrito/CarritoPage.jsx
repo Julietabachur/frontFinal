@@ -61,8 +61,8 @@ useEffect(() => {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {carrito &&
-                    carrito.map((producto) => (
+                    {carrito && carrito.products &&
+                    carrito.products.map((producto) => (
                         <Tr key={producto.id} h="10px">
                         <Td textAlign={'center'}>{producto.categoryName}</Td>
                         <Td textAlign={'center'}>{producto.description}</Td>

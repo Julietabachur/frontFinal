@@ -79,7 +79,12 @@ const initialState = {
   startDate: "",
   endDate: "",
   productName: "",
-  carrito:[],
+  carrito:{
+    id: null, // o un valor generado automáticamente
+    idUser: null, // asignar un idUser si está disponible
+    products: [],
+    totalPrice: 0, // precio total inicial
+  },
   size:'',
   searchResults: [],
   favorites: [],
