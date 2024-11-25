@@ -43,7 +43,8 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
     firstName: "",
     lastName: "",
     clientName: "",
-    phone: "",
+    cel: "",
+    email: "",
     address: {
         street: "",
         number: "",
@@ -97,20 +98,37 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
     }
   }, [clientId, token]);
 
+  useEffect(() => {
+    // Explicitly set all form values after user data is fetched
+    if (user) {
+      setValue('firstName', user.firstName || '');
+      setValue('lastName', user.lastName || '');
+      setValue('clientName', user.clientName || '');
+      setValue('cel', user.cel || '');
+      setValue('email', user.email || ''); 
+      // Set address values
+      setValue('address.street', user.address?.street || '');
+      setValue('address.number', user.address?.number || '');
+      setValue('address.city', user.address?.city || '');
+      setValue('address.country', user.address?.country || '');
+      setValue('address.postalCode', user.address?.postalCode || '');
+    }
+  }, [user, setValue]);
+
+
   const onSubmit = async (formData) => {
     const data = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       clientName: formData.clientName,
       email: formData.email,
-      cel: formData.phone,
+      cel: formData.cel,
       address: {
-        street: formData.address,
-        number: formData.number,
-        city: formData.city,
-        country: formData.country,
-        postalCode: formData.postalCode,
-      },
+        street: formData.address.street, 
+        number: formData.address.number,
+        city: formData.address.city,
+        country: formData.address.country,
+        postalCode: formData.address.postalCode,}
         
     };
 
@@ -271,20 +289,20 @@ const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
                   cursor="not-allowed"
                 />
               </FormControl>
-              <FormControl isInvalid={errors.phone}>
+              <FormControl isInvalid={errors.cel}>
                 <FormLabel>Teléfono</FormLabel>
                 <Input
                 focusBorderColor="#e1bc6a" 
-                  type="number"
+                  type="tel"
                   {...register("cel", { required: "Teléfono es requerido",
                     pattern: {
                         value: celRegex,
                         message: "Número telefónico de usuario no válido",
                       },
                    })}
-                  borderColor={errors.phone ? "red.500" : "#e1bc6a"}
+                  borderColor={errors.cel ? "red.500" : "#e1bc6a"}
                 />
-                <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.cel?.message}</FormErrorMessage>
               </FormControl>
               {/* Nueva entrada para la dirección */}
             <FormControl isInvalid={errors.address?.street}>
