@@ -29,9 +29,8 @@ const NavbarMenu = ({ username, token, roles }) => {
   };
 
   const handleFavorites = () => {
-    setBanderaReservas(false);
-    navigate('/')
     getFavorites()
+    navigate('/')
     
   };
 
@@ -102,9 +101,9 @@ const NavbarMenu = ({ username, token, roles }) => {
         fontWeight:'semibold',
         textDecorationLine:'underline'
         }}
-          // onClick={() => handleReserves()}
+          onClick={() => navigate('/carrito')}
         >
-          Mi Carrito ({carrito.length})
+          Mi Carrito ({carrito?.products?.length || 0})
         </MenuItem>
         <MenuItem
          color={'color'} 
@@ -117,7 +116,7 @@ const NavbarMenu = ({ username, token, roles }) => {
           }}
           onClick={() => handleFavorites()}
         >
-          Mis Favoritos{" "}
+          Mis Favoritos ({favorites.length})
         </MenuItem>
 
         <MenuItem

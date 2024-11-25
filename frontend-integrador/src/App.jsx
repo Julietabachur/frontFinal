@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import HomePage from "./components/pages/home/HomePage";
+import CarritoPage from "./components/pages/carrito/CarritoPage";
 import Login from "./components/pages/login/Login";
 import Register from "./components/pages/login/Register";
 import Navbar from "./components/Navbar";
@@ -82,33 +83,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verifyReg" element={<VerifyReg />} />
-            <Route
-              path="/admin"
-              element={<AdminDashboard token={token ? token : ""} />}
-            />
-            <Route path="/reserve" element={<ReservesPage />} />
-            <Route
-              path="/detalle/:id"
-              element={<DetailPage username={username} />}
-            />
-            {/* <Route
-              path="/perfil"
-              element={
-                <Perfil
-                  roles={roles}
-                  username={username}
-                  token={token ? token : ""}
-                /> */}
-                <Route
-              path="/perfil"
-              element={
-                <PerfilUser
-                  roles={roles}
-                  username={username}
-                  token={token ? token : ""}
-                />
-              }
-            />
+            <Route path="/admin" element={<AdminDashboard token={token ? token : ""} roles={roles}/>} />
+            <Route path="/carrito" element={<CarritoPage username={username} />} />
+            <Route path="/detalle/:id" element={<DetailPage username={username} />} />   
+            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/>            
             <Route path="/checkout" element={<CheckoutStepper />}>
               <Route path="cart" element={<CartTest />} />
               <Route path="shipping" element={<Shipping />} />

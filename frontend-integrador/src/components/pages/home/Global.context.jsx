@@ -59,6 +59,8 @@ const reducer = (state, action) => {
       return { ...state, size: action.payload };
     case "SET_IS_FILTERED_BY_CATEGORY":
       return { ...state, isFilteredByCategory: action.payload };
+    case "SET_CATEGORY_ADDED":
+      return { ...state, categoryAdded: action.payload };
     default:
       return state;
   }
@@ -67,7 +69,7 @@ const reducer = (state, action) => {
 const initialState = {
   titulo:'',
   paginatedData: [],
-  season: '',
+  season: 'Primavera',
   paginatedDataBySeason:[],
   isFilteredByCategory: false,
   currentPage: 1,
@@ -77,7 +79,12 @@ const initialState = {
   startDate: "",
   endDate: "",
   productName: "",
-  carrito:[],
+  carrito:{
+    id: null, // o un valor generado automáticamente
+    idUser: null, // asignar un idUser si está disponible
+    products: [],
+    totalPrice: 0, // precio total inicial
+  },
   size:'',
   searchResults: [],
   favorites: [],
@@ -87,7 +94,8 @@ const initialState = {
   reservation: "",
   banderaReservas: false,
   isSignIn: false,
-  productsFilterBAr: []
+  productsFilterBAr: [],
+  categoryAdded: false,
 };
 
 const ProductContext = createContext(undefined); //useContext
@@ -156,20 +164,15 @@ const ProductProvider = ({ children }) => {
   };
 
   const setCurrentPage = (page) => {
+    debugger
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
-    if(state.season != '' && !state.showFav){
+    if(state.season != '' && !state.showFav && !state.isFilteredByCategory){
       getProductsBySeason(page)
-    }else if(
-      state.categories.length === 0 &&
-      !state.showFav &&
-      state.searchResults.length === 0 && state.season == ''
-    ) {
+    }else if(  state.categories.length === 0 && !state.showFav && state.season == '' ) {
       getProducts(page);
     } else if (state.categories.length == 1 && !state.showFav) {
-      setPaginatedDataBySeason([])
       getProductsByType(state.categories, page);
     } else if  (state.categories.length > 1 && !state.showFav) {
-      setPaginatedDataBySeason([])
       getProductsByTypeFilterBar(state.categories, page);
     } else if (state.favorites.length > 0 && state.showFav) {
       getFavorites(page);
@@ -197,8 +200,71 @@ const ProductProvider = ({ children }) => {
   const setSize = (data) => {
     dispatch({ type: "SET_SIZE", payload: data });
   };
+  const setCategoryAdded = (data) => {
+    dispatch({ type: "SET_CATEGORY_ADDED", payload: data });
+  };
+
+  const getCarrito = async ()=>{
+    debugger
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/private/car/${state.clientId}`,       
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data) {
+        
+        setCarrito(response.data);
+      }
+    } catch (error) {
+      console.log("error con getCarrito", error);
+    }
+  }
+
+  const saveCarrito = async ()=>{
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/v1/private/car`,     
+        {
+          carrito: state.carrito,
+        },  
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+    } catch (error) {
+      console.log("error con saveCarrito", error);
+    }
+  }
+
+  useEffect(() => {
+    saveCarrito()     
+  }, [state.carrito])
+  
 
   const getProducts = async (page = 1) => {
+    debugger
+    setSeason('')
+    if(state.showFav && state.favorites.length === 0){
+      setTitulo('Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos')
+    }else{
+      setTitulo('Todos nuestros productos')
+    }
+
+    // setShowFav(false)
+    setPaginatedDataBySeason([])
+    setIsFilteredByCategory(true)
+    if (state.categories.length >0) {
+      setCategories([])      
+    }
+
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products?page=${page}`,
@@ -209,12 +275,9 @@ const ProductProvider = ({ children }) => {
         }
       );
       if (response) {
-        let data = response.data
-        data.content.sort(() => Math.random() - 0.5);
-        setPaginatedDataBySeason([])
+        let data = response.data       
         setPaginatedData(data);
-        setIsFilteredByCategory(true)
-        setTitulo('Todos nuestros productos')
+
       }
     } catch (error) {
       console.error(error);
@@ -222,6 +285,11 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsByType = async (categories, page = 1) => {
+    debugger
+    setPaginatedDataBySeason([])
+    setSeason('')
+    setShowFav(false)
+
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/category?categories=${categories}&page=${page}`,
@@ -243,9 +311,16 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsBySeason = async (page = 1) => {
-    debugger
+    //debugger
     const validPage = isNaN(page) || page <= 0 ? 1 : page; 
-    setPaginatedData([])   
+    setPaginatedData([])  
+    setTitulo('')
+    setIsFilteredByCategory(false)          
+    setShowFav(false)
+      if(state.categories.length > 0 || state.isFilteredByCategory){
+        setCategories([])
+        setIsFilteredByCategory(false)
+      }
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/searchBySeason?season=${state.season}&page=${validPage}`,
@@ -257,11 +332,9 @@ const ProductProvider = ({ children }) => {
       );
       if (response) {
         console.log('Productos segun temporada', response.data);   
-        setIsFilteredByCategory(false)          
         setTimeout(() => {
           setPaginatedDataBySeason(response.data); // setear productor por temp después de un pequeño retraso
-        }, 1000); // 100ms de retraso        
-        setTitulo('')
+        }, 500); // 100ms de retraso        
       }
     } catch (error) {
       console.error(error);
@@ -269,15 +342,21 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsByTypeFilterBar = async (categories, page = 1) => {
+    debugger
     if (!categories || categories.length === 0) {
       console.error("Debe proporcionar al menos una categoría.");
       return []; 
     }
-
     setPaginatedDataBySeason([])
+    setShowFav(false)
 
+    var categoriesQuery;
     try {
-      const categoriesQuery = categories.map(category => `categoryNames=${encodeURIComponent(category)}`).join('&');
+      if(categories.length > 1){
+        categoriesQuery = categories.map(category => `categoryNames=${encodeURIComponent(category)}`).join('&');
+      }else {
+        return;
+      }
 
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/categories?${categoriesQuery}&page=${page}`,
@@ -290,7 +369,6 @@ const ProductProvider = ({ children }) => {
 
       if (response.data && response.data.content) {
       let data = response.data;
-      data.content.sort(() => Math.random() - 0.5);
       setPaginatedData(data);
       setIsFilteredByCategory(true)
       setTitulo(`Categorías seleccionadas: ${categories.join(", ")}`)
@@ -309,8 +387,11 @@ const ProductProvider = ({ children }) => {
 
   const getFavorites = async (page = 1) => {
     try {
-      setShowFav(true);
       setPaginatedDataBySeason([])
+      // setTitulo('')
+      setIsFilteredByCategory(false)
+      setShowFav(true);
+      setTitulo('Mis favoritos')
       const response = await axios.get(
         `${baseUrl}/api/v1/public/products/favorites?productIds=${state.favorites}&page=${page}`,
         {
@@ -328,22 +409,16 @@ const ProductProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   debugger
-  //   if (state.categories.length === 0) {
-  //     getProducts();
-  //   }
-  // }, [state.categories]);
-
   useEffect(() => {
-    // Ejecutar getProductsBySeason si hay una temporada establecida
-    // debugger
-    if (state.season) {
+    debugger
+    if (state.season != '' && state.categories.length === 0) {
       getProductsBySeason();
     } else if (state.categories.length === 0) {
       getProducts(); // Solo ejecuta esto si no hay categoría
-    } else if(state.categories.length > 0){
-      getProductsByTypeFilterBar(state.categories)
+    } else if (state.categories.length == 1) {
+      getProductsByType(state.categories); //filtra por 1 categoria
+    }else if(state.categories.length > 1){
+      getProductsByTypeFilterBar(state.categories) //filtra por conjunto de categorias
     }
   }, [state.season, state.categories]);
 
@@ -351,7 +426,7 @@ const ProductProvider = ({ children }) => {
   useEffect(() => {
     if (state.showFav) {
       if (state.favorites.length === 0) {
-        setShowFav(false);
+        // setShowFav(false);
         getProducts();
       } else {
         getFavorites();
@@ -423,6 +498,8 @@ const ProductProvider = ({ children }) => {
     titulo: state.titulo,
     carrito:state.carrito,
     size:state.size,
+    categoryAdded: state.categoryAdded,
+    setCategoryAdded,
     setCarrito,
     setSize,
     setTitulo,
@@ -432,6 +509,7 @@ const ProductProvider = ({ children }) => {
     getProducts,
     setCurrentPage,
     getFavorites,
+    getCarrito,
     setCategories,
     setIsFilteredByCategory,
     getProductsBySeason,

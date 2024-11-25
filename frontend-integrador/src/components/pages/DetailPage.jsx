@@ -50,10 +50,13 @@ const DetailPage = ({username}) => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn, setCarrito, carrito, size, setSize } =
+  const [quantity, setQuantity] = useState(1);
+  const { setFavorites, favorites, currentPage, setCurrentPage, clientId, setReservation,setIsSignIn, setCarrito, carrito, size, setSize } =
     useProductContext();
   const [showError, setShowError] = useState(false);
   const [selectedSize, setSelectedSize] = useState(false);
+  const [sizeNotSelected, setSizeNotSelected] = useState(false);
+  const [addSuccessful, setAddSuccessful] = useState(false);
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
@@ -61,77 +64,97 @@ const DetailPage = ({username}) => {
   // Confirma si 'riskkojwt' existe, es decir, si la persona ya está registrada.
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
+  const increment = () => {
+    if (quantity < detail.stock) {
+      setQuantity(prev => prev + 1);
+    }
+  };
+
+  const decrement = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+
   useEffect(() => {
     // Actualizar el estado del corazón basado en si el id está en favoritos
     const isFavorite = favorites.includes(id);
     setHeartClicked(isFavorite);
-  }, [id]);
+  }, [id])
+
 
   const handleGallery = () => {
-    onOpen();
-  };
-
-  const getReserveList = async () => {
-    const response = await axios.get(
-      `${baseUrl}/api/v1/public/reserves/search/byProductId?productId=${detail.id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.data) {
-      setReserveList(response.data);
-      setShowError(false);
-    } else {
-      setShowError(true);
-    }
-  };
-
-  const handleReserve = () => {
-    if (clientId) {
-      setReservation(detail.id);
-      navigate("/reserve");
-    } else {
-      setIsSignIn(true)
-      navigate("/login");
-    }
-  };
-
-  const getReserved = () => {
-    let updatedAvailableDates = [];
-    reserveList.forEach((reserva) => {
-      const startDate = new Date(reserva.startDate);
-      const endDate = new Date(reserva.endDate);
-      startDate.setDate(startDate.getDate() + 1);
-      endDate.setDate(endDate.getDate() + 1);
-
-      let currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        updatedAvailableDates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-    });
-
-    setAvailableDates((prevDates) => [...prevDates, ...updatedAvailableDates]);
+    onOpen()
   };
 
   const addToCart = (product) =>{
-    console.log('agrego producto al carrito: ', product);
-    
-    setCarrito([...carrito, product])
+debugger
+    if (!size) {
+      setSizeNotSelected(true); 
+      return; 
+    }
+  
+    setSizeNotSelected(false)
 
-    console.log('carrito: ',carrito);
+    console.log('Agregando producto al carrito: ', product);
+
+    // Crear un objeto ProductDto
+    const productoDto = {
+      productId: product.productId,
+      productName: product.productName,
+      thumbnail: product.thumbnail,
+      amount: quantity, // Cantidad seleccionada
+      size: size,       // Talla seleccionada
+      price: product.precio, // Precio unitario
+    };
+  
+    setCarrito((prevCarrito) => {
+      const { products, totalPrice } = prevCarrito;
+  
+      // Validar si el producto con el mismo ID y talla ya existe
+      const existingProductIndex = products.findIndex(
+        (p) => p.productId === productoDto.productId && p.size === productoDto.size
+      );
+  
+      let updatedProducts;
+  
+      if (existingProductIndex > -1) {
+        // Producto con el mismo ID y talla ya existe, actualizar cantidad
+        updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = {
+          ...updatedProducts[existingProductIndex],
+          amount: updatedProducts[existingProductIndex].amount + productoDto.amount,
+        };
+      } else {
+        // Producto no existe con la misma talla, agregarlo
+        updatedProducts = [...products, productoDto];
+      }
+  
+      // Calcular nuevo precio total
+      const newTotalPrice = updatedProducts.reduce(
+        (acc, prod) => acc + prod.price * prod.amount,
+        0
+      );
+  
+      return {
+        ...prevCarrito,
+        products: updatedProducts,
+        totalPrice: newTotalPrice,
+        idUser: clientId, // Asignar clientId
+      };
+    });
+  setAddSuccessful(true)
+    console.log('Carrito actualizado: ', carrito);
     
   }
 
-  useEffect(() => {
-    getReserved();
-  }, [reserveList]);
+  // useEffect(() => {
+  //   getReserved();
+  // }, [reserveList]);
 
-  useEffect(() => {
-    getReserveList();
-  }, [detail]);
+  // useEffect(() => {
+  //   getReserveList();
+  // }, [detail]);
 
   const handleHeartClick = (event) => {
     // Cambiar el estado del clic del corazón
@@ -162,19 +185,6 @@ const DetailPage = ({username}) => {
   };
 
   useEffect(() => {
-    const isDateIncluded = availableDates.some((item) => {
-      return (
-        item?.getFullYear() === selectedDate?.getFullYear() &&
-        item?.getMonth() === selectedDate?.getMonth() &&
-        item?.getDate() === selectedDate?.getDate()
-      );
-    });
-
-    if (isDateIncluded) {
-    }
-  }, [selectedDate, availableDates]);
-
-  useEffect(() => {
     getDetail();
     console.log('talle cuando carg la pagina: ', size);
     setSize('')
@@ -200,6 +210,17 @@ const DetailPage = ({username}) => {
     
   }
 
+  const navigateBackwards = () =>{
+    debugger
+    console.log('current page en detail antes de ir atras: ', currentPage);
+    setCurrentPage(currentPage)
+    console.log('current page en detail despues de ir atras: ', currentPage);
+
+    setTimeout(() => {
+      navigate(-1)      
+    }, 1000);
+  }
+
   return (
     <>
       <VStack
@@ -207,7 +228,8 @@ const DetailPage = ({username}) => {
         w={"98vw"}
         display={"flex"}
         justifyContent={"center"}
-        p={20}
+        px={20}
+        py={4}
       >
         {detail && (
           <VStack
@@ -229,62 +251,12 @@ const DetailPage = ({username}) => {
               pb='10'
               minW={"300px"}
             >
-              <HStack ml={3} w="50%">
-                {/* corazon like */}
-                {/* {token && (
-                  <Box
-                    onClick={handleHeartClick}
-                    color={isFavorite ? "red.500" : "gray.400"}
-                    _hover={{ color: isFavorite ? "red.600" : "gray.500",cursor:'pointer' }}                   
-                  >
-                    {isFavorite ? (
-                      <FaHeart size={30} />
-                    ) : (
-                      <FaRegHeart size={30} />
-                    )}
-                  </Box>
-                )} */}
-                {/* compartir */}
-                {/* <IconButton
-                  colorScheme="gray"
-                  variant="outline"
-                  size="lg"
-                  aria-label="Share"
-                  icon={<FcShare />}
-                  onClick={() => setOpenShareModal(true)}
-                /> */}
-                {/* nombre producto */}
-                {/* <Text
-                  readOnly={true}
-                  fontFamily={"Roboto"}
-                  color={"black"}
-                  fontWeight={"semibold"}
-                  fontSize={["0.8rem","1.3rem","1.6rem"]}
-                  marginLeft={"2%"}
-                  style={{
-                    caretColor: "transparent",
-                    background: "transparent",
-                    border: "none",
-                  }}
-                >
-                  {detail.productName}
-                </Text> */}
+              <HStack ml={3} w="50%">              
              
               </HStack>
-              <HStack display={'flex'} justifyContent={'center'} alignContent={'center'} wrap={'wrap'}>
-                {/* <Button
-                  onClick={handleReserve}
-                  bg={"verde2"}
-                  alignSelf={"flex-end"}
-                >
-                  Reservar
-                </Button> */}
-                {/* btn agregar al carrito */}
-                
-              {/* <Text color={'color'}>|</Text>    */}
-                {/* btn atras */}
+              <HStack display={'flex'} justifyContent={'center'} alignContent={'center'} wrap={'wrap'}>               
                 <Button
-                  onClick={() => navigate(-1)}
+                  onClick={() => navigateBackwards()}
                   color={"color"}
                   p={3}
                   px={5}
@@ -302,79 +274,7 @@ const DetailPage = ({username}) => {
               </HStack>
             </HStack>
             <VStack  p={2}>
-              {/* <HStack> */}
-
-                {/* fotos detalle */}
-                {/* <ProductGallery
-                  thumbnail={detail.thumbnail}
-                  gallery={detail.gallery}
-                /> */}
-                {/* <Box width={'50%'}>
-                  <Image h={"100%"} objectFit={"cover"} src={detail.thumbnail} alt="photo" />
-                </Box>
-                <VStack width={'50%'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
-                  {/* nombre prod */}
-                  {/* <Text>{detail.productName}</Text> */}
-                  {/* preci prod */}
-                  {/* <Text>{detail.precio}</Text> */}
-                  {/* btn comprar */}
-                  {/* <Button
-                    onClick={()=>addToCart(detail)}
-                    color={"color"}
-                    p={3}
-                    px={5}
-                    borderRadius={0}
-                    variant={"plain"}
-                    _hover={{
-                      cursor: "pointer", // Cambia el cursor al pasar por encima
-                      fontWeight:'bold',
-                      borderBottom:'1px solid',
-                      borderColor:' color'
-                      }}
-                  >
-                    AGREGAR AL CARRITO
-                  </Button> */}
-                  {/* talles */}
-                  {/* <HStack spacing={2}>
-                    {sizes.map((size, index) => (
-                      <Button
-                        key={index}
-                        variant={selectedSize === size ? "solid" : "outline"}
-                        onClick={() => setSelectedSize(size)}
-                      >
-                        {size}
-                      </Button>
-                    ))}
-                  </HStack> */}
-                  {/* botones like y compartir */}
-                  {/* <HStack> */}
-                    {/* corazon like */}
-                    {/* {token && (
-                    <Box
-                      onClick={handleHeartClick}
-                      color={isFavorite ? "red.500" : "gray.400"}
-                      _hover={{ color: isFavorite ? "red.600" : "gray.500",cursor:'pointer' }}                   
-                    >
-                      {isFavorite ? (
-                        <FaHeart size={30} />
-                      ) : (
-                        <FaRegHeart size={30} />
-                      )}
-                    </Box>
-                    )} */}
-                    {/* compartir */}
-                    {/* <IconButton
-                      colorScheme="gray"
-                      variant="outline"
-                      size="lg"
-                      aria-label="Share"
-                      icon={<FcShare />}
-                      onClick={() => setOpenShareModal(true)}
-                    />
-                  </HStack> */}
-                {/* </VStack> */}
-              {/* </HStack>  */}
-
+             
               <Grid
                 templateColumns={{ base: "1fr", md: "1fr 1fr" }}
                 h={["auto"]}
@@ -409,29 +309,76 @@ const DetailPage = ({username}) => {
                   
                   {/* Precio del producto */}
                   <Text fontSize="xl" color="gray.500">{`$${detail.precio}`}</Text>
-                  
                       
                   {/* Talles */}                
                   {username && detail.features && detail.features.find(f => f.charName === "TALLE")?.charValue && (
-                    <HStack spacing={2}>
-                      {detail.features.find(f => f.charName === "TALLE").charValue.map((talle, index) => (
-                        <Button
-                          key={index}
-                          // variant={size === talle ? "solid" : "outline"}              
-                          backgroundColor={size === talle ? "color" : "white"}     
-                          color={size === talle ? "white" : "black"}     
-                          border={'1px solid'}
-                          borderColor={'color'}  
-                          onClick={()=>handleSize(talle)}
-                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
-                        >
-                          {talle}
-                        </Button>
-                      ))}
-                    </HStack>
+                    <VStack alignItems={'start'}>
+                      <HStack spacing={2} >
+                        {detail.features.find(f => f.charName === "TALLE").charValue.map((talle, index) => (
+                          <Button
+                            key={index}
+                            // variant={size === talle ? "solid" : "outline"}              
+                            backgroundColor={size === talle ? "color" : "white"}     
+                            color={size === talle ? "white" : "black"}     
+                            border={'1px solid'}
+                            borderColor={'color'}  
+                            onClick={()=>handleSize(talle)}
+                            _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                          >
+                            {talle}
+                          </Button>
+                        ))}
+                      </HStack>                      
+                        {sizeNotSelected && 
+                        <Text fontSize="sm" fontWeight="medium" color={'red'}>Este es un campo obligatorio.</Text>
+                      }
+                    </VStack>
                   )}
              
+                    {/* CANTIDAD */}
+                    {username &&
+                    <Box mt={4}>
+                      <Text fontSize="sm" fontWeight="semibold">Cantidad:</Text>
+                      <HStack mt={2}>
+                        <Button 
+                          size="sm" 
+                          onClick={decrement} 
+                          isDisabled={quantity === 1}
+                          backgroundColor={"white"}     
+                          color={"black"}     
+                          border={'1px solid'}
+                          borderColor={'color'}  
+                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                        >
+                          -
+                        </Button>
+                        <Text fontSize="lg" fontWeight="semibold">{quantity}</Text>
+                        <Button 
+                          size="sm" 
+                          onClick={increment} 
+                          isDisabled={quantity === detail.stock}
+                          backgroundColor={"white"}     
+                          color={"black"}     
+                          border={'1px solid'}
+                          borderColor={'color'}  
+                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                        >
+                          +
+                        </Button>
+                      </HStack>
+                      <Text fontSize="xs" mt={1} color="gray.500">
+                        Stock disponible: {detail.stock}
+                      </Text>
+                    </Box>
+                    }
 
+                  {/* exito addtocart */}
+                      {addSuccessful &&
+
+                        <Box backgroundColor={'green.100'} p={5} fontWeight={'normal'} rounded="md">
+                          <Text>El producto fue agregado al carrito con éxito.</Text>
+                        </Box>
+                    }
                   {/* Botón agregar al carrito */}
                   {username &&
                     <Button
@@ -442,7 +389,7 @@ const DetailPage = ({username}) => {
                       width="250px"                      
                       border={'1px solid'}
                       borderColor={'color'}
-                      marginTop={10}
+                      marginTop={6}
                       _hover={{
                         backgroundColor:'color',
                         color:'white'
@@ -495,7 +442,7 @@ const DetailPage = ({username}) => {
               </Grid>
 
               {/* btn ver más fotos + modal galeria */}
-              {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
+              {Array.isArray(detail.gallery) && detail.gallery.length != 0 && (
                 <HStack justifyContent={'start'} display={"flex"} alignSelf="flex-start">
                   <Button
                     onClick={handleGallery}
