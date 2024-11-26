@@ -61,6 +61,8 @@ const reducer = (state, action) => {
       return { ...state, isFilteredByCategory: action.payload };
     case "SET_CATEGORY_ADDED":
       return { ...state, categoryAdded: action.payload };
+    case "SET_ADD_PRODUCT_SUCCESSFUL":
+      return { ...state, addProductSuccessful: action.payload };
     default:
       return state;
   }
@@ -79,6 +81,7 @@ const initialState = {
   startDate: "",
   endDate: "",
   productName: "",
+  addProductSuccessful:false,
   carrito:{
     id: null, // o un valor generado automáticamente
     idUser: null, // asignar un idUser si está disponible
@@ -203,6 +206,9 @@ const ProductProvider = ({ children }) => {
   const setCategoryAdded = (data) => {
     dispatch({ type: "SET_CATEGORY_ADDED", payload: data });
   };
+  const setAddProductSuccessful = (data) => {
+    dispatch({ type: "SET_ADD_PRODUCT_SUCCESSFUL", payload: data });
+  };
 
   const getCarrito = async ()=>{
     debugger
@@ -216,8 +222,7 @@ const ProductProvider = ({ children }) => {
           },
         }
       );
-      if (response.data) {
-        
+      if (response.data) {        
         setCarrito(response.data);
       }
     } catch (error) {
@@ -225,28 +230,80 @@ const ProductProvider = ({ children }) => {
     }
   }
 
-  const saveCarrito = async ()=>{
+  const saveCarrito = async (carrito)=>{
+    debugger
     try {
       const response = await axios.post(
-        `${baseUrl}/api/v1/private/car`,     
-        {
-          carrito: state.carrito,
-        },  
+        `${baseUrl}/api/v1/private/car`,  
+        carrito,  
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );     
+      if (response) {
+        console.log('carrito guardado: ', response.data);      
+        setCarrito(response.data)
+        setAddProductSuccessful(true)
+      }
     } catch (error) {
       console.log("error con saveCarrito", error);
     }
   }
 
-  useEffect(() => {
-    saveCarrito()     
-  }, [state.carrito])
+  const updateCarrito = async (updatedCarrito)=>{
+    debugger
+    try {
+      const response = await axios.put(
+        `${baseUrl}/api/v1/private/car`,            
+          updatedCarrito,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );   
+      if (response) {
+        console.log('carrito actualizado: ', response.data);
+        setCarrito(response.data)  
+        setAddProductSuccessful(true)
+      }
+    } catch (error) {
+      console.log("error con updateCarrito", error);
+    }
+  }
+
+  const deleteCarrito = async (id)=>{
+    debugger
+    try {
+      const response = await axios.delete(
+        `${baseUrl}/api/v1/private/car/${id}`,            
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+      console.log('carrito eliminado: ', response);      
+      setCarrito({
+        id: null, // o un valor generado automáticamente
+        idUser: null, // asignar un idUser si está disponible
+        products: [],
+        totalPrice: 0, // precio total inicial
+      })
+    } catch (error) {
+      console.log("error con deleteCarrito", error);
+    }
+  }
+
+  // useEffect(() => {
+  //   if(state.carrito.length > 0){
+  //     updateCarrito()
+  //   } else {
+  //     saveCarrito()     
+  //   }
+  // }, [state.carrito])
   
 
   const getProducts = async (page = 1) => {
@@ -491,6 +548,7 @@ const ProductProvider = ({ children }) => {
     searchResults: state.searchResults,
     favorites: state.favorites,
     clientId: state.clientId,
+    addProductSuccessful: state.addProductSuccessful,
     showFav: state.showFav,
     reservation: state.reservation,
     banderaReservas: state.banderaReservas,
@@ -500,6 +558,7 @@ const ProductProvider = ({ children }) => {
     size:state.size,
     categoryAdded: state.categoryAdded,
     setCategoryAdded,
+    setAddProductSuccessful,
     setCarrito,
     setSize,
     setTitulo,
@@ -509,6 +568,9 @@ const ProductProvider = ({ children }) => {
     getProducts,
     setCurrentPage,
     getFavorites,
+    saveCarrito,
+    updateCarrito,
+    deleteCarrito,
     getCarrito,
     setCategories,
     setIsFilteredByCategory,

@@ -51,12 +51,12 @@ const DetailPage = ({username}) => {
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const { setFavorites, favorites, currentPage, setCurrentPage, clientId, setReservation,setIsSignIn, setCarrito, carrito, size, setSize } =
+  const { setFavorites, favorites, currentPage, setCurrentPage, setAddProductSuccessful, addProductSuccessful , clientId, setReservation,setIsSignIn, saveCarrito, updateCarrito, setCarrito, carrito, size, setSize } =
     useProductContext();
   const [showError, setShowError] = useState(false);
   const [selectedSize, setSelectedSize] = useState(false);
   const [sizeNotSelected, setSizeNotSelected] = useState(false);
-  const [addSuccessful, setAddSuccessful] = useState(false);
+  // const [addSuccessful, setAddSuccessful] = useState(false);
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
@@ -88,16 +88,14 @@ const DetailPage = ({username}) => {
   };
 
   const addToCart = (product) =>{
-debugger
+    debugger
     if (!size) {
       setSizeNotSelected(true); 
       return; 
     }
   
     setSizeNotSelected(false)
-
-    console.log('Agregando producto al carrito: ', product);
-
+    
     // Crear un objeto ProductDto
     const productoDto = {
       productId: product.productId,
@@ -107,9 +105,10 @@ debugger
       size: size,       // Talla seleccionada
       price: product.precio, // Precio unitario
     };
-  
-    setCarrito((prevCarrito) => {
-      const { products, totalPrice } = prevCarrito;
+    
+    console.log('Agregando producto al carrito: ', productoDto);
+   
+      const { products } = carrito;
   
       // Validar si el producto con el mismo ID y talla ya existe
       const existingProductIndex = products.findIndex(
@@ -131,20 +130,26 @@ debugger
       }
   
       // Calcular nuevo precio total
-      const newTotalPrice = updatedProducts.reduce(
-        (acc, prod) => acc + prod.price * prod.amount,
-        0
-      );
+      // const newTotalPrice = updatedProducts.reduce(
+      //   (acc, prod) => acc + prod.price * prod.amount,
+      //   0
+      // );
   
-      return {
-        ...prevCarrito,
+      const newCarrito = {
+        ...carrito,
         products: updatedProducts,
-        totalPrice: newTotalPrice,
+        // totalPrice: newTotalPrice,
         idUser: clientId, // Asignar clientId
       };
-    });
-  setAddSuccessful(true)
-    console.log('Carrito actualizado: ', carrito);
+
+    // Actualizar el estado del carrito
+    if (carrito.products.length != 0) {
+        updateCarrito(newCarrito)        
+        console.log('Carrito actualizado: ', carrito);
+    }else{
+      saveCarrito(newCarrito)
+      console.log('Carrito actualizado: ', carrito);
+    }
     
   }
 
@@ -193,20 +198,10 @@ debugger
 
   const handleSize = (talle)=>{
     if(!selectedSize){
-      // setSelectedSize(true)
-      // Retrasa el log de size con un timeout  
-      setTimeout(() => {
         setSize(talle)
-        console.log('Talle seleccionado:', size);
-      }, 500); // Ajusta el tiempo en milisegundos según sea necesario
     }else {
-      // setSelectedSize(false)
-      // Retrasa el log de size con un timeout
-      setTimeout(() => {
-          setSize('')
-          console.log('Talle seleccionado:', size);
-        }, 500); // Ajusta el tiempo en milisegundos según sea necesario
-        }
+      setSize('')
+    }
     
   }
 
@@ -373,7 +368,7 @@ debugger
                     }
 
                   {/* exito addtocart */}
-                      {addSuccessful &&
+                      {addProductSuccessful &&
 
                         <Box backgroundColor={'green.100'} p={5} fontWeight={'normal'} rounded="md">
                           <Text>El producto fue agregado al carrito con éxito.</Text>
