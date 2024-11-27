@@ -31,7 +31,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const { setFavorites, setClientId, setToken } = useProductContext();
+  const { setFavorites, getCarrito, setClientId, setToken, clientId } = useProductContext();
 
   const getUsername = async (token) => {
     try {
@@ -59,6 +59,12 @@ function App() {
       getUsername(token);
     }
   }, [token]);
+
+  useEffect(() => {  
+    if (clientId) {
+      getCarrito();
+    }  
+  }, [clientId]);
 
   // const CheckoutLayout = () => {
   //   return (
@@ -88,7 +94,7 @@ function App() {
             <Route path="/detalle/:id" element={<DetailPage username={username} />} />   
             <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/> } />           
             <Route path="/checkout" element={<CheckoutStepper />}>
-              <Route path="cart" element={<CartTest />} />
+              <Route path="cart" element={<CarritoPage username={username} />} />
               <Route path="shipping" element={<Shipping />} />
               <Route path="payment" element={<Payments />} />
               <Route path="success" element={<Succes />} />

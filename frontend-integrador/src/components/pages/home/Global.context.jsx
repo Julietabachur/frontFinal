@@ -86,7 +86,7 @@ const initialState = {
     id: null, // o un valor generado automáticamente
     idUser: null, // asignar un idUser si está disponible
     products: [],
-    totalPrice: 0, // precio total inicial
+    totalPrice: null, // precio total inicial
   },
   size:'',
   searchResults: [],
@@ -222,7 +222,8 @@ const ProductProvider = ({ children }) => {
           },
         }
       );
-      if (response.data) {        
+      if (response.data?.products?.length > 0) {     
+        console.log('get carrito: ', response.data);           
         setCarrito(response.data);
       }
     } catch (error) {

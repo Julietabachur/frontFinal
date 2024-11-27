@@ -98,7 +98,7 @@ const DetailPage = ({username}) => {
     
     // Crear un objeto ProductDto
     const productoDto = {
-      productId: product.productId,
+      productId: product.id,
       productName: product.productName,
       thumbnail: product.thumbnail,
       amount: quantity, // Cantidad seleccionada
@@ -145,10 +145,8 @@ const DetailPage = ({username}) => {
     // Actualizar el estado del carrito
     if (carrito.products.length != 0) {
         updateCarrito(newCarrito)        
-        console.log('Carrito actualizado: ', carrito);
     }else{
       saveCarrito(newCarrito)
-      console.log('Carrito actualizado: ', carrito);
     }
     
   }
@@ -193,12 +191,13 @@ const DetailPage = ({username}) => {
     getDetail();
     console.log('talle cuando carg la pagina: ', size);
     setSize('')
-    
+    setAddProductSuccessful(false)
   }, []);
 
   const handleSize = (talle)=>{
     if(!selectedSize){
         setSize(talle)
+        setAddProductSuccessful(false)
     }else {
       setSize('')
     }
