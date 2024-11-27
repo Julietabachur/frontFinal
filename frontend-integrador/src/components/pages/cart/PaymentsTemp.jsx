@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "./PaymentsTemps.css";
-import { useToast } from "@chakra-ui/react";
+import { Text, useToast } from "@chakra-ui/react";
 
 function PaymentsTemp() {
   const [state, setState] = useState({
@@ -87,7 +87,10 @@ function PaymentsTemp() {
   return (
     <div className="page-payments-container">
       <div className="form-container">
-        <h2 className="title-payments">Datos del pago</h2>
+        {/* <h2 className="title-payments">Datos del pago</h2> */}
+        <Text mb={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
+        Datos del pago
+                </Text>
         <Cards
           number={state.number}
           expiry={state.expiry}

@@ -3,13 +3,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80vh; /* Toma toda la altura de la página */
+    /* height: 80vh;  Toma toda la altura de la página */
     padding: 20px;
+    padding-top: 0px;
     position: relative;
   }
-  .title-payments {
-    
-    
+  .title-payments {  
     
     padding: 20px; 
     font-size: 24px;
@@ -23,6 +22,11 @@
     border-radius: 8px;
     /*box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
     padding: 20px;
+    padding-top: 0px;
+    display: flex;
+    flex-flow: column;
+    justify-items: center;
+    align-items: center;
   }
 .form-payments {
 
