@@ -159,9 +159,9 @@ useEffect(() => {
                                 </HStack>
                             </Td>     
                             <Td textAlign={'center'}>{producto.size}</Td>
-                            <Td textAlign={'center'}>{producto.price}</Td>
+                            <Td textAlign={'center'}>${producto.price}</Td>
                             <Td textAlign={'center'}>{producto.amount}</Td>
-                            <Td textAlign={'center'}>{producto.amount * producto.price}</Td>
+                            <Td textAlign={'center'}>${producto.amount * producto.price}</Td>
                             <Td textAlign={'center'} 
                              _hover={{
                                 cursor: "pointer",
@@ -177,7 +177,7 @@ useEffect(() => {
                     Total a abonar =
                 </Text>
                 <Text>
-                   { carrito.totalPrice}
+                   ${carrito.totalPrice}
                 </Text>
             </HStack>
             {/* <HStack w={650} justifyContent={'space-between'}>
