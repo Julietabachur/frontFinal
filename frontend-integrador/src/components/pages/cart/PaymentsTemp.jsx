@@ -61,7 +61,7 @@ function PaymentsTemp() {
 
     return error;
   };
-
+  //taast
   // Maneja los cambios en los campos de entrada
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
