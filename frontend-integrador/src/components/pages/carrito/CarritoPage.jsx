@@ -172,9 +172,9 @@ useEffect(() => {
                     </Tbody>
                 </Table>
             </Box>
-            <HStack justifyContent={'space-between'} px={4} fontSize={'20px'} w={830} fontWeight={'medium'}>
+            <HStack justifyContent={'space-between'} px={4} fontSize={'20px'} w={830} mt={4} pt={4} color={'color'} fontWeight={'medium'} borderTop={'1px solid'} borderColor={'color'}>
                 <Text>
-                    Total a abonar =
+                    Total a abonar
                 </Text>
                 <Text>
                    ${carrito.totalPrice}
