@@ -27,6 +27,8 @@ const reducer = (state, action) => {
       return { ...state, currentPage: action.payload };
     case "SET_SEASON":
       return { ...state, season: action.payload };
+    case "SET_SALE":
+      return { ...state, sale: action.payload };
     case "SET_CATEGORIES":
       return { ...state, categories: action.payload };
     case "SET_START_DATE":
@@ -78,6 +80,13 @@ const initialState = {
   totalPages: 1,
   totalElements: 0,
   categories: [],
+  sale:{
+    id: null,
+    productList: [],
+    idUser: null,
+    totalPrice: null,
+    saleDate: null
+  },
   startDate: "",
   endDate: "",
   productName: "",
@@ -131,6 +140,9 @@ const ProductProvider = ({ children }) => {
   };
   const setTitulo = (data) => {
     dispatch({ type: "SET_TITULO", payload: data });
+  };
+  const setSale = (data) => {
+    dispatch({ type: "SET_SALE", payload: data });
   };
   const setIsSignIn = (data) => {
     dispatch({ type: "SET_IS_SIGN_IN", payload: data });
@@ -543,6 +555,7 @@ const ProductProvider = ({ children }) => {
     totalElements: state.totalElements,
     currentPage: state.currentPage,
     categories: state.categories,
+    sale: state.sale,
     startDate: state.startDate,
     endDate: state.endDate,
     productName: state.productName,
@@ -561,6 +574,7 @@ const ProductProvider = ({ children }) => {
     setCategoryAdded,
     setAddProductSuccessful,
     setCarrito,
+    setSale,
     setSize,
     setTitulo,
     setIsSignIn,
