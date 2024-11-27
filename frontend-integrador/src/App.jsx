@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import HomePage from "./components/pages/home/HomePage";
 import CarritoPage from "./components/pages/carrito/CarritoPage";
 import Login from "./components/pages/login/Login";
@@ -86,9 +86,10 @@ function App() {
             <Route path="/admin" element={<AdminDashboard token={token ? token : ""} roles={roles}/>} />
             <Route path="/carrito" element={<CarritoPage username={username} />} />
             <Route path="/detalle/:id" element={<DetailPage username={username} />} />   
-            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/>            
+            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/> } />        
             <Route path="/checkout" element={<CheckoutStepper />}>
-              <Route path="cart" element={<CartTest />} />
+            <Route index element={<Navigate to="cart" replace />} />
+              <Route path="cart" element={<CarritoPage username={username} />} />
               <Route path="shipping" element={<Shipping />} />
               <Route path="payment" element={<Payments />} />
               <Route path="success" element={<Succes />} />
