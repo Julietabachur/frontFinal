@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   HStack,
   RadioGroup,
@@ -6,15 +6,19 @@ import {
   Text,
   Box,
   Icon,
-  Button,
   FormControl,
   FormLabel,
   Input,
 } from "@chakra-ui/react";
 import { FaStore, FaTruck } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { useOutletContext } from "react-router-dom";
+
+const postalCodeRegex = /^\d{4,5}$/;
 
 function Shipping() {
+  const { setChildValidationFunc, setValid } = useOutletContext();
+  
   const items = [
     {
       value: "retiro",
@@ -30,25 +34,57 @@ function Shipping() {
 
   const [selectedOption, setSelectedOption] = useState("retiro");
 
-  // React Hook Form setup
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    trigger,
+    formState: { errors, isDirty }, // Using isDirty to track form changes
+  } = useForm({
+    mode: "onBlur", // Changed from onChange to onBlur
+    reValidateMode: "onChange"
+  });
+
+  const validateShipping = async () => {
+    // Si 'retiro' es seleccionado, la validación es siempre exitosa
+    if (selectedOption === "retiro") {
+      setValid(true);
+      return true;
+    }
+
+    // Si la opción es 'envio', validamos los campos
+    const result = await trigger([
+      'fullName', 
+      'address', 
+      'city', 
+      'postalCode', 
+      'phone'
+    ]);
+    setValid(result); // Actualiza el estado de validación
+    return result;
+  };
+
+  useEffect(() => {
+    setChildValidationFunc(() => validateShipping);
+
+    // Si se selecciona 'retiro', marcar como válido inmediatamente
+    if (selectedOption === "retiro") {
+      setValid(true); // Validación exitosa sin necesidad de cambios
+    }
+  }, [selectedOption, isDirty]);
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
+    console.log("Form Data:", {
+      ...data,
+      deliveryType: selectedOption
+    });
   };
 
   return (
     <Box
-      position="relative" // Asegura que el Box esté en su posición original
-      top={0} // Alinea el contenedor al principio de la página
+      position="relative"
       display="flex"
       justifyContent="center"
-      alignItems="flex-start" // Alinea el contenido hacia el principio verticalmente
-    //   h="90vh"
+      alignItems="flex-start"
       p={4}
     >
       <Box
@@ -57,10 +93,19 @@ function Shipping() {
         w={{ base: "85vw", md: "500px" }}
         minW="300px"
       >
-        {/* <h2 className="title-payments">Tipo de entrega</h2> */}
-        <Text mx={4} fontWeight="medium" mb={5} fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
-        Tipo de entrega
-                </Text>
+        <Text 
+          mx={4} 
+          fontWeight="medium" 
+          mb={5} 
+          fontFamily="Roboto" 
+          textAlign="center" 
+          fontSize={{base:'lg',md:"2xl"}} 
+          color="#e1bc6a" 
+          mt="20px"
+        >
+          Tipo de entrega
+        </Text>
+        
         <RadioGroup
           onChange={setSelectedOption}
           value={selectedOption}
@@ -71,7 +116,7 @@ function Shipping() {
               <Box
                 key={item.value}
                 borderWidth="1px"
-                borderColor="#e1bc6a" // Color del borde personalizado
+                borderColor="#e1bc6a"
                 borderRadius="md"
                 p={4}
                 display="grid"
@@ -81,14 +126,14 @@ function Shipping() {
                 alignItems="center"
                 textAlign="center"
                 minW="200px"
-                w="100%" // Asegura que el Box ocupe todo el espacio disponible
+                w="100%"
                 cursor="pointer"
-                onClick={() => setSelectedOption(item.value)} // Cambia el valor al hacer clic
+                onClick={() => setSelectedOption(item.value)}
               >
                 <Icon
                   as={item.icon}
                   boxSize={6}
-                  color="#e1bc6a" // Color del icono personalizado
+                  color="#e1bc6a"
                   gridRow="1"
                   gridColumn="1"
                 />
@@ -101,14 +146,14 @@ function Shipping() {
           </HStack>
         </RadioGroup>
 
-        {/* Formulario de envío */}
+        {/* Shipping Form */}
         {selectedOption === "envio" && (
           <Box mt={6}>
             <Text fontSize="lg" mb={4}>
               Complete los datos para el envío
             </Text>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <FormControl mb={4}>
+              <FormControl mb={4} isInvalid={!!errors.fullName}>
                 <FormLabel htmlFor="fullName">Nombre completo</FormLabel>
                 <Input
                   id="fullName"
@@ -122,7 +167,7 @@ function Shipping() {
                 )}
               </FormControl>
 
-              <FormControl mb={4}>
+              <FormControl mb={4} isInvalid={!!errors.address}>
                 <FormLabel htmlFor="address">Dirección de envío</FormLabel>
                 <Input
                   id="address"
@@ -136,7 +181,7 @@ function Shipping() {
                 )}
               </FormControl>
 
-              <FormControl mb={4}>
+              <FormControl mb={4} isInvalid={!!errors.city}>
                 <FormLabel htmlFor="city">Ciudad</FormLabel>
                 <Input
                   id="city"
@@ -150,13 +195,17 @@ function Shipping() {
                 )}
               </FormControl>
 
-              <FormControl mb={4}>
+              <FormControl mb={4} isInvalid={!!errors.postalCode}>
                 <FormLabel htmlFor="postalCode">Código postal</FormLabel>
                 <Input
                   id="postalCode"
                   focusBorderColor="#e1bc6a"
                   {...register("postalCode", {
                     required: "Este campo es obligatorio",
+                    pattern: {
+                      value: postalCodeRegex,
+                      message: "Número postal no válido",
+                    },
                   })}
                 />
                 {errors.postalCode && (
@@ -164,8 +213,7 @@ function Shipping() {
                 )}
               </FormControl>
 
-              {/* Nuevo campo para el teléfono de contacto */}
-              <FormControl mb={4}>
+              <FormControl mb={4} isInvalid={!!errors.phone}>
                 <FormLabel htmlFor="phone">Teléfono de contacto</FormLabel>
                 <Input
                   id="phone"
@@ -183,7 +231,7 @@ function Shipping() {
                 )}
               </FormControl>
 
-              {/* <Button type="submit" color="#e1bc6a">Enviar</Button> */}
+              <button type="submit" style={{ display: "none" }}></button>
             </form>
           </Box>
         )}

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "./PaymentsTemps.css";
 import { Text, useToast } from "@chakra-ui/react";
+import { useOutletContext } from "react-router-dom"; // Asegúrate de importar useOutletContext
 
 function PaymentsTemp() {
   const [state, setState] = useState({
@@ -14,10 +15,16 @@ function PaymentsTemp() {
     errors: {}, // Para manejar los errores de validación
   });
 
+  const { setChildValidationFunc, setValid } = useOutletContext(); // Obtén las funciones del contexto
   const toast = useToast();
 
+  // Función de validación de campos
   const validateField = (name, value) => {
     let error = "";
+
+    // if (!value) {
+    //   return `${name} es obligatorio.`;
+    // }
 
     switch (name) {
       case "number":
@@ -55,15 +62,18 @@ function PaymentsTemp() {
     return error;
   };
 
+  // Maneja los cambios en los campos de entrada
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Maneja el enfoque en los campos de entrada
   const handleInputFocus = (evt) => {
     setState((prev) => ({ ...prev, focus: evt.target.name }));
   };
 
+  // Maneja la pérdida de enfoque y valida el campo
   const handleInputBlur = (evt) => {
     const { name, value } = evt.target;
     const error = validateField(name, value);
@@ -84,13 +94,56 @@ function PaymentsTemp() {
     }));
   };
 
+  // Validación de todos los campos al intentar avanzar
+  const validateAllFields = () => {
+    let isValid = true;
+    let errors = {};
+
+    // Validamos todos los campos
+    for (let field in state) {
+      if (field !== 'focus' && field !== 'errors') {
+        const error = validateField(field, state[field]);
+        if (error) {
+          isValid = false;
+          errors[field] = error; // Guardamos el error
+        }
+      }
+    }
+
+    // Actualizamos los errores
+    setState(prevState => ({
+      ...prevState,
+      errors: errors
+    }));
+
+    // Si el formulario no es válido, mostramos el toast de "Completa todos los campos"
+    if (!isValid) {
+      toast({
+        title: "Formulario incompleto",
+        description: "Completa todos los campos",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+    // Llamamos a setValid para actualizar el estado de la validación
+    setValid(isValid);
+
+    return isValid;
+  };
+
+  // Pasamos la función de validación al componente padre usando setChildValidationFunc
+  useEffect(() => {
+    setChildValidationFunc(() => validateAllFields);
+  }, [state, setChildValidationFunc]);
+
   return (
     <div className="page-payments-container">
       <div className="form-container">
-        {/* <h2 className="title-payments">Datos del pago</h2> */}
         <Text mb={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
-        Datos del pago
-                </Text>
+          Datos del pago
+        </Text>
         <Cards
           number={state.number}
           expiry={state.expiry}
@@ -112,6 +165,7 @@ function PaymentsTemp() {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
             />
+            {state.errors.number && <p className="error">{state.errors.number}</p>}
           </label>
           <label htmlFor="name" className="label">
             <span className="title">Nombre completo</span>
@@ -125,6 +179,7 @@ function PaymentsTemp() {
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
             />
+            {state.errors.name && <p className="error">{state.errors.name}</p>}
           </label>
           <div className="split">
             <label htmlFor="ExDate" className="label">
@@ -140,9 +195,10 @@ function PaymentsTemp() {
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
+              {state.errors.expiry && <p className="error">{state.errors.expiry}</p>}
             </label>
             <label htmlFor="cvv" className="label">
-              <span className="title"> CVV</span>
+              <span className="title">CVV</span>
               <input
                 id="cvv"
                 className="input-field"
@@ -154,6 +210,7 @@ function PaymentsTemp() {
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
               />
+              {state.errors.cvc && <p className="error">{state.errors.cvc}</p>}
             </label>
           </div>
         </form>
