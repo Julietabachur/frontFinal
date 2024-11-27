@@ -83,10 +83,13 @@ const initialState = {
   totalElements: 0,
   categories: [],
   sale:{
-    id: null,
+    id: '',
     productList: [],
-    idUser: null,
-    totalPrice: null,
+    idUser: '',
+    entrega: '',
+    domicilio: '',
+    medioDePago: '',
+    totalPrice: 0,
     saleDate: null
   },
   saleList: [],
