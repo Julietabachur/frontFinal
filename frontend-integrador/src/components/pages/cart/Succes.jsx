@@ -1,7 +1,14 @@
 import { Text, VStack } from '@chakra-ui/react'
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useProductContext } from '../home/Global.context';
 
 function Succes() {
+
+  const { updateCarrito, deleteCarrito, setCarrito, carrito, clientId, size, setSize, sale, setSale } =
+useProductContext();
+const navigate = useNavigate();
+
   return (
     <VStack
         m={1}
