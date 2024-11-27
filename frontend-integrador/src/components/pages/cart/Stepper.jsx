@@ -15,6 +15,7 @@ import {
   theme,
 } from "@chakra-ui/react";
 import { useNavigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
 
 const steps = [
   { title: "Cart", path: "/checkout/cart" },
@@ -59,7 +60,7 @@ const CheckoutStepper = () => {
       <Box maxWidth="900px" mx="auto" mb={8}>
         {" "}
         {/* Sets max width and centers the Stepper */}
-        <Stepper index={activeStep} mb={8}>
+        <Stepper index={activeStep} colorScheme='yellow' mb={8}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepIndicator>

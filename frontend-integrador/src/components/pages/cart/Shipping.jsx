@@ -57,7 +57,10 @@ function Shipping() {
         w={{ base: "85vw", md: "500px" }}
         minW="300px"
       >
-        <h2 className="title-payments">Tipo de entrega</h2>
+        {/* <h2 className="title-payments">Tipo de entrega</h2> */}
+        <Text mx={4} fontWeight="medium" mb={5} fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
+        Tipo de entrega
+                </Text>
         <RadioGroup
           onChange={setSelectedOption}
           value={selectedOption}
