@@ -29,6 +29,8 @@ const reducer = (state, action) => {
       return { ...state, season: action.payload };
     case "SET_SALE":
       return { ...state, sale: action.payload };
+    case "SET_SALE_LIST":
+      return { ...state, saleList: action.payload };
     case "SET_CATEGORIES":
       return { ...state, categories: action.payload };
     case "SET_START_DATE":
@@ -87,6 +89,7 @@ const initialState = {
     totalPrice: null,
     saleDate: null
   },
+  saleList: [],
   startDate: "",
   endDate: "",
   productName: "",
@@ -143,6 +146,9 @@ const ProductProvider = ({ children }) => {
   };
   const setSale = (data) => {
     dispatch({ type: "SET_SALE", payload: data });
+  };
+  const setSaleList = (data) => {
+    dispatch({ type: "SET_SALE_LIST", payload: data });
   };
   const setIsSignIn = (data) => {
     dispatch({ type: "SET_IS_SIGN_IN", payload: data });
@@ -309,6 +315,68 @@ const ProductProvider = ({ children }) => {
       console.log("error con deleteCarrito", error);
     }
   }
+
+  const saveSale = async (sale)=>{
+    debugger
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/v1/private/sales`,  
+        sale,  
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+      if (response) {
+        console.log('Venta guardada: ', response.data);      
+      }
+    } catch (error) {
+      console.log("error con saveSale", error);
+    }
+  }
+
+  const getSales = async ()=>{
+    debugger
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/private/sales`,          
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+      if (response.data) {
+        console.log('Traigo todas las ventas: ', response.data);    
+        setSales(response.data)  
+      }
+    } catch (error) {
+      console.log("error con getSales", error);
+    }
+  }
+
+  const getSale = async (id)=>{
+    debugger
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/private/sales/${id}`,          
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+      if (response.data) {
+        console.log('Traigo 1 venta: ', response.data);   
+        setSale(response.data)   
+      }
+    } catch (error) {
+      console.log("error con getSale", error);
+    }
+  }
+  
+
 
   // useEffect(() => {
   //   if(state.carrito.length > 0){
@@ -556,6 +624,7 @@ const ProductProvider = ({ children }) => {
     currentPage: state.currentPage,
     categories: state.categories,
     sale: state.sale,
+    saleList: state.saleList,
     startDate: state.startDate,
     endDate: state.endDate,
     productName: state.productName,
@@ -575,6 +644,7 @@ const ProductProvider = ({ children }) => {
     setAddProductSuccessful,
     setCarrito,
     setSale,
+    setSaleList,
     setSize,
     setTitulo,
     setIsSignIn,
