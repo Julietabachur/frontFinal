@@ -10,7 +10,7 @@ function Succes() {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false); 
-    }, 5000); 
+    }, 7000); 
   }, []); 
 
   return (
