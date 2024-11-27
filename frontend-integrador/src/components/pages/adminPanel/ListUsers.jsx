@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
+import * as XLSX from 'xlsx';
 
 const ListUsers = ({
   token,
@@ -28,26 +29,10 @@ const ListUsers = ({
   userList,
 }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
+  
   useEffect(() => {
     getUsers();
   }, [userPage]);
-
-  /* const adminHandle = async (user) => {
-    const updatedUser = { ...user };
-    const response = await axios.put(
-      `${baseUrl}/api/v1/admin/clients/${updatedUser.id}`,
-      updatedUser,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    if (response.data) {
-      getUsers();
-    }
-  }; */
 
   const handleCheckboxChange = async (user, isChecked) => {
     const confirmationMessage = isChecked
@@ -89,10 +74,100 @@ const ListUsers = ({
       }
     }
   };
+
+  const handleDownloadUsersReport = async () => {
+    let allUsers = [];  // Almacena todos los usuarios
+    const pageSize = 20;  // Tamaño de página, puedes ajustarlo según lo que maneje tu API
+    let currentPage = 1;  // Empezamos desde la primera página
+    let hasMoreUsers = true;  // Flag para verificar si hay más usuarios
   
+    while (hasMoreUsers) {
+      try {
+        // Realiza la solicitud para la página actual
+        const response = await axios.get(`${baseUrl}/api/v1/admin/users`, {
+          params: {
+            page: currentPage,
+            size: pageSize
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+  
+        // Imprimir toda la respuesta para ver su estructura
+        console.log("Respuesta completa de usuarios:", response.data);
+  
+        // Verifica si la respuesta tiene la estructura correcta
+        const users = response.data.users || []; // Aseguramos que existe 'users'
+  
+        // Verifica si la respuesta es vacía
+        if (users.length === 0) {
+          console.log("No hay usuarios en esta página");
+        }
+  
+        // Añadir los usuarios obtenidos
+        allUsers = [...allUsers, ...users];
+  
+        // Si la respuesta tiene menos usuarios que el tamaño de página, es probable que sea la última página
+        if (users.length < pageSize) {
+          hasMoreUsers = false;
+        } else {
+          currentPage++;  // Si hay más usuarios, pasa a la siguiente página
+        }
+  
+      } catch (error) {
+        console.error("Error al obtener usuarios", error);
+        hasMoreUsers = false;  // Si hay un error, detenemos la paginación
+      }
+    }
+  
+    // Imprimir todos los usuarios recolectados
+    console.log("Todos los usuarios recolectados:", allUsers);
+  
+    // Si no hay usuarios, avisa al usuario
+    if (allUsers.length === 0) {
+      alert("No se encontraron usuarios.");
+      return;
+    }
+  
+    // Crea la hoja de trabajo con todos los usuarios
+    const worksheet = XLSX.utils.json_to_sheet(allUsers.map(user => ({
+      ID: user.userId,
+      Nombre: user.name,
+      Email: user.email,
+      Estado: user.status,
+    })));
+  
+    // Crea un libro de trabajo y agrega la hoja
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Usuarios");
+  
+    // Exporta el archivo Excel
+    XLSX.writeFile(workbook, "reporte_usuarios_completo.xlsx");
+  };
+
   return (
     <Flex justify={"center"}>
       <Box mt={10}>
+        {/* Botón para descargar el reporte, arriba de la lista */}
+        <Button
+          border={"1px solid #e1bc6a"}
+          _focus={{
+            borderColor: "#e1bc6a",
+            backgroundColor: "#e1bc6a",
+          }}
+          onClick={handleDownloadUsersReport}
+          colorScheme="yellow"
+          variant="outline"
+          _hover={{
+            backgroundColor: "#e1bc6a",
+            color: "white",
+          }}
+          mb={4} // Añadido margen inferior para separación
+        >
+          Descargar reporte de usuarios
+        </Button>
+
         <div
           style={{
             display: "flex",
@@ -104,7 +179,7 @@ const ListUsers = ({
             border={"1px solid #e1bc6a"}
             _focus={{
               borderColor: "#e1bc6a",
-              backgroungColor: "#e1bc6a",
+              backgroundColor: "#e1bc6a",
             }}
             onClick={() =>
               handlePageChange(userPage > 1 ? userPage - 1 : userPage)
@@ -118,7 +193,7 @@ const ListUsers = ({
             border={"1px solid #e1bc6a"}
             _focus={{
               borderColor: "#e1bc6a",
-              backgroungColor: "#e1bc6a",
+              backgroundColor: "#e1bc6a",
             }}
             onClick={() => handlePageChange(userPage + 1)}
           >
@@ -129,9 +204,6 @@ const ListUsers = ({
           <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
             <Thead>
               <Tr>
-                {/*<Th>
-                  <Text fontWeight="bold">ID</Text>
-                </Th>*/}
                 <Th>
                   <Text fontWeight="bold">Nombre y apellido</Text>
                 </Th>
@@ -150,7 +222,6 @@ const ListUsers = ({
               {userList &&
                 userList.map((user) => (
                   <Tr key={user.id} h="10px">
-                    {/*<Td>{user.id}</Td>*/}
                     <Td>{user.firstName + " " + user.lastName}</Td>
                     <Td>{user.clientName}</Td>
                     <Td>{user.email}</Td>
@@ -159,7 +230,6 @@ const ListUsers = ({
                         colorScheme="gray"
                         borderColor="gray.800"
                         borderWidth="2px"
-                        //isDisabled={user.clientName === "admin1"}
                         isChecked={
                           user.roles &&
                           user.roles.length > 1 &&
@@ -179,3 +249,4 @@ const ListUsers = ({
 };
 
 export default ListUsers;
+

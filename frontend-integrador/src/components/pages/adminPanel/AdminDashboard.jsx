@@ -7,6 +7,8 @@ import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
 import NewProduct from "./NewProduct";
 import AdminPolicy from "./AdminPolicy";
+// import GenerateReports from "./GenerateReports"
+// import Sales from "./Sales";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -361,6 +363,26 @@ const AdminDashboard = ({ token, roles }) => {
           onClick={() => handleShow("feature")}
         >
           Administrar Características
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("sales")}
+        >
+          Ventas
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("reports")}
+        >
+          Central de Informes
         </Button>
        
        {/*  <Button
