@@ -13,8 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { FaStore, FaTruck } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { useProductContext } from "../home/Global.context";
 
 function Shipping() {
+
+  
+  const { updateCarrito, deleteCarrito, setCarrito, carrito, clientId, size, setSize, sale, setSale } =
+useProductContext();
   const items = [
     {
       value: "retiro",
@@ -39,6 +44,13 @@ function Shipping() {
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
+    const venta = {
+      ...sale,
+      productList: carrito.products,
+      idUser: clientId,
+      entrega: selectedOption,
+      domicilio: '',
+    }
   };
 
   return (
