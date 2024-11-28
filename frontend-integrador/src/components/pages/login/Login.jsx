@@ -51,6 +51,10 @@ const Login = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const passwordRecover = () => {
+    alert('Aca va la la pegada al endpoint que manda el mail') 
+  }
+
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(`${authUrl}/login`, data);
@@ -192,6 +196,17 @@ const Login = () => {
               </Text>
               .
             </Text>
+            <Text
+                as="span"
+                color="blue.500"
+                cursor="pointer"
+                onClick={() => passwordRecover()}
+                _hover={{ textDecoration: "underline" }}
+              >
+                Olvidé mi contraseña
+              </Text>
+
+
           </Stack>
         </form>
       </Box>
