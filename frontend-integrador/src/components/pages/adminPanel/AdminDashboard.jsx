@@ -7,6 +7,8 @@ import AdminFeatures from "./AdminFeatures";
 import ListCategories from "./ListCategories";
 import NewProduct from "./NewProduct";
 import AdminPolicy from "./AdminPolicy";
+// import GenerateReports from "./GenerateReports"
+import ListSales from "./ListAdminSales";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -31,7 +33,7 @@ const AdminDashboard = ({ token, roles }) => {
   const [showCategoryList, setShowCategoyList] = useState(false);
   const [showAdminFeatures, setShowAdminFeatures] = useState(false);
   const [showAdminPolicy, setShowAdminPolicy] = useState(false);
-
+  const [showSalesList, setShowSalesList] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); // variable para controlar el aviso de exito.
 
   // Estado para controlar si se muestra el mensaje de error debido a la resolución de pantalla
@@ -58,7 +60,7 @@ const AdminDashboard = ({ token, roles }) => {
   const [lista, setLista] = useState([]); // array de lista de productos
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
-
+  const [salesList, setSalesList] = useState([]); // array
   const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
   const [policyListAll, setPolicyListAll] = useState([]); // array de lista de politicas
 
@@ -149,6 +151,30 @@ const AdminDashboard = ({ token, roles }) => {
       console.error(error);
     }
   };
+  // LOGICA DE getSales- LISTAR ventas
+  const getSales = async () => {
+    try {
+      const response = await axios.get(
+        //Petición GET a la api del listado de usuarios
+        `${baseUrl}/api/v1/admin/sales?page=${salesPage}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data && response.data.content) {
+        // Si hay datos en la respuesta, cargar en la lista y consologuear la respuesta
+        setSalesList(response.data.content);
+        setTotalSalesPages(response.data.last);
+        setSalesPage(response.data.current);
+        console.log("Datos recibidos:", response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // LOGICA DE getFeaturesAll- LISTAR todas las caracteristicas sin paginacion para usarlas en el select de productForm y EditProduct
   //no se precisa el token porque es publico
@@ -172,6 +198,7 @@ const AdminDashboard = ({ token, roles }) => {
       console.log(error);
     }
   };
+  
 
   //LOGICA de getPolicy. Listar Politicas.
   const getPolicy = async () => {
@@ -250,6 +277,12 @@ const AdminDashboard = ({ token, roles }) => {
       setPolicyPage(newPage); // Actualiza el número de página
     }
   };
+  // Control de Paginación en las ventas
+  const handleSalesPageChange = (newPage) => {
+    if (newPage <= totalPolicyPages && newPage >= 1) {
+      setPolicyPage(newPage); // Actualiza el número de página
+    }
+  };
 
   const handleShow = (origin) => {
     if (origin === "user") {
@@ -259,6 +292,7 @@ const AdminDashboard = ({ token, roles }) => {
       setShowCategoyList(false);
       setShowAddProduct(false);
       setShowAdminPolicy(false);
+      setShowSalesList(false);
     } else if (origin === "feature") {
       setShowUserList(false);
       setShowProdList(false);
@@ -266,6 +300,7 @@ const AdminDashboard = ({ token, roles }) => {
       setShowCategoyList(false);
       setShowAddProduct(false);
       setShowAdminPolicy(false);
+      setShowSalesList(false);
     } else if (origin === "item") {
       setShowUserList(false);
       setShowCategoyList(false);
@@ -280,6 +315,7 @@ const AdminDashboard = ({ token, roles }) => {
       setShowAdminFeatures(false);
       setShowAddProduct(false);
       setShowAdminPolicy(false);
+      setShowSalesList(false);
     } else if (origin === "policy") {
       setShowAdminPolicy(true);
       setShowCategoyList(false);
@@ -287,6 +323,7 @@ const AdminDashboard = ({ token, roles }) => {
       setShowProdList(false);
       setShowAdminFeatures(false);
       setShowAddProduct(false);
+      setShowSalesList(false);
     } else if (origin === "addProd") {
       setShowAdminPolicy(false);
       setShowCategoyList(false);
@@ -294,6 +331,15 @@ const AdminDashboard = ({ token, roles }) => {
       setShowProdList(false);
       setShowAdminFeatures(false);
       setShowAddProduct(true);
+      setShowSalesList(false);
+    } else if (origin === "sales") {
+      setShowAdminPolicy(false);
+      setShowCategoyList(false);
+      setShowUserList(false);
+      setShowProdList(false);
+      setShowAdminFeatures(false);
+      setShowAddProduct(false);
+      setShowSalesList(true);
     }
   };
 
@@ -309,6 +355,7 @@ const AdminDashboard = ({ token, roles }) => {
         </Alert>
       )}
 
+
 <Flex justifyContent="center" alignItems="center" gap={4}>
 
       <Box borderBottom="2px" p="10px" bg={"white"}>
@@ -321,26 +368,6 @@ const AdminDashboard = ({ token, roles }) => {
           onClick={() => handleShow("addProd")}
         >
           Agregar Producto
-        </Button>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("item")}
-        >
-          Listar Productos
-        </Button>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("user")}
-        >
-          Listar Usuarios
         </Button>
         <Button
           colorScheme="white"
@@ -362,6 +389,47 @@ const AdminDashboard = ({ token, roles }) => {
         >
           Administrar Características
         </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("item")}
+        >
+          Listar Productos
+        </Button>
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("user")}
+        >
+          Listar Usuarios
+        </Button>
+        
+        <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("sales")}
+        >
+          Listar Ventas
+        </Button>
+        {/* <Button
+          colorScheme="white"
+          borderColor="#e1bc6a"
+          borderWidth="2px"
+          color="black"
+          ml={4}
+          onClick={() => handleShow("reports")}
+        >
+          Central de Informes
+        </Button> */}
        
        {/*  <Button
           colorScheme="white"
@@ -482,6 +550,7 @@ const AdminDashboard = ({ token, roles }) => {
         <Text>Regrese a la página de Inicio.</Text>
       </Alert>
     </Flex>
+    
   );
 };
 
