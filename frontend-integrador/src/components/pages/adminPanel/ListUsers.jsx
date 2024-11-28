@@ -5,31 +5,19 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Text,
   Tr,
   Th,
   Td,
-  TableCaption,
-  TableContainer,
   Flex,
-  HStack,
   Checkbox,
-  CheckboxGroup,
 } from "@chakra-ui/react";
-import { FaEdit } from "react-icons/fa";
 import axios from "axios";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
-const ListUsers = ({
-  token,
-  getUsers,
-  userPage,
-  handlePageChange,
-  userList,
-}) => {
+const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-  
+
   useEffect(() => {
     getUsers();
   }, [userPage]);
@@ -38,22 +26,20 @@ const ListUsers = ({
     const confirmationMessage = isChecked
       ? "¿Está seguro de que desea que el usuario sea administrador?"
       : "¿Está seguro de que desea que el usuario deje de ser administrador?";
-  
     const isConfirmed = window.confirm(confirmationMessage);
-  
+
     if (isConfirmed) {
-      // Clonamos el objeto user
-      const updatedUser = { ...user };
-  
-      // Actualizamos la propiedad roles según el estado del checkbox
-      updatedUser.roles = isChecked
-        ? [...(updatedUser.roles || []), "ADMIN"]
-        : (updatedUser.roles || []).filter((role) => role !== "ADMIN");
-  
+      const updatedUser = {
+        ...user,
+        roles: isChecked
+          ? [...(user.roles || []), "ADMIN"]
+          : (user.roles || []).filter((role) => role !== "ADMIN"),
+      };
+
       try {
-        const response = await axios.put(
+        await axios.put(
           `${baseUrl}/api/v1/admin/clients/${updatedUser.id}`,
-          updatedUser, // Cambiado para enviar el objeto actualizado
+          updatedUser,
           {
             headers: {
               "Content-Type": "application/json",
@@ -61,185 +47,133 @@ const ListUsers = ({
             },
           }
         );
-        console.log("Usuario actualizado:", response.data);
-  
-        // Refrescar la lista de usuarios tras una actualización exitosa
+        alert("Usuario actualizado correctamente.");
         getUsers();
       } catch (error) {
-        if (error.response) {
-          console.error(`Error ${error.response.status}:`, error.response.data);
-        } else {
-          console.error("Error desconocido:", error.message);
-        }
+        alert("Error al actualizar el usuario.");
+        console.error("Error:", error);
       }
     }
   };
 
   const handleDownloadUsersReport = async () => {
-    let allUsers = [];  // Almacena todos los usuarios
-    const pageSize = 20;  // Tamaño de página, puedes ajustarlo según lo que maneje tu API
-    let currentPage = 1;  // Empezamos desde la primera página
-    let hasMoreUsers = true;  // Flag para verificar si hay más usuarios
+    let allUsers = [];
+    const pageSize = 20; // Tamaño de página estándar
+    let currentPage = 1; // Comenzamos desde la primera página
+    let hasMoreUsers = true;
   
     while (hasMoreUsers) {
       try {
-        // Realiza la solicitud para la página actual
-        const response = await axios.get(`${baseUrl}/api/v1/admin/users`, {
-          params: {
-            page: currentPage,
-            size: pageSize
-          },
+        const response = await axios.get(`${baseUrl}/public/clients`, {
+          params: { page: currentPage, size: pageSize },
           headers: {
-            Authorization: `Bearer ${token}`,
-          }
+            Authorization: `Bearer ${token}`, // Token requerido
+          },
         });
   
-        // Imprimir toda la respuesta para ver su estructura
-        console.log("Respuesta completa de usuarios:", response.data);
+        console.log('Respuesta de la API:', response.data); // Verifica la estructura de la respuesta
   
-        // Verifica si la respuesta tiene la estructura correcta
-        const users = response.data.users || []; // Aseguramos que existe 'users'
-  
-        // Verifica si la respuesta es vacía
+        const users = response.data.data || []; // Si los usuarios están en 'data'
+        
         if (users.length === 0) {
-          console.log("No hay usuarios en esta página");
-        }
-  
-        // Añadir los usuarios obtenidos
-        allUsers = [...allUsers, ...users];
-  
-        // Si la respuesta tiene menos usuarios que el tamaño de página, es probable que sea la última página
-        if (users.length < pageSize) {
-          hasMoreUsers = false;
+          hasMoreUsers = false; // Si no hay usuarios, terminamos
         } else {
-          currentPage++;  // Si hay más usuarios, pasa a la siguiente página
+          allUsers = [...allUsers, ...users]; // Acumulamos los usuarios
+          currentPage++; // Pasamos a la siguiente página
         }
-  
       } catch (error) {
-        console.error("Error al obtener usuarios", error);
-        hasMoreUsers = false;  // Si hay un error, detenemos la paginación
+        console.error("Error al obtener usuarios:", error.response ? error.response.data : error);
+        alert("Error al obtener los usuarios.");
+        hasMoreUsers = false; // Detenemos la ejecución si ocurre un error
       }
     }
   
-    // Imprimir todos los usuarios recolectados
-    console.log("Todos los usuarios recolectados:", allUsers);
-  
-    // Si no hay usuarios, avisa al usuario
     if (allUsers.length === 0) {
       alert("No se encontraron usuarios.");
       return;
     }
   
-    // Crea la hoja de trabajo con todos los usuarios
-    const worksheet = XLSX.utils.json_to_sheet(allUsers.map(user => ({
-      ID: user.userId,
-      Nombre: user.name,
-      Email: user.email,
-      Estado: user.status,
-    })));
+    // Generación de la hoja de Excel
+    const worksheet = XLSX.utils.json_to_sheet(
+      allUsers.map((user) => ({
+        ID: user.id || "N/A",
+        Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
+        Username: user.clientName || "N/A",
+        Email: user.email || "N/A",
+        Estado: user.enabled ? "Activo" : "Inactivo",
+        Admin: (user.roles || []).includes("ADMIN") ? "Sí" : "No",
+      }))
+    );
   
-    // Crea un libro de trabajo y agrega la hoja
+    console.log('Datos para la hoja de Excel:', allUsers); // Verifica que los datos sean correctos
+  
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Usuarios");
-  
-    // Exporta el archivo Excel
-    XLSX.writeFile(workbook, "reporte_usuarios_completo.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
+    XLSX.writeFile(workbook, "reporte_usuarios.xlsx");
   };
+  
 
   return (
-    <Flex justify={"center"}>
+    <Flex justify="center">
       <Box mt={10}>
-        {/* Botón para descargar el reporte, arriba de la lista */}
         <Button
-          border={"1px solid #e1bc6a"}
-          _focus={{
-            borderColor: "#e1bc6a",
-            backgroundColor: "#e1bc6a",
-          }}
+          border="1px solid #e1bc6a"
+          _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
           onClick={handleDownloadUsersReport}
           colorScheme="yellow"
           variant="outline"
-          _hover={{
-            backgroundColor: "#e1bc6a",
-            color: "white",
-          }}
-          mb={4} // Añadido margen inferior para separación
+          _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          mb={4}
         >
           Descargar reporte de usuarios
         </Button>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
-            border={"1px solid #e1bc6a"}
-            _focus={{
-              borderColor: "#e1bc6a",
-              backgroundColor: "#e1bc6a",
-            }}
-            onClick={() =>
-              handlePageChange(userPage > 1 ? userPage - 1 : userPage)
-            }
-            disabled={userPage === 0}
+            border="1px solid #e1bc6a"
+            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+            onClick={() => handlePageChange(userPage > 1 ? userPage - 1 : userPage)}
+            disabled={userPage === 1}
           >
             &lt;&lt;
           </Button>
           <Text>- {userPage} -</Text>
           <Button
-            border={"1px solid #e1bc6a"}
-            _focus={{
-              borderColor: "#e1bc6a",
-              backgroundColor: "#e1bc6a",
-            }}
+            border="1px solid #e1bc6a"
+            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
             onClick={() => handlePageChange(userPage + 1)}
           >
             &gt;&gt;
           </Button>
         </div>
+
         <Box w={830} mt={3}>
           <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
             <Thead>
               <Tr>
-                <Th>
-                  <Text fontWeight="bold">Nombre y apellido</Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="bold">Username</Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="bold">Email</Text>
-                </Th>
-                <Th>
-                  <Text fontWeight="bold">Admin</Text>
-                </Th>
+                <Th>Nombre y Apellido</Th>
+                <Th>Username</Th>
+                <Th>Email</Th>
+                <Th>Admin</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {userList &&
-                userList.map((user) => (
-                  <Tr key={user.id} h="10px">
-                    <Td>{user.firstName + " " + user.lastName}</Td>
-                    <Td>{user.clientName}</Td>
-                    <Td>{user.email}</Td>
-                    <Td>
-                      <Checkbox
-                        colorScheme="gray"
-                        borderColor="gray.800"
-                        borderWidth="2px"
-                        isChecked={
-                          user.roles &&
-                          user.roles.length > 1 &&
-                          user.roles[1] === "ADMIN"
-                        }
-                        onChange={(e) => handleCheckboxChange(user, e.target.checked)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
+              {userList.map((user) => (
+                <Tr key={user.id}>
+                  <Td>{`${user.firstName || ""} ${user.lastName || ""}`}</Td>
+                  <Td>{user.clientName || "N/A"}</Td>
+                  <Td>{user.email || "N/A"}</Td>
+                  <Td>
+                    <Checkbox
+                      colorScheme="gray"
+                      borderColor="gray.800"
+                      borderWidth="2px"
+                      isChecked={(user.roles || []).includes("ADMIN")}
+                      onChange={(e) => handleCheckboxChange(user, e.target.checked)}
+                    />
+                  </Td>
+                </Tr>
+              ))}
             </Tbody>
           </Table>
         </Box>
@@ -249,4 +183,3 @@ const ListUsers = ({
 };
 
 export default ListUsers;
-

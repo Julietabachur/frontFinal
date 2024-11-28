@@ -1,213 +1,140 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Text,
+  Tr,
+  Th,
+  Td,
+  Flex,
+} from "@chakra-ui/react";
 import axios from "axios";
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Img, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Flex, Text, Button, HStack } from "@chakra-ui/react";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import NewSale from "./NewSale"; // Componente para agregar o editar una venta
-import * as XLSX from "xlsx"; // Para exportar datos a Excel
-import DatePicker from "react-datepicker"; // Importamos el DatePicker
-import "react-datepicker/dist/react-datepicker.css"; // Importamos el estilo de DatePicker
+import * as XLSX from "xlsx";
 
-const ListAdminSales = ({
-  getSales,
-  page,
-  handlePageChange,
-  salesList,
-  token,
-  getProductsAll,
-  productListAll,
-  getCustomersAll,
-  customerListAll,
-  showAddSale,
-  setShowAddSale,
-  setShowSalesList,
-}) => {
-  console.log("COMIENZA LISTA DE VENTAS");
-  console.log(page);
+const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesList }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
-
-  const [closeList, setCloseList] = useState(false);
-  const [saleToEdit, setSaleToEdit] = useState(null);
-  const [filteredSales, setFilteredSales] = useState(salesList);
-  const [startDate, setStartDate] = useState(null); // Fecha de inicio
-  const [endDate, setEndDate] = useState(null); // Fecha de fin
-
-  const cancelRef = useRef();
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     getSales();
-  }, [page]);
+  }, [salesPage]);
 
-  useEffect(() => {
-    // Filtra las ventas por las fechas seleccionadas
-    if (startDate && endDate) {
-      const filtered = salesList.filter(sale => {
-        const saleDate = new Date(sale.saleDate);
-        return saleDate >= startDate && saleDate <= endDate;
-      });
-      setFilteredSales(filtered);
-    } else {
-      setFilteredSales(salesList);
+  const handleDownloadSalesReport = async () => {
+    let allSales = [];
+    const pageSize = 20; // Tamaño de página estándar
+    let currentPage = 1; // Comenzamos desde la primera página
+    let hasMoreSales = true;
+
+    while (hasMoreSales) {
+      try {
+        const response = await axios.get(`${baseUrl}/api/v1/admin/sales`, {
+          params: { page: currentPage, size: pageSize },
+          headers: {
+            Authorization: `Bearer ${token}`, // Token requerido
+          },
+        });
+
+        const sales = response.data.data || []; // Si las ventas están en 'data'
+
+        if (sales.length === 0) {
+          hasMoreSales = false; // Si no hay ventas, terminamos
+        } else {
+          allSales = [...allSales, ...sales]; // Acumulamos las ventas
+          currentPage++; // Pasamos a la siguiente página
+        }
+      } catch (error) {
+        console.error("Error al obtener ventas:", error.response ? error.response.data : error);
+        alert("Error al obtener las ventas.");
+        hasMoreSales = false; // Detenemos la ejecución si ocurre un error
+      }
     }
-  }, [startDate, endDate, salesList]);
 
-  const openDeleteDialog = (item) => {
-    setIsDeleteDialogOpen(true);
-    setItemToDelete(item);
-  };
-
-  const closeDeleteDialog = () => {
-    setIsDeleteDialogOpen(false);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${baseUrl}/api/v1/admin/sales/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      getSales(); // Vuelve a cargar las ventas
-    } catch (error) {
-      console.error("Error al eliminar la venta", error);
+    if (allSales.length === 0) {
+      alert("No se encontraron ventas.");
+      return;
     }
-  };
 
-  const handleEdit = (sale) => {
-    setCloseList(true);
-    setSaleToEdit(sale);
-  };
+    // Generación de la hoja de Excel
+    const worksheet = XLSX.utils.json_to_sheet(
+      allSales.map((sale) => ({
+        ID: sale.id || "N/A",
+        Producto: sale.productName || "N/A",
+        Cliente: `${sale.clientName || ""} (${sale.clientEmail || "N/A"})`,
+        Cantidad: sale.quantity || 0,
+        Total: `$${sale.totalAmount || 0}`,
+        Fecha: new Date(sale.date).toLocaleDateString() || "N/A",
+      }))
+    );
 
-  // Función para descargar el reporte de ventas en un archivo Excel
-  const handleDownloadReport = () => {
-    // Crea una hoja de trabajo con los datos de las ventas
-    const worksheet = XLSX.utils.json_to_sheet(filteredSales.map(sale => ({
-      ID: sale.saleId,
-      Producto: sale.productName,
-      Cliente: sale.customerName,
-      Fecha: sale.saleDate,
-      Cantidad: sale.quantity,
-      Precio: sale.price,
-      Total: sale.totalAmount,
-    })));
-
-    // Crea un libro de trabajo y añade la hoja
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Ventas");
-
-    // Exporta el archivo Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Ventas");
     XLSX.writeFile(workbook, "reporte_ventas.xlsx");
   };
 
   return (
-    <>
-      {closeList === false && (
-        <Flex justify={"center"}>
-          <Box mt={10}>
-            {/* Filtro por fecha */}
-            <HStack spacing={4} mb={4}>
-              <Text>Filtrar por fecha:</Text>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                placeholderText="Fecha de inicio"
-                dateFormat="dd/MM/yyyy"
-                className="react-datepicker__input"
-              />
-              <Text>-</Text>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                placeholderText="Fecha de fin"
-                dateFormat="dd/MM/yyyy"
-                className="react-datepicker__input"
-              />
-            </HStack>
+    <Flex justify="center">
+      <Box mt={10}>
+        <Button
+          border="1px solid #e1bc6a"
+          _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+          onClick={handleDownloadSalesReport}
+          colorScheme="yellow"
+          variant="outline"
+          _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          mb={4}
+        >
+          Descargar reporte de ventas
+        </Button>
 
-            {/* Paginación */}
-            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-              <Button
-                border={"1px solid #e1bc6a"}
-                _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-                onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
-                disabled={page === 0}
-              >
-                &lt;&lt;
-              </Button>
-              <Text>- {page} -</Text>
-              <Button
-                border={"1px solid #e1bc6a"}
-                _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-                onClick={() => handlePageChange(page + 1)}
-              >
-                &gt;&gt;
-              </Button>
-            </div>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            border="1px solid #e1bc6a"
+            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+            onClick={() => handlePageChange(salesPage > 1 ? salesPage - 1 : salesPage)}
+            disabled={salesPage === 1}
+          >
+            &lt;&lt;
+          </Button>
+          <Text>- {salesPage} -</Text>
+          <Button
+            border="1px solid #e1bc6a"
+            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+            onClick={() => handlePageChange(salesPage + 1)}
+          >
+            &gt;&gt;
+          </Button>
+        </div>
 
-            {/* Botón para descargar el reporte */}
-            <Button
-              border={"1px solid #e1bc6a"}
-              _focus={{
-                borderColor: "#e1bc6a",
-                backgroundColor: "#e1bc6a",
-              }}
-              onClick={handleDownloadReport}
-              colorScheme="yellow"
-              variant="outline"
-              _hover={{
-                backgroundColor: "#e1bc6a",
-                color: "white",
-              }}
-            >
-              Descargar Reporte
-            </Button>
-
-            <Box w={830} mt={3}>
-              <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
-                <Thead>
-                  <Tr>
-                    <Th><Text fontWeight="bold">ID</Text></Th>
-                    <Th><Text fontWeight="bold">Producto</Text></Th>
-                    <Th><Text fontWeight="bold">Cliente</Text></Th>
-                    <Th><Text fontWeight="bold">Fecha</Text></Th>
-                    <Th><Text fontWeight="bold">Cantidad</Text></Th>
-                    <Th><Text fontWeight="bold">Precio</Text></Th>
-                    <Th><Text fontWeight="bold">Total</Text></Th>
-                    <Th><Text fontWeight="bold" style={{ marginBottom: "8px" }}>Editar / Eliminar</Text></Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {filteredSales && filteredSales.map((sale) => (
-                    <Tr key={sale.saleId}>
-                      <Td>{sale.saleId}</Td>
-                      <Td>{sale.productName}</Td>
-                      <Td>{sale.customerName}</Td>
-                      <Td>{sale.saleDate}</Td>
-                      <Td>{sale.quantity}</Td>
-                      <Td>{sale.price}</Td>
-                      <Td>{sale.totalAmount}</Td>
-                      <Td>
-                        <FaEdit
-                          style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "40px", marginBottom: "10px" }}
-                          onClick={() => handleEdit(sale)}
-                        />
-                        <FaTrash
-                          style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "40px", marginTop: "10px" }}
-                          onClick={() => openDeleteDialog(sale)}
-                        />
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </Box>
-          </Box>
-        </Flex>
-      )}
-
-      
-    </>
+        <Box w={830} mt={3}>
+          <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
+            <Thead>
+              <Tr>
+                <Th>ID</Th>
+                <Th>Producto</Th>
+                <Th>Cliente</Th>
+                <Th>Cantidad</Th>
+                <Th>Total</Th>
+                <Th>Fecha</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {salesList.map((sale) => (
+                <Tr key={sale.id}>
+                  <Td>{sale.id}</Td>
+                  <Td>{sale.productName || "N/A"}</Td>
+                  <Td>{`${sale.clientName || ""} (${sale.clientEmail || "N/A"})`}</Td>
+                  <Td>{sale.quantity || 0}</Td>
+                  <Td>${sale.totalAmount || 0}</Td>
+                  <Td>{new Date(sale.date).toLocaleDateString() || "N/A"}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </Box>
+    </Flex>
   );
 };
 
