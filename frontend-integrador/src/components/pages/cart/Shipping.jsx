@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   HStack,
   RadioGroup,
@@ -13,11 +13,14 @@ import {
 import { FaStore, FaTruck } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useOutletContext } from "react-router-dom";
+import { ProductProvider } from "../home/Global.context";
+import { useProductContext } from '../home/Global.context';
 
 const postalCodeRegex = /^\d{4,5}$/;
 
 function Shipping() {
-  const { setChildValidationFunc, setValid } = useOutletContext();
+  const { setChildValidationFunc, setValid } = useOutletContext()
+  const { carrito, setSale } = useProductContext()
   
   const items = [
     {
@@ -48,6 +51,19 @@ function Shipping() {
     // Si 'retiro' es seleccionado, la validación es siempre exitosa
     if (selectedOption === "retiro") {
       setValid(true);
+      const newSale = {
+      
+        productList: carrito.products,  // Productos del carrito
+        idUser: carrito.idUser,  // Usuario actual (si está disponible)
+        totalPrice: carrito.totalPrice,  // Precio total del carrito
+        saleDate: new Date().toISOString(),  // Fecha actual
+      };
+  
+      // Actualizamos el contexto con el nuevo objeto de venta
+      setSale(newSale);
+  
+      // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
+      console.log("Ver si cargo la sale", newSale);
       return true;
     }
 
@@ -60,6 +76,20 @@ function Shipping() {
       'phone'
     ]);
     setValid(result); // Actualiza el estado de validación
+    ///***********ACA PODES AGREGAR SOLO LOS DATOS DEL ENVIO Y YA CARGAR LOS DATOS DEL CARRITO ******/
+    const newSale = {
+      
+      productList: carrito.products,  // Productos del carrito
+      idUser: carrito.idUser,  // Usuario actual (si está disponible)
+      totalPrice: carrito.totalPrice,  // Precio total del carrito
+      saleDate: new Date().toISOString(),  // Fecha actual
+    };
+
+    // Actualizamos el contexto con el nuevo objeto de venta
+    setSale(newSale);
+
+    // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
+    console.log("Ver si cargo la sale", newSale);
     return result;
   };
 
@@ -77,6 +107,7 @@ function Shipping() {
       ...data,
       deliveryType: selectedOption
     });
+    
   };
 
   return (

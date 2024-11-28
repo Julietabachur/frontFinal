@@ -4,7 +4,7 @@ import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "./PaymentsTemps.css";
 import { Text, useToast } from "@chakra-ui/react";
 import { useOutletContext } from "react-router-dom"; // Asegúrate de importar useOutletContext
-
+import { useProductContext } from '../home/Global.context';
 function PaymentsTemp() {
   const [state, setState] = useState({
     number: "",
@@ -17,6 +17,7 @@ function PaymentsTemp() {
 
   const { setChildValidationFunc, setValid } = useOutletContext(); // Obtén las funciones del contexto
   const toast = useToast();
+  const { carrito, setSale } = useProductContext()
 
   // Función de validación de campos
   const validateField = (name, value) => {
@@ -129,7 +130,20 @@ function PaymentsTemp() {
 
     // Llamamos a setValid para actualizar el estado de la validación
     setValid(isValid);
+    ///***********ACA PODES AGREGAR SOLO LOS DATOS DE LA TARJEAT ******/
+    const newSale = {
+      
+      productList: carrito.products,  // Productos del carrito
+      idUser: carrito.idUser,  // Usuario actual (si está disponible)
+      totalPrice: carrito.totalPrice,  // Precio total del carrito
+      saleDate: new Date().toISOString(),  // Fecha actual
+    };
 
+    // Actualizamos el contexto con el nuevo objeto de venta
+    setSale(newSale);
+
+    // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
+    console.log("Ver si cargo la sale", newSale);
     return isValid;
   };
 
