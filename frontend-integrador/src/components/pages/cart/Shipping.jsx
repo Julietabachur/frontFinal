@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HStack,
   RadioGroup,
@@ -14,12 +14,12 @@ import {
 import { FaStore, FaTruck } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useProductContext } from "../home/Global.context";
+import { useOutletContext } from "react-router-dom";
 
 function Shipping() {
 
-  
-  const { updateCarrito, deleteCarrito, setCarrito, carrito, clientId, size, setSize, sale, setSale } =
-useProductContext();
+  const { setChildValidationFunc, setValid } = useOutletContext()
+  const { carrito, setSale } = useProductContext()
   const items = [
     {
       value: "retiro",
@@ -40,6 +40,7 @@ useProductContext();
     register,
     handleSubmit,
     trigger,
+    getValues,
     formState: { errors, isDirty }, // Using isDirty to track form changes
   } = useForm({
     mode: "onBlur", // Changed from onChange to onBlur
@@ -56,13 +57,14 @@ useProductContext();
         idUser: carrito.idUser,  // Usuario actual (si está disponible)
         totalPrice: carrito.totalPrice,  // Precio total del carrito
         saleDate: new Date().toISOString(),  // Fecha actual
+        entrega: selectedOption
       };
   
       // Actualizamos el contexto con el nuevo objeto de venta
       setSale(newSale);
   
       // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
-      console.log("Ver si cargo la sale", newSale);
+      console.log("Ver si cargo la sale con RETIRO: ", newSale);
       return true;
     }
 
@@ -76,19 +78,21 @@ useProductContext();
     ]);
     setValid(result); // Actualiza el estado de validación
     ///***********ACA PODES AGREGAR SOLO LOS DATOS DEL ENVIO Y YA CARGAR LOS DATOS DEL CARRITO ******/
-    const newSale = {
-      
-      productList: carrito.products,  // Productos del carrito
-      idUser: carrito.idUser,  // Usuario actual (si está disponible)
-      totalPrice: carrito.totalPrice,  // Precio total del carrito
-      saleDate: new Date().toISOString(),  // Fecha actual
-    };
+    if (result) {
+      const formData = getValues(); // Obtén todos los valores del formulario
+      const newSale = {
+        productList: carrito.products,
+        idUser: carrito.idUser,
+        totalPrice: carrito.totalPrice,
+        saleDate: new Date().toISOString(),
+        entrega: selectedOption,
+        domicilio: `${formData.address}, ${formData.city}, CP: ${formData.postalCode}, Contacto: ${formData.fullName} ${formData.phone}`, // Concatenación de datos
+      };
+  
+      setSale(newSale);
+      console.log("Ver si cargo la sale con ENVIO: ", newSale);
+    }
 
-    // Actualizamos el contexto con el nuevo objeto de venta
-    setSale(newSale);
-
-    // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
-    console.log("Ver si cargo la sale", newSale);
     return result;
   };
 
@@ -102,14 +106,10 @@ useProductContext();
   }, [selectedOption, isDirty]);
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    const venta = {
-      ...sale,
-      productList: carrito.products,
-      idUser: clientId,
-      entrega: selectedOption,
-      domicilio: '',
-    }
+    console.log("Form Data:", {
+      ...data,
+      deliveryType: selectedOption
+    });       
   };
 
   return (
