@@ -15,9 +15,9 @@ function PaymentsTemp() {
     errors: {}, // Para manejar los errores de validación
   });
 
-  const { setChildValidationFunc, setValid } = useOutletContext(); // Obtén las funciones del contexto
+  const { setChildValidationFunc, setValid, sale } = useOutletContext(); // Obtén las funciones del contexto
   const toast = useToast();
-  const { carrito, setSale } = useProductContext()
+  const { carrito, setSale, saveSale } = useProductContext()
 
   // Función de validación de campos
   const validateField = (name, value) => {
@@ -131,22 +131,27 @@ function PaymentsTemp() {
     // Llamamos a setValid para actualizar el estado de la validación
     setValid(isValid);
     ///***********ACA PODES AGREGAR SOLO LOS DATOS DE LA TARJEAT ******/
-    const newSale = {
-      
-      productList: carrito.products,  // Productos del carrito
-      idUser: carrito.idUser,  // Usuario actual (si está disponible)
-      totalPrice: carrito.totalPrice,  // Precio total del carrito
-      saleDate: new Date().toISOString(),  // Fecha actual
-    };
 
     // Actualizamos el contexto con el nuevo objeto de venta
-    setSale(newSale);
+    setSale((prevSale)=>({
+      ...prevSale,
+      medioDePago: `Tarjeta número: ${state.number}, Titular: ${state.name}`
+    }));
 
     // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
-    console.log("Ver si cargo la sale", newSale);
+    console.log("Ver si cargo la sale", sale);
     return isValid;
   };
 
+  const isSaleReady = sale && sale.medioDePago && sale.entrega;
+
+  useEffect(() => {
+    if (isSaleReady) {
+      saveSale();
+    }
+  }, [isSaleReady]);
+
+  
   // Pasamos la función de validación al componente padre usando setChildValidationFunc
   useEffect(() => {
     setChildValidationFunc(() => validateAllFields);
