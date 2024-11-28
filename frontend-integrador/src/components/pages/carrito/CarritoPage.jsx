@@ -75,7 +75,7 @@ useEffect(() => {
                 </Text>
             <HStack justifyContent={'space-between'} w={830}>                
                 <Button
-                    onClick={() => deleteCarrito(carrito.id)}
+                    onClick={() => navigate('/')}
                     color={"color"}
                     p={3}
                     px={5}
@@ -94,7 +94,7 @@ useEffect(() => {
                     </Text>
                 </Button>
                 <Button
-                    onClick={() => navigate('/')}
+                    onClick={() => deleteCarrito(carrito.id)}
                     color={"color"}
                     p={3}
                     px={5}
