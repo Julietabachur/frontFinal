@@ -56,62 +56,27 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
     }
   };
 
-  const handleDownloadUsersReport = async () => {
-    let allUsers = [];
-    const pageSize = 20; // Tamaño de página estándar
-    let currentPage = 1; // Comenzamos desde la primera página
-    let hasMoreUsers = true;
-  
-    while (hasMoreUsers) {
-      try {
-        const response = await axios.get(`${baseUrl}/public/clients`, {
-          params: { page: currentPage, size: pageSize },
-          headers: {
-            Authorization: `Bearer ${token}`, // Token requerido
-          },
-        });
-  
-        console.log('Respuesta de la API:', response.data); // Verifica la estructura de la respuesta
-  
-        const users = response.data.data || []; // Si los usuarios están en 'data'
-        
-        if (users.length === 0) {
-          hasMoreUsers = false; // Si no hay usuarios, terminamos
-        } else {
-          allUsers = [...allUsers, ...users]; // Acumulamos los usuarios
-          currentPage++; // Pasamos a la siguiente página
-        }
-      } catch (error) {
-        console.error("Error al obtener usuarios:", error.response ? error.response.data : error);
-        alert("Error al obtener los usuarios.");
-        hasMoreUsers = false; // Detenemos la ejecución si ocurre un error
-      }
-    }
-  
-    if (allUsers.length === 0) {
-      alert("No se encontraron usuarios.");
-      return;
-    }
-  
-    // Generación de la hoja de Excel
-    const worksheet = XLSX.utils.json_to_sheet(
-      allUsers.map((user) => ({
-        ID: user.id || "N/A",
-        Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
-        Username: user.clientName || "N/A",
-        Email: user.email || "N/A",
-        Estado: user.enabled ? "Activo" : "Inactivo",
-        Admin: (user.roles || []).includes("ADMIN") ? "Sí" : "No",
-      }))
-    );
-  
-    console.log('Datos para la hoja de Excel:', allUsers); // Verifica que los datos sean correctos
-  
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
-    XLSX.writeFile(workbook, "reporte_usuarios.xlsx");
-  };
-  
+      // Generación de la hoja de Excel
+      const handleDownloadUsersReport = () => {
+        // Crea una hoja de trabajo con los datos de los usuarios
+        const worksheet = XLSX.utils.json_to_sheet(
+          userList.map((user) => ({
+            ID: user.id || "N/A",
+            Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
+            Username: user.clientName || "N/A",
+            Email: user.email || "N/A",
+            Admin: (user.roles || []).includes("ADMIN") ? "Sí" : "No",
+          }))
+        );
+      
+        // Crea un libro de trabajo y añade la hoja
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Usuarios");
+      
+        // Exporta el archivo Excel
+        XLSX.writeFile(workbook, "reporte_usuarios.xlsx");
+      };
+      
 
   return (
     <Flex justify="center">
