@@ -44,7 +44,7 @@ const AdminDashboard = ({ token, roles }) => {
   // Constantes para getPruducts, getUsers, getFeatures y getCategories
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
-  const pageSize = 10; // cantidad de items en el listado
+  const pageSize = 30; // cantidad de items en el listado
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [userPage, setUserPage] = useState(1);

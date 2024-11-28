@@ -12,7 +12,9 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import axios from "axios";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx"; // Para Excel
+import jsPDF from "jspdf"; // Para PDF
+import "jspdf-autotable"; // Plugin para tablas en jsPDF
 
 const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesList }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -21,7 +23,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
     getSales();
   }, [salesPage]);
 
-  const handleDownloadSalesReport = async () => {
+  const handleDownloadSalesReportExcel = async () => {
     let allSales = [];
     const pageSize = 20; // Tamaño de página estándar
     let currentPage = 1; // Comenzamos desde la primera página
@@ -73,20 +75,61 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
     XLSX.writeFile(workbook, "reporte_ventas.xlsx");
   };
 
+  const handleDownloadSalesReportPDF = () => {
+    const doc = new jsPDF();
+
+    // Configuración de la tabla
+    const tableColumn = ["ID", "Producto", "Cliente", "Cantidad", "Total", "Fecha"];
+    const tableRows = salesList.map((sale) => [
+      sale.id || "N/A",
+      sale.productName || "N/A",
+      `${sale.clientName || ""} (${sale.clientEmail || "N/A"})`,
+      sale.quantity || 0,
+      `$${sale.totalAmount || 0}`,
+      new Date(sale.date).toLocaleDateString() || "N/A",
+    ]);
+
+    // Añadir título
+    doc.text("Reporte de Ventas", 14, 15);
+
+    // Generar tabla
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    // Guardar el archivo
+    doc.save("reporte_ventas.pdf");
+  };
+
   return (
     <Flex justify="center">
       <Box mt={10}>
-        <Button
-          border="1px solid #e1bc6a"
-          _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-          onClick={handleDownloadSalesReport}
-          colorScheme="yellow"
-          variant="outline"
-          _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
-          mb={4}
-        >
-          Descargar reporte de ventas
-        </Button>
+        {/* Botones para descargar reportes */}
+        <Flex mb={4}>
+          <Button
+            border="1px solid #e1bc6a"
+            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+            onClick={handleDownloadSalesReportExcel}
+            colorScheme="yellow"
+            variant="outline"
+            _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+            mr={2}
+          >
+            Descargar Excel
+          </Button>
+          <Button
+            border="1px solid #e1bc6a"
+            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+            onClick={handleDownloadSalesReportPDF}
+            colorScheme="yellow"
+            variant="outline"
+            _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          >
+            Descargar PDF
+          </Button>
+        </Flex>
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
