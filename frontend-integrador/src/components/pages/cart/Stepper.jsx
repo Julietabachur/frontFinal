@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import {
   Box,
@@ -12,10 +14,8 @@ import {
   Button,
   HStack,
   Text,
-  theme,
 } from "@chakra-ui/react";
-import { useNavigate, Outlet } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, Outlet, useOutletContext } from "react-router-dom";
 
 const steps = [
   { title: "Cart", path: "/checkout/cart" },
@@ -23,6 +23,7 @@ const steps = [
   { title: "Payment", path: "/checkout/payment" },
   { title: "Success", path: "/checkout/success" },
 ];
+
 const buttonLabels = [
   "Confirmar carrito",
   "Confirmar envío",
@@ -36,8 +37,23 @@ const CheckoutStepper = () => {
     index: 0,
     count: steps.length,
   });
+  const [isShippingValid, setIsShippingValid] = useState(false);
 
-  const goToNext = () => {
+  // New prop to pass a validation function from child component
+  const [childValidationFunc, setChildValidationFunc] = useState(null);
+
+  const goToNext = async () => {
+    // If a child validation function exists, run it first
+    if (childValidationFunc) {
+      const isValid = await childValidationFunc();
+      if (!isValid) return;
+    }
+
+    if (activeStep === 1 && !isShippingValid) {
+      alert("Por favor, complete el formulario de envío.");
+      return;
+    }
+
     if (activeStep < steps.length - 1) {
       const nextStep = activeStep + 1;
       setActiveStep(nextStep);
@@ -55,12 +71,8 @@ const CheckoutStepper = () => {
 
   return (
     <Box my={4}>
-      {" "}
-      {/* Adds margin top and bottom */}
       <Box maxWidth="900px" mx="auto" mb={8}>
-        {" "}
-        {/* Sets max width and centers the Stepper */}
-        <Stepper index={activeStep} colorScheme='yellow' mb={8}>
+        <Stepper index={activeStep} colorScheme="yellow" mb={8}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepIndicator>
@@ -68,11 +80,7 @@ const CheckoutStepper = () => {
                   complete={<StepIcon />}
                   incomplete={<StepNumber />}
                   active={<StepNumber />}
-                  title={
-                    <Box display="flex" alignItems="center">
-                      <Text ml={2}>{step.title}</Text>{" "}
-                    </Box>
-                  }
+                  title={<Text ml={2}>{step.title}</Text>}
                 />
               </StepIndicator>
               <StepSeparator />
@@ -82,12 +90,16 @@ const CheckoutStepper = () => {
       </Box>
       <Box display="flex" flexDirection="column" mb={8}>
         <Box flexGrow={1}>
-          {/* This is the Outlet, where child route content will be rendered */}
-          <Outlet />
+          <Outlet 
+            context={{ 
+              setValid: setIsShippingValid, 
+              setChildValidationFunc 
+            }} 
+          />
         </Box>
       </Box>
       <HStack justify="center" spacing={4}>
-        {activeStep !== steps.length - 1 && ( // Condición para ocultar "Anterior" en el último paso
+        {activeStep !== steps.length - 1 && (
           <Button onClick={goToPrev} isDisabled={activeStep === 0}>
             Anterior
           </Button>
@@ -95,8 +107,7 @@ const CheckoutStepper = () => {
         <Button
           onClick={goToNext}
           isDisabled={
-            activeStep === steps.length - 1 &&
-            buttonLabels[activeStep] !== "Finalizar"
+            activeStep === steps.length - 1 && buttonLabels[activeStep] !== "Finalizar"
           }
         >
           {buttonLabels[activeStep]}

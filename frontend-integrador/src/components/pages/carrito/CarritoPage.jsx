@@ -75,7 +75,7 @@ useEffect(() => {
                 </Text>
             <HStack justifyContent={'space-between'} w={830}>                
                 <Button
-                    onClick={() => deleteCarrito(carrito.id)}
+                    onClick={() => navigate('/')}
                     color={"color"}
                     p={3}
                     px={5}
@@ -94,7 +94,7 @@ useEffect(() => {
                     </Text>
                 </Button>
                 <Button
-                    onClick={() => navigate('/')}
+                    onClick={() => deleteCarrito(carrito.id)}
                     color={"color"}
                     p={3}
                     px={5}
@@ -159,9 +159,9 @@ useEffect(() => {
                                 </HStack>
                             </Td>     
                             <Td textAlign={'center'}>{producto.size}</Td>
-                            <Td textAlign={'center'}>{producto.price}</Td>
+                            <Td textAlign={'center'}>${producto.price}</Td>
                             <Td textAlign={'center'}>{producto.amount}</Td>
-                            <Td textAlign={'center'}>{producto.amount * producto.price}</Td>
+                            <Td textAlign={'center'}>${producto.amount * producto.price}</Td>
                             <Td textAlign={'center'} 
                              _hover={{
                                 cursor: "pointer",
@@ -172,12 +172,12 @@ useEffect(() => {
                     </Tbody>
                 </Table>
             </Box>
-            <HStack justifyContent={'space-between'} px={4} fontSize={'20px'} w={830} fontWeight={'medium'}>
+            <HStack justifyContent={'space-between'} px={4} fontSize={'20px'} w={830} mt={4} pt={4} color={'color'} fontWeight={'medium'} borderTop={'1px solid'} borderColor={'color'}>
                 <Text>
-                    Total a abonar =
+                    Total a abonar
                 </Text>
                 <Text>
-                   { carrito.totalPrice}
+                   ${carrito.totalPrice}
                 </Text>
             </HStack>
             {/* <HStack w={650} justifyContent={'space-between'}>

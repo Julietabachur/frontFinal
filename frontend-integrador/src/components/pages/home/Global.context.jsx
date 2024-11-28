@@ -83,10 +83,13 @@ const initialState = {
   totalElements: 0,
   categories: [],
   sale:{
-    id: null,
+    id: '',
     productList: [],
-    idUser: null,
-    totalPrice: null,
+    idUser: '',
+    entrega: '',
+    domicilio: '',
+    medioDePago: '',
+    totalPrice: 0,
     saleDate: null
   },
   saleList: [],
@@ -321,7 +324,7 @@ const ProductProvider = ({ children }) => {
     try {
       const response = await axios.post(
         `${baseUrl}/api/v1/private/sales`,  
-        sale,  
+        state.sale,  
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -330,6 +333,7 @@ const ProductProvider = ({ children }) => {
       );     
       if (response) {
         console.log('Venta guardada: ', response.data);      
+        deleteCarrito(state.carrito.id)
       }
     } catch (error) {
       console.log("error con saveSale", error);
@@ -649,6 +653,9 @@ const ProductProvider = ({ children }) => {
     setTitulo,
     setIsSignIn,
     setReservation,
+    saveSale,
+    getSale,
+    getSales,
     setShowFav,
     getProducts,
     setCurrentPage,
