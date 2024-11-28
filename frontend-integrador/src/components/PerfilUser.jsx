@@ -157,7 +157,7 @@ const PerfilUser = () => {
       console.log(clientId);
       try {
         const response = await axios.put(
-          `http://localhost:8080/api/v1/private/clients/${clientId}`,
+          `${baseUrl}/api/v1/private/clients/${clientId}`,
           data,
           {
             headers: {

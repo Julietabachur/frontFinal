@@ -39,8 +39,67 @@ useProductContext();
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm();
+    trigger,
+    formState: { errors, isDirty }, // Using isDirty to track form changes
+  } = useForm({
+    mode: "onBlur", // Changed from onChange to onBlur
+    reValidateMode: "onChange"
+  });
+
+  const validateShipping = async () => {
+    // Si 'retiro' es seleccionado, la validación es siempre exitosa
+    if (selectedOption === "retiro") {
+      setValid(true);
+      const newSale = {
+      
+        productList: carrito.products,  // Productos del carrito
+        idUser: carrito.idUser,  // Usuario actual (si está disponible)
+        totalPrice: carrito.totalPrice,  // Precio total del carrito
+        saleDate: new Date().toISOString(),  // Fecha actual
+      };
+  
+      // Actualizamos el contexto con el nuevo objeto de venta
+      setSale(newSale);
+  
+      // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
+      console.log("Ver si cargo la sale", newSale);
+      return true;
+    }
+
+    // Si la opción es 'envio', validamos los campos
+    const result = await trigger([
+      'fullName', 
+      'address', 
+      'city', 
+      'postalCode', 
+      'phone'
+    ]);
+    setValid(result); // Actualiza el estado de validación
+    ///***********ACA PODES AGREGAR SOLO LOS DATOS DEL ENVIO Y YA CARGAR LOS DATOS DEL CARRITO ******/
+    const newSale = {
+      
+      productList: carrito.products,  // Productos del carrito
+      idUser: carrito.idUser,  // Usuario actual (si está disponible)
+      totalPrice: carrito.totalPrice,  // Precio total del carrito
+      saleDate: new Date().toISOString(),  // Fecha actual
+    };
+
+    // Actualizamos el contexto con el nuevo objeto de venta
+    setSale(newSale);
+
+    // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
+    console.log("Ver si cargo la sale", newSale);
+    return result;
+  };
+
+  useEffect(() => {
+    setChildValidationFunc(() => validateShipping);
+
+    // Si se selecciona 'retiro', marcar como válido inmediatamente
+    if (selectedOption === "retiro") {
+      setValid(true); // Validación exitosa sin necesidad de cambios
+    }
+  }, [selectedOption, isDirty]);
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
