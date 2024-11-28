@@ -23,7 +23,7 @@ const AdminDashboard = ({ token, roles }) => {
     if (!roles.includes("ADMIN")) {
       navigate('/')
     } 
-  }, []);
+  }, [roles, navigate]);
 
   // Estado para controlar si muestra formulario "Agregar Producto"
   const [showAddProduct, setShowAddProduct] = useState(false);
