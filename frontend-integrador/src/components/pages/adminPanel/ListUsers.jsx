@@ -14,6 +14,8 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -56,27 +58,52 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
     }
   };
 
-      // Generación de la hoja de Excel
-      const handleDownloadUsersReport = () => {
-        // Crea una hoja de trabajo con los datos de los usuarios
-        const worksheet = XLSX.utils.json_to_sheet(
-          userList.map((user) => ({
-            ID: user.id || "N/A",
-            Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
-            Username: user.clientName || "N/A",
-            Email: user.email || "N/A",
-            Admin: (user.roles || []).includes("ADMIN") ? "Sí" : "No",
-          }))
-        );
-      
-        // Crea un libro de trabajo y añade la hoja
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Usuarios");
-      
-        // Exporta el archivo Excel
-        XLSX.writeFile(workbook, "reporte_usuarios.xlsx");
-      };
-      
+  // Generación de la hoja de Excel
+  const handleDownloadUsersReport = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      userList.map((user) => ({
+        ID: user.id || "N/A",
+        Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
+        Username: user.clientName || "N/A",
+        Email: user.email || "N/A",
+        Admin: (user.roles || []).includes("ADMIN") ? "Sí" : "No",
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Usuarios");
+
+    XLSX.writeFile(workbook, "reporte_usuarios.xlsx");
+  };
+
+  // Generación del PDF
+  const handleDownloadUsersPDF = () => {
+    const doc = new jsPDF();
+
+    // Título del documento
+    doc.setFontSize(18);
+    doc.text("Reporte de Usuarios", 14, 20);
+
+    // Generar tabla con los datos
+    const tableColumn = ["ID", "Nombre", "Username", "Email", "Admin"];
+    const tableRows = userList.map((user) => [
+      user.id || "N/A",
+      `${user.firstName || ""} ${user.lastName || ""}`,
+      user.clientName || "N/A",
+      user.email || "N/A",
+      (user.roles || []).includes("ADMIN") ? "Sí" : "No",
+    ]);
+
+    // Insertar tabla en el PDF
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+    });
+
+    // Descargar el archivo PDF
+    doc.save("reporte_usuarios.pdf");
+  };
 
   return (
     <Flex justify="center">
@@ -90,7 +117,19 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
           mb={4}
         >
-          Descargar reporte de usuarios
+          Descargar reporte en Excel
+        </Button>
+        <Button
+          border="1px solid #e1bc6a"
+          _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+          onClick={handleDownloadUsersPDF}
+          colorScheme="yellow"
+          variant="outline"
+          _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          mb={4}
+          ml={4}
+        >
+          Descargar reporte en PDF
         </Button>
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>

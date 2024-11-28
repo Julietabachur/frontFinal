@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Box, Table, Thead, Tbody, Tr, Th, Td, Img, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Flex, Text, Button, HStack } from "@chakra-ui/react";
+import { Box, Table, Thead, Tbody, Tr, Th, Td, Img, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Flex, Text, Button } from "@chakra-ui/react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import NewProduct from "./NewProduct";
-import * as XLSX from "xlsx"; // Importa la librería para trabajar con Excel
+import * as XLSX from "xlsx"; // Para exportar a Excel
+import { jsPDF } from "jspdf"; // Para exportar a PDF
+import "jspdf-autotable";
 
 const ListAdminProduct = ({
   getProducts,
@@ -19,8 +21,6 @@ const ListAdminProduct = ({
   setShowAddProduct,
   setShowProdList,
 }) => {
-  console.log("COMIENZA LISTADMIN");
-  console.log(page);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [closeList, setCloseList] = useState(false);
@@ -61,46 +61,85 @@ const ListAdminProduct = ({
     setProductToEdit(product);
   };
 
-  // Función para descargar los productos en un archivo Excel
-  const handleDownloadReport = () => {
-    // Crea una hoja de trabajo con los datos de los productos
-    const worksheet = XLSX.utils.json_to_sheet(lista.map(product => ({
-      ID: product.productId,
-      Nombre: product.productName,
-      Categoría: product.category,
-      Stock: product.stock,
-    })));
-
-    // Crea un libro de trabajo y añade la hoja
+  // Exportar datos a Excel
+  const handleDownloadExcelReport = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      lista.map((product) => ({
+        ID: product.productId,
+        Nombre: product.productName,
+        Categoría: product.category,
+        Stock: product.stock,
+      }))
+    );
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Productos");
-
-    // Exporta el archivo Excel
     XLSX.writeFile(workbook, "reporte_productos.xlsx");
+  };
+
+  // Exportar datos a PDF
+  const handleDownloadPDFReport = () => {
+    const doc = new jsPDF();
+
+    // Añade un título
+    doc.text("Reporte de Productos", 14, 20);
+
+    // Configuración de la tabla
+    doc.autoTable({
+      startY: 30,
+      head: [["ID", "Nombre", "Categoría", "Stock"]],
+      body: lista.map((product) => [
+        product.productId,
+        product.productName,
+        product.category,
+        product.stock,
+      ]),
+    });
+
+    // Guarda el archivo PDF
+    doc.save("reporte_productos.pdf");
   };
 
   return (
     <>
-      {closeList === false && (
+      {!closeList && (
         <Flex justify={"center"}>
           <Box mt={10}>
-            {/* Botón para descargar el reporte (ubicado arriba de la tabla) */}
-            <Button
-              border={"1px solid #e1bc6a"}
-              _focus={{
-                borderColor: "#e1bc6a",
-                backgroundColor: "#e1bc6a",
-              }}
-              onClick={handleDownloadReport}
-              colorScheme="yellow"
-              variant="outline"
-              _hover={{
-                backgroundColor: "#e1bc6a",
-                color: "white",
-              }}
-            >
-              Descargar Stock
-            </Button>
+            {/* Botones para descargar reportes */}
+            <Flex mb={4}>
+              <Button
+                mr={2}
+                border={"1px solid #e1bc6a"}
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  backgroundColor: "#e1bc6a",
+                }}
+                onClick={handleDownloadExcelReport}
+                colorScheme="yellow"
+                variant="outline"
+                _hover={{
+                  backgroundColor: "#e1bc6a",
+                  color: "white",
+                }}
+              >
+                Descargar Excel
+              </Button>
+              <Button
+                border={"1px solid #e1bc6a"}
+                _focus={{
+                  borderColor: "#e1bc6a",
+                  backgroundColor: "#e1bc6a",
+                }}
+                onClick={handleDownloadPDFReport}
+                colorScheme="yellow"
+                variant="outline"
+                _hover={{
+                  backgroundColor: "#e1bc6a",
+                  color: "white",
+                }}
+              >
+                Descargar PDF
+              </Button>
+            </Flex>
 
             <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginTop: "10px" }}>
               <Button
@@ -125,25 +164,33 @@ const ListAdminProduct = ({
               <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
                 <Thead>
                   <Tr>
-                    <Th><Text fontWeight="bold">ID</Text></Th>
-                    <Th><Text fontWeight="bold">Nombre</Text></Th>
-                    <Th><Text fontWeight="bold">Categoría</Text></Th>
-                    <Th><Text fontWeight="bold">Imagen</Text></Th>
-                    <Th><Text fontWeight="bold">Stock Total</Text></Th>
-                    <Th><Text fontWeight="bold" style={{ marginBottom: "8px" }}>Editar / Eliminar</Text></Th>
+                    <Th>ID</Th>
+                    <Th>Nombre</Th>
+                    <Th>Categoría</Th>
+                    <Th>Imagen</Th>
+                    <Th>Stock</Th>
+                    <Th>Acciones</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {lista && lista.map((item) => (
-                    <Tr key={item.id} h="10px">
+                  {lista.map((item) => (
+                    <Tr key={item.id}>
                       <Td>{item.productId}</Td>
                       <Td>{item.productName}</Td>
                       <Td>{item.category}</Td>
-                      <Td><Img src={item.thumbnail} alt={item.productName} w={50} h={50} /></Td>
+                      <Td>
+                        <Img src={item.thumbnail} alt={item.productName} w={50} h={50} />
+                      </Td>
                       <Td>{item.stock}</Td>
                       <Td>
-                        <FaEdit style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "40px", marginBottom: "10px" }} onClick={() => handleEdit(item)} />
-                        <FaTrash style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "40px", marginTop: "10px" }} onClick={() => openDeleteDialog(item)} />
+                        <FaEdit
+                          style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "10px" }}
+                          onClick={() => handleEdit(item)}
+                        />
+                        <FaTrash
+                          style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "10px" }}
+                          onClick={() => openDeleteDialog(item)}
+                        />
                       </Td>
                     </Tr>
                   ))}
@@ -161,13 +208,22 @@ const ListAdminProduct = ({
             <AlertDialogBody>¿Seguro que quiere eliminar este elemento?</AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={closeDeleteDialog}>Cancelar</Button>
-              <Button color="red" onClick={() => { handleDelete(itemToDelete.id); closeDeleteDialog(); }} ml={3}>Eliminar</Button>
+              <Button
+                color="red"
+                onClick={() => {
+                  handleDelete(itemToDelete.id);
+                  closeDeleteDialog();
+                }}
+                ml={3}
+              >
+                Eliminar
+              </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
 
-      {productToEdit !== null && (
+      {productToEdit && (
         <NewProduct
           token={token}
           productToEdit={productToEdit}
