@@ -1,9 +1,4 @@
-import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-	Outlet,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import HomePage from "./components/pages/home/HomePage";
 import CarritoPage from "./components/pages/carrito/CarritoPage";
 import Login from "./components/pages/login/Login";
@@ -34,10 +29,10 @@ function App() {
 	const verifyToken = null;
 	const mailToken = null;
 
-	const [username, setUsername] = useState("");
-	const [roles, setRoles] = useState([]);
-	const GETME_URL = import.meta.env.VITE_GETME_URL;
-	const { setFavorites, setClientId, setToken } = useProductContext();
+  const [username, setUsername] = useState("");
+  const [roles, setRoles] = useState([]);
+  const GETME_URL = import.meta.env.VITE_GETME_URL;
+  const { setFavorites, getCarrito, setClientId, setToken, clientId } = useProductContext();
 
 	const getUsername = async (token) => {
 		try {
@@ -60,11 +55,17 @@ function App() {
 		}
 	};
 
-	useEffect(() => {
-		if (token) {
-			getUsername(token);
-		}
-	}, [token]);
+  useEffect(() => {
+    if (token) {
+      getUsername(token);
+    }
+  }, [token]);
+
+  useEffect(() => {  
+    if (clientId) {
+      getCarrito();
+    }  
+  }, [clientId]);
 
 	// const CheckoutLayout = () => {
 	//   return (
@@ -84,46 +85,25 @@ function App() {
 						setUsername={setUsername}
 					/>
 
-					<Routes>
-						<Route path="/" element={<HomePage />} />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/forgotPass" element={<EmailPass />} />
-						<Route path="/login" element={<Login />} />
-						<Route path="/resetPassword" element={<ResetPassword />} />
-						<Route path="/register" element={<Register />} />
-						<Route path="/verifyReg" element={<VerifyReg />} />
-						<Route
-							path="/admin"
-							element={
-								<AdminDashboard token={token ? token : ""} roles={roles} />
-							}
-						/>
-						<Route
-							path="/carrito"
-							element={<CarritoPage username={username} />}
-						/>
-						<Route
-							path="/detalle/:id"
-							element={<DetailPage username={username} />}
-						/>
-						<Route
-							path="/perfil"
-							element={
-								<PerfilUser
-									roles={roles}
-									username={username}
-									token={token ? token : ""}
-								/>
-							}
-						/>
-						<Route path="/checkout" element={<CheckoutStepper />}>
-							<Route path="cart" element={<CartTest />} />
-							<Route path="shipping" element={<Shipping />} />
-							<Route path="payment" element={<Payments />} />
-							<Route path="success" element={<Succes />} />
-							
-						</Route>
-          
-					</Routes>
+            <Route path="/resetPassword" element={<ResetPassword />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verifyReg" element={<VerifyReg />} />
+            <Route path="/admin" element={<AdminDashboard token={token ? token : ""} roles={roles}/>} />
+            <Route path="/carrito" element={<CarritoPage username={username} />} />
+            <Route path="/detalle/:id" element={<DetailPage username={username} />} />  
+            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/> } />        
+            <Route path="/checkout" element={<CheckoutStepper />}>
+            <Route index element={<Navigate to="cart" replace />} />
+              <Route path="cart" element={<CarritoPage username={username} />} />
+              <Route path="shipping" element={<Shipping />} />
+              <Route path="payment" element={<Payments />} />
+              <Route path="success" element={<Succes />} />
+            </Route>
+          </Routes>
 
 					{<Footer />}
 				</Router>

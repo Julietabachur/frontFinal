@@ -12,6 +12,7 @@ import {
   Button,
   Link,
   border,
+  useToast,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +22,7 @@ const NavbarMenu = ({ username, token, roles }) => {
   const [admin, setAdmin] = useState(false);
   const { favorites, getFavorites, setBanderaReservas, carrito, setSeason} = useProductContext();
   const navigate = useNavigate();
+  const toast = useToast(); 
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
     setSeason('Primavera')
@@ -47,6 +49,22 @@ const NavbarMenu = ({ username, token, roles }) => {
       setAdmin(false);
     }
   }, []);
+  const handleCart = () => {
+    if (carrito?.products?.length === 0) {
+      // Si el carrito está vacío, mostramos el toast
+      toast({
+        title: "Carrito vacío",
+        description: "No tienes productos agregados al carrito.",
+        status: "warning",
+        duration: 4000, 
+        isClosable: true, 
+        position: "top-right",
+      });
+    } else {
+      // Si hay productos, navegamos al carrito
+      navigate("/checkout/cart");
+    }
+  };
 
   return (
     <Menu  >
@@ -101,7 +119,8 @@ const NavbarMenu = ({ username, token, roles }) => {
         fontWeight:'semibold',
         textDecorationLine:'underline'
         }}
-          onClick={() => navigate('/carrito')}
+          onClick={handleCart}
+          //onClick={() => navigate('/checkout/cart')}
         >
           Mi Carrito ({carrito?.products?.length || 0})
         </MenuItem>
