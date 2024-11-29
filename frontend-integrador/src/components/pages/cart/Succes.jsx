@@ -217,7 +217,7 @@ function Succes() {
             size="lg"
             onClick={() => navigate('/')}
           >
-            Seguir Comprando
+            Seguir comprando
           </Button>
           
           {/* <Box
