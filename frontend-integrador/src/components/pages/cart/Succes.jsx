@@ -17,8 +17,7 @@ import React, { useState, useEffect } from "react";
 import PaymentLoading from "./PaymentLoading";
 import { useNavigate } from "react-router-dom";
 import { useProductContext } from "../home/Global.context";
-import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
+
 
 function Succes() {
   const { sale } = useProductContext();
@@ -120,6 +119,7 @@ function Succes() {
                 <Tr>
                   <Th>Producto</Th>
                   <Th>Imagen</Th>
+                  <Th>Talle</Th>
                   <Th>Cantidad</Th>
                   <Th>Precio unitario</Th>
                   <Th>Total</Th>
@@ -138,16 +138,17 @@ function Succes() {
                         objectFit="cover"
                       />
                     </Td>
+                    <Td>{product.size}</Td>
                     <Td>{product.amount}</Td>
-                    <Td>{product.price}</Td>
-                    <Td>{(product.amount * product.price)}</Td>
+                    <Td>$ {product.price}</Td>
+                    <Td>$ {(product.amount * product.price)}</Td>
                   </Tr>
                 ))}
                 <Tr>
                   <Td colSpan={4} fontWeight="bold" textAlign="right">
                     Total
                   </Td>
-                  <Td>{sale.totalPrice}</Td>
+                  <Td>$ {sale.totalPrice}</Td>
                 </Tr>
               </Tbody>
             </Table>
