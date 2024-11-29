@@ -10,7 +10,8 @@ import {
   TableContainer,
   Image, 
   Button,
-  Center
+  Center,
+  HStack
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 
@@ -104,8 +105,8 @@ function Succes() {
             GRACIAS POR TU COMPRA
           </Text>
         {/* Primera tabla: Detalles del carrito */}
-        <TableContainer>
-            <Text
+        <TableContainer mt={10} w={830}>
+            {/* <Text
               fontWeight="bold"
               fontSize="xl"
               mb={4}
@@ -113,23 +114,23 @@ function Succes() {
               textAlign="left"
             >
               Compra: 
-            </Text>
+            </Text> */}
             <Table variant="simple">
-              <Thead>
+              <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
                 <Tr>
-                  <Th>Producto</Th>
-                  <Th>Imagen</Th>
-                  <Th>Talle</Th>
-                  <Th>Cantidad</Th>
-                  <Th>Precio unitario</Th>
-                  <Th>Total</Th>
+                  <Th textAlign={'center'}>Producto</Th>
+                  {/* <Th>Imagen</Th> */}
+                  <Th textAlign={'center'}>Talle</Th>
+                  <Th textAlign={'center'}>Precio</Th>
+                  <Th textAlign={'center'}>Cantidad</Th>
+                  <Th textAlign={'center'}>Subtotal</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {sale?.productList?.map((product) => (
                   <Tr key={product.productId}>
-                    <Td>{product.productName}</Td>
-                    <Td>
+                    <Td textAlign={'center'}>
+                      <HStack textAlign={'center'}>
                       <Image
                         src={product.thumbnail
                           || 'sin imagen'} // por si hay que agregar una imagen generica
@@ -137,26 +138,36 @@ function Succes() {
                         boxSize="50px"
                         objectFit="cover"
                       />
+                      <Text>{product.productName}</Text>
+                      </HStack>                    
                     </Td>
-                    <Td>{product.size}</Td>
-                    <Td>{product.amount}</Td>
-                    <Td>$ {product.price}</Td>
-                    <Td>$ {(product.amount * product.price)}</Td>
+                    <Td textAlign={'center'}>{product.size}</Td>
+                    <Td textAlign={'center'}>${product.price}</Td>
+                    <Td textAlign={'center'}>{product.amount}</Td>
+                    <Td textAlign={'center'}>${(product.amount * product.price)}</Td>
                   </Tr>
                 ))}
-                <Tr>
+                {/* <Tr>
                   <Td colSpan={4} fontWeight="bold" textAlign="right">
                     Total
                   </Td>
                   <Td>$ {sale.totalPrice}</Td>
-                </Tr>
+                </Tr> */}
               </Tbody>
             </Table>
           </TableContainer>
 
+          <HStack justifyContent={'space-between'} px={4} fontSize={'20px'} w={830} mt={4} pt={4} color={'color'} fontWeight={'medium'} borderTop={'1px solid'} borderColor={'color'}>
+                <Text>
+                    Total abonado
+                </Text>
+                <Text>
+                   ${sale.totalPrice}
+                </Text>
+            </HStack>
+
           {/* Segunda tabla: Datos adicionales */}
-          <TableContainer mt={10}>
-            <Text
+            {/* <Text
               fontWeight="bold"
               fontSize="xl"
               mb={4}
@@ -164,34 +175,37 @@ function Succes() {
               textAlign="left"
             >
               Detalles de la Compra
-            </Text>
+            </Text> */}
+          <TableContainer mt={10} w={830}>
             <Table variant="simple">
               <Tbody>
                 <Tr className="border-b">
-                  <Td colSpan={3} textAlign="right">
-                    Tipo de entrega
+                  <Td  textAlign="left" fontWeight="bold">
+                    Tipo de entrega:
                   </Td>
-                  <Td>{sale.entrega}</Td>
-                </Tr>
-                <Tr className="border-b">
-                  <Td colSpan={3} textAlign="right">
-                    Medio de pago
-                  </Td>
-                  <Td>{sale.medioDePago}</Td>
+                  <Td textAlign="left">{sale.entrega}</Td>
                 </Tr>
 
                 {/* Mostrar datos de envío si aplica */}
                 {sale.entrega === 'envio' && (
                   <>
                     <Tr className="border-b">
-                      <Td colSpan={3} textAlign="right">
-                        Dirección de envío
+                      <Td  textAlign="left" fontWeight="bold">
+                        Dirección de envío:
                       </Td>
-                      <Td>{sale.domicilio}</Td>
-                    </Tr>
-                    
+                      <Td textAlign="left">{sale.domicilio}</Td>
+                    </Tr>                    
                   </>
                 )}
+
+                <Tr className="border-b">
+                  <Td textAlign="left" fontWeight="bold">
+                    Medio de pago:
+                  </Td>
+                  <Td textAlign="left">{sale.medioDePago}</Td>
+                </Tr>
+
+                
               </Tbody>
             </Table>
           </TableContainer>
