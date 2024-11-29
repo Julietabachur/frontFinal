@@ -86,7 +86,7 @@ function App() {
 
 					<Routes>
 						<Route path="/" element={<HomePage />} />
-            <Route path="forgotPass" element={<EmailPass />} />
+            <Route path="/forgotPass" element={<EmailPass />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/resetPassword" element={<ResetPassword />} />
 						<Route path="/register" element={<Register />} />

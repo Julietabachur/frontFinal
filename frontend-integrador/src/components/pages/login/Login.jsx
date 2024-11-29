@@ -52,7 +52,7 @@ const Login = () => {
   }, []);
 
   const passwordRecover = () => {
-    alert('Aca va la la pegada al endpoint que manda el mail') 
+    navigate("/forgotPass"); // Ruta a la página de recuperación de contraseña
   }
 
   const onSubmit = async (data) => {
@@ -205,8 +205,6 @@ const Login = () => {
               >
                 Olvidé mi contraseña
               </Text>
-
-
           </Stack>
         </form>
       </Box>

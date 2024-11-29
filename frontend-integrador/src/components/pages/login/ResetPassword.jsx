@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Flex, Box, Text, FormControl, InputGroup, Input } from '@chakra-ui/react';
-import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Flex, Box, Text, FormControl, InputGroup, Input, Button } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Importamos useNavigate
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
-
-const ResetPassword = () => {
-  const [media, setMedia] = useState(window.innerWidth < 768); // Define a default value for media
-  const [showPassword, setShowPassword] = useState(false);
-  const { handleSubmit, register, formState: { errors }, watch } = useForm();
+const EmailPass = () => {
+  const [media, setMedia] = useState(window.innerWidth < 768);
+  const { handleSubmit, register, formState: { errors } } = useForm();
+  const navigate = useNavigate(); // Inicializamos useNavigate
 
   useEffect(() => {
     const handleResize = () => {
@@ -20,79 +19,105 @@ const ResetPassword = () => {
 
   const onSubmit = async (formData) => {
     const data = {
-      newPassword: formData?.password,
-      repeatNewPassword: formData?.repeatPassword,
+      email: formData?.email,
+      password: formData?.password,
     };
-
-    alert('Aca va la la pegada al endpoint para actiualizar la contraseña')
+    console.log("Datos enviados al backend:", data); // Mostrar datos enviados en la consola
 
     try {
-      const response = await axios.put(RESETPASSWORD_URL, data, {
+      const response = await axios.patch("http://localhost:8080/api/v1/public/reset", data, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       if (response.status === 200) {
-        localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
-        alert("Listo! Ya cambiaste tu contraseña!");
-        //navegamos a la home o al login?
+        alert("¡Contraseña cambiada exitosamente!");
+        navigate("/login"); // Redirigimos al login después del éxito
       }
     } catch (error) {
-      console.error("Error al resetear el password:", error);
+      console.error("Error al enviar los datos:", error);
+      alert("Hubo un problema al cambiar la contraseña. Inténtalo nuevamente.");
     }
   };
 
-  const password = watch("password");
-
   return (
-    <Flex direction="column" align="center" justify="center" minH="100vh" p={4}>
-      <Box>
-        <Text fontSize={media ? "2xl" : "4xl"} align="center" py={3}>
-          Elije una nueva contraseña 
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      minH="100vh"
+      p={4}
+      bg="gray.50"
+    >
+      <Box
+        bg="white"
+        p={6}
+        rounded="md"
+        shadow="md"
+        maxW="400px"
+        w="100%"
+        textAlign="center"
+      >
+        <Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
+          Cambia tu contraseña
         </Text>
-         
+
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-          <FormControl isInvalid={errors.password} mb={4}>
+          {/* Campo de correo electrónico */}
+          <FormControl isInvalid={errors.email} mb={4}>
             <InputGroup>
               <Input
-                placeholder="Contraseña"
-                autoComplete="new-password"
-                type={showPassword ? "text" : "password"}
-                borderColor={errors.password ? "red.500" : "#e1bc6a"}
+                placeholder="Correo electrónico"
+                autoComplete="email"
+                type="email"
+                borderColor={errors.email ? "red.500" : "#e1bc6a"}
                 focusBorderColor="#e1bc6a"
-                {...register("password", {
-                  required: "Contraseña es requerida",
+                {...register("email", {
+                  required: "El correo electrónico es requerido",
                   pattern: {
-                    value: passwordRegex,
-                    message: "La contraseña no cumple con los requisitos",
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "El formato del correo no es válido",
                   },
                 })}
               />
             </InputGroup>
+            {errors.email && <Text color="red.500" mt={2}>{errors.email.message}</Text>}
           </FormControl>
 
-          <FormControl isInvalid={errors.repeatPassword} mb={4}>
+          {/* Campo de contraseña */}
+          <FormControl isInvalid={errors.password} mb={4}>
             <InputGroup>
               <Input
-                placeholder="Repite la contraseña"
+                placeholder="Nueva contraseña"
                 autoComplete="new-password"
-                type={showPassword ? "text" : "password"}
-                borderColor={errors.repeatPassword ? "red.500" : "#e1bc6a"}
+                type="password"
+                borderColor={errors.password ? "red.500" : "#e1bc6a"}
                 focusBorderColor="#e1bc6a"
-                {...register("repeatPassword", {
-                  required: "Repite la contraseña es requerida",
-                  validate: value =>
-                    value === password || "Las contraseñas no coinciden",
+                {...register("password", {
+                  required: "La contraseña es requerida",
+                  minLength: {
+                    value: 8,
+                    message: "La contraseña debe tener al menos 8 caracteres",
+                  },
                 })}
               />
             </InputGroup>
+            {errors.password && <Text color="red.500" mt={2}>{errors.password.message}</Text>}
           </FormControl>
 
-          <button type="submit" onClick={()=> onSubmit()}>Cambiar Contraseña</button>
+          <Button
+            type="submit"
+            bg="#e1bc6a"
+            color="white"
+            _hover={{ bg: "#d1a960" }}
+            w="full"
+          >
+            Cambiar Contraseña
+          </Button>
         </form>
       </Box>
     </Flex>
   );
 };
 
-export default ResetPassword;
+export default EmailPass;
