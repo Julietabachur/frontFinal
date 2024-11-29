@@ -8,6 +8,7 @@ const EmailPass = () => {
   const [media, setMedia] = useState(window.innerWidth < 768);
   const { handleSubmit, register, formState: { errors } } = useForm();
   const navigate = useNavigate(); // Inicializamos useNavigate
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,7 +26,7 @@ const EmailPass = () => {
     console.log("Datos enviados al backend:", data); // Mostrar datos enviados en la consola
 
     try {
-      const response = await axios.patch("http://localhost:8080/api/v1/public/reset", data, {
+      const response = await axios.patch(`${baseUrl}/api/v1/public/reset`, data, {
         headers: {
           "Content-Type": "application/json",
         },

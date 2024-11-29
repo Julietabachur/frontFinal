@@ -18,6 +18,7 @@ const EmailPass = () => {
 		register,
 		formState: { errors },
 	} = useForm();
+	const baseUrl = import.meta.env.VITE_SERVER_URL;
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -33,7 +34,7 @@ const EmailPass = () => {
 
 		try {
 			const response = await axios.post(
-				"http://localhost:8080/api/v1/public/email/reset",
+				`${baseUrl}/api/v1/public/email/reset`,
 				data,
 				{
 					headers: {
