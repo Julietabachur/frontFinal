@@ -112,8 +112,8 @@ useEffect(() => {
                 </Button>
             </HStack>
             <Box w={830} mt={3}>
-                <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
-                    <Thead>
+                <Table variant="simple" >
+                    <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
                         <Tr>
                         <Th>
                             <Text textAlign={'center'} fontWeight="bold">Producto</Text>
@@ -141,30 +141,31 @@ useEffect(() => {
                     <Tbody>
                         {carrito.products.map((producto) => (
                             <Tr key={producto.productId} h="10px">
-                            <Td textAlign={'center'}>
-                                <HStack textAlign={'center'}>                                    
-                                    <Image
-                                    src={producto.thumbnail}
-                                    alt={producto.productName}
-                                    w={50}
-                                    h={50}
-                                    // position={'relative'}
-                                    // left={'30%'}
-                                    />
-                                    <Text>
-                                        {producto.productName}
-                                    </Text>
-                                </HStack>
-                            </Td>     
-                            <Td textAlign={'center'}>{producto.size}</Td>
-                            <Td textAlign={'center'}>${producto.price}</Td>
-                            <Td textAlign={'center'}>{producto.amount}</Td>
-                            <Td textAlign={'center'}>${producto.amount * producto.price}</Td>
-                            <Td textAlign={'center'} 
-                             _hover={{
-                                cursor: "pointer",
-                            }} 
-                            onClick={()=>deleteProduct(producto.productId, producto.size)}><FaTrash /></Td>
+                                <Td textAlign={'center'}>
+                                    <HStack textAlign={'center'}>                                    
+                                        <Image
+                                        src={producto.thumbnail}
+                                        alt={producto.productName}
+                                        w={50}
+                                        h={50}
+                                        // position={'relative'}
+                                        // left={'30%'}
+                                        />
+                                        <Text>
+                                            {producto.productName}
+                                        </Text>
+                                    </HStack>
+                                </Td>     
+                                <Td textAlign={'center'}>{producto.size}</Td>
+                                <Td textAlign={'center'}>${producto.price}</Td>
+                                <Td textAlign={'center'}>{producto.amount}</Td>
+                                <Td textAlign={'center'}>${producto.amount * producto.price}</Td>
+                                <Td textAlign={'center'} 
+                                    _hover={{
+                                        cursor: "pointer",
+                                    }} 
+                                    onClick={()=>deleteProduct(producto.productId, producto.size)}><FaTrash />
+                                </Td>
                             </Tr>
                         ))}
                     </Tbody>
