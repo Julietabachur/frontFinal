@@ -15,10 +15,10 @@ function PaymentsTemp() {
     errors: {}, // Para manejar los errores de validación
   });
 
-  const { setChildValidationFunc, setValid, sale } = useOutletContext(); // Obtén las funciones del contexto
+  const { setChildValidationFunc, setValid } = useOutletContext(); // Obtén las funciones del contexto
   const toast = useToast();
-  const { carrito, setSale, saveSale } = useProductContext()
-
+  const { carrito, setSale, saveSale, sale } = useProductContext()
+  const [isReadyToSave, setIsReadyToSave] = useState(false);
   // Función de validación de campos
   const validateField = (name, value) => {
     let error = "";
@@ -95,11 +95,23 @@ function PaymentsTemp() {
     }));
   };
 
-  // Validación de todos los campos al intentar avanzar
+  // const newSale = {
+  //   productList: sale.products,
+  //   idUser: sale.idUser,
+  //   totalPrice: sale.totalPrice,
+  //   saleDate: sale.saleDate,
+  //   entrega: sale.entrega,
+  //   domicilio: sale.domicilio, // Concatenación de datos
+  //   medioDePago: `Tarjeta número: ${state.number}, Titular: ${state.name}` // Concatenación de datos
+  // };
+
+ 
+    
+
   const validateAllFields = () => {
     let isValid = true;
     let errors = {};
-
+  
     // Validamos todos los campos
     for (let field in state) {
       if (field !== 'focus' && field !== 'errors') {
@@ -110,14 +122,24 @@ function PaymentsTemp() {
         }
       }
     }
-
+  
     // Actualizamos los errores
     setState(prevState => ({
       ...prevState,
       errors: errors
     }));
-
-    // Si el formulario no es válido, mostramos el toast de "Completa todos los campos"
+  
+    // // Si el formulario no es válido, mostramos el toast de "Completa todos los campos"
+    // if (!isValid) {
+    //   toast({
+    //     title: "Formulario incompleto",
+    //     description: "Completa todos los campos",
+    //     status: "error",
+    //     duration: 3000,
+    //     isClosable: true,
+    //   });
+    // }
+  
     if (!isValid) {
       toast({
         title: "Formulario incompleto",
@@ -126,31 +148,67 @@ function PaymentsTemp() {
         duration: 3000,
         isClosable: true,
       });
+      return false;
     }
 
-    // Llamamos a setValid para actualizar el estado de la validación
-    setValid(isValid);
-    ///***********ACA PODES AGREGAR SOLO LOS DATOS DE LA TARJEAT ******/
+    const newSale = {
+      productList: sale.productList,
+      idUser: sale.idUser,
+      entrega: sale.entrega,
+      domicilio: sale.domicilio, // Concatenación de datos
+      medioDePago: `Tarjeta número: ${state.number}, Titular: ${state.name}`,
+      totalPrice: sale.totalPrice,
+      saleDate: sale.saleDate, 
+    };
+    // Si el formulario es válido, actualizamos la venta
+  // setSale((prevSale) => {
+  //   const updatedSale = {
+  //     ...prevSale,
+  //     medioDePago: `Tarjeta número: ${state.number}, Titular: ${state.name}`,
+  //   };
 
-    // Actualizamos el contexto con el nuevo objeto de venta
-    setSale((prevSale)=>({
-      ...prevSale,
-      medioDePago: `Tarjeta número: ${state.number}, Titular: ${state.name}`
-    }));
+  //   // Aquí puedes llamar a handleSaleSave después de que sale se actualice
+  //   handleSaleSave(updatedSale);  // Le pasamos el nuevo objeto 'updatedSale'
 
-    // Aquí podrías continuar con el flujo de confirmación, como redirigir o mostrar un mensaje
-    console.log("Ver si cargo la sale", sale);
-    return isValid;
+  //   return updatedSale;  // Retornamos el objeto actualizado
+  // });
+
+    setSale(newSale)
+    //handleSaleSave()
+
+    setIsReadyToSave(true); // Marcamos que la venta está lista para guardarse
+    return true;
   };
 
-  const isSaleReady = sale && sale.medioDePago && sale.entrega;
-
+  // Se ejecuta cuando `sale` cambia y está listo para guardarse
   useEffect(() => {
-    if (isSaleReady) {
-      saveSale();
+    if (isReadyToSave) {
+      handleSaleSave();
+      setIsReadyToSave(false); // Reiniciamos el estado para evitar ejecuciones repetidas
     }
-  }, [isSaleReady]);
-
+  }, [sale, isReadyToSave]);
+  
+  // Nueva función para guardar la venta
+  const handleSaleSave = () => {
+    // Verificamos que todos los campos necesarios estén presentes
+    const isSaleReady = 
+      sale.productList && sale.productList.length > 0 &&
+      sale.idUser &&
+      sale.entrega &&
+      sale.medioDePago
+    if (isSaleReady) {
+      console.log("Intentando guardar venta:", sale);
+      saveSale(sale);
+    } else {
+      toast({
+        title: "Venta incompleta",
+        description: "Faltan datos necesarios para completar la venta",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
   
   // Pasamos la función de validación al componente padre usando setChildValidationFunc
   useEffect(() => {

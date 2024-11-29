@@ -70,7 +70,7 @@ const CheckoutStepper = () => {
   };
 
   return (
-    <Box my={4}>
+    <Box minHeight="90vh"  my={4}>
       <Box maxWidth="900px" mx="auto" mb={8}>
         <Stepper index={activeStep} colorScheme="yellow" mb={8}>
           {steps.map((step, index) => (
@@ -100,18 +100,26 @@ const CheckoutStepper = () => {
       </Box>
       <HStack justify="center" spacing={4}>
         {activeStep !== steps.length - 1 && (
-          <Button onClick={goToPrev} isDisabled={activeStep === 0}>
-            Anterior
-          </Button>
-        )}
+          <>
+          {activeStep !== 0 && activeStep !== steps.length - 1 && (
+            <Button onClick={goToPrev} backgroundColor="#e1bc6a"
+            color="white"
+            _hover={{ backgroundColor: "#d3a45a" }}>
+              Anterior
+            </Button>
+          )}
         <Button
           onClick={goToNext}
           isDisabled={
             activeStep === steps.length - 1 && buttonLabels[activeStep] !== "Finalizar"
           }
+          backgroundColor="#e1bc6a"
+          color="white"
+          _hover={{ backgroundColor: "#d3a45a" }}
         >
           {buttonLabels[activeStep]}
         </Button>
+        </>)}
       </HStack>
     </Box>
   );
