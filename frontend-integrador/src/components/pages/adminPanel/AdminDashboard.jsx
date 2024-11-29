@@ -17,7 +17,6 @@ const AdminDashboard = ({ token, roles }) => {
 
   
   useEffect(() => {
-    debugger
     console.log('roles en admindash: ', roles);
     
     if (!roles.includes("ADMIN")) {

@@ -19,7 +19,6 @@ const FilterBar = () => {
   const navigate = useNavigate();
 
   const handleCategoryClick = async (categoryGroup) => {
-    debugger
     setSeason('')
     setShowFav(false)
     setCategories(categoryGroup);

@@ -188,7 +188,6 @@ const ProductProvider = ({ children }) => {
   };
 
   const setCurrentPage = (page) => {
-    debugger
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
     if(state.season != '' && !state.showFav && !state.isFilteredByCategory){
       getProductsBySeason(page)
@@ -232,7 +231,6 @@ const ProductProvider = ({ children }) => {
   };
 
   const getCarrito = async ()=>{
-    debugger
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/private/car/${state.clientId}`,       
@@ -253,7 +251,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const saveCarrito = async (carrito)=>{
-    debugger
     try {
       const response = await axios.post(
         `${baseUrl}/api/v1/private/car`,  
@@ -275,7 +272,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const updateCarrito = async (updatedCarrito)=>{
-    debugger
     try {
       const response = await axios.put(
         `${baseUrl}/api/v1/private/car`,            
@@ -297,7 +293,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const deleteCarrito = async (id)=>{
-    debugger
     try {
       const response = await axios.delete(
         `${baseUrl}/api/v1/private/car/${id}`,            
@@ -320,7 +315,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const saveSale = async (sale)=>{
-    debugger
     try {
       const response = await axios.post(
         `${baseUrl}/api/v1/private/sales`,  
@@ -341,7 +335,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const getSales = async ()=>{
-    debugger
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/private/sales`,          
@@ -361,7 +354,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const getSale = async (id)=>{
-    debugger
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/private/sales/${id}`,          
@@ -392,7 +384,6 @@ const ProductProvider = ({ children }) => {
   
 
   const getProducts = async (page = 1) => {
-    debugger
     setSeason('')
     if(state.showFav && state.favorites.length === 0){
       setTitulo('Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos')
@@ -427,7 +418,6 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsByType = async (categories, page = 1) => {
-    debugger
     setPaginatedDataBySeason([])
     setSeason('')
     setShowFav(false)
@@ -484,7 +474,6 @@ const ProductProvider = ({ children }) => {
   };
 
   const getProductsByTypeFilterBar = async (categories, page = 1) => {
-    debugger
     if (!categories || categories.length === 0) {
       console.error("Debe proporcionar al menos una categoría.");
       return []; 
@@ -552,7 +541,6 @@ const ProductProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    debugger
     if (state.season != '' && state.categories.length === 0) {
       getProductsBySeason();
     } else if (state.categories.length === 0) {

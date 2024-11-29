@@ -10,7 +10,6 @@ useProductContext();
 const navigate = useNavigate();
 
 const deleteProduct = (productId, size) => {
-    debugger;
 if (carrito.products.length > 1) {
     
   // Obtener los productos del carrito
@@ -47,7 +46,6 @@ if (carrito.products.length > 1) {
 }
   
 useEffect(() => {
-    debugger
     if (!username) {
       navigate('/')
     } 

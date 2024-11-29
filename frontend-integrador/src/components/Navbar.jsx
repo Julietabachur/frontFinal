@@ -132,7 +132,6 @@ const Navbar = ({ username, setUserName, roles }) => {
   //useEffect(() => {},[]
 
   const handleFilterSearch = async (category) => {
-    debugger
     setCategories([category])
     setShowFav(false)
     navigate("/");
@@ -180,14 +179,12 @@ const Navbar = ({ username, setUserName, roles }) => {
   };
 
   const handleSeeAll = async () => {
-    debugger
     setShowFav(false)
     getProducts()
     navigate("/");
   }
 
   const handleClickLogo = () => {
-    debugger
     setIsFilteredByCategory(false); 
     setCategories([])
     setShowFav(false)

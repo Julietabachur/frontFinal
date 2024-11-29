@@ -88,7 +88,6 @@ const DetailPage = ({username}) => {
   };
 
   const addToCart = (product) =>{
-    debugger
     if (!size) {
       setSizeNotSelected(true); 
       return; 
@@ -205,7 +204,6 @@ const DetailPage = ({username}) => {
   }
 
   const navigateBackwards = () =>{
-    debugger
     console.log('current page en detail antes de ir atras: ', currentPage);
     setCurrentPage(currentPage)
     console.log('current page en detail despues de ir atras: ', currentPage);
