@@ -409,7 +409,7 @@ const AdminDashboard = ({ token, roles }) => {
           Listar Usuarios
         </Button>
         
-        <Button
+        {/* <Button
           colorScheme="white"
           borderColor="#e1bc6a"
           borderWidth="2px"
@@ -418,7 +418,7 @@ const AdminDashboard = ({ token, roles }) => {
           onClick={() => handleShow("sales")}
         >
           Listar Ventas
-        </Button>
+        </Button> */}
         {/* <Button
           colorScheme="white"
           borderColor="#e1bc6a"
