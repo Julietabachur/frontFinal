@@ -84,7 +84,7 @@ function Shipping() {
         productList: carrito.products,
         idUser: carrito.idUser,
         totalPrice: carrito.totalPrice,
-        saleDate: new Date().toISOString(),
+        saleDate: new Date().toISOString().split('T')[0],
         entrega: selectedOption,
         domicilio: `${formData.address}, ${formData.city}, CP: ${formData.postalCode}, Contacto: ${formData.fullName} ${formData.phone}`, // Concatenación de datos
       };
@@ -144,15 +144,16 @@ function Shipping() {
                 borderWidth="1px"
                 borderColor="#e1bc6a" // Color del borde personalizado
                 borderRadius="md"
-                p={4}
+                p={{ base: 3, md: 4 }}
+              w={{ base: "100%", sm: "45%", md: "200px" }}
                 display="grid"
                 gridTemplateRows="auto 1fr auto"
                 gridTemplateColumns="1fr auto"
                 gap={2}
                 alignItems="center"
                 textAlign="center"
-                minW="200px"
-                w="100%" // Asegura que el Box ocupe todo el espacio disponible
+                //minW="200px"
+                //w="100%" // Asegura que el Box ocupe todo el espacio disponible
                 cursor="pointer"
                 onClick={() => setSelectedOption(item.value)} // Cambia el valor al hacer clic
               >

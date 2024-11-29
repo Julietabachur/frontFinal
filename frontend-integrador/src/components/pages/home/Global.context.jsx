@@ -89,7 +89,7 @@ const initialState = {
     entrega: '',
     domicilio: '',
     medioDePago: '',
-    totalPrice: 0,
+    totalPrice: 0,//lo tuve que cambiar porque en la bd esta asi
     saleDate: null
   },
   saleList: [],
@@ -353,7 +353,7 @@ const ProductProvider = ({ children }) => {
       );     
       if (response.data) {
         console.log('Traigo todas las ventas: ', response.data);    
-        setSales(response.data)  
+        setSale(response.data)  
       }
     } catch (error) {
       console.log("error con getSales", error);

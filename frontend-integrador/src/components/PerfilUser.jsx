@@ -457,14 +457,14 @@ const PerfilUser = () => {
               </FormControl>
             </SimpleGrid>
             <Flex justify="space-between" mt={4}>
-              <Button
+              {/* <Button
                 onClick={onPasswordModalOpen}
                 backgroundColor="red"
                 color="white"
                 _hover={{ backgroundColor: "red" }}
               >
                 Cambiar contraseña
-              </Button>
+              </Button> */}
 
                
               <ChangePassword
