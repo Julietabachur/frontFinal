@@ -92,7 +92,10 @@ useEffect(() => {
                     </Text>
                 </Button>
                 <Button
-                    onClick={() => deleteCarrito(carrito.id)}
+                onClick={async () => {
+                    await deleteCarrito(carrito.id);
+                    navigate('/');
+                  }}
                     color={"color"}
                     p={3}
                     px={5}
