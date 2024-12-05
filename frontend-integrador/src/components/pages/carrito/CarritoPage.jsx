@@ -222,26 +222,31 @@ useEffect(() => {
                 </Button>
             </HStack> */}
             </> ):(
+                // <>
+                //     <Text mx={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
+                //         Tu carrito todavía está vacío.
+                //     </Text>
+                //     <Button
+                //       onClick={() => navigate('/')}
+                //       // colorScheme="teal"
+                //       backgroundColor={'white'}
+                //       variant="solid"
+                //       width="250px"                      
+                //       border={'1px solid'}
+                //       borderColor={'color'}
+                //       marginTop={10}
+                //       _hover={{
+                //         backgroundColor:'color',
+                //         color:'white'
+                //       }}
+                //     >
+                //       Volver al inicio
+                //     </Button>
+
                 <>
-                    <Text mx={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
-                        Tu carrito todavía está vacío.
-                    </Text>
-                    <Button
-                      onClick={() => navigate('/')}
-                      // colorScheme="teal"
-                      backgroundColor={'white'}
-                      variant="solid"
-                      width="250px"                      
-                      border={'1px solid'}
-                      borderColor={'color'}
-                      marginTop={10}
-                      _hover={{
-                        backgroundColor:'color',
-                        color:'white'
-                      }}
-                    >
-                      Volver al inicio
-                    </Button>
+                if (carrito.length === 0) {
+                    navigate('/')
+                }
                 </>
 
             )             
