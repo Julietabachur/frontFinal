@@ -13,6 +13,7 @@ import {
   Box,
   VStack,
   Input,
+  useToast
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import NavbarMenu from "./NavbarMenu";
@@ -21,7 +22,7 @@ import axios from "axios";
 
 import { HamburgerIcon, Search2Icon } from "@chakra-ui/icons";
 import { wrap } from "framer-motion";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaShoppingCart} from "react-icons/fa";
 
 
 const Navbar = ({ username, setUserName, roles }) => {
@@ -51,8 +52,11 @@ const Navbar = ({ username, setUserName, roles }) => {
     isFilteredByCategory,
     setShowFav,
     setCurrentPage,
-    setTitulo
+    setTitulo,
+    carrito
   } = useProductContext();
+
+  const toast = useToast(); 
 
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -176,6 +180,23 @@ const Navbar = ({ username, setUserName, roles }) => {
       // Manejar el error en tu aplicación, posiblemente mostrar un mensaje al usuario
     }
     
+  };
+
+  const handleCart = () => {
+    if (carrito?.products?.length === 0) {
+      // Si el carrito está vacío, mostramos el toast
+      toast({
+        title: "Carrito vacío",
+        description: "No tienes productos agregados al carrito.",
+        status: "warning",
+        duration: 4000, 
+        isClosable: true, 
+        position: "top-right",
+      });
+    } else {
+      // Si hay productos, navegamos al carrito
+      navigate("/checkout/cart");
+    }
   };
 
   const handleSeeAll = async () => {
@@ -348,7 +369,24 @@ const Navbar = ({ username, setUserName, roles }) => {
           {/**botones o nombre */}
           {media ? (
             username ? (
-              <HStack spacing={0}>              
+              <HStack spacing={0}>  
+              <Button
+               onClick={handleCart}
+                colorScheme={"whatsapp"}
+                color={"color"}
+                borderRadius={0}
+                variant={"plain"}
+                _hover={{
+                  cursor: "pointer", // Cambia el cursor al pasar por encima
+                  fontWeight:'bold',
+                  borderBottom:'1px solid',
+                  borderColor:' color'
+                  }}
+                >
+              <FaShoppingCart /> ({carrito?.products?.length || 0})
+              </Button>  
+              <Text color={'color'} mr={2}>|</Text>
+
               <NavbarMenu username={username} roles={roles} />
               </HStack>
             ) : (
@@ -445,6 +483,22 @@ const Navbar = ({ username, setUserName, roles }) => {
                   {/* <Text fontFamily={"Roboto"} fontWeight="medium" fontSize="14px">INICIAR SESIÓN</Text> */}
                 </Button>
               <Text color={'color'}>|</Text>
+              <Button
+               onClick={handleCart}
+                colorScheme={"whatsapp"}
+                color={"color"}
+                borderRadius={0}
+                variant={"plain"}
+                _hover={{
+                  cursor: "pointer", // Cambia el cursor al pasar por encima
+                  fontWeight:'bold',
+                  borderBottom:'1px solid',
+                  borderColor:' color'
+                  }}
+                >
+              <FaShoppingCart /> ({carrito?.products?.length || 0})
+              </Button>
+              <Text color={'color'}>|</Text>
                 <Text mr={3} color={"color"} fontSize={14} fontWeight="medium" fontFamily={"Roboto"}>¡Hola {username}!</Text>
                 <NavbarMenu username={username} roles={roles} />
               </HStack>
@@ -481,6 +535,22 @@ const Navbar = ({ username, setUserName, roles }) => {
                   }}
                 >
                   <FaSearch />
+                  <Text color={'color'}>|</Text>
+                  <Button
+               onClick={handleCart}
+                colorScheme={"whatsapp"}
+                color={"color"}
+                borderRadius={0}
+                variant={"plain"}
+                _hover={{
+                  cursor: "pointer", // Cambia el cursor al pasar por encima
+                  fontWeight:'bold',
+                  borderBottom:'1px solid',
+                  borderColor:' color'
+                  }}
+                >
+              <FaShoppingCart /> ({carrito?.products?.length || 0})
+              </Button>
                 </Button>
               <Text color={'color'}>|</Text>
 
