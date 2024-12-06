@@ -534,23 +534,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                   borderColor:' color'
                   }}
                 >
-                  <FaSearch />
-                  <Text color={'color'}>|</Text>
-                  <Button
-               onClick={handleCart}
-                colorScheme={"whatsapp"}
-                color={"color"}
-                borderRadius={0}
-                variant={"plain"}
-                _hover={{
-                  cursor: "pointer", // Cambia el cursor al pasar por encima
-                  fontWeight:'bold',
-                  borderBottom:'1px solid',
-                  borderColor:' color'
-                  }}
-                >
-              <FaShoppingCart /> ({carrito?.products?.length || 0})
-              </Button>
+                  <FaSearch />                  
                 </Button>
               <Text color={'color'}>|</Text>
 
