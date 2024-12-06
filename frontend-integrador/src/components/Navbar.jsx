@@ -491,7 +491,7 @@ const Navbar = ({ username, setUserName, roles }) => {
                 variant={"plain"}
                 _hover={{
                   cursor: "pointer", // Cambia el cursor al pasar por encima
-                  fontWeight:'bold',
+                  // fontWeight:'bold',
                   borderBottom:'1px solid',
                   borderColor:' color'
                   }}
