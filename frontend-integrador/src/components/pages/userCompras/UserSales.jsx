@@ -1,12 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useProductContext } from '../home/Global.context';
 import { Box, Button, HStack, List, Table, Tbody, Td, Text, Th, Thead, Tr, VStack } from '@chakra-ui/react';
-import { FaShoppingCart} from "react-icons/fa";
 
 const UserSales = () => {
     const { userSales} = useProductContext();
     const navigate = useNavigate();
+  const [media, setMedia] = useState(false);
+  const MIN_DESKTOP_WIDTH = 768;
+
+    // Efecto para suscribirse al evento de redimensionamiento de la ventana
+    useEffect(() => {
+        const handleResize = () => {
+          if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+            setMedia(true);
+          } else {
+            setMedia(false);
+          }
+        };
+        if (window.innerWidth < MIN_DESKTOP_WIDTH) {
+          setMedia(true);
+        } else {
+          setMedia(false);
+        }
+    
+        window.addEventListener("resize", handleResize);
+    
+        // Limpieza del event listener cuando el componente se desmonta
+        return () => {
+          window.removeEventListener("resize", handleResize);
+        };
+      }, [window.innerWidth]);
+
+
   return (
     <VStack
         m={1}
@@ -16,7 +42,7 @@ const UserSales = () => {
         px={20}
         pt={4}
         pb={10}
-        h={"71vh"}
+        h={"100%"}
 
       >
         {userSales && userSales.length > 0 && (
@@ -37,12 +63,16 @@ const UserSales = () => {
                         <Th>
                             <Text textAlign={'center'} fontWeight="bold">Productos</Text>
                         </Th>
+                        {!media && 
                         <Th>
                             <Text textAlign={'center'} fontWeight="bold">Entrega</Text>
                         </Th>
+                        }
+                        {!media && 
                         <Th>
                             <Text textAlign={'center'} fontWeight="bold">Medio de pago</Text>
                         </Th>
+                        }
                         <Th>
                             <Text textAlign={'center'} fontWeight="bold">Total de compra</Text>
                         </Th>                        
@@ -51,8 +81,8 @@ const UserSales = () => {
                     <Tbody>
                         {userSales.map((compra) => (
                             <Tr key={compra.id} h="30px">
-                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'}>{compra.saleDate}</Td>     
-                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'}>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'15%'} p={'10px'}>{compra.saleDate}</Td>     
+                                <Td textAlign={'center'} fontSize={'12px'} width={'35%'}>
                                     <Box as="ul" listStyleType="circle">
                                     {compra.productList.map((producto, index) => (
                                         <ul key={index}>
@@ -61,12 +91,12 @@ const UserSales = () => {
                                     ))}
                                     </Box>
                                 </Td>
-                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'}>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'} display={media && 'none'}>
                                     {compra.entrega.toUpperCase()}
                                     {compra.entrega === 'envio' && `: ${compra.domicilio}`}
                                 </Td>
-                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'}>{compra.medioDePago}</Td>
-                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'}>${compra.totalPrice}</Td>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'} display={media && 'none'}>{compra.medioDePago}</Td>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'10%'}>${compra.totalPrice}</Td>
                                 
                             </Tr>
                         ))}
