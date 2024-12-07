@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import "./PaymentsTemps.css";
-import { Text, useToast } from "@chakra-ui/react";
+import { Box, Text, useToast } from "@chakra-ui/react";
 import { useOutletContext } from "react-router-dom"; // Asegúrate de importar useOutletContext
 import { useProductContext } from '../home/Global.context';
+import { SiSpringsecurity } from "react-icons/si";
+
 function PaymentsTemp() {
   const [state, setState] = useState({
     number: "",
@@ -216,7 +218,14 @@ function PaymentsTemp() {
   }, [state, setChildValidationFunc]);
 
   return (
+    <>
+      
     <div className="page-payments-container">
+    <Box backgroundColor={'green.500'} display={'flex'} flexDirection={'column'} 
+      alignItems={'center'} py={'20px'} fontWeight={'semibold'} color={'white'} flexWrap={'wrap'} textAlign={'center'}>
+        <SiSpringsecurity fontSize={'50px'}  />
+        <Text mt={'10px'} mx={'10px'}>Utilizamos tecnología de cifrado avanzada, tus datos están protegidos.</Text>
+      </Box>
       <div className="form-container">
         <Text mb={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
           Datos del pago
@@ -293,6 +302,7 @@ function PaymentsTemp() {
         </form>
       </div>
     </div>
+    </>
   );
 }
 

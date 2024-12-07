@@ -28,6 +28,7 @@ function Succes() {
 
   useEffect(() => {
     setTimeout(() => {
+      debugger
       setLoading(false);
     }, 7000);
   }, []);

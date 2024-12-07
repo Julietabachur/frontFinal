@@ -335,6 +335,7 @@ const ProductProvider = ({ children }) => {
       if (response) {
         console.log('Venta guardada: ', response.data);      
         deleteCarrito(state.carrito.id)
+        getUserSales()
       }
     } catch (error) {
       console.log("error con saveSale", error);
