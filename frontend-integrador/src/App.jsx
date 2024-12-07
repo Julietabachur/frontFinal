@@ -22,6 +22,7 @@ import CheckoutStepper from "./components/pages/cart/Stepper";
 import PerfilUser from "./components/PerfilUser";
 import ResetPassword from "./components/pages/login/ResetPassword";
 import EmailPass from "./components/pages/login/emailPass";
+import UserSales from "./components/pages/userCompras/userSales";
 
 function App() {
 	const token = JSON.parse(localStorage.getItem("riskkojwt"));
@@ -32,7 +33,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const { setFavorites, getCarrito, setClientId, setToken, clientId } = useProductContext();
+  const { setFavorites, getCarrito, setClientId, setToken, clientId, getUserSales } = useProductContext();
 
 	const getUsername = async (token) => {
 		try {
@@ -64,6 +65,7 @@ function App() {
   useEffect(() => {  
     if (clientId) {
       getCarrito();
+	  getUserSales()
     }  
   }, [clientId]);
 
@@ -96,6 +98,7 @@ function App() {
             <Route path="/carrito" element={<CarritoPage username={username} />} />
             <Route path="/detalle/:id" element={<DetailPage username={username} />} />  
             <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/> } />        
+            <Route path="/misCompras" element={  <UserSales username={username}/> } />        
             <Route path="/checkout" element={<CheckoutStepper />}>
             <Route index element={<Navigate to="cart" replace />} />
               <Route path="cart" element={<CarritoPage username={username} />} />

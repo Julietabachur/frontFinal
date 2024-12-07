@@ -20,8 +20,11 @@ import { useProductContext} from "./pages/home/Global.context";
 
 const NavbarMenu = ({ username, token, roles }) => {
   const [admin, setAdmin] = useState(false);
-  const { favorites, getFavorites, setBanderaReservas, setSeason} = useProductContext();
+  const { favorites, getFavorites, setBanderaReservas, setSeason, userSales} = useProductContext();
   const navigate = useNavigate();
+  const toast = useToast(); 
+
+  
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
     setSeason('Primavera')
@@ -35,9 +38,21 @@ const NavbarMenu = ({ username, token, roles }) => {
     
   };
 
-  const handleReserves = () => {
-    setBanderaReservas(true);
-    navigate('/reserve')
+  const handleSales = () => {
+    if (userSales?.length === 0) {
+      // Si userSales está vacío, mostramos el toast
+      toast({
+        title: "¡Momento de hacer una compra!",
+        description: "No tienes compras realizadas anteriormente.",
+        status: "warning",
+        duration: 4000, 
+        isClosable: true, 
+        position: "top-right",
+      });
+    } else {
+      // Si hay compras, navegamos a compras
+      navigate('/misCompras')
+    }
     
   };
 
@@ -121,6 +136,19 @@ const NavbarMenu = ({ username, token, roles }) => {
           onClick={() => handleFavorites()}
         >
           Mis Favoritos ({favorites.length})
+        </MenuItem>
+        <MenuItem
+         color={'color'} 
+         borderRadius={'0'} 
+         bg={'white'}
+         _hover={{
+          cursor: "pointer", // Cambia el cursor al pasar por encima
+          fontWeight:'semibold',
+          textDecorationLine:'underline'
+          }}
+          onClick={() => handleSales()}
+        >
+          Mis Compras ({userSales.length})
         </MenuItem>
 
         <MenuItem

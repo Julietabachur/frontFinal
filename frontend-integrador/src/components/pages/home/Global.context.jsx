@@ -31,6 +31,8 @@ const reducer = (state, action) => {
       return { ...state, sale: action.payload };
     case "SET_SALE_LIST":
       return { ...state, saleList: action.payload };
+    case "SET_USER_SALES":
+      return { ...state, userSales: action.payload };
     case "SET_CATEGORIES":
       return { ...state, categories: action.payload };
     case "SET_START_DATE":
@@ -93,6 +95,7 @@ const initialState = {
     saleDate: null
   },
   saleList: [],
+  userSales: [],
   startDate: "",
   endDate: "",
   productName: "",
@@ -152,6 +155,9 @@ const ProductProvider = ({ children }) => {
   };
   const setSaleList = (data) => {
     dispatch({ type: "SET_SALE_LIST", payload: data });
+  };
+  const setUserSales = (data) => {
+    dispatch({ type: "SET_USER_SALES", payload: data });
   };
   const setIsSignIn = (data) => {
     dispatch({ type: "SET_IS_SIGN_IN", payload: data });
@@ -251,6 +257,7 @@ const ProductProvider = ({ children }) => {
   }
 
   const saveCarrito = async (carrito)=>{
+    debugger
     try {
       const response = await axios.post(
         `${baseUrl}/api/v1/private/car`,  
@@ -369,6 +376,26 @@ const ProductProvider = ({ children }) => {
       }
     } catch (error) {
       console.log("error con getSale", error);
+    }
+  }
+
+  const getUserSales = async ()=>{
+    try {
+      debugger
+      const response = await axios.get(
+        `${baseUrl}/api/v1/private/sales/user/${state.clientId}`,          
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );     
+      if (response.data) {
+        console.log('Traigo compras del cliente: ', response.data);   
+        setUserSales(response.data)   
+      }
+    } catch (error) {
+      console.log("error con getUserSales", error);
     }
   }
   
@@ -616,6 +643,7 @@ const ProductProvider = ({ children }) => {
     currentPage: state.currentPage,
     categories: state.categories,
     sale: state.sale,
+    userSales: state.userSales,
     saleList: state.saleList,
     startDate: state.startDate,
     endDate: state.endDate,
@@ -636,6 +664,7 @@ const ProductProvider = ({ children }) => {
     setAddProductSuccessful,
     setCarrito,
     setSale,
+    setUserSales,
     setSaleList,
     setSize,
     setTitulo,
@@ -649,6 +678,7 @@ const ProductProvider = ({ children }) => {
     setCurrentPage,
     getFavorites,
     saveCarrito,
+    getUserSales,
     updateCarrito,
     deleteCarrito,
     getCarrito,
