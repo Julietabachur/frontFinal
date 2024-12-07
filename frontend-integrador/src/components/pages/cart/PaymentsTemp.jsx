@@ -158,7 +158,7 @@ function PaymentsTemp() {
       idUser: sale.idUser,
       entrega: sale.entrega,
       domicilio: sale.domicilio, // Concatenación de datos
-      medioDePago: `Titular: ${state.name}, tarjeta número: ${state.number} `,
+      medioDePago: `Titular: ${state.name}, tarjeta número: **** **** **** ${state.number.slice(-4)} `,
       totalPrice: sale.totalPrice,
       saleDate: sale.saleDate, 
     };
