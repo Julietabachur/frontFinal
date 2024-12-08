@@ -367,6 +367,7 @@ const NewProduct = ({
           border={"2px solid #e1bc6a"}
           justifyContent={"flex-start"}
           m={10}
+          height={'100%'}
         >
           <Box
             w="100%"
@@ -515,9 +516,8 @@ const NewProduct = ({
             />
           </Box>
           {/*/////////////////////////////////////////////////////////////*/}
-          <Box
+          {/* <Box
             w={"100%"}
-            /*border={"1px solid black"}*/
             alignContent={"center"}
             px={10}
             py={2}
@@ -556,7 +556,6 @@ const NewProduct = ({
 
           <Box
             w={"100%"}
-            /*border={"1px solid black"}*/
             alignContent={"center"}
             px={10}
             py={2}
@@ -591,7 +590,87 @@ const NewProduct = ({
                 <NumberDecrementStepper />
               </NumberInputStepper>
             </NumberInput>
-          </Box>
+          </Box> */}
+
+<Box
+  display="flex"
+  flexWrap="wrap" // Permite que los elementos se ajusten si no hay suficiente espacio
+  gap={4} // Espaciado entre los Box
+  pl={10}
+  justifyContent={'flex-start'}
+  alignItems={'flex-start'}
+  width={'100%'}
+>
+  <Box
+    py={2}
+    minW={"300px"}
+  >
+    <Text
+      fontFamily={"Roboto"}
+      m={1}
+      fontSize="1rem"
+      fontWeight="semibold"
+    >
+      Precio:
+    </Text>
+    <NumberInput
+      width="200px"
+      value={productData.precio}
+      min={1}
+      border={"#e1bc6a"}
+      onChange={handlePrecioChange}
+    >
+      <NumberInputField
+        _focus={{
+          borderColor: "#e1bc6a",
+          boxShadow: "0 0 0 1px #e1bc6a",
+        }}
+        name="precio"
+      />
+      <NumberInputStepper>
+        <NumberIncrementStepper />
+        <NumberDecrementStepper />
+      </NumberInputStepper>
+    </NumberInput>
+  </Box>
+
+  <Box
+    // flex="1"
+    justifyContent={'start'}
+    alignContent={"start"}
+    py={2}
+    minW={"300px"}
+  >
+    <Text
+      fontFamily={"Roboto"}
+      m={1}
+      fontSize="1rem"
+      fontWeight="semibold"
+    >
+      Stock:
+    </Text>
+    <NumberInput
+      width="200px"
+      value={productData.stock}
+      min={0}
+      border={"#e1bc6a"}
+      onChange={handleStockChange}
+    >
+      <NumberInputField
+        _focus={{
+          borderColor: "#e1bc6a",
+          boxShadow: "0 0 0 1px #e1bc6a",
+        }}
+        name="stock"
+      />
+      <NumberInputStepper>
+        <NumberIncrementStepper />
+        <NumberDecrementStepper />
+      </NumberInputStepper>
+    </NumberInput>
+  </Box>
+</Box>
+
 
           {/*/////////////////////////////////////*/}
           <Box

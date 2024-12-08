@@ -355,9 +355,9 @@ const AdminDashboard = ({ token, roles }) => {
       )}
 
 
-<Flex justifyContent="center" alignItems="center" gap={4}>
+<Flex justifyContent="center" alignItems="center" gap={4} >
 
-      <Box borderBottom="2px" p="10px" bg={"white"}>
+      <Box borderBottom="2px" borderColor={'color'} p="10px" bg={"white"}>
         <Button
           colorScheme="white"
           borderColor="#e1bc6a"
