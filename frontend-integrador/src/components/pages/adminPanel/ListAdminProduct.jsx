@@ -105,6 +105,15 @@ const ListAdminProduct = ({
         Stock: product.stock,
       }))
     );
+
+      // Añadir un estilo básico de encabezado
+  worksheet['!cols'] = [
+    { width: 10 }, 
+    { width: 30 }, 
+    { width: 15 }, 
+    { width: 10 }, 
+  ];
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Productos");
     XLSX.writeFile(workbook, "reporte_productos.xlsx");
@@ -126,6 +135,20 @@ const ListAdminProduct = ({
         product.category,
         product.stock,
       ]),
+      headStyles: {
+        fillColor: '#e1bc6a', // Color de fondo del encabezado (en formato RGB)
+        fontStyle: 'bold', // Estilo de fuente del encabezado
+        halign: 'center', // Centrar el texto horizontalmente
+        valign: 'middle',
+        fontSize: 10,
+      },
+      bodyStyles: {
+        lineWidth: 0.1, // Grosor de las líneas que separan las celdas
+        lineColor: [0, 0, 0], // Color de las líneas separadoras (en formato RGB, aquí es negro)
+        halign: 'center', // Centrar el texto horizontalmente en el cuerpo de la tabla
+        valign: 'middle',
+        fontSize: 8,
+      },
     });
 
     doc.save("reporte_productos.pdf");

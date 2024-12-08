@@ -152,7 +152,7 @@ const AdminDashboard = ({ token, roles }) => {
       console.error(error);
     }
   };
-  // LOGICA DE getSales- LISTAR ventas
+  // LOGICA DE getSales- LISTAR ventas PAGINADAS
   const getSales = async () => {
     debugger
     try {
