@@ -27,6 +27,8 @@ const reducer = (state, action) => {
       return { ...state, currentPage: action.payload };
     case "SET_SEASON":
       return { ...state, season: action.payload };
+    case "SET_ALL:PRODUCTS":
+      return { ...state, allProducts: action.payload };
     case "SET_SALE":
       return { ...state, sale: action.payload };
     case "SET_SALE_LIST":
@@ -84,6 +86,7 @@ const initialState = {
   totalPages: 1,
   totalElements: 0,
   categories: [],
+  allProducts:[],
   sale:{
     id: '',
     productList: [],
@@ -192,6 +195,9 @@ const ProductProvider = ({ children }) => {
   const setReservation = (data) => {
     dispatch({ type: "SET_RESERVATION", payload: data });
   };
+  const setAllProducts = (data) => {
+    dispatch({ type: "SET_ALL_PRODUCTS", payload: data });
+  };
 
   const setCurrentPage = (page) => {
     dispatch({ type: "SET_CURRENT_PAGE", payload: page });
@@ -257,7 +263,6 @@ const ProductProvider = ({ children }) => {
   }
 
   const saveCarrito = async (carrito)=>{
-    debugger
     try {
       const response = await axios.post(
         `${baseUrl}/api/v1/private/car`,  
@@ -382,7 +387,6 @@ const ProductProvider = ({ children }) => {
 
   const getUserSales = async ()=>{
     try {
-      debugger
       const response = await axios.get(
         `${baseUrl}/api/v1/private/sales/user/${state.clientId}`,          
         {
@@ -410,6 +414,25 @@ const ProductProvider = ({ children }) => {
   //   }
   // }, [state.carrito])
   
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/public/products/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        let data = response.data       
+        setAllProducts(data);
+
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getProducts = async (page = 1) => {
     setSeason('')
@@ -638,6 +661,7 @@ const ProductProvider = ({ children }) => {
     paginatedData: state.paginatedData,
     paginatedDataBySeason: state.paginatedDataBySeason,
     season: state.season,
+    allProducts: state.allProducts,
     isFilteredByCategory: state.isFilteredByCategory,
     totalPages: state.totalPages,
     totalElements: state.totalElements,
@@ -664,6 +688,7 @@ const ProductProvider = ({ children }) => {
     setCategoryAdded,
     setAddProductSuccessful,
     setCarrito,
+    getAllProducts,
     setSale,
     setUserSales,
     setSaleList,
