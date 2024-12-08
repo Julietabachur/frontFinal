@@ -104,28 +104,36 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
   };
 
   return (
-    <Flex justify="center">
+    <Flex justify="center" >
       <Box mt={10}>
         {/* Botones para descargar reportes */}
         <Flex mb={4}>
           <Button
-            border="1px solid #e1bc6a"
-            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
             onClick={handleDownloadSalesReportExcel}
-            colorScheme="yellow"
-            variant="outline"
-            _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
-            mr={2}
+            // isDisabled={allProductsLoaded.length == 0}
+                mr={2}
+                border={"1px solid"}      
+                borderColor={'color'}    
+                color={'color'}               
+                variant="outline"
+                _hover={{
+                  backgroundColor: "color",
+                  color: "white",
+                }}
           >
             Descargar Excel
           </Button>
           <Button
-            border="1px solid #e1bc6a"
-            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
             onClick={handleDownloadSalesReportPDF}
-            colorScheme="yellow"
+            mr={2}
+            border={"1px solid"}      
+            borderColor={'color'}    
+            color={'color'}               
             variant="outline"
-            _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+            _hover={{
+              backgroundColor: "color",
+              color: "white",
+            }}
           >
             Descargar PDF
           </Button>
@@ -148,34 +156,57 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
           >
             &gt;&gt;
           </Button>
-        </div>
+        </div>        
 
-        <Box w={830} mt={3}>
-          <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
-            <Thead>
-              <Tr>
-                <Th>ID</Th>
-                <Th>Producto</Th>
-                <Th>Cliente</Th>
-                <Th>Cantidad</Th>
-                <Th>Total</Th>
-                <Th>Fecha</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {salesList.map((sale) => (
-                <Tr key={sale.id}>
-                  <Td>{sale.id}</Td>
-                  <Td>{sale.productName || "N/A"}</Td>
-                  <Td>{`${sale.clientName || ""} (${sale.clientEmail || "N/A"})`}</Td>
-                  <Td>{sale.quantity || 0}</Td>
-                  <Td>${sale.totalAmount || 0}</Td>
-                  <Td>{new Date(sale.date).toLocaleDateString() || "N/A"}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
+            <Box w={1000} mt={3} mb={10}>
+                <Table variant="simple" >
+                    <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
+                        <Tr >
+                        <Th>
+                            <Text textAlign={'center'} fontWeight="bold">Fecha</Text>
+                        </Th>    
+                        <Th>
+                            <Text textAlign={'center'} fontWeight="bold">Productos</Text>
+                        </Th>
+                       
+                        <Th>
+                            <Text textAlign={'center'} fontWeight="bold">Entrega</Text>
+                        </Th>
+                       
+                        <Th>
+                            <Text textAlign={'center'} fontWeight="bold">Medio de pago</Text>
+                        </Th>
+                        <Th>
+                            <Text textAlign={'center'} fontWeight="bold">Total de compra</Text>
+                        </Th>                        
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {salesList.map((sale) => (
+                            <Tr key={sale.id} h="30px">
+                                <Td textAlign={'center'} fontSize={'12px'} width={'15%'} p={'10px'}>{sale.saleDate}</Td>     
+                                <Td textAlign={'center'} fontSize={'12px'} width={'30%'}>
+                                    <Box as="ul" listStyleType="circle">
+                                    {sale.productList?.map((producto, index) => (
+                                        <ul key={index}>
+                                        {producto.productName}, {producto.size}, {producto.amount}
+                                        </ul>
+                                    ))}
+                                    </Box>
+                                </Td>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'25%'} >
+                                    {sale.entrega?.toUpperCase()}
+                                    {sale.entrega === 'envio' && `: ${sale.domicilio}`}
+                                </Td>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'} >{sale.medioDePago}</Td>
+                                <Td textAlign={'center'} fontSize={'12px'} width={'10%'}>${sale.totalPrice}</Td>
+                                
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>
+            </Box>           
+
       </Box>
     </Flex>
   );

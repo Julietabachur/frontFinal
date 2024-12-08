@@ -60,6 +60,8 @@ const AdminDashboard = ({ token, roles }) => {
   const [userList, setUserList] = useState([]); // array de lista de usuarios
   const [categoryList, setCategoryList] = useState([]); // array de lista de usuarios
   const [salesList, setSalesList] = useState([]); // array
+  const [totalSalesPages, setTotalSalesPages] = useState(1); // array
+  const [salesPage, setSalesPage] = useState(1); 
   const [featuresListAll, setFeaturesListAll] = useState([]); // array de lista de caracteristicas
   const [policyListAll, setPolicyListAll] = useState([]); // array de lista de politicas
 
@@ -152,9 +154,9 @@ const AdminDashboard = ({ token, roles }) => {
   };
   // LOGICA DE getSales- LISTAR ventas
   const getSales = async () => {
+    debugger
     try {
       const response = await axios.get(
-        //Petición GET a la api del listado de usuarios
         `${baseUrl}/api/v1/admin/sales?page=${salesPage}`,
         {
           headers: {
@@ -278,8 +280,8 @@ const AdminDashboard = ({ token, roles }) => {
   };
   // Control de Paginación en las ventas
   const handleSalesPageChange = (newPage) => {
-    if (newPage <= totalPolicyPages && newPage >= 1) {
-      setPolicyPage(newPage); // Actualiza el número de página
+    if (newPage <= totalSalesPages && newPage >= 1) {
+      setSalesPage(newPage); // Actualiza el número de página
     }
   };
 
@@ -409,7 +411,7 @@ const AdminDashboard = ({ token, roles }) => {
           Listar Usuarios
         </Button>
         
-        {/* <Button
+        <Button
           colorScheme="white"
           borderColor="#e1bc6a"
           borderWidth="2px"
@@ -418,7 +420,7 @@ const AdminDashboard = ({ token, roles }) => {
           onClick={() => handleShow("sales")}
         >
           Listar Ventas
-        </Button> */}
+        </Button>
         {/* <Button
           colorScheme="white"
           borderColor="#e1bc6a"
@@ -506,6 +508,10 @@ const AdminDashboard = ({ token, roles }) => {
       {/* Logicas para mostrar las listas Categorias */}
 
       {showCategoryList == true && <ListCategories token={token} />}
+
+      {/* Logicas para mostrar las listas Ventas */}
+
+      {showSalesList == true && <ListSales token={token} getSales={getSales} salesPage={salesPage} handlePageChange={handleSalesPageChange} salesList={salesList} />}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (
