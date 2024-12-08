@@ -6,6 +6,7 @@ import NewProduct from "./NewProduct";
 import * as XLSX from "xlsx"; // Para exportar a Excel
 import { jsPDF } from "jspdf"; // Para exportar a PDF
 import "jspdf-autotable";
+import { useProductContext } from "../home/Global.context";
 
 const ListAdminProduct = ({
   getProducts,
@@ -24,6 +25,7 @@ const ListAdminProduct = ({
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [closeList, setCloseList] = useState(false);
+  const [allProductsLoaded, setAllProductsLoaded] = useState([]);
   const [productToEdit, setProductToEdit] = useState(null);
 
   const cancelRef = useRef();
@@ -33,6 +35,37 @@ const ListAdminProduct = ({
   useEffect(() => {
     getProducts();
   }, [page]);
+
+  useEffect(() => {
+    getAllProducts()
+    console.log('todos los productos: ', allProductsLoaded);
+
+    
+  }, []);
+
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/admin/products/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response) {
+        let data = response.data   
+        const allProducts = data;
+        setAllProductsLoaded(data)    
+        console.log('cargados todos los productos: ', allProductsLoaded);
+        
+
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const openDeleteDialog = (item) => {
     setIsDeleteDialogOpen(true);
@@ -63,8 +96,9 @@ const ListAdminProduct = ({
 
   // Exportar datos a Excel
   const handleDownloadExcelReport = () => {
+   if (allProductsLoaded.length > 0 ) {
     const worksheet = XLSX.utils.json_to_sheet(
-      lista.map((product) => ({
+      allProductsLoaded.map((product) => ({
         ID: product.productId,
         Nombre: product.productName,
         Categoría: product.category,
@@ -74,20 +108,19 @@ const ListAdminProduct = ({
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Productos");
     XLSX.writeFile(workbook, "reporte_productos.xlsx");
+   }
+
   };
 
   // Exportar datos a PDF
   const handleDownloadPDFReport = () => {
+    if (allProductsLoaded.length > 0 ) {
     const doc = new jsPDF();
-
-    // Añade un título
     doc.text("Reporte de Productos", 14, 20);
-
-    // Configuración de la tabla
     doc.autoTable({
       startY: 30,
       head: [["ID", "Nombre", "Categoría", "Stock"]],
-      body: lista.map((product) => [
+      body: allProductsLoaded.map((product) => [
         product.productId,
         product.productName,
         product.category,
@@ -95,8 +128,8 @@ const ListAdminProduct = ({
       ]),
     });
 
-    // Guarda el archivo PDF
     doc.save("reporte_productos.pdf");
+    }
   };
 
   return (
@@ -107,33 +140,29 @@ const ListAdminProduct = ({
             {/* Botones para descargar reportes */}
             <Flex mb={4}>
               <Button
+                isDisabled={allProductsLoaded.length == 0}
                 mr={2}
-                border={"1px solid #e1bc6a"}
-                _focus={{
-                  borderColor: "#e1bc6a",
-                  backgroundColor: "#e1bc6a",
-                }}
+                border={"1px solid"}      
+                borderColor={'color'}    
+                color={'color'}               
                 onClick={handleDownloadExcelReport}
-                colorScheme="yellow"
                 variant="outline"
                 _hover={{
-                  backgroundColor: "#e1bc6a",
+                  backgroundColor: "color",
                   color: "white",
                 }}
               >
                 Descargar Excel
               </Button>
               <Button
-                border={"1px solid #e1bc6a"}
-                _focus={{
-                  borderColor: "#e1bc6a",
-                  backgroundColor: "#e1bc6a",
-                }}
+                isDisabled={allProductsLoaded.length == 0}
+                border={"1px solid"}
+                borderColor={'color'}    
+                color={'color'}            
                 onClick={handleDownloadPDFReport}
-                colorScheme="yellow"
                 variant="outline"
                 _hover={{
-                  backgroundColor: "#e1bc6a",
+                  backgroundColor: "color",
                   color: "white",
                 }}
               >

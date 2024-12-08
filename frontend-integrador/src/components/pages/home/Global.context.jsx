@@ -417,16 +417,19 @@ const ProductProvider = ({ children }) => {
   const getAllProducts = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/api/v1/public/products/all`,
+        `${baseUrl}/api/v1/admin/products/all`,
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       if (response) {
         let data = response.data       
         setAllProducts(data);
+        console.log('cargados todos los productos: ', state.allProducts);
+        
 
       }
     } catch (error) {
