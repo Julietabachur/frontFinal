@@ -115,6 +115,7 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           colorScheme="yellow"
           variant="outline"
           _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          color={'color'}            
           mb={4}
         >
           Descargar reporte en Excel
@@ -125,6 +126,7 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           onClick={handleDownloadUsersPDF}
           colorScheme="yellow"
           variant="outline"
+          color={'color'}
           _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
           mb={4}
           ml={4}

@@ -181,7 +181,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
                   color: "white",
                 }}
           >
-            Descargar Excel
+            Descargar reporte en Excel
           </Button>
           <Button
             isDisabled={reportSalesList.length == 0}
@@ -196,7 +196,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
               color: "white",
             }}
           >
-            Descargar PDF
+            Descargar reporte en PDF
           </Button>
         </Flex>
 

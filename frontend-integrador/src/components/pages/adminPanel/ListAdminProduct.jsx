@@ -175,7 +175,7 @@ const ListAdminProduct = ({
                   color: "white",
                 }}
               >
-                Descargar Excel
+                Descargar reporte en Excel
               </Button>
               <Button
                 isDisabled={allProductsLoaded.length == 0}
@@ -189,7 +189,7 @@ const ListAdminProduct = ({
                   color: "white",
                 }}
               >
-                Descargar PDF
+                Descargar reporte en PDF
               </Button>
             </Flex>
 
