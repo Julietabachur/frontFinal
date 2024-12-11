@@ -23,14 +23,66 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
   const [filterTermUsername, setFilterTermUsername] = useState(""); // Filtro por username
   const [filterTermEmail, setFilterTermEmail] = useState(""); // Filtro por email
   const [filterAdmin, setFilterAdmin] = useState(false);
+  const [reportUsersList, setReportUsersList] = useState(false);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     getUsers();
   }, [userPage]);
 
-  // Filtrar usuarios según los filtros
+  useEffect(() => {
+    getAllUsers();
+  }, []);
+
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v1/private/clients/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data) {
+        console.log('Traigo todos los usuarios: ', response.data);    
+        setReportUsersList(response.data)  
+      }
+    } catch (error) {
+      console.log("error con getAllUsers", error);
+    }
+  };
+
+
+
+  // // Filtrar usuarios según los filtros
+  // const userList = useMemo(() => {
+  //   return userList.filter((user) => {
+  //     const fullName = `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
+  //     const username = user.clientName ? user.clientName.toLowerCase() : "";
+  //     const email = user.email ? user.email.toLowerCase() : "";
+  //     const isAdmin = (user.roles || []).includes("ADMIN");
+
+  //     return (
+  //       fullName.includes(filterTermName.toLowerCase()) &&
+  //       username.includes(filterTermUsername.toLowerCase()) &&
+  //       email.includes(filterTermEmail.toLowerCase()) &&
+  //       (filterAdmin ? isAdmin : true)
+  //     );
+  //   });
+  // }, [filterTermName, filterTermUsername, filterTermEmail, filterAdmin, userList]);
+
   const filteredUserList = useMemo(() => {
+    // Comprobar si hay filtros aplicados
+    const hasFilters =
+      filterTermName.trim() ||
+      filterTermUsername.trim() ||
+      filterTermEmail.trim() ||
+      filterAdmin;
+
+    if (!hasFilters) {
+      // Si no hay filtros, devolver la lista original
+      return userList;
+    }
+
+    // Si hay filtros, aplicar las condiciones
     return userList.filter((user) => {
       const fullName = `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
       const username = user.clientName ? user.clientName.toLowerCase() : "";
@@ -45,6 +97,33 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
       );
     });
   }, [filterTermName, filterTermUsername, filterTermEmail, filterAdmin, userList]);
+
+  const filteredReportList = useMemo(() => {
+    // Aplica los mismos filtros sobre reportUsersList
+    const hasFilters =
+      filterTermName.trim() ||
+      filterTermUsername.trim() ||
+      filterTermEmail.trim() ||
+      filterAdmin;
+
+    if (!hasFilters) {
+      return reportUsersList;  // Si no hay filtros, devolver la lista original
+    }
+
+    return reportUsersList.filter((user) => {
+      const fullName = `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
+      const username = user.clientName ? user.clientName.toLowerCase() : "";
+      const email = user.email ? user.email.toLowerCase() : "";
+      const isAdmin = (user.roles || []).includes("ADMIN");
+
+      return (
+        fullName.includes(filterTermName.toLowerCase()) &&
+        username.includes(filterTermUsername.toLowerCase()) &&
+        email.includes(filterTermEmail.toLowerCase()) &&
+        (filterAdmin ? isAdmin : true)
+      );
+    });
+  }, [filterTermName, filterTermUsername, filterTermEmail, filterAdmin, reportUsersList]);
 
   const handleCheckboxChange = async (user, isChecked) => {
     const confirmationMessage = isChecked
@@ -83,7 +162,7 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
   // Generación de la hoja de Excel
   const handleDownloadUsersReport = () => {
     const worksheet = XLSX.utils.json_to_sheet(
-      userList.map((user) => ({
+      filteredReportList.map((user) => ({
         ID: user.id || "N/A",
         Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
         Username: user.clientName || "N/A",
@@ -108,7 +187,7 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
 
     // Generar tabla con los datos
     const tableColumn = ["ID", "Nombre", "Username", "Email", "Admin"];
-    const tableRows = userList.map((user) => [
+    const tableRows = filteredReportList.map((user) => [
       user.id || "N/A",
       `${user.firstName || ""} ${user.lastName || ""}`,
       user.clientName || "N/A",
@@ -146,30 +225,53 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
   return (
     <Flex justify="center">
       <Box mt={10}>
+      <Flex mb={4} justify="flex-start" wrap="wrap" gap={2}>
         <Button
-          border="1px solid #e1bc6a"
-          _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-          onClick={handleDownloadUsersReport}
-          colorScheme="yellow"
-          variant="outline"
-          _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
-          mb={4}
+          // border="1px solid #e1bc6a"
+          // _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+          // onClick={handleDownloadUsersReport}
+          // colorScheme="yellow"
+          // variant="outline"
+          // _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          // mb={4}
+          // isDisabled={filteredUsersList.length === 0}
+                mr={2}
+                border={"1px solid"}
+                borderColor={"yellow.500"}
+                color={"yellow.500"}
+                onClick={handleDownloadUsersReport}
+                variant="outline"
+                _hover={{
+                  backgroundColor: "yellow.500",
+                  color: "white",
+                }}
         >
           Descargar reporte en Excel
         </Button>
         <Button
-          border="1px solid #e1bc6a"
-          _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-          onClick={handleDownloadUsersPDF}
-          colorScheme="yellow"
-          variant="outline"
-          _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
-          mb={4}
-          ml={4}
+          // border="1px solid #e1bc6a"
+          // _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+          // onClick={handleDownloadUsersPDF}
+          // colorScheme="yellow"
+          // variant="outline"
+          // _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
+          // mb={4}
+          // ml={4}
+          // isDisabled={filteredProductsList.length === 0}
+                mr={2}
+                border={"1px solid"}
+                borderColor={"yellow.500"}
+                color={"yellow.500"}
+                onClick={handleDownloadUsersPDF}
+                variant="outline"
+                _hover={{
+                  backgroundColor: "yellow.500",
+                  color: "white",
+                }}
         >
           Descargar reporte en PDF
         </Button>
-
+        </Flex>
         {/* Filtros */}
         <Flex mb={4} justify="space-between">
           <Input
