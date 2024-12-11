@@ -36,20 +36,34 @@ function PaymentsTemp() {
         }
         break;
       case "name":
-        if (!/^([a-zA-ZáéíóúÁÉÍÓÚñÑ]+\s?){1,3}$/.test(value)) {
-          error = "El nombre debe contener entre 1 y 3 nombres separados por espacios.";
-        }
-        break;
-      case "expiry":
         if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) {
           error = "La fecha debe estar en formato MM/YY.";
         } else {
           const [month, year] = value.split("/").map(Number);
-          const currentYear = new Date().getFullYear() % 100; // Últimos 2 dígitos del año actual
-          const currentMonth = new Date().getMonth() + 1;
-
-          if (year < currentYear || (year === currentYear && month < currentMonth)) {
-            error = "La fecha de expiración debe ser superior a la fecha actual.";
+          const currentDate = new Date();
+          const currentYear = currentDate.getFullYear() % 100; // Últimos 2 dígitos del año actual
+          const currentMonth = currentDate.getMonth() + 1;
+        
+          // Crear fecha mínima (próximo mes)
+          const nextMonthDate = new Date(currentDate);
+          nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+          const minMonth = nextMonthDate.getMonth() + 1;
+          const minYear = nextMonthDate.getFullYear() % 100;
+        
+          // Crear fecha máxima (6 años desde el próximo mes)
+          const maxDate = new Date(nextMonthDate);
+          maxDate.setFullYear(maxDate.getFullYear() + 6);
+          const maxMonth = maxDate.getMonth() + 1;
+          const maxYear = maxDate.getFullYear() % 100;
+        
+          // Validar que esté dentro del rango permitido
+          const isBeforeMin = year < minYear || (year === minYear && month < minMonth);
+          const isAfterMax = year > maxYear || (year === maxYear && month > maxMonth);
+        
+          if (isBeforeMin) {
+            error = "Tarjeta vencida.";
+          } else if (isAfterMax) {
+            error = "La fecha es inválida.";
           }
         }
         break;

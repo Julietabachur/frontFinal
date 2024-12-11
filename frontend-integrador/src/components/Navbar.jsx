@@ -463,6 +463,11 @@ const Navbar = ({ username, setUserName, roles }) => {
                 fontSize={[10,12,14]}
                 placeholder="¿Qué buscás?"
                 onChange={(e) => setProductName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleShowSearchBar(); 
+                  }
+                }}
                 />
               }
 
