@@ -12,6 +12,7 @@ import {
   Button,
   Link,
   border,
+  useToast,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,24 +20,39 @@ import { useProductContext} from "./pages/home/Global.context";
 
 const NavbarMenu = ({ username, token, roles }) => {
   const [admin, setAdmin] = useState(false);
-  const { favorites, getFavorites, setBanderaReservas} = useProductContext();
+  const { favorites, getFavorites, setBanderaReservas, setSeason, userSales} = useProductContext();
   const navigate = useNavigate();
+  const toast = useToast(); 
+
+  
   const logoutHandle = () => {
     localStorage.removeItem("riskkojwt");
+    setSeason('Primavera')
     navigate("/");
     window.location.reload();
   };
 
   const handleFavorites = () => {
-    setBanderaReservas(false);
-    navigate('/')
     getFavorites()
+    navigate('/')
     
   };
 
-  const handleReserves = () => {
-    setBanderaReservas(true);
-    navigate('/reserve')
+  const handleSales = () => {
+    if (userSales?.length === 0) {
+      // Si userSales está vacío, mostramos el toast
+      toast({
+        title: "¡Momento de hacer una compra!",
+        description: "No tienes compras realizadas anteriormente.",
+        status: "warning",
+        duration: 4000, 
+        isClosable: true, 
+        position: "top-right",
+      });
+    } else {
+      // Si hay compras, navegamos a compras
+      navigate('/misCompras')
+    }
     
   };
 
@@ -48,35 +64,45 @@ const NavbarMenu = ({ username, token, roles }) => {
     }
   }, []);
 
+  
+
   return (
     <Menu  >
       <MenuButton as={Box}>
         <Avatar
           bg={"gray.100"}
           size="md"
-          color={"black"}
+          color={"color"}
           fontWeight={"black"}
           name={username}
         />
       </MenuButton>
-      <MenuList bg={'black'} borderColor={'verde2'}>
+      <MenuList bg={'white'} borderColor={'gray.200'}>
         <MenuItem
-          color={'verde2'} 
+          color={'color'} 
           borderRadius={'0'} 
-          bg={'black'}
-          _hover={{ bgColor:'verde2', color:'black' }}
+          bg={'white'}
+          _hover={{
+            cursor: "pointer", // Cambia el cursor al pasar por encima
+            fontWeight:'semibold',
+            textDecorationLine:'underline'
+            }}
           onClick={() => {
             navigate(`/perfil`);
           }}
         >
-          Mi perfil
+          Mi Perfil
         </MenuItem>
         {admin && (
           <MenuItem
-          color={'verde2'} 
+          color={'color'} 
           borderRadius={'0'} 
-          bg={'black'}
-          _hover={{ bgColor:'verde2', color:'black' }}
+          bg={'white'}
+          _hover={{
+            cursor: "pointer", // Cambia el cursor al pasar por encima
+            fontWeight:'semibold',
+            textDecorationLine:'underline'
+            }}
             onClick={() => {
               navigate(`/admin`);
             }}
@@ -84,34 +110,59 @@ const NavbarMenu = ({ username, token, roles }) => {
             Panel administrador
           </MenuItem>
         )}
-        <MenuItem
-       color={'verde2'} 
+        {/* <MenuItem
+       color={'color'} 
        borderRadius={'0'} 
-       bg={'black'}
-       _hover={{ bgColor:'verde2', color:'black' }}
-          onClick={() => handleReserves()}
+       bg={'white'}
+       _hover={{
+        cursor: "pointer", // Cambia el cursor al pasar por encima
+        fontWeight:'semibold',
+        textDecorationLine:'underline'
+        }}
+          onClick={handleCart}
+          //onClick={() => navigate('/checkout/cart')}
         >
-          Mis reservas{" "}
-        </MenuItem>
+          Mi Carrito ({carrito?.products?.length || 0})
+        </MenuItem> */}
         <MenuItem
-         color={'verde2'} 
+         color={'color'} 
          borderRadius={'0'} 
-         bg={'black'}
-         _hover={{ bgColor:'verde2', color:'black' }}
+         bg={'white'}
+         _hover={{
+          cursor: "pointer", // Cambia el cursor al pasar por encima
+          fontWeight:'semibold',
+          textDecorationLine:'underline'
+          }}
           onClick={() => handleFavorites()}
         >
-          Mis Favoritos{" "}
+          Mis Favoritos ({favorites.length})
+        </MenuItem>
+        <MenuItem
+         color={'color'} 
+         borderRadius={'0'} 
+         bg={'white'}
+         _hover={{
+          cursor: "pointer", // Cambia el cursor al pasar por encima
+          fontWeight:'semibold',
+          textDecorationLine:'underline'
+          }}
+          onClick={() => handleSales()}
+        >
+          Mis Compras ({userSales.length})
         </MenuItem>
 
         <MenuItem
         //  as={Button}
-         bg={"black"}
+         bg={"white"}
         //  variant={"ghost"}
          onClick={logoutHandle}
-         color={'verde2'}
+         color={'color'}
          borderRadius={'0'}
-         _hover={{ bgColor:'red', color:'black' }}
-
+         _hover={{
+          cursor: "pointer", // Cambia el cursor al pasar por encima
+          fontWeight:'semibold',
+          textDecorationLine:'underline'
+          }}
         >
           Salir
         </MenuItem>

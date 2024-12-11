@@ -1,36 +1,82 @@
-import React, { useEffect }  from "react";
+import React, { useEffect, useState } from "react";
 import { useProductContext } from "./Global.context";
-import { VStack, SimpleGrid, Link,Text,Box } from "@chakra-ui/react";
-import { Link as ReactRouterLink } from "react-router-dom";
-import ProductCard from "./ProductCard";
-import ProductCardContainer from "./ProductCardContainer";
-import RenderPagination from "./RenderPagination";
-const ShowList = () => {
-  const { paginatedData,showFav,favorites,setShowFav,getProducts } = useProductContext();
+import { VStack, Icon, SimpleGrid, Text, Box } from "@chakra-ui/react";
+import ProductCard from "./ProductCard"; // Componente para mostrar cada producto
+import ProductCardContainer from "./ProductCardContainer"; // Contenedor para cada tarjeta de producto
+import RenderPagination from "./RenderPagination"; // Componente de paginación importado
 
-  useEffect(()=>{
-    if(showFav && favorites.length === 0){
-      getProducts()
+
+const ShowList = () => {
+  const { paginatedData, showFav, favorites, getFavorites, isFilteredByCategory, getProducts, categories, productName, titulo} = useProductContext();
+  // const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    // Efecto que obtiene los productos si se están mostrando favoritos y no hay favoritos disponibles
+    if (showFav && favorites.length === 0) {      
+      getProducts(); // Llama a la función para obtener los productos
       console.log('favs: ', favorites);
+    } else if (showFav && favorites.length > 0){
+      getFavorites()
     }
-  },[favorites,showFav])
+  }, [favorites, showFav]);
+
+//  useEffect(() => {
+//   debugger
+//     const getTitle = () => {
+//       if (isFilteredByCategory) {
+//         if (productName && productName !== "") {
+//           return productName; // Si hay un nombre de producto, muestra ese
+//         }
+//         if (categories && categories.length > 0) {
+//           return `Categorías seleccionadas: ${categories.join(", ")}`; // Muestra las categorías si productName está vacío
+//         }
+//       }
+//       return "Productos"; // Título por defecto si no está filtrado por categoría
+//     };
+
+//     // Actualiza el título cuando las dependencias cambien
+//     setTitle(getTitle());
+
+//   }, [isFilteredByCategory, productName, categories]); // Se ejecuta cuando estas variables cambian
+
 
   return (
     <VStack>
-      {showFav && <Text fontWeight="medium" fontFamily={"Saira"} fontSize={"1.8rem"} textShadow='1px 1px 10px #00cc00' mt={'70px'} >{paginatedData.length != 0 ? "Tus Favoritos":"Tu lista de favoritos está vacía" }</Text>}
-      <SimpleGrid
-        minH={"100vh"}
-        columns={{ base: 1, md: 2 }}
-        pt={12}
-        spacing={[5,10,20]}
-      >
-        {paginatedData.map((item) => (
-          <ProductCardContainer key={item.id}>
-            <ProductCard item={item} />
-          </ProductCardContainer>
-        ))}
-      </SimpleGrid>
-      {paginatedData && <RenderPagination />}
+      {/* {showFav && ( */}
+        // Este mensaje indica si hay favoritos o no
+        {/* <Text fontWeight="medium" fontFamily={"Roboto"} fontSize={"1.8rem"} color={'#e1bc6a'} mt={'20px'}> */}
+          {/* Se desactiva la visualización de favoritos */}
+          {/* {favorites.length > 0 ? "Tus Favoritos" : "Tu lista de favoritos está vacía. Echale un vistazo a nuestros productos"} */}
+        {/* </Text> */}
+      {/* )} */}
+      {titulo && (
+        // Este mensaje indica si hay favoritos o no
+        <Text mx={4} fontWeight="medium" fontFamily={"Roboto"} textAlign={'center'} fontSize={{base:'lg',md:"2xl"}} color={'#e1bc6a'} mt={'20px'}>
+           {titulo} {/* Aquí se aplica la lógica para el título */}
+        </Text>
+      )}
+
+      {paginatedData ? (
+      <>
+        <SimpleGrid
+        // minH={"100vh"} // Altura mínima del contenedor
+        columns={{ base: 1, sm:2, md: 3, lg: 4 }} // Definición de columnas responsivas
+        pt={12} // Padding en la parte superior
+        spacing={[5, 10, 15]} // Espaciado entre los elementos
+        >
+          {paginatedData.map((item) => (
+            <ProductCardContainer key={item.id}>
+              <ProductCard item={item} />
+            </ProductCardContainer>
+          ))}
+        </SimpleGrid>
+        <RenderPagination />
+       </>
+      ) : (null)
+      }
+
+
+
     </VStack>
   );
 };

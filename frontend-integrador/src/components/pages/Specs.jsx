@@ -34,7 +34,7 @@ function Specs({ detail }) {
   }, []);
 
   return (
-    <Box width="100%" padding={2} h={"100%"} border={"1px solid black"}>
+    <Box width="100%" padding={2} h={"100%"} borderBottom={'1px solid'} borderColor={'color'} mb={20}>
       <Button
         variant="outline"
         fontSize={"0.8rem"}
@@ -46,44 +46,45 @@ function Specs({ detail }) {
 
       {(!isCollapsed || window.innerWidth >= 768) && (
         <VStack my={5} alignItems="flex-start" >
-          <Text as='u' fontFamily="Saira" marginLeft={4} fontWeight={"medium"} color="black" fontSize={["0.9rem", "1.2rem"]}>
+          <Text as={'u'} fontFamily="Roboto" marginLeft={8} fontWeight={"medium"} color="black" fontSize={["12px", "14px"]}>
             CARACTERÍSTICAS DEL PRODUCTO
           </Text>
         <Grid
           w={"100%"}
-          p={4}
+          pl={4}
           templateColumns={{
             base: "1fr",
-            lg: "repeat(2, 1fr)",
-            xl: "repeat(3, 1fr)",
+            // lg: "repeat(2, 1fr)",
+            // xl: "repeat(3, 1fr)",
           }}
-          gap={5}
+          gap={1}
         >
           {detail && detail.features && detail.features.length > 0 ? (
             detail.features.map((feature, index) => (
               <GridItem w="100%" colSpan={1}  key={index}>
                 <HStack
                   padding={4}
-                  border="1px solid green"
-                  borderRadius={5}
+                  // borderBottom="1px solid"
+                  // borderColor={'negro'}
+                  // borderRadius={5}
                 >
-                  <Text fontFamily="Saira" color="black" fontSize="1rem">
+                  <Text fontFamily="Roboto" color="black" fontSize={["10px", "12px"]}>
                     {feature.charIcon}
                   </Text>
                   <Text
-                    fontFamily="Saira"
-                    textShadow="1px 1px lightgreen"
-                    color="black"
-                    fontSize="1rem"
+                    fontFamily="Roboto"
+                    fontWeight={"medium"}
+                    color="negro"
+                    fontSize={["10px", "12px"]}
                   >
                     {`${feature.charName}: `}
                   </Text>
                   {feature.charValue.map((value, valueIndex) => (
                     <Text
                       key={valueIndex}
-                      fontFamily="Saira"
+                      fontFamily="Roboto"
                       color="gris1"
-                      fontSize="0.9rem"
+                      fontSize={["10px", "12px"]}
                     >
                       {value}
                     </Text>
@@ -92,7 +93,7 @@ function Specs({ detail }) {
               </GridItem>
             ))
           ) : (
-            <Text fontFamily="Saira" color="black" fontSize="1rem">
+            <Text fontFamily="Roboto" color="black" fontSize="1rem">
               No hay características disponibles para este producto.
             </Text>
           )}

@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import HomePage from "./components/pages/home/HomePage";
+import CarritoPage from "./components/pages/carrito/CarritoPage";
 import Login from "./components/pages/login/Login";
 import Register from "./components/pages/login/Register";
 import Navbar from "./components/Navbar";
@@ -13,39 +14,47 @@ import Perfil from "./components/Perfil";
 import { useProductContext } from "./components/pages/home/Global.context";
 import ReservesPage from "./components/pages/reserves/ReservesPage";
 import VerifyReg from "./components/pages/login/VerifyReg";
+import Payments from "./components/pages/cart/PaymentsTemp";
+import Shipping from "./components/pages/cart/Shipping";
+import CartTest from "./components/pages/cart/CartTest";
+import Succes from "./components/pages/cart/Succes";
+import CheckoutStepper from "./components/pages/cart/Stepper";
+import PerfilUser from "./components/PerfilUser";
+import ResetPassword from "./components/pages/login/ResetPassword";
+import EmailPass from "./components/pages/login/emailPass";
+import UserSales from "./components/pages/userCompras/userSales";
 
 function App() {
+	const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
-  const token = JSON.parse(localStorage.getItem("riskkojwt"));
-
-  const verifyToken = null;
-  const mailToken = null;
+	const verifyToken = null;
+	const mailToken = null;
 
   const [username, setUsername] = useState("");
   const [roles, setRoles] = useState([]);
   const GETME_URL = import.meta.env.VITE_GETME_URL;
-  const { setFavorites, setClientId, setToken } = useProductContext();
+  const { setFavorites, getCarrito, setClientId, setToken, clientId, getUserSales } = useProductContext();
 
-  const getUsername = async (token) => {
-    try {
-      const response = await axios.get(GETME_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response) {
-        setUsername(response.data.username);
-        setRoles(response.data.roles);
-        setFavorites(response.data.favorites);
-        setClientId(response.data.id);
-      } else {
-        localStorage.removeItem("riskkojwt");
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
+	const getUsername = async (token) => {
+		try {
+			const response = await axios.get(GETME_URL, {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			if (response) {
+				setUsername(response.data.username);
+				setRoles(response.data.roles);
+				setFavorites(response.data.favorites);
+				setClientId(response.data.id);
+			} else {
+				localStorage.removeItem("riskkojwt");
+			}
+		} catch (error) {
+			console.error("Fetch error:", error);
+		}
+	};
 
   useEffect(() => {
     if (token) {
@@ -53,40 +62,57 @@ function App() {
     }
   }, [token]);
 
-  return (
-    <HStack>
-      <Box position={"relative"} top={"100px"}>
-        <Router>
-          <Navbar
-            roles={roles}
-            username={username ? username : null}
-            setUsername={setUsername}
-          />
+  useEffect(() => {  
+    if (clientId) {
+      getCarrito();
+	  getUserSales()
+    }  
+  }, [clientId]);
+
+	// const CheckoutLayout = () => {
+	//   return (
+	//     <Box>
+	//       <CheckoutStepper />
+	//       <Outlet /> {/* This renders the child routes */}
+	//     </Box>
+	//   );}
+
+	return (
+		<HStack>
+			<Box position={"relative"} top={"100px"}>
+				<Router>
+					<Navbar
+						roles={roles}
+						username={username ? username : null}
+						setUsername={setUsername}
+					/>
 
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgotPass" element={<EmailPass />} />
+            <Route path="/resetPassword" element={<ResetPassword />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verifyReg" element={<VerifyReg />} />
-            <Route path="/admin" element={<AdminDashboard token={token ? token : ""} />} />
-            <Route path="/reserve" element={<ReservesPage />} />
-            <Route path="/detalle/:id" element={<DetailPage />} />
-            <Route path="/perfil"
-              element={
-                <Perfil
-                  roles={roles}
-                  username={username}
-                  token={token ? token : ""}
-                />                
-              }              
-            />
+            <Route path="/admin" element={<AdminDashboard token={token ? token : ""} roles={roles}/>} />
+            <Route path="/carrito" element={<CarritoPage username={username} />} />
+            <Route path="/detalle/:id" element={<DetailPage username={username} />} />  
+            <Route path="/perfil" element={  <PerfilUser roles={roles} username={username} token={token ? token : ""}/> } />        
+            <Route path="/misCompras" element={  <UserSales username={username}/> } />        
+            <Route path="/checkout" element={<CheckoutStepper />}>
+            <Route index element={<Navigate to="cart" replace />} />
+              <Route path="cart" element={<CarritoPage username={username} />} />
+              <Route path="shipping" element={<Shipping />} />
+              <Route path="payment" element={<Payments />} />
+              <Route path="success" element={<Succes />} />
+            </Route>
           </Routes>
-          
-          {<Footer />}
-        </Router>
-      </Box>
-    </HStack>
-  );
+
+					{<Footer />}
+				</Router>
+			</Box>
+		</HStack>
+	);
 }
 
 export default App;

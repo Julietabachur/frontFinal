@@ -25,8 +25,10 @@ import {
   DrawerContent,
   DrawerCloseButton,
   SimpleGrid,
+  Grid,
 } from "@chakra-ui/react";
 import ProductGallery from "./ProductGallery";
+import InfoComponent from "../infoComponent";
 import { useProductContext } from "./home/Global.context";
 import axios from "axios";
 import Specs from "./Specs";
@@ -34,8 +36,9 @@ import SocialShare from "./SocialShare";
 registerLocale("es", es);
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import Policies from "./Policies";
+import { wrap } from "framer-motion";
 
-const DetailPage = () => {
+const DetailPage = ({username}) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const frontUrl = import.meta.env.VITE_FRONT_URL;
   const { id } = useParams();
@@ -47,9 +50,13 @@ const DetailPage = () => {
   const [reserveList, setReserveList] = useState([]);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [isHeartClicked, setHeartClicked] = useState(false);
-  const { setFavorites, favorites, startDate, clientId, setReservation,setIsSignIn } =
+  const [quantity, setQuantity] = useState(1);
+  const { setFavorites, favorites, currentPage, setCurrentPage, setAddProductSuccessful, addProductSuccessful , clientId, setReservation,setIsSignIn, saveCarrito, updateCarrito, setCarrito, carrito, size, setSize } =
     useProductContext();
   const [showError, setShowError] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(false);
+  const [sizeNotSelected, setSizeNotSelected] = useState(false);
+  // const [addSuccessful, setAddSuccessful] = useState(false);
 
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
@@ -57,68 +64,99 @@ const DetailPage = () => {
   // Confirma si 'riskkojwt' existe, es decir, si la persona ya está registrada.
   const token = JSON.parse(localStorage.getItem("riskkojwt"));
 
+  const increment = () => {
+    if (quantity < detail.stock) {
+      setQuantity(prev => prev + 1);
+    }
+  };
+
+  const decrement = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+
   useEffect(() => {
     // Actualizar el estado del corazón basado en si el id está en favoritos
     const isFavorite = favorites.includes(id);
     setHeartClicked(isFavorite);
-  }, [id]);
+  }, [id])
+
 
   const handleGallery = () => {
-    onOpen();
+    onOpen()
   };
 
-  const getReserveList = async () => {
-    const response = await axios.get(
-      `${baseUrl}/api/v1/public/reserves/search/byProductId?productId=${detail.id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.data) {
-      setReserveList(response.data);
-      setShowError(false);
-    } else {
-      setShowError(true);
+  const addToCart = (product) =>{
+    if (!size) {
+      setSizeNotSelected(true); 
+      return; 
     }
-  };
-
-  const handleReserve = () => {
-    if (clientId) {
-      setReservation(detail.id);
-      navigate("/reserve");
-    } else {
-      setIsSignIn(true)
-      navigate("/login");
-    }
-  };
-
-  const getReserved = () => {
-    let updatedAvailableDates = [];
-    reserveList.forEach((reserva) => {
-      const startDate = new Date(reserva.startDate);
-      const endDate = new Date(reserva.endDate);
-      startDate.setDate(startDate.getDate() + 1);
-      endDate.setDate(endDate.getDate() + 1);
-
-      let currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        updatedAvailableDates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
+  
+    setSizeNotSelected(false)
+    
+    // Crear un objeto ProductDto
+    const productoDto = {
+      productId: product.id,
+      productName: product.productName,
+      thumbnail: product.thumbnail,
+      amount: quantity, // Cantidad seleccionada
+      size: size,       // Talla seleccionada
+      price: product.precio, // Precio unitario
+    };
+    
+    console.log('Agregando producto al carrito: ', productoDto);
+   
+      const { products } = carrito;
+  
+      // Validar si el producto con el mismo ID y talla ya existe
+      const existingProductIndex = products.findIndex(
+        (p) => p.productId === productoDto.productId && p.size === productoDto.size
+      );
+  
+      let updatedProducts;
+  
+      if (existingProductIndex > -1) {
+        // Producto con el mismo ID y talla ya existe, actualizar cantidad
+        updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = {
+          ...updatedProducts[existingProductIndex],
+          amount: updatedProducts[existingProductIndex].amount + productoDto.amount,
+        };
+      } else {
+        // Producto no existe con la misma talla, agregarlo
+        updatedProducts = [...products, productoDto];
       }
-    });
+  
+      // Calcular nuevo precio total
+      // const newTotalPrice = updatedProducts.reduce(
+      //   (acc, prod) => acc + prod.price * prod.amount,
+      //   0
+      // );
+  
+      const newCarrito = {
+        ...carrito,
+        products: updatedProducts,
+        // totalPrice: newTotalPrice,
+        idUser: clientId, // Asignar clientId
+      };
 
-    setAvailableDates((prevDates) => [...prevDates, ...updatedAvailableDates]);
-  };
+    // Actualizar el estado del carrito
+    if (carrito.products.length != 0) {
+        updateCarrito(newCarrito)        
+    }else{
+      saveCarrito(newCarrito)
+    }
+    
+  }
 
-  useEffect(() => {
-    getReserved();
-  }, [reserveList]);
+  // useEffect(() => {
+  //   getReserved();
+  // }, [reserveList]);
 
-  useEffect(() => {
-    getReserveList();
-  }, [detail]);
+  // useEffect(() => {
+  //   getReserveList();
+  // }, [detail]);
 
   const handleHeartClick = (event) => {
     // Cambiar el estado del clic del corazón
@@ -143,25 +181,37 @@ const DetailPage = () => {
     );
     if (response) {
       setDetail(response.data);
+      console.log('detail producto',response.data);
+      
     }
   };
 
   useEffect(() => {
-    const isDateIncluded = availableDates.some((item) => {
-      return (
-        item?.getFullYear() === selectedDate?.getFullYear() &&
-        item?.getMonth() === selectedDate?.getMonth() &&
-        item?.getDate() === selectedDate?.getDate()
-      );
-    });
-
-    if (isDateIncluded) {
-    }
-  }, [selectedDate, availableDates]);
-
-  useEffect(() => {
     getDetail();
+    console.log('talle cuando carg la pagina: ', size);
+    setSize('')
+    setAddProductSuccessful(false)
   }, []);
+
+  const handleSize = (talle)=>{
+    if(!selectedSize){
+        setSize(talle)
+        setAddProductSuccessful(false)
+    }else {
+      setSize('')
+    }
+    
+  }
+
+  const navigateBackwards = () =>{
+    console.log('current page en detail antes de ir atras: ', currentPage);
+    setCurrentPage(currentPage)
+    console.log('current page en detail despues de ir atras: ', currentPage);
+
+    setTimeout(() => {
+      navigate(-1)      
+    }, 1000);
+  }
 
   return (
     <>
@@ -170,12 +220,13 @@ const DetailPage = () => {
         w={"98vw"}
         display={"flex"}
         justifyContent={"center"}
-        p={20}
+        px={20}
+        py={4}
       >
         {detail && (
           <VStack
             spacing={4}
-            color={"blanco"}
+            color={"negro"}
             w={"70vw"}
             justifySelf={"center"}
           >
@@ -183,105 +234,223 @@ const DetailPage = () => {
               justify={"space-between"}
               w={"100%"}
               h={"60px"}
-              color={"blanco"}
-              border={"1px solid black"}
+              color={"negro"}
+              // borderBottom={"1px solid"}
+              // borderColor={'color'}
               alignContent={"center"}
               justifyContent={"space-between"}
               padding={"5px"}
+              pb='10'
               minW={"300px"}
             >
-              <HStack ml={3} w="50%">
-                {token && (
-                  <Box
-                    onClick={handleHeartClick}
-                    color="green"
-                    _hover={{
-                      color: "green",
-                    }}
-                  >
-                    {isFavorite ? (
-                      <FaHeart size={30} />
-                    ) : (
-                      <FaRegHeart size={30} />
-                    )}
-                  </Box>
-                )}
-                <IconButton
-                  colorScheme="gray"
-                  variant="outline"
-                  size="lg"
-                  aria-label="Share"
-                  icon={<FcShare />}
-                  onClick={() => setOpenShareModal(true)}
-                />
-                <Text
-                  readOnly={true}
-                  fontFamily={"Saira"}
-                  color={"black"}
-                  fontWeight={"semibold"}
-                  fontSize={["0.8rem","1.3rem","1.6rem"]}
-                  marginLeft={"2%"}
-                  style={{
-                    caretColor: "transparent",
-                    background: "transparent",
-                    border: "none",
-                  }}
-                >
-                  {detail.productName}
-                </Text>
+              <HStack ml={3} w="50%">              
+             
               </HStack>
-              <HStack>
+              <HStack display={'flex'} justifyContent={'center'} alignContent={'center'} wrap={'wrap'}>               
                 <Button
-                  onClick={handleReserve}
-                  bg={"verde2"}
-                  alignSelf={"flex-end"}
+                  onClick={() => navigateBackwards()}
+                  color={"color"}
+                  p={3}
+                  px={5}
+                  borderRadius={0}
+                  variant={"plain"}
+                  _hover={{
+                    cursor: "pointer", // Cambia el cursor al pasar por encima
+                    fontWeight:'bold',
+                    borderBottom:'1px solid',
+                    borderColor:' color'
+                    }}
                 >
-                  Reservar
-                </Button>
-                <Button
-                  onClick={() => navigate(-1)}
-                  bg={"verde2"}
-                  marginRight={5}
-                >
-                  Atrás
+                  ATRÁS
                 </Button>
               </HStack>
             </HStack>
-            <VStack border={"1px solid black"} p={10}>
-              <Text
-                textAlign={"center"}
-                fontFamily="Saira"
-                fontWeight={"semibold"}
-                color="black"
-                fontSize={["0.9rem", "1.2rem"]}
+            <VStack  p={2}>
+             
+              <Grid
+                templateColumns={{ base: "1fr", md: "1fr 1fr" }}
+                h={["auto"]}
+                w={["auto", "100%"]}
+                gap={4}
+                p={4}
               >
-                DESCRIPCIÓN DEL PRODUCTO
-              </Text>
-              <Text
-                fontFamily={"Podkova"}
-                color={"black"}
-                fontSize={["12px","14px","18px"]}
-                marginTop={["5px","10px","20px"]}
-              >
-                {detail.detail}
-              </Text>
-            </VStack>
-            <Stack border={"1px solid black"} p={2}>
-              <ProductGallery
-                thumbnail={detail.thumbnail}
-                gallery={detail.gallery}
-              />
-              {Array.isArray(detail.gallery) && detail.gallery.length > 5 && (
-                <>
+                {/* Detalles del producto (columna derecha en pantallas grandes, arriba en pantallas pequeñas) */}
+                <VStack
+                  order={{ base: 1, md: 2 }}  // Coloca los detalles primero en pantallas pequeñas
+                  align="start"
+                  spacing={4}
+                >
+                  {/* Nombre del producto */}
+                  <Text fontSize="2xl" fontWeight="bold">{detail.productName}</Text>
+
+                  {/* DETALLE PRODUCTO */}
+                  <VStack  alignItems={'start'}>
+                    <Text  fontFamily="Roboto" fontWeight={"medium"} color="black" fontSize={["10px", "12px"]}>
+
+                    Descripción del producto:
+                    </Text>
+                    <Text
+                      fontFamily={"Roboto"}
+                      color={"black"}
+                      fontSize={["8px","12px"]}
+                      marginTop={["3px","6px"]}
+                    >
+                      {detail.detail}
+                    </Text>
+                  </VStack>
+                  
+                  {/* Precio del producto */}
+                  <Text fontSize="xl" color="gray.500">{`$${detail.precio}`}</Text>
+                      
+                  {/* Talles */}                
+                  {username && detail.features && detail.features.find(f => f.charName === "TALLE")?.charValue && (
+                    <VStack alignItems={'start'}>
+                      <HStack spacing={2} >
+                        {detail.features.find(f => f.charName === "TALLE").charValue.map((talle, index) => (
+                          <Button
+                            key={index}
+                            // variant={size === talle ? "solid" : "outline"}              
+                            backgroundColor={size === talle ? "color" : "white"}     
+                            color={size === talle ? "white" : "black"}     
+                            border={'1px solid'}
+                            borderColor={'color'}  
+                            onClick={()=>handleSize(talle)}
+                            _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                          >
+                            {talle}
+                          </Button>
+                        ))}
+                      </HStack>                      
+                        {sizeNotSelected && 
+                        <Text fontSize="sm" fontWeight="medium" color={'red'}>Este es un campo obligatorio.</Text>
+                      }
+                    </VStack>
+                  )}
+             
+                    {/* CANTIDAD */}
+                    {username &&
+                    <Box mt={4}>
+                      <Text fontSize="sm" fontWeight="semibold">Cantidad:</Text>
+                      <HStack mt={2}>
+                        <Button 
+                          size="sm" 
+                          onClick={decrement} 
+                          isDisabled={quantity === 1}
+                          backgroundColor={"white"}     
+                          color={"black"}     
+                          border={'1px solid'}
+                          borderColor={'color'}  
+                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                        >
+                          -
+                        </Button>
+                        <Text fontSize="lg" fontWeight="semibold">{quantity}</Text>
+                        <Button 
+                          size="sm" 
+                          onClick={increment} 
+                          isDisabled={quantity === detail.stock}
+                          backgroundColor={"white"}     
+                          color={"black"}     
+                          border={'1px solid'}
+                          borderColor={'color'}  
+                          _hover={{cursor:'pointer', backgroundColor:'color', color:'white'}}
+                        >
+                          +
+                        </Button>
+                      </HStack>
+                      <Text fontSize="xs" mt={1} color="gray.500">
+                        Stock disponible: {detail.stock}
+                      </Text>
+                    </Box>
+                    }
+
+                  {/* exito addtocart */}
+                      {addProductSuccessful &&
+
+                        <Box backgroundColor={'green.100'} p={5} fontWeight={'normal'} rounded="md">
+                          <Text>El producto fue agregado al carrito con éxito.</Text>
+                        </Box>
+                    }
+                  {/* Botón agregar al carrito */}
+                  {username &&
+                    <Button
+                      onClick={() => addToCart(detail)}
+                      // colorScheme="teal"
+                      backgroundColor={'white'}
+                      variant="solid"
+                      width="250px"                      
+                      border={'1px solid'}
+                      borderColor={'color'}
+                      marginTop={6}
+                      _hover={{
+                        backgroundColor:'color',
+                        color:'white'
+                      }}
+                    >
+                      AGREGAR AL CARRITO
+                    </Button>
+                  }
+
+                  
+                  {/* Botones de "like" y "compartir" */}
+                  <HStack spacing={4}>
+                 
+                    
+                    {/* Botón de compartir */}
+                    <IconButton
+                      icon={<FcShare />}
+                      aria-label="Share"
+                      variant="outline"
+                      size="md"
+                      onClick={() => setOpenShareModal(true)}
+                    />
+
+                       {/* Corazón */}
+                       {username && (
+                      <Box
+                        onClick={handleHeartClick}
+                        color={isFavorite ? "red.500" : "gray.400"}
+                        _hover={{ color: isFavorite ? "red.600" : "gray.500", cursor: "pointer" }}
+                      >
+                        {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+                      </Box>
+                    )}
+                  </HStack>
+                  
+                
+                </VStack>
+
+                {/* Imagen del producto (columna izquierda en pantallas grandes, abajo en pantallas pequeñas) */}
+                <Box order={{ base: 2, md: 1 }}>
+                  <Image
+                    src={detail.thumbnail}
+                    alt={detail.productName}
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
+                    maxH={ "700px"} // Ajusta la altura máxima en diferentes pantallas
+                  />
+                </Box>
+              </Grid>
+
+              {/* btn ver más fotos + modal galeria */}
+              {Array.isArray(detail.gallery) && detail.gallery.length != 0 && (
+                <HStack justifyContent={'start'} display={"flex"} alignSelf="flex-start">
                   <Button
                     onClick={handleGallery}
-                    bg={"verde2"}
-                    alignSelf={"flex-end"}
-                    w={20}
-                    mr={5}
-                    mb={5}
+                    color={"color"}
+                    p={3}
+                    px={5}
+                    borderRadius={0}
+                    variant={"plain"}
+                    _hover={{
+                      cursor: "pointer", // Cambia el cursor al pasar por encima
+                      fontWeight:'bold',
+                      borderBottom:'1px solid',
+                      borderColor:' color'
+                      }}
                   >
-                    Ver más
+                    VER MÁS
                   </Button>
                   <Drawer onClose={onClose} isOpen={isOpen} size={"full"}>
                     <DrawerOverlay />
@@ -305,11 +474,15 @@ const DetailPage = () => {
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>
-                </>
+                </HStack>
               )}
-            </Stack>
+            </VStack>
+         
             <Specs detail={detail}></Specs>
-            <Policies></Policies>
+
+            
+            <InfoComponent/>
+            {/* <Policies></Policies> */}
           </VStack>
         )}
       </VStack>

@@ -1,23 +1,32 @@
 import { VStack, Box } from "@chakra-ui/react";
-import SearchBar from "./searchBar/SearchBar";
-import ShowList from "./ShowList";
 import FilterBar from "./FilterBar";
-
+import SearchBar from "./searchBar/SearchBar";
+import RandomProductSlider from "./RandomProductSlider";
+import ShowList from "./ShowList"; 
+import { useProductContext } from "./Global.context"; 
+import InfoComponent from "../../infoComponent";
 const HomePage = () => {
-  //const token = import.meta.env.VITE_TOKEN;
-  const token = JSON.parse(localStorage.getItem("riskkojwt"));
-  const baseUrl = import.meta.env.VITE_SERVER_URL;
+  const { paginatedData, isFilteredByCategory} = useProductContext(); 
 
   return (
-    <div>
-    <Box w={"99vw"} bg={"blanco"} >
-      <VStack >
-        <SearchBar />
+    <Box w={"97vw"} bg={"blanco"}>
+      <VStack spacing={8}>
+
+        {/* FILTRADO POR GRUPOS DE CATEGORIAS */}
         <FilterBar />
-        <ShowList titulo={''}/>
+
+        {/* SLIDER DE PRODUCTOS DE TEMPORADA */}
+       {/* Mostrar el slider solo si no estamos filtrando por categoría */}
+       {!isFilteredByCategory && <RandomProductSlider />}
+
+        {/* PAGINADO DE PRODUCTOS CUANDO SE FILTRA POR CATEGORIA/AS O NOMBRE, Y PARA FAVORITOS */}
+        <ShowList products={paginatedData} /> 
+
+        {/* CUADRADOS INFORMATIVOS */}
+        <InfoComponent/>
+
       </VStack>
     </Box>
-    </div>
   );
 };
 

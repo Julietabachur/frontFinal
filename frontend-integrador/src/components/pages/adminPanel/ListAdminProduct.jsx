@@ -1,27 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import {
-  Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Img,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
-  Flex,
-  Text,
-  Button,
-  HStack,
-} from "@chakra-ui/react";
+import { Box, Table, Thead, Tbody, Tr, Th, Td, Img, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Flex, Text, Button } from "@chakra-ui/react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import NewProduct from "./NewProduct";
+import * as XLSX from "xlsx"; // Para exportar a Excel
+import { jsPDF } from "jspdf"; // Para exportar a PDF
+import "jspdf-autotable";
+import { useProductContext } from "../home/Global.context";
 
 const ListAdminProduct = ({
   getProducts,
@@ -35,31 +20,52 @@ const ListAdminProduct = ({
   getFeaturesAll,
   showAddProduct,
   setShowAddProduct,
-  setShowProdList
-  }) => {
-  console.log("COMIENZA LISTADMIN");
-  console.log(page);
+  setShowProdList,
+}) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   const [closeList, setCloseList] = useState(false);
+  const [allProductsLoaded, setAllProductsLoaded] = useState([]);
   const [productToEdit, setProductToEdit] = useState(null);
 
-  // constantes del Alert Box
-
-  const cancelRef = useRef(); // permite cancelar en el box de alerta
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false); // controla estado del AlertBox
-  const [itemToDelete, setItemToDelete] = useState(null); // pasa la variable del item a eliminar
+  const cancelRef = useRef();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     getProducts();
-  }, [page]); // Agrega 'page' como dependencia para que se actualice cuando cambie el número de página
+  }, [page]);
 
-  /*  CREO ES INNECESARIO
   useEffect(() => {
-    getCategoriesAll();
-    getFeaturesAll();
+    getAllProducts()
+    console.log('todos los productos: ', allProductsLoaded);
+
+    
   }, []);
-  */
+
+  const getAllProducts = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/api/v1/admin/products/all`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response) {
+        let data = response.data   
+        const allProducts = data;
+        setAllProductsLoaded(data)    
+        console.log('cargados todos los productos: ', allProductsLoaded);
+        
+
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const openDeleteDialog = (item) => {
     setIsDeleteDialogOpen(true);
@@ -72,148 +78,190 @@ const ListAdminProduct = ({
 
   const handleDelete = async (id) => {
     try {
-      // Realiza una solicitud DELETE a la API para eliminar el producto
       await axios.delete(`${baseUrl}/api/v1/admin/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      // Vuelve a obtener la lista de productos después de eliminar.
       getProducts();
-      //console.log(lista);
-
     } catch (error) {
       console.error("Error al eliminar el producto", error);
     }
   };
 
   const handleEdit = (product) => {
-    setCloseList(true);  // cierra el listado 
-    setProductToEdit(product); // pasa el objeto product a traves del prop
-    //console.log("Producto para editar:", productToEdit);
-    //console.log("Muestra Formulario", showAddProduct);
+    setCloseList(true);
+    setProductToEdit(product);
+  };
+
+  // Exportar datos a Excel
+  const handleDownloadExcelReport = () => {
+   if (allProductsLoaded.length > 0 ) {
+    const worksheet = XLSX.utils.json_to_sheet(
+      allProductsLoaded.map((product) => ({
+        ID: product.productId,
+        Nombre: product.productName,
+        Categoría: product.category,
+        Stock: product.stock,
+      }))
+    );
+
+      // Añadir un estilo básico de encabezado
+  worksheet['!cols'] = [
+    { width: 10 }, 
+    { width: 30 }, 
+    { width: 15 }, 
+    { width: 10 }, 
+  ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Productos");
+    XLSX.writeFile(workbook, "reporte_productos.xlsx");
+   }
+
+  };
+
+  // Exportar datos a PDF
+  const handleDownloadPDFReport = () => {
+    if (allProductsLoaded.length > 0 ) {
+    const doc = new jsPDF();
+    doc.text("Reporte de Productos", 14, 20);
+    doc.autoTable({
+      startY: 30,
+      head: [["ID", "Nombre", "Categoría", "Stock"]],
+      body: allProductsLoaded.map((product) => [
+        product.productId,
+        product.productName,
+        product.category,
+        product.stock,
+      ]),
+      headStyles: {
+        fillColor: '#e1bc6a', // Color de fondo del encabezado (en formato RGB)
+        fontStyle: 'bold', // Estilo de fuente del encabezado
+        halign: 'center', // Centrar el texto horizontalmente
+        valign: 'middle',
+        fontSize: 10,
+      },
+      bodyStyles: {
+        lineWidth: 0.1, // Grosor de las líneas que separan las celdas
+        lineColor: [0, 0, 0], // Color de las líneas separadoras (en formato RGB, aquí es negro)
+        halign: 'center', // Centrar el texto horizontalmente en el cuerpo de la tabla
+        valign: 'middle',
+        fontSize: 8,
+      },
+    });
+
+    doc.save("reporte_productos.pdf");
+    }
   };
 
   return (
     <>
-    {closeList == false && (
-            <Flex justify={"center"}>
-            <Box mt={10}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
+      {!closeList && (
+        <Flex justify={"center"}>
+          <Box mt={10}>
+            {/* Botones para descargar reportes */}
+            <Flex mb={4}>
+              <Button
+                isDisabled={allProductsLoaded.length == 0}
+                mr={2}
+                border={"1px solid"}      
+                borderColor={'color'}    
+                color={'color'}               
+                onClick={handleDownloadExcelReport}
+                variant="outline"
+                _hover={{
+                  backgroundColor: "color",
+                  color: "white",
                 }}
               >
-                <Button
-                  colorScheme="green"
-                  onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
-                  disabled={page === 0}
-                >
-                  &lt;&lt;&lt;
-                </Button>
-                <Text>- {page} -</Text>
-                <Button
-                  colorScheme="green"
-                  onClick={() => handlePageChange(page + 1)}
-                >
-                  &gt;&gt;&gt;
-                </Button>
-              </div>
-    
-              <Box w={830} mt={3}>
-                <Table variant="striped" colorScheme="green">
-                  <Thead>
-                    <Tr>
-                      <Th>
-                        <Text fontWeight="bold">ID</Text>
-                      </Th>
-                      <Th>
-                        <Text fontWeight="bold">Nombre</Text>
-                      </Th>
-                      <Th>
-                        <Text fontWeight="bold">Categoría</Text>
-                      </Th>
-                      <Th>
-                        <Text fontWeight="bold">Imagen</Text>
-                      </Th>
-                      <Th>
-                        <Text fontWeight="bold" style={{ marginBottom: "8px" }}>
-                          Editar / Eliminar
-                        </Text>
-                      </Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {lista &&
-                      lista.map((item) => (
-                        <Tr key={item.id} h="10px">
-                          <Td>{item.productId}</Td>
-                          <Td>{item.productName}</Td>
-                          <Td>{item.category}</Td>
-                          <Td>
-                            <Img
-                              src={item.thumbnail}
-                              alt={item.productName}
-                              w={50}
-                              h={50}
-                            />
-                          </Td>
-                          <Td>
-                            
-                            <FaEdit
-                              style={{
-                                cursor: "pointer",
-                                color: "green",
-                                fontSize: "1.2em",
-                                marginLeft: "40px",
-                                marginBotton: "10px" 
-                              }}
-                              onClick={() => handleEdit(item)}
-                            />
-                            <FaTrash
-                              style={{
-                                cursor: "pointer",
-                                color: "red",
-                                fontSize: "1.2em",
-                                marginLeft: "40px",
-                                marginTop: "10px" 
-                              }}
-                              onClick={() => openDeleteDialog(item)}
-                            />
-                            
-                          </Td>
-                        </Tr>
-                      ))}
-                  </Tbody>
-                </Table>
-              </Box>
-            </Box>
-          </Flex>
-    )}
-
-
-
-      <AlertDialog
-        isOpen={isDeleteDialogOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={closeDeleteDialog}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Confirmación
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              ¿Seguro que quiere eliminar este elemento?
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={closeDeleteDialog}>
-                Cancelar
+                Descargar Excel
               </Button>
               <Button
-                colorScheme="red"
+                isDisabled={allProductsLoaded.length == 0}
+                border={"1px solid"}
+                borderColor={'color'}    
+                color={'color'}            
+                onClick={handleDownloadPDFReport}
+                variant="outline"
+                _hover={{
+                  backgroundColor: "color",
+                  color: "white",
+                }}
+              >
+                Descargar PDF
+              </Button>
+            </Flex>
+
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginTop: "10px" }}>
+              <Button
+                border={"1px solid #e1bc6a"}
+                _focus={{ borderColor: "#e1bc6a", backgroungColor: "#e1bc6a" }}
+                onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
+                disabled={page === 0}
+              >
+                &lt;&lt;
+              </Button>
+              <Text>- {page} -</Text>
+              <Button
+                border={"1px solid #e1bc6a"}
+                _focus={{ borderColor: "#e1bc6a", backgroungColor: "#e1bc6a" }}
+                onClick={() => handlePageChange(page + 1)}
+              >
+                &gt;&gt;
+              </Button>
+            </div>
+
+            <Box w={830} mt={3}>
+              <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
+                <Thead>
+                  <Tr>
+                    <Th>ID</Th>
+                    <Th>Nombre</Th>
+                    <Th>Categoría</Th>
+                    <Th>Imagen</Th>
+                    <Th>Stock</Th>
+                    <Th>Acciones</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {lista.map((item) => (
+                    <Tr key={item.id}>
+                      <Td>{item.productId}</Td>
+                      <Td>{item.productName}</Td>
+                      <Td>{item.category}</Td>
+                      <Td>
+                        <Img src={item.thumbnail} alt={item.productName} w={50} h={50} />
+                      </Td>
+                      <Td>{item.stock}</Td>
+                      <Td>
+                        <FaEdit
+                          style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "10px" }}
+                          onClick={() => handleEdit(item)}
+                        />
+                        <FaTrash
+                          style={{ cursor: "pointer", color: "black", fontSize: "1.2em", marginLeft: "10px" }}
+                          onClick={() => openDeleteDialog(item)}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+          </Box>
+        </Flex>
+      )}
+
+      <AlertDialog isOpen={isDeleteDialogOpen} leastDestructiveRef={cancelRef} onClose={closeDeleteDialog}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">Confirmación</AlertDialogHeader>
+            <AlertDialogBody>¿Seguro que quiere eliminar este elemento?</AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={closeDeleteDialog}>Cancelar</Button>
+              <Button
+                color="red"
                 onClick={() => {
                   handleDelete(itemToDelete.id);
                   closeDeleteDialog();
@@ -227,8 +275,7 @@ const ListAdminProduct = ({
         </AlertDialogOverlay>
       </AlertDialog>
 
-      {/* Render condicional, solo se llama a EditProduct si la variable productToEdit es valida */}
-      {productToEdit !== null && (
+      {productToEdit && (
         <NewProduct
           token={token}
           productToEdit={productToEdit}

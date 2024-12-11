@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from "axios";
+import { useProductContext } from "../home/Global.context";
+
 import {
     Alert,
     AlertIcon,
@@ -22,7 +24,7 @@ const VerifyReg = () => {
     const frontUrl = import.meta.env.VITE_FRONT_URL;
     const GETME_URL = import.meta.env.VITE_GETME_URL;
 
-
+    const {setSeason} = useProductContext();
     const [showSentMail, setShowSentMail] = useState(false);
     const [mailSent, setMailSent] = useState(1);
     const [userId, setUserId] = useState("");
@@ -124,6 +126,7 @@ const VerifyReg = () => {
                 localStorage.setItem("riskkojwt", JSON.stringify(response.data.token));
 
                 // agregar un delay y luego que redirija al home
+                setSeason('Primavera')
                 setTimeout(() => {
                     navigate("/");
                 }, 3000);
