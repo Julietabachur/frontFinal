@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
   Td,
   Flex,
   Checkbox,
+  Input,
 } from "@chakra-ui/react";
 import axios from "axios";
 import * as XLSX from "xlsx";
@@ -18,11 +19,32 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) => {
+  const [filterTermName, setFilterTermName] = useState(""); // Filtro por nombre
+  const [filterTermUsername, setFilterTermUsername] = useState(""); // Filtro por username
+  const [filterTermEmail, setFilterTermEmail] = useState(""); // Filtro por email
+  const [filterAdmin, setFilterAdmin] = useState(false);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     getUsers();
   }, [userPage]);
+
+  // Filtrar usuarios según los filtros
+  const filteredUserList = useMemo(() => {
+    return userList.filter((user) => {
+      const fullName = `${user.firstName || ""} ${user.lastName || ""}`.toLowerCase();
+      const username = user.clientName ? user.clientName.toLowerCase() : "";
+      const email = user.email ? user.email.toLowerCase() : "";
+      const isAdmin = (user.roles || []).includes("ADMIN");
+
+      return (
+        fullName.includes(filterTermName.toLowerCase()) &&
+        username.includes(filterTermUsername.toLowerCase()) &&
+        email.includes(filterTermEmail.toLowerCase()) &&
+        (filterAdmin ? isAdmin : true)
+      );
+    });
+  }, [filterTermName, filterTermUsername, filterTermEmail, filterAdmin, userList]);
 
   const handleCheckboxChange = async (user, isChecked) => {
     const confirmationMessage = isChecked
@@ -82,7 +104,7 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
 
     // Título del documento
     doc.setFontSize(18);
-    doc.text("Reporte de Usuarios", 14, 20);
+    doc.text("Reporte de Usuarios", 14, 15);
 
     // Generar tabla con los datos
     const tableColumn = ["ID", "Nombre", "Username", "Email", "Admin"];
@@ -97,8 +119,24 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
     // Insertar tabla en el PDF
     doc.autoTable({
       head: [tableColumn],
-      body: tableRows,
-      startY: 30,
+        body: tableRows,
+        startY: 20,
+        styles: {
+            fontSize: 8,
+            halign: "center",
+            valign: "middle",
+        },
+        headStyles: {
+            fillColor: "#e1bc6a",
+            fontStyle: "bold",
+            halign: "center",
+            valign: "middle",
+            fontSize: 10,
+        },
+        bodyStyles: {
+            lineWidth: 0.1,
+            lineColor: [0, 0, 0],
+        },
     });
 
     // Descargar el archivo PDF
@@ -115,7 +153,6 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           colorScheme="yellow"
           variant="outline"
           _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
-          color={'color'}            
           mb={4}
         >
           Descargar reporte en Excel
@@ -126,13 +163,45 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           onClick={handleDownloadUsersPDF}
           colorScheme="yellow"
           variant="outline"
-          color={'color'}
           _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
           mb={4}
           ml={4}
         >
           Descargar reporte en PDF
         </Button>
+
+        {/* Filtros */}
+        <Flex mb={4} justify="space-between">
+          <Input
+            placeholder="Filtrar por nombre..."
+            value={filterTermName}
+            onChange={(e) => setFilterTermName(e.target.value)}
+            mr={2}
+            width="22%"
+          />
+          <Input
+            placeholder="Filtrar por username..."
+            value={filterTermUsername}
+            onChange={(e) => setFilterTermUsername(e.target.value)}
+            mr={2}
+            width="22%"
+          />
+          <Input
+            placeholder="Filtrar por email..."
+            value={filterTermEmail}
+            onChange={(e) => setFilterTermEmail(e.target.value)}
+            mr={2}
+            width="22%"
+          />
+          <Checkbox
+            colorScheme="gray"
+            isChecked={filterAdmin}
+            onChange={(e) => setFilterAdmin(e.target.checked)}
+            mt={2}
+          >
+            Mostrar solo administradores
+          </Checkbox>
+        </Flex>
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
@@ -164,8 +233,8 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
               </Tr>
             </Thead>
             <Tbody>
-              {userList.map((user) => (
-                <Tr key={user.id}>
+              {filteredUserList.map((user) => (
+                <Tr key={user.id || user.clientName}>
                   <Td>{`${user.firstName || ""} ${user.lastName || ""}`}</Td>
                   <Td>{user.clientName || "N/A"}</Td>
                   <Td>{user.email || "N/A"}</Td>

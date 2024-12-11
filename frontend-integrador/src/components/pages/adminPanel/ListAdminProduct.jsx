@@ -62,26 +62,20 @@ const ListAdminProduct = ({
   const applyFilters = () => {
     let filtered = [...allProductsLoaded];  
 
-    // Filtro por ID (asegurándonos de que sea una cadena)
     if (filters.productId) {
       filtered = filtered.filter((product) =>
         product.productId.toString().toLowerCase().includes(filters.productId.toLowerCase())
       );
     }
-
-    // Filtro por categoría
     if (filters.category) {
       filtered = filtered.filter((product) =>
         product.category.toLowerCase().includes(filters.category.toLowerCase())
       );
     }
-
-    // Filtro por stock desde
     if (filters.stockDesde) {
       filtered = filtered.filter((product) => product.stock >= parseInt(filters.stockDesde));
     }
 
-    // Filtro por stock hasta
     if (filters.stockHasta) {
       filtered = filtered.filter((product) => product.stock <= parseInt(filters.stockHasta));
     }
