@@ -44,7 +44,7 @@ const ListAdminSales = ({
   useEffect(() => {
     // Solo obtener las ventas de la página actual
     getSales();
-  }, [salesPage, getSales]);
+  }, [salesPage]);
 
   useEffect(() => {
     // Cargar todas las ventas al principio
@@ -66,7 +66,8 @@ const ListAdminSales = ({
         },
       });
       if (response.data) {
-        setReportSalesList(response.data);
+        console.log('Traigo todas las ventas: ', response.data);    
+        setReportSalesList(response.data)  
       }
     } catch (error) {
       console.log("error con getAllSales", error);
@@ -320,15 +321,27 @@ const ListAdminSales = ({
         </Accordion>
 
         {/* Tabla de ventas filtradas */}
-        <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
-          <Thead>
-            <Tr>
-              <Th>Fecha</Th>
-              <Th>Productos</Th>
-              <Th>Entrega</Th>
-              <Th>Medio de Pago</Th>
-              <Th>Total</Th>
-            </Tr>
+        
+        {/* <Box w={1000} mt={3} mb={10}> */}
+            <Table variant="simple" >
+              <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
+              <Tr>
+              <Th>
+              <Text textAlign={'center'} fontWeight="bold">Fecha</Text>
+              </Th>    
+              <Th>
+              <Text textAlign={'center'} fontWeight="bold">Productos</Text>
+              </Th>
+              <Th>
+              <Text textAlign={'center'} fontWeight="bold">Entrega</Text>
+              </Th>
+              <Th>
+              <Text textAlign={'center'} fontWeight="bold">Medio de pago</Text>
+              </Th>
+              <Th>
+              <Text textAlign={'center'} fontWeight="bold">Total de compra</Text>
+              </Th>                        
+              </Tr>
           </Thead>
           <Tbody>
             {filteredSalesList.length > 0
@@ -360,7 +373,7 @@ const ListAdminSales = ({
                 ))}
           </Tbody>
         </Table>
-        {/* Paginación */}
+        {/* Paginación
         <Flex justify="center" mt={4}>
           <Button
             variant="outline"
@@ -377,8 +390,9 @@ const ListAdminSales = ({
           >
             Siguiente
           </Button>
-        </Flex>
+        </Flex> */}
       </Box>
+    {/* </Box>  */}
     </Flex>
   );
 };
