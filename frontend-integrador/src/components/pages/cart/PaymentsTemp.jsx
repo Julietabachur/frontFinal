@@ -47,9 +47,12 @@ function PaymentsTemp() {
           const [month, year] = value.split("/").map(Number);
           const currentYear = new Date().getFullYear() % 100; // Últimos 2 dígitos del año actual
           const currentMonth = new Date().getMonth() + 1;
+          const maxYear = currentYear + 6;
 
           if (year < currentYear || (year === currentYear && month < currentMonth)) {
             error = "La fecha de expiración debe ser superior a la fecha actual.";
+          }else if(year > maxYear){
+            error = "Fecha de expiración incorrecta.";
           }
         }
         break;
