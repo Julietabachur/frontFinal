@@ -320,7 +320,7 @@ const ListAdminSales = ({
         </Accordion>
 
         {/* Tabla de ventas filtradas */}
-        <Table variant="striped" colorScheme="yellow">
+        <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
           <Thead>
             <Tr>
               <Th>Fecha</Th>
