@@ -29,10 +29,15 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
   const [isFiltered, setIsFiltered] = useState(false);
 
   useEffect(() => {
-    getSales();
+    if (isFiltered) {
+      getAllSalesFilteredByPage()
+    }else{
+      getSales();
+    }
   }, [salesPage]);
 
   useEffect(() => {
+    setSalesPage(1)
     getAllSales();
   }, []);
 
@@ -73,8 +78,8 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
     try {
       const response = await axios.get(`${baseUrl}/api/v1/admin/sales/byDate`, {
         params: {
-          startDate: "2024-12-01",
-          endDate: "2024-12-11",
+          startDate: startDate,
+          endDate: endDate,
           page: salesPage
         },
         headers: {
@@ -82,9 +87,9 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
         },
       });
       if (response.data && response.data.content) {
-        console.log("Traigo las ventas filtradas paginadas tabla: ", response.data);
-        console.log("Traigo las ventas filtradas paginadas tabla: ", response.data);
-        console.log("Traigo las ventas filtradas paginadas tabla: ", response.data);
+        console.log("Traigo las ventas filtradas paginadas tabla CONTENT: ", response.data.content);
+        console.log("Traigo las ventas filtradas paginadas tabla TOTALSALESPAGE: ", response.data.last);
+        console.log("Traigo las ventas filtradas paginadas tabla SALESPAGE: ", response.data.current);
         setSalesList(response.data.content);
         setTotalSalesPages(response.data.last);
         setSalesPage(response.data.current);
@@ -96,17 +101,22 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
 
   const handleDownloadSalesReportExcel = async () => {
     if (reportSalesList.length > 0) {
-      const worksheet = XLSX.utils.json_to_sheet(
-        reportSalesList.map((sale) => ({
-          Fecha: new Date(sale.saleDate).toLocaleDateString() || "N/A",
-          Productos: sale.productList
-            ?.map((producto) => `${producto.productName}, ${producto.size}, ${producto.amount}`)
-            .join("; ") || "N/A",
-          Entrega: sale.entrega?.toUpperCase() + (sale.entrega === "envio" ? `: ${sale.domicilio}` : "") || "N/A",
-          "Medio de pago": sale.medioDePago || "N/A",
-          "Total de compra": `$${sale.totalPrice || 0}`,
-        }))
-      );
+      const tabla = reportSalesList.map((sale) => ({
+        Fecha: new Date(sale.saleDate).toLocaleDateString() || "N/A",
+        Productos: sale.productList
+          ?.map((producto) => `${producto.productName}, ${producto.size}, ${producto.amount}`)
+          .join("; ") || "N/A",
+        Entrega: sale.entrega?.toUpperCase() + (sale.entrega === "envio" ? `: ${sale.domicilio}` : "") || "N/A",
+        "Medio de pago": sale.medioDePago || "N/A",
+        "Total de compra": `$${sale.totalPrice || 0}`,
+      }));
+  
+      // Crear hoja de cálculo
+      const worksheet = XLSX.utils.json_to_sheet(tabla, { origin: "A3" }); // La tabla empieza en la fila 3
+  
+      // Agregar el título en la fila 1
+      const titulo = [[`Reporte de Ventas: ${reportSalesList.length} resultados`]];
+      XLSX.utils.sheet_add_aoa(worksheet, titulo, { origin: "A1" });
 
       worksheet["!cols"] = [
         { width: 20 },
@@ -137,7 +147,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
         `$${sale.totalPrice || 0}`,
       ]);
 
-      doc.text("Reporte de Ventas", 14, 15);
+      doc.text(`Reporte de Ventas: ${reportSalesList.length} resultados`, 14, 15);
 
       doc.autoTable({
         head: [tableColumn],
@@ -173,6 +183,8 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
 
   const handleClearFilter = async () => {
     setIsFiltered(false);
+    setEndDate('')
+    setStartDate('')
     getSales(); // Recargar las ventas paginadas sin filtro
     await getAllSales(); // Obtener la lista completa sin filtros
   };
@@ -180,7 +192,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
   return (
     <Flex justify="center">
       <Box mt={10}>
-        <HStack>
+        <HStack alignItems={'end'}>
           <VStack mb={4} justifyContent={'start'} alignItems={'start'}>
             <Button
               onClick={handleDownloadSalesReportExcel}
@@ -214,7 +226,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
             </Button>
           </VStack>
           <FormControl as="fieldset" mb={4}>
-            <FormLabel as="legend">Filtrar por fecha:</FormLabel>
+            {/* <FormLabel as="legend">Filtrar por fecha</FormLabel> */}
             <HStack spacing={4} alignItems={'end'}>
               <Box>
                 <FormLabel htmlFor="startDate">Desde:</FormLabel>
@@ -271,24 +283,30 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
         </HStack>
 
 
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            border="1px solid #e1bc6a"
-            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-            onClick={() => handlePageChange(salesPage > 1 ? salesPage - 1 : salesPage)}
-            disabled={salesPage === 1}
-          >
-            &lt;&lt;
-          </Button>
-          <Text>- {salesPage} -</Text>
-          <Button
-            border="1px solid #e1bc6a"
-            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-            onClick={() => handlePageChange(salesPage + 1)}
-          >
-            &gt;&gt;
-          </Button>
-        </div>
+        <Box style={{ display: "flex", justifyContent: "space-between" }}>
+          <Box>
+              <Text>Resultados: { reportSalesList.length }</Text>
+          </Box>
+          <Box display={'flex'} >
+            <Button
+              border="1px solid #e1bc6a"
+              _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+              onClick={() => handlePageChange(salesPage > 1 ? salesPage - 1 : salesPage)}
+              disabled={salesPage === 1}
+            >
+              &lt;&lt;
+            </Button>
+            <Text>- {salesPage} -</Text>
+            <Button
+              border="1px solid #e1bc6a"
+              _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+              onClick={() => handlePageChange(salesPage + 1)}
+            >
+              &gt;&gt;
+            </Button>
+          </Box>
+
+        </Box>
 
         <Box  w={{base:'600', md:'900'}} mt={3}>
           <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)" w={{base:'600', md:'900'}} >
@@ -324,7 +342,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
               </Tr>
             </Thead>
             <Tbody>
-              {console.log("salesList:", salesList)}
+              {/* {console.log("salesList:", salesList)} */}
               {salesList.map((sale) => (
                 <Tr key={sale.id} h="30px">
                   <Td textAlign={"center"} fontSize={"12px"} width={{base:"15%", md:'150px'}} p={"10px"}>
