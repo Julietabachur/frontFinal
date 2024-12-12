@@ -14,21 +14,23 @@ import {
   FormLabel,
   Input,
   HStack,
+  VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import * as XLSX from "xlsx"; // Para Excel
 import jsPDF from "jspdf"; // Para PDF
 import "jspdf-autotable"; // Plugin para tablas en jsPDF
 
-const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesList }) => {
+const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesList, setSalesList, setSalesPage, setTotalSalesPages }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [reportSalesList, setReportSalesList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isFiltered, setIsFiltered] = useState(false);
 
   useEffect(() => {
     getSales();
-  }, [salesPage, reportSalesList]);
+  }, [salesPage]);
 
   useEffect(() => {
     getAllSales();
@@ -42,11 +44,53 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
         },
       });
       if (response.data) {
-        console.log("Traigo todas las ventas: ", response.data);
+        console.log("Traigo todas las ventas al reporte: ", response.data);
         setReportSalesList(response.data);
       }
     } catch (error) {
-      console.log("error con getAllSales", error);
+      console.log("error todas las ventas al reporte getallsales", error);
+    }
+  };
+
+  const getAllSalesFiltered = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v1/admin/sales/byDateWithoutPage`, {
+        params: { startDate, endDate },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data) {
+        console.log("Traigo las ventas filtradas sin paginar reporte: ", response.data);
+        setReportSalesList(response.data);
+      }
+    } catch (error) {
+      console.log("error con las ventas filtradas sin paginar reporte getAllSalesFiltered", error);
+    }
+  };
+
+  const getAllSalesFilteredByPage = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/api/v1/admin/sales/byDate`, {
+        params: {
+          startDate: "2024-12-01",
+          endDate: "2024-12-11",
+          page: salesPage
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data && response.data.content) {
+        console.log("Traigo las ventas filtradas paginadas tabla: ", response.data);
+        console.log("Traigo las ventas filtradas paginadas tabla: ", response.data);
+        console.log("Traigo las ventas filtradas paginadas tabla: ", response.data);
+        setSalesList(response.data.content);
+        setTotalSalesPages(response.data.last);
+        setSalesPage(response.data.current);
+      }
+    } catch (error) {
+      console.log("error con las ventas filtradas paginadas tabla getAllSalesFilteredByPage", error);
     }
   };
 
@@ -60,7 +104,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
             .join("; ") || "N/A",
           Entrega: sale.entrega?.toUpperCase() + (sale.entrega === "envio" ? `: ${sale.domicilio}` : "") || "N/A",
           "Medio de pago": sale.medioDePago || "N/A",
-          "Total de compra": $`${sale.totalPrice || 0}`,
+          "Total de compra": `$${sale.totalPrice || 0}`,
         }))
       );
 
@@ -121,84 +165,111 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
 
   const handleFilterSales = async () => {
     debugger
-    try {
-      const response = await axios.get(`${baseUrl}/api/v1/admin/sales/byDate`, {
-        params: { startDate, endDate },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.data) {
-        console.log("Ventas filtradas:", response.data);
-        setReportSalesList(response.data);
-      }
-    } catch (error) {
-      console.log("Error al filtrar ventas:", error);
-    }
+    setIsFiltered(true);
+    setSalesPage(1)
+    getAllSalesFilteredByPage()
+    getAllSalesFiltered()
+  };
+
+  const handleClearFilter = async () => {
+    setIsFiltered(false);
+    getSales(); // Recargar las ventas paginadas sin filtro
+    await getAllSales(); // Obtener la lista completa sin filtros
   };
 
   return (
     <Flex justify="center">
       <Box mt={10}>
-        <Flex mb={4}>
-          <Button
-            onClick={handleDownloadSalesReportExcel}
-            isDisabled={reportSalesList.length == 0}
-            mr={2}
-            border={"1px solid"}
-            borderColor={"color"}
-            color={"color"}
-            variant="outline"
-            _hover={{
-              backgroundColor: "color",
-              color: "white",
-            }}
-          >
-            Descargar reporte en Excel
-          </Button>
-          <Button
-            isDisabled={reportSalesList.length == 0}
-            onClick={handleDownloadSalesReportPDF}
-            mr={2}
-            border={"1px solid"}
-            borderColor={"color"}
-            color={"color"}
-            variant="outline"
-            _hover={{
-              backgroundColor: "color",
-              color: "white",
-            }}
-          >
-            Descargar reporte en PDF
-          </Button>
-        </Flex>
-
-        <FormControl as="fieldset" mb={4}>
-          <FormLabel as="legend">Filtrar por fecha:</FormLabel>
-          <HStack spacing={4}>
-            <Box>
-              <FormLabel htmlFor="startDate">Desde:</FormLabel>
-              <Input
-                type="date"
-                id="startDate"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-            </Box>
-            <Box>
-              <FormLabel htmlFor="endDate">Hasta:</FormLabel>
-              <Input
-                type="date"
-                id="endDate"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </Box>
-            <Button colorScheme="blue" onClick={handleFilterSales}>
-              Buscar
+        <HStack>
+          <VStack mb={4} justifyContent={'start'} alignItems={'start'}>
+            <Button
+              onClick={handleDownloadSalesReportExcel}
+              isDisabled={reportSalesList.length == 0}
+              mr={2}
+              border={"1px solid"}
+              borderColor={"color"}
+              color={"color"}
+              variant="outline"
+              _hover={{
+                backgroundColor: "color",
+                color: "white",
+              }}
+            >
+              Descargar reporte en Excel
             </Button>
-          </HStack>
-        </FormControl>
+            <Button
+              isDisabled={reportSalesList.length == 0}
+              onClick={handleDownloadSalesReportPDF}
+              mr={2}
+              border={"1px solid"}
+              borderColor={"color"}
+              color={"color"}
+              variant="outline"
+              _hover={{
+                backgroundColor: "color",
+                color: "white",
+              }}
+            >
+              Descargar reporte en PDF
+            </Button>
+          </VStack>
+          <FormControl as="fieldset" mb={4}>
+            <FormLabel as="legend">Filtrar por fecha:</FormLabel>
+            <HStack spacing={4}>
+              <Box>
+                <FormLabel htmlFor="startDate">Desde:</FormLabel>
+                <Input
+                  type="date"
+                  id="startDate"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </Box>
+              <Box>
+                <FormLabel htmlFor="endDate">Hasta:</FormLabel>
+                <Input
+                  type="date"
+                  id="endDate"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </Box>
+              <Button 
+                onClick={handleFilterSales}
+                isDisabled={!startDate || !endDate}
+                mr={2}
+                border={"1px solid"}
+                borderColor={"color"}
+                color={"color"}
+                variant="outline"
+                _hover={{
+                  backgroundColor: "color",
+                  color: "white",
+                }}
+                >
+                Buscar
+              </Button>
+              {isFiltered && (
+                <Button 
+                  onClick={handleClearFilter}
+                  mr={2}
+                  border={"1px solid"}
+                  borderColor={"color"}
+                  color={"color"}
+                  variant="outline"
+                  _hover={{
+                    backgroundColor: "color",
+                    color: "white",
+                  }}
+                >
+                  Limpiar Filtro
+                </Button>
+              )}
+            </HStack>
+          </FormControl>
+
+        </HStack>
+
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
@@ -219,8 +290,8 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
           </Button>
         </div>
 
-        <Box w={1000} mt={3} mb={10}>
-          <Table variant="simple">
+        <Box  w={{base:'600', md:'900'}} mt={3}>
+          <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)" w={{base:'600', md:'900'}} >
             <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
               <Tr>
                 <Th>
@@ -254,12 +325,12 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
             </Thead>
             <Tbody>
               {console.log("salesList:", salesList)}
-              {reportSalesList.map((sale) => (
+              {salesList.map((sale) => (
                 <Tr key={sale.id} h="30px">
-                  <Td textAlign={"center"} fontSize={"12px"} width={"15%"} p={"10px"}>
+                  <Td textAlign={"center"} fontSize={"12px"} width={{base:"15%", md:'150px'}} p={"10px"}>
                     {sale.saleDate}
                   </Td>
-                  <Td textAlign={"center"} fontSize={"12px"} width={"30%"}>
+                  <Td textAlign={"center"} fontSize={"12px"} width={{base:"25%", md:'250px'}}>
                     <Box as="ul" listStyleType="circle">
                       {sale.productList?.map((producto, index) => (
                         <ul key={index}>
@@ -268,14 +339,14 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
                       ))}
                     </Box>
                   </Td>
-                  <Td textAlign={"center"} fontSize={"12px"} width={"25%"}>
+                  <Td textAlign={"center"} fontSize={"12px"} width={{base:"25%", md:'250px'}}>
                     {sale.entrega?.toUpperCase()}
                     {sale.entrega === "envio" && `: ${sale.domicilio}`}
                   </Td>
-                  <Td textAlign={"center"} fontSize={"12px"} width={"20%"}>
+                  <Td textAlign={"center"} fontSize={"12px"} width={{base:"20%", md:'200px'}}>
                     {sale.medioDePago}
                   </Td>
-                  <Td textAlign={"center"} fontSize={"12px"} width={"10%"}>
+                  <Td textAlign={"center"} fontSize={"12px"} width={{base:"15%", md:'150px'}}>
                     ${sale.totalPrice}
                   </Td>
                 </Tr>

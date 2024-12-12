@@ -310,6 +310,7 @@ const AdminDashboard = ({ token, roles }) => {
       setShowAdminFeatures(false);
       setShowAddProduct(false);
       setShowAdminPolicy(false);
+      setShowSalesList(false);
     } else if (origin === "category") {
       setShowCategoyList(true);
       setShowUserList(false);
@@ -347,7 +348,7 @@ const AdminDashboard = ({ token, roles }) => {
 
   // Renderizado del componente
   return token ? (
-    <Box pos={"relative"} top={8} w={"99vw"} h={"199vh"}>
+    <Box  w={"99vw"} h={'auto'} minH={'350px'} mb={10}>
       {console.log("AlertSuccess:", showSuccess)}
 
       {showSuccess && (
@@ -358,92 +359,92 @@ const AdminDashboard = ({ token, roles }) => {
       )}
 
 
-<Flex justifyContent="center" alignItems="center" gap={4} >
+      <Flex justifyContent="center" alignItems="center" gap={4} >
 
-      <Box borderBottom="2px" borderColor={'color'} p="10px" bg={"white"}>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("addProd")}
-        >
-          Agregar Producto
-        </Button>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("category")}
-        >
-          Listar Categorías
-        </Button>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("feature")}
-        >
-          Administrar Características
-        </Button>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("item")}
-        >
-          Listar Productos
-        </Button>
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("user")}
-        >
-          Listar Usuarios
-        </Button>
+        <Box borderBottom="2px" borderColor={'color'} p="10px" bg={"white"}>
+          <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("addProd")}
+          >
+            Agregar Producto
+          </Button>
+          <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("category")}
+          >
+            Listar Categorías
+          </Button>
+          <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("feature")}
+          >
+            Administrar Características
+          </Button>
+          <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("item")}
+          >
+            Listar Productos
+          </Button>
+          <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("user")}
+          >
+            Listar Usuarios
+          </Button>
+          
+          <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("sales")}
+          >
+            Listar Ventas
+          </Button>
+          {/* <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("reports")}
+          >
+            Central de Informes
+          </Button> */}
         
-        <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("sales")}
-        >
-          Listar Ventas
-        </Button>
-        {/* <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("reports")}
-        >
-          Central de Informes
-        </Button> */}
-       
-       {/*  <Button
-          colorScheme="white"
-          borderColor="#e1bc6a"
-          borderWidth="2px"
-          color="black"
-          ml={4}
-          onClick={() => handleShow("policy")}
-        >
-          Administrar Políticas
-        </Button> */}
-      </Box>
+        {/*  <Button
+            colorScheme="white"
+            borderColor="#e1bc6a"
+            borderWidth="2px"
+            color="black"
+            ml={4}
+            onClick={() => handleShow("policy")}
+          >
+            Administrar Políticas
+          </Button> */}
+        </Box>
       </Flex>
 
       {showAddProduct == true && (
@@ -457,19 +458,21 @@ const AdminDashboard = ({ token, roles }) => {
 
       {/* Logicas para mostrar las listas Productos Usuarios Categorias Caracteristicas*/}
       {showProdList == true && (
-        <ListAdminProduct
-          token={token}
-          getProducts={getProducts}
-          page={page}
-          handlePageChange={handlePageChange}
-          lista={lista}
-          featuresListAll={featuresListAll}
-          getFeaturesAll={getFeaturesAll}
-          showAddProduct={showAddProduct}
-          setShowAddProduct={setShowAddProduct}
-          showProdList={showProdList}
-          setShowProdList={setShowProdList}
-        />
+        <Box >
+          <ListAdminProduct
+            token={token}
+            getProducts={getProducts}
+            page={page}
+            handlePageChange={handlePageChange}
+            lista={lista}
+            featuresListAll={featuresListAll}
+            getFeaturesAll={getFeaturesAll}
+            showAddProduct={showAddProduct}
+            setShowAddProduct={setShowAddProduct}
+            showProdList={showProdList}
+            setShowProdList={setShowProdList}          
+          />
+          </Box>
       )}
 
       {showUserList == true && (
@@ -512,7 +515,7 @@ const AdminDashboard = ({ token, roles }) => {
 
       {/* Logicas para mostrar las listas Ventas */}
 
-      {showSalesList == true && <ListSales token={token} getSales={getSales} salesPage={salesPage} handlePageChange={handleSalesPageChange} salesList={salesList} />}
+      {showSalesList == true && <ListSales token={token} getSales={getSales} salesPage={salesPage} handlePageChange={handleSalesPageChange} salesList={salesList} setSalesList={setSalesList} setSalesPage={setSalesPage} setTotalSalesPages={setTotalSalesPages}/>}
 
       {/* Mensaje de error que cubre toda la página si la resolución es menor que la de computadora */}
       {showErrorMessage && (

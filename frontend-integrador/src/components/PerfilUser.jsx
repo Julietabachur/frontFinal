@@ -238,7 +238,7 @@ const PerfilUser = () => {
   return (
     <VStack
       w="100%"
-      h="100vh"
+      // h="100vh"
       maxWidth="1200px"
       spacing={8}
       align="center"
@@ -460,7 +460,7 @@ const PerfilUser = () => {
                 </FormErrorMessage>
               </FormControl>
             </SimpleGrid>
-            <Flex justify="space-between" mt={4}>
+            <Flex justify="end" mt={4}>
               {/* <Button
                 onClick={onPasswordModalOpen}
                 backgroundColor="red"
