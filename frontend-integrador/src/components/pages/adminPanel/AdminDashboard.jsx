@@ -156,7 +156,6 @@ const AdminDashboard = ({ token, roles }) => {
   };
   // LOGICA DE getSales- LISTAR ventas PAGINADAS
   const getSales = async () => {
-    debugger
     try {
       const response = await axios.get(
         `${baseUrl}/api/v1/admin/sales?page=${salesPage}`,

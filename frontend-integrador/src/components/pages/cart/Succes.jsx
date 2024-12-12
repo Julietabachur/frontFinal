@@ -28,7 +28,6 @@ function Succes() {
 
   useEffect(() => {
     setTimeout(() => {
-      debugger
       setLoading(false);
     }, 7000);
   }, []);
@@ -158,7 +157,7 @@ function Succes() {
             </Table>
           </TableContainer>
 
-          <HStack justifyContent={'space-between'} px={4} fontSize={'20px'} w={830} mt={4} pt={4} color={'color'} fontWeight={'medium'} borderTop={'1px solid'} borderColor={'color'}>
+          <HStack justifyContent={'space-between'} px={4} fontSize={'20px'}  w={{ base: '100%', md: '830px' }} mt={4} pt={4} color={'color'} fontWeight={'medium'} borderTop={'1px solid'} borderColor={'color'}>
                 <Text>
                     Total abonado
                 </Text>
