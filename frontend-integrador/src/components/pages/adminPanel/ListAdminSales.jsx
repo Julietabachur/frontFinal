@@ -10,6 +10,10 @@ import {
   Th,
   Td,
   Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  HStack,
 } from "@chakra-ui/react";
 import axios from "axios";
 import * as XLSX from "xlsx"; // Para Excel
@@ -19,167 +23,136 @@ import "jspdf-autotable"; // Plugin para tablas en jsPDF
 const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesList }) => {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [reportSalesList, setReportSalesList] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     getSales();
-  }, [salesPage]);
-  
+  }, [salesPage, reportSalesList]);
+
   useEffect(() => {
     getAllSales();
   }, []);
 
-
-  const getAllSales = async ()=>{
+  const getAllSales = async () => {
     try {
-      const response = await axios.get(
-        `${baseUrl}/api/v1/private/sales`,          
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );     
+      const response = await axios.get(`${baseUrl}/api/v1/private/sales`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.data) {
-        console.log('Traigo todas las ventas: ', response.data);    
-        setReportSalesList(response.data)  
+        console.log("Traigo todas las ventas: ", response.data);
+        setReportSalesList(response.data);
       }
     } catch (error) {
       console.log("error con getAllSales", error);
     }
-  }
+  };
 
   const handleDownloadSalesReportExcel = async () => {
-    // let allSales = [];
-    // const pageSize = 20; // Tamaño de página estándar
-    // let currentPage = 1; // Comenzamos desde la primera página
-    // let hasMoreSales = true;
-
-    // while (hasMoreSales) {
-    //   try {
-    //     const response = await axios.get(`${baseUrl}/api/v1/admin/sales`, {
-    //       params: { page: currentPage, size: pageSize },
-    //       headers: {
-    //         Authorization: `Bearer ${token}`, // Token requerido
-    //       },
-    //     });
-
-    //     const sales = response.data.data || []; // Si las ventas están en 'data'
-
-    //     if (sales.length === 0) {
-    //       hasMoreSales = false; // Si no hay ventas, terminamos
-    //     } else {
-    //       allSales = [...allSales, ...sales]; // Acumulamos las ventas
-    //       currentPage++; // Pasamos a la siguiente página
-    //     }
-    //   } catch (error) {
-    //     console.error("Error al obtener ventas:", error.response ? error.response.data : error);
-    //     alert("Error al obtener las ventas.");
-    //     hasMoreSales = false; // Detenemos la ejecución si ocurre un error
-    //   }
-    // }
-
-    // if (allSales.length === 0) {
-    //   alert("No se encontraron ventas.");
-    //   return;
-    // }
-
-    // Generación de la hoja de Excel
     if (reportSalesList.length > 0) {
-      
-    const worksheet = XLSX.utils.json_to_sheet(
-      reportSalesList.map((sale) => ({
+      const worksheet = XLSX.utils.json_to_sheet(
+        reportSalesList.map((sale) => ({
+          Fecha: new Date(sale.saleDate).toLocaleDateString() || "N/A",
+          Productos: sale.productList
+            ?.map((producto) => `${producto.productName}, ${producto.size}, ${producto.amount}`)
+            .join("; ") || "N/A",
+          Entrega: sale.entrega?.toUpperCase() + (sale.entrega === "envio" ? `: ${sale.domicilio}` : "") || "N/A",
+          "Medio de pago": sale.medioDePago || "N/A",
+          "Total de compra": $`${sale.totalPrice || 0}`,
+        }))
+      );
 
-        Fecha: new Date(sale.saleDate).toLocaleDateString() || "N/A",
-      Productos: sale.productList?.map((producto) => (
-        `${producto.productName}, ${producto.size}, ${producto.amount}`
-      )).join("; ") || "N/A", // Unir los productos con un separador, por ejemplo, ";"
-      Entrega: sale.entrega?.toUpperCase() + (sale.entrega === 'envio' ? `: ${sale.domicilio}` : '') || "N/A",
-      "Medio de pago": sale.medioDePago || "N/A",
-      "Total de compra": `$${sale.totalPrice || 0}`,      
-      }))
-    );
+      worksheet["!cols"] = [
+        { width: 20 },
+        { width: 30 },
+        { width: 25 },
+        { width: 20 },
+        { width: 15 },
+      ];
 
-    // Configuración de estilos para el encabezado
-  const header = worksheet['!rows'] || [];
-  const headerRow = ['Fecha', 'Productos', 'Entrega', 'Medio de pago', 'Total de compra'];
-  
-  // Añadir un estilo básico de encabezado
-  worksheet['!cols'] = [
-    { width: 20 }, // Ancho para la columna Fecha
-    { width: 30 }, // Ancho para la columna Productos
-    { width: 25 }, // Ancho para la columna Entrega
-    { width: 20 }, // Ancho para la columna Medio de pago
-    { width: 15 }, // Ancho para la columna Total de compra
-  ];
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Ventas");
-    XLSX.writeFile(workbook, "reporte_ventas.xlsx");
-  }
-
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Ventas");
+      XLSX.writeFile(workbook, "reporte_ventas.xlsx");
+    }
   };
 
   const handleDownloadSalesReportPDF = () => {
     if (reportSalesList.length > 0) {
-    const doc = new jsPDF();
+      const doc = new jsPDF();
 
-    const tableColumn = ["Fecha", "Productos", "Entrega", "Medio de pago", "Total de compra"];
-    const tableRows = reportSalesList.map((sale) => [
-      new Date(sale.saleDate).toLocaleDateString() || "N/A",
-      sale.productList?.map((producto) => (
-        `${producto.productName} T: ${producto.size} x ${producto.amount} U.`
-      )).join("; ") || "N/A", 
-      sale.entrega?.toUpperCase() + (sale.entrega === "envio" ? `: ${sale.domicilio}` : "") || "N/A",
-      sale.medioDePago || "N/A", 
-      `$${sale.totalPrice || 0}` 
-    ]);
+      const tableColumn = ["Fecha", "Productos", "Entrega", "Medio de pago", "Total de compra"];
+      const tableRows = reportSalesList.map((sale) => [
+        new Date(sale.saleDate).toLocaleDateString() || "N/A",
+        sale.productList
+          ?.map((producto) => `${producto.productName} T: ${producto.size} x ${producto.amount} U.`)
+          .join("; ") || "N/A",
+        sale.entrega?.toUpperCase() + (sale.entrega === "envio" ? `: ${sale.domicilio}` : "") || "N/A",
+        sale.medioDePago || "N/A",
+        `$${sale.totalPrice || 0}`,
+      ]);
 
-    // Añadir título
-    doc.text("Reporte de Ventas", 14, 15);
+      doc.text("Reporte de Ventas", 14, 15);
 
-    // Generar tabla
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 20,
-      headStyles: {
-        fillColor: '#e1bc6a', // Color de fondo del encabezado (en formato RGB)
-        fontStyle: 'bold', // Estilo de fuente del encabezado
-        halign: 'center', // Centrar el texto horizontalmente
-        valign: 'middle',
-        fontSize: 10,
-      },
-      bodyStyles: {
-        lineWidth: 0.1, // Grosor de las líneas que separan las celdas
-        lineColor: [0, 0, 0], // Color de las líneas separadoras (en formato RGB, aquí es negro)
-        halign: 'center', // Centrar el texto horizontalmente en el cuerpo de la tabla
-        valign: 'middle',
-        fontSize: 8,
-      },
-    });
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 20,
+        headStyles: {
+          fillColor: "#e1bc6a",
+          fontStyle: "bold",
+          halign: "center",
+          valign: "middle",
+          fontSize: 10,
+        },
+        bodyStyles: {
+          lineWidth: 0.1,
+          lineColor: [0, 0, 0],
+          halign: "center",
+          valign: "middle",
+          fontSize: 8,
+        },
+      });
 
-    // Guardar el archivo
-    doc.save("reporte_ventas.pdf");
-  }
+      doc.save("reporte_ventas.pdf");
+    }
+  };
+
+  const handleFilterSales = async () => {
+    debugger
+    try {
+      const response = await axios.get(`${baseUrl}/api/v1/admin/sales/byDate`, {
+        params: { startDate, endDate },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data) {
+        console.log("Ventas filtradas:", response.data);
+        setReportSalesList(response.data);
+      }
+    } catch (error) {
+      console.log("Error al filtrar ventas:", error);
+    }
   };
 
   return (
-    <Flex justify="center" >
+    <Flex justify="center">
       <Box mt={10}>
-        {/* Botones para descargar reportes */}
         <Flex mb={4}>
           <Button
             onClick={handleDownloadSalesReportExcel}
             isDisabled={reportSalesList.length == 0}
-                mr={2}
-                border={"1px solid"}      
-                borderColor={'color'}    
-                color={'color'}               
-                variant="outline"
-                _hover={{
-                  backgroundColor: "color",
-                  color: "white",
-                }}
+            mr={2}
+            border={"1px solid"}
+            borderColor={"color"}
+            color={"color"}
+            variant="outline"
+            _hover={{
+              backgroundColor: "color",
+              color: "white",
+            }}
           >
             Descargar reporte en Excel
           </Button>
@@ -187,9 +160,9 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
             isDisabled={reportSalesList.length == 0}
             onClick={handleDownloadSalesReportPDF}
             mr={2}
-            border={"1px solid"}      
-            borderColor={'color'}    
-            color={'color'}               
+            border={"1px solid"}
+            borderColor={"color"}
+            color={"color"}
             variant="outline"
             _hover={{
               backgroundColor: "color",
@@ -199,6 +172,33 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
             Descargar reporte en PDF
           </Button>
         </Flex>
+
+        <FormControl as="fieldset" mb={4}>
+          <FormLabel as="legend">Filtrar por fecha:</FormLabel>
+          <HStack spacing={4}>
+            <Box>
+              <FormLabel htmlFor="startDate">Desde:</FormLabel>
+              <Input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel htmlFor="endDate">Hasta:</FormLabel>
+              <Input
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </Box>
+            <Button colorScheme="blue" onClick={handleFilterSales}>
+              Buscar
+            </Button>
+          </HStack>
+        </FormControl>
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
@@ -217,57 +217,72 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
           >
             &gt;&gt;
           </Button>
-        </div>        
+        </div>
 
-            <Box w={1000} mt={3} mb={10}>
-                <Table variant="simple" >
-                    <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
-                        <Tr >
-                        <Th>
-                            <Text textAlign={'center'} fontWeight="bold">Fecha</Text>
-                        </Th>    
-                        <Th>
-                            <Text textAlign={'center'} fontWeight="bold">Productos</Text>
-                        </Th>
-                       
-                        <Th>
-                            <Text textAlign={'center'} fontWeight="bold">Entrega</Text>
-                        </Th>
-                       
-                        <Th>
-                            <Text textAlign={'center'} fontWeight="bold">Medio de pago</Text>
-                        </Th>
-                        <Th>
-                            <Text textAlign={'center'} fontWeight="bold">Total de compra</Text>
-                        </Th>                        
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {salesList.map((sale) => (
-                            <Tr key={sale.id} h="30px">
-                                <Td textAlign={'center'} fontSize={'12px'} width={'15%'} p={'10px'}>{sale.saleDate}</Td>     
-                                <Td textAlign={'center'} fontSize={'12px'} width={'30%'}>
-                                    <Box as="ul" listStyleType="circle">
-                                    {sale.productList?.map((producto, index) => (
-                                        <ul key={index}>
-                                        {producto.productName}, {producto.size}, {producto.amount}
-                                        </ul>
-                                    ))}
-                                    </Box>
-                                </Td>
-                                <Td textAlign={'center'} fontSize={'12px'} width={'25%'} >
-                                    {sale.entrega?.toUpperCase()}
-                                    {sale.entrega === 'envio' && `: ${sale.domicilio}`}
-                                </Td>
-                                <Td textAlign={'center'} fontSize={'12px'} width={'20%'} >{sale.medioDePago}</Td>
-                                <Td textAlign={'center'} fontSize={'12px'} width={'10%'}>${sale.totalPrice}</Td>
-                                
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
-            </Box>           
+        <Box w={1000} mt={3} mb={10}>
+          <Table variant="simple">
+            <Thead backgroundColor="rgba(225, 188, 106, 0.5)">
+              <Tr>
+                <Th>
+                  <Text textAlign={"center"} fontWeight="bold">
+                    Fecha
+                  </Text>
+                </Th>
+                <Th>
+                  <Text textAlign={"center"} fontWeight="bold">
+                    Productos
+                  </Text>
+                </Th>
 
+                <Th>
+                  <Text textAlign={"center"} fontWeight="bold">
+                    Entrega
+                  </Text>
+                </Th>
+
+                <Th>
+                  <Text textAlign={"center"} fontWeight="bold">
+                    Medio de pago
+                  </Text>
+                </Th>
+                <Th>
+                  <Text textAlign={"center"} fontWeight="bold">
+                    Total de compra
+                  </Text>
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {console.log("salesList:", salesList)}
+              {reportSalesList.map((sale) => (
+                <Tr key={sale.id} h="30px">
+                  <Td textAlign={"center"} fontSize={"12px"} width={"15%"} p={"10px"}>
+                    {sale.saleDate}
+                  </Td>
+                  <Td textAlign={"center"} fontSize={"12px"} width={"30%"}>
+                    <Box as="ul" listStyleType="circle">
+                      {sale.productList?.map((producto, index) => (
+                        <ul key={index}>
+                          {producto.productName}, {producto.size}, {producto.amount}
+                        </ul>
+                      ))}
+                    </Box>
+                  </Td>
+                  <Td textAlign={"center"} fontSize={"12px"} width={"25%"}>
+                    {sale.entrega?.toUpperCase()}
+                    {sale.entrega === "envio" && `: ${sale.domicilio}`}
+                  </Td>
+                  <Td textAlign={"center"} fontSize={"12px"} width={"20%"}>
+                    {sale.medioDePago}
+                  </Td>
+                  <Td textAlign={"center"} fontSize={"12px"} width={"10%"}>
+                    ${sale.totalPrice}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
       </Box>
     </Flex>
   );
