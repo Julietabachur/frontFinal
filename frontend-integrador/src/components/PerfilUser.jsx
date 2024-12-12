@@ -37,7 +37,7 @@ const PerfilUser = () => {
   const cityRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
   const countryRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
   const postalCodeRegex = /^\d{4,8}$/;
-  const celRegex = /^\+?(\d{1,3})?[-. (]*\d{2,4}[-. )]*\d{3,4}[-. ]*\d{3,4}$/;
+  const celRegex = /^[1-9]\d*$/;
 
   const { clientId } = useProductContext();
   const REGISTER_URL = import.meta.env.VITE_AUTH_URL;
@@ -350,7 +350,7 @@ const PerfilUser = () => {
                     required: "Teléfono es requerido",
                     pattern: {
                       value: celRegex,
-                      message: "Número telefónico de usuario no válido",
+                      message: "Número telefónico sólo admite números ",
                     },
                   })}
                   borderColor={errors.cel ? "red.500" : "#e1bc6a"}

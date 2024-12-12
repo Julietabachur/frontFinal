@@ -55,7 +55,7 @@ const EmailPass = () => {
 		<Flex
 			direction="column"
 			align="center"
-			justify="center"
+			justify="star-flex"
 			minH="100vh"
 			p={4}
 			bg="gray.50"
@@ -68,6 +68,7 @@ const EmailPass = () => {
 				maxW="400px"
 				w="100%"
 				textAlign="center"
+				marginTop={"60px"}
 			>
 				<Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
 					Ingresa tu correo electrónico
