@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Flex, Box, Text, FormControl, InputGroup, Input, Button } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Importamos useNavigate
+import { useNavigate } from "react-router-dom";
 
 const EmailPass = () => {
   const [media, setMedia] = useState(window.innerWidth < 768);
-  const { handleSubmit, register, formState: { errors } } = useForm();
-  const navigate = useNavigate(); // Inicializamos useNavigate
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    watch
+  } = useForm();
+  const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
@@ -23,7 +28,7 @@ const EmailPass = () => {
       email: formData?.email,
       password: formData?.password,
     };
-    console.log("Datos enviados al backend:", data); // Mostrar datos enviados en la consola
+    console.log("Datos enviados al backend:", data);
 
     try {
       const response = await axios.patch(`${baseUrl}/api/v1/public/reset`, data, {
@@ -33,13 +38,15 @@ const EmailPass = () => {
       });
       if (response.status === 200) {
         alert("¡Contraseña cambiada exitosamente!");
-        navigate("/login"); // Redirigimos al login después del éxito
+        navigate("/login");
       }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       alert("Hubo un problema al cambiar la contraseña. Inténtalo nuevamente.");
     }
   };
+
+  const password = watch("password");
 
   return (
     <Flex
@@ -104,6 +111,24 @@ const EmailPass = () => {
               />
             </InputGroup>
             {errors.password && <Text color="red.500" mt={2}>{errors.password.message}</Text>}
+          </FormControl>
+
+          {/* Campo de confirmación de contraseña */}
+          <FormControl isInvalid={errors.confirmPassword} mb={4}>
+            <InputGroup>
+              <Input
+                placeholder="Confirma tu contraseña"
+                type="password"
+                borderColor={errors.confirmPassword ? "red.500" : "#e1bc6a"}
+                focusBorderColor="#e1bc6a"
+                {...register("confirmPassword", {
+                  required: "Por favor confirma tu contraseña",
+                  validate: (value) =>
+                    value === password || "Las contraseñas no coinciden",
+                })}
+              />
+            </InputGroup>
+            {errors.confirmPassword && <Text color="red.500" mt={2}>{errors.confirmPassword.message}</Text>}
           </FormControl>
 
           <Button
