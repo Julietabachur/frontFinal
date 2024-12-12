@@ -36,7 +36,7 @@ function PaymentsTemp() {
         }
         break;
       case "name":
-        if (!/^([a-zA-ZáéíóúÁÉÍÓÚñÑ]+\s?){1,3}$/.test(value)) {
+        if (!/^([a-zA-ZáéíóúÁÉÍÓÚñÑ']+\s?){1,3}$/.test(value)) {
           error = "El nombre debe contener entre 1 y 3 nombres separados por espacios.";
         }
         break;
@@ -71,14 +71,33 @@ function PaymentsTemp() {
   // Maneja los cambios en los campos de entrada
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
-
-    // Si el campo es 'expiry' y el valor tiene 2 dígitos, agregamos el '/'
-    if (name === 'expiry' && value.length === 2) {
-        setState((prev) => ({ ...prev, [name]: value + '/' }));
-    } else {
+  
+    if (name === 'name') {
+      // Permite letras, espacios y apóstrofes
+      const filteredValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s']/g, '');
+      setState((prev) => ({ ...prev, [name]: filteredValue }));
+    } else if (name === 'expiry') {
+      // Agrega '/' automáticamente después de dos dígitos en el campo de fecha de expiración
+      let updatedValue = value;
+      if (value.length === 2 && !value.includes('/')) {
+        updatedValue = value + '/';
+      }
+      setState((prev) => ({ ...prev, [name]: updatedValue }));
+    } else if (name === 'cvc') {
+      // Permitir solo números y limitar la longitud a 3
+      if (/^\d*$/.test(value) && value.length <= 3) {
         setState((prev) => ({ ...prev, [name]: value }));
+      }
+    } else if (name === 'number') {
+      // Permitir solo números y limitar la longitud a 16
+      if (/^\d*$/.test(value) && value.length <= 16) {
+        setState((prev) => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setState((prev) => ({ ...prev, [name]: value }));
     }
   };
+  
 
   // Maneja el enfoque en los campos de entrada
   const handleInputFocus = (evt) => {
@@ -259,6 +278,7 @@ function PaymentsTemp() {
               onChange={handleInputChange}
               onFocus={handleInputFocus}
               onBlur={handleInputBlur}
+              maxLength={16}
             />
             {state.errors.number && <p className="error">{state.errors.number}</p>}
           </label>
@@ -304,6 +324,7 @@ function PaymentsTemp() {
                 onChange={handleInputChange}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
+                maxLength='3'
               />
               {state.errors.cvc && <p className="error">{state.errors.cvc}</p>}
             </label>
