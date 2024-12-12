@@ -70,7 +70,7 @@ const EmailPass = () => {
 				textAlign="center"
 			>
 				<Text fontSize="2xl" fontWeight="bold" mb={4} color="gray.700">
-					Envíanos tu correo electrónico
+					Ingresa tu correo electrónico
 				</Text>
 
 				<form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
