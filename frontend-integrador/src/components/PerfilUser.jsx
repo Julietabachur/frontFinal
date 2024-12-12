@@ -29,6 +29,10 @@ import { useProductContext } from "./pages/home/Global.context";
 import { useForm } from "react-hook-form";
 import ChangePassword from "./pages/Perfil/ChangePassword";
 const PerfilUser = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const nameRegex = /^[A-Za-zÀ-ÿ'-]{1,50}$/;
   const lastNameRegex = /^[A-Za-zÀ-ÿ'-]+(?: [A-Za-zÀ-ÿ'-]+)*$/;
   const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;
@@ -37,7 +41,7 @@ const PerfilUser = () => {
   const cityRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
   const countryRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
   const postalCodeRegex = /^\d{4,8}$/;
-  const celRegex = /^\+?(\d{1,3})?[-. (]*\d{2,4}[-. )]*\d{3,4}[-. ]*\d{3,4}$/;
+  const celRegex = /^[1-9]\d*$/;
 
   const { clientId } = useProductContext();
   const REGISTER_URL = import.meta.env.VITE_AUTH_URL;
@@ -350,7 +354,7 @@ const PerfilUser = () => {
                     required: "Teléfono es requerido",
                     pattern: {
                       value: celRegex,
-                      message: "Número telefónico de usuario no válido",
+                      message: "Número telefónico sólo admite números ",
                     },
                   })}
                   borderColor={errors.cel ? "red.500" : "#e1bc6a"}

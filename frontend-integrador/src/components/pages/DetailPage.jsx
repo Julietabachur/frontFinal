@@ -58,6 +58,10 @@ const DetailPage = ({username}) => {
   const [sizeNotSelected, setSizeNotSelected] = useState(false);
   // const [addSuccessful, setAddSuccessful] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Verificar si el item.id está en el array de favoritos
   const isFavorite = favorites.includes(id);
 

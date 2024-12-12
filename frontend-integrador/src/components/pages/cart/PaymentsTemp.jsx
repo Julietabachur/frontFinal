@@ -47,9 +47,12 @@ function PaymentsTemp() {
           const [month, year] = value.split("/").map(Number);
           const currentYear = new Date().getFullYear() % 100; // Últimos 2 dígitos del año actual
           const currentMonth = new Date().getMonth() + 1;
+          const maxYear = currentYear + 6;
 
           if (year < currentYear || (year === currentYear && month < currentMonth)) {
             error = "La fecha de expiración debe ser superior a la fecha actual.";
+          }else if(year > maxYear){
+            error = "Fecha de expiración incorrecta.";
           }
         }
         break;
@@ -68,7 +71,13 @@ function PaymentsTemp() {
   // Maneja los cambios en los campos de entrada
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
-    setState((prev) => ({ ...prev, [name]: value }));
+
+    // Si el campo es 'expiry' y el valor tiene 2 dígitos, agregamos el '/'
+    if (name === 'expiry' && value.length === 2) {
+        setState((prev) => ({ ...prev, [name]: value + '/' }));
+    } else {
+        setState((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   // Maneja el enfoque en los campos de entrada
