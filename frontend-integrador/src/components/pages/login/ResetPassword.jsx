@@ -103,11 +103,15 @@ const EmailPass = () => {
                 focusBorderColor="#e1bc6a"
                 {...register("password", {
                   required: "La contraseña es requerida",
-                  minLength: {
-                    value: 8,
-                    message: "La contraseña debe tener al menos 8 caracteres",
+                  validate: (value) => {
+                    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+                    return (
+                      passwordRegex.test(value) ||
+                      "La contraseña debe tener entre 8 y 24 caracteres, e incluir al menos: una letra minúscula, una letra mayúscula, un número y un carácter especial (!@#$%*)."
+                    );
                   },
                 })}
+
               />
             </InputGroup>
             {errors.password && <Text color="red.500" mt={2}>{errors.password.message}</Text>}
