@@ -42,8 +42,8 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
         },
       });
       if (response.data) {
-        console.log('Traigo todos los usuarios: ', response.data);    
-        setReportUsersList(response.data)  
+        console.log('Traigo todos los usuarios: ', response.data);
+        setReportUsersList(response.data)
       }
     } catch (error) {
       console.log("error con getAllUsers", error);
@@ -161,15 +161,26 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
 
   // Generación de la hoja de Excel
   const handleDownloadUsersReport = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      filteredReportList.map((user) => ({
+    const tabla = filteredReportList.map((user) => ({
         ID: user.id || "N/A",
         Nombre: `${user.firstName || ""} ${user.lastName || ""}`,
         Username: user.clientName || "N/A",
         Email: user.email || "N/A",
         Admin: (user.roles || []).includes("ADMIN") ? "Sí" : "No",
       }))
-    );
+
+      const worksheet = XLSX.utils.json_to_sheet(tabla, { origin: "A3" }); // La tabla empieza en la fila 3
+
+      const titulo = [[`Reporte de usuarios: ${filteredReportList.length} resultados`]];
+      XLSX.utils.sheet_add_aoa(worksheet, titulo, { origin: "A1" });
+
+      worksheet['!cols'] = [
+        { width: 40 }, // Ajusta el ancho de las columnas según sea necesario
+        { width: 20 },
+        { width: 20 },
+        { width: 30 },
+        { width: 15 },
+      ];
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte de Usuarios");
@@ -183,7 +194,6 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
 
     // Título del documento
     doc.setFontSize(18);
-    doc.text("Reporte de Usuarios", 14, 15);
 
     // Generar tabla con los datos
     const tableColumn = ["ID", "Nombre", "Username", "Email", "Admin"];
@@ -194,6 +204,9 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
       user.email || "N/A",
       (user.roles || []).includes("ADMIN") ? "Sí" : "No",
     ]);
+
+    doc.text(`Reporte de usuarios: ${filteredReportList.length} resultados`, 14, 15);
+
 
     // Insertar tabla en el PDF
     doc.autoTable({
@@ -235,16 +248,16 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           // _hover={{ backgroundColor: "#e1bc6a", color: "white" }}
           // mb={4}
           // isDisabled={filteredUsersList.length === 0}
-                mr={2}
-                border={"1px solid"}
-                borderColor={"yellow.500"}
-                color={"yellow.500"}
-                onClick={handleDownloadUsersReport}
-                variant="outline"
-                _hover={{
-                  backgroundColor: "yellow.500",
-                  color: "white",
-                }}
+          onClick={handleDownloadUsersReport}
+          mr={2}
+          border={"1px solid"}
+          borderColor={"color"}
+          color={"color"}
+          variant="outline"
+          _hover={{
+            backgroundColor: "color",
+            color: "white",
+          }}
         >
           Descargar reporte en Excel
         </Button>
@@ -258,16 +271,16 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           // mb={4}
           // ml={4}
           // isDisabled={filteredProductsList.length === 0}
-                mr={2}
-                border={"1px solid"}
-                borderColor={"yellow.500"}
-                color={"yellow.500"}
-                onClick={handleDownloadUsersPDF}
-                variant="outline"
-                _hover={{
-                  backgroundColor: "yellow.500",
-                  color: "white",
-                }}
+          onClick={handleDownloadUsersPDF}
+          mr={2}
+          border={"1px solid"}
+          borderColor={"color"}
+          color={"color"}
+          variant="outline"
+          _hover={{
+            backgroundColor: "color",
+            color: "white",
+          }}
         >
           Descargar reporte en PDF
         </Button>
@@ -305,24 +318,30 @@ const ListUsers = ({ token, getUsers, userPage, handlePageChange, userList }) =>
           </Checkbox>
         </Flex>
 
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            border="1px solid #e1bc6a"
-            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-            onClick={() => handlePageChange(userPage > 1 ? userPage - 1 : userPage)}
-            disabled={userPage === 1}
-          >
-            &lt;&lt;
-          </Button>
-          <Text>- {userPage} -</Text>
-          <Button
-            border="1px solid #e1bc6a"
-            _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
-            onClick={() => handlePageChange(userPage + 1)}
-          >
-            &gt;&gt;
-          </Button>
-        </div>
+        <Box style={{ display: "flex", justifyContent: "space-between" }}>
+          <Box>
+              <Text>Resultados: { filteredReportList.length > 0 ? filteredReportList.length : reportUsersList.length }</Text>
+          </Box>
+          <Box display={'flex'} >
+            <Button
+              border="1px solid #e1bc6a"
+              _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+              onClick={() => handlePageChange(userPage > 1 ? userPage - 1 : userPage)}
+              disabled={userPage === 1}
+            >
+              &lt;&lt;
+            </Button>
+            <Text>- {userPage} -</Text>
+            <Button
+              border="1px solid #e1bc6a"
+              _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+              onClick={() => handlePageChange(userPage + 1)}
+            >
+              &gt;&gt;
+            </Button>
+          </Box>
+
+        </Box>
 
         <Box w={830} mt={3}>
           <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
