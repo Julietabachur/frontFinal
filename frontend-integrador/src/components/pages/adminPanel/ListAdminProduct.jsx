@@ -97,14 +97,21 @@ const ListAdminProduct = ({
   // Exportar datos a Excel
   const handleDownloadExcelReport = () => {
    if (allProductsLoaded.length > 0 ) {
-    const worksheet = XLSX.utils.json_to_sheet(
+    const tabla = 
       allProductsLoaded.map((product) => ({
         ID: product.productId,
         Nombre: product.productName,
         Categoría: product.category,
         Stock: product.stock,
       }))
-    );
+    
+
+      // Crear hoja de cálculo
+      const worksheet = XLSX.utils.json_to_sheet(tabla, { origin: "A3" }); // La tabla empieza en la fila 3
+
+         // Agregar el título en la fila 1
+         const titulo = [[`Reporte de productos: ${allProductsLoaded.length} resultados`]];
+         XLSX.utils.sheet_add_aoa(worksheet, titulo, { origin: "A1" });
 
       // Añadir un estilo básico de encabezado
   worksheet['!cols'] = [
@@ -125,7 +132,7 @@ const ListAdminProduct = ({
   const handleDownloadPDFReport = () => {
     if (allProductsLoaded.length > 0 ) {
     const doc = new jsPDF();
-    doc.text("Reporte de Productos", 14, 20);
+    doc.text(`Reporte de productos: ${allProductsLoaded.length} resultados`, 14, 20);
     doc.autoTable({
       startY: 30,
       head: [["ID", "Nombre", "Categoría", "Stock"]],
@@ -193,24 +200,30 @@ const ListAdminProduct = ({
               </Button>
             </Flex>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginTop: "10px" }}>
-              <Button
-                border={"1px solid #e1bc6a"}
-                _focus={{ borderColor: "#e1bc6a", backgroungColor: "#e1bc6a" }}
-                onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
-                disabled={page === 0}
-              >
-                &lt;&lt;
-              </Button>
-              <Text>- {page} -</Text>
-              <Button
-                border={"1px solid #e1bc6a"}
-                _focus={{ borderColor: "#e1bc6a", backgroungColor: "#e1bc6a" }}
-                onClick={() => handlePageChange(page + 1)}
-              >
-                &gt;&gt;
-              </Button>
-            </div>
+            <Box style={{ display: "flex", justifyContent: "space-between" }}>
+
+              <Box>
+                <Text>Resultados: { allProductsLoaded.length }</Text>
+              </Box>
+              <Box display={'flex'} >
+                <Button
+                  border="1px solid #e1bc6a"
+                  _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+                  onClick={() => handlePageChange(page > 1 ? page - 1 : page)}
+                  disabled={page === 1}
+                >
+                  &lt;&lt;
+                </Button>
+                <Text>- {page} -</Text>
+                <Button
+                  border="1px solid #e1bc6a"
+                  _focus={{ borderColor: "#e1bc6a", backgroundColor: "#e1bc6a" }}
+                  onClick={() => handlePageChange(page + 1)}
+                >
+                  &gt;&gt;
+                </Button>
+              </Box>
+             </Box>              
 
             <Box w={830} mt={3}>
               <Table variant="striped" backgroundColor="rgba(225, 188, 106, 0.5)">
