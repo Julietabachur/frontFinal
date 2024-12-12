@@ -71,7 +71,13 @@ function PaymentsTemp() {
   // Maneja los cambios en los campos de entrada
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
-    setState((prev) => ({ ...prev, [name]: value }));
+
+    // Si el campo es 'expiry' y el valor tiene 2 dígitos, agregamos el '/'
+    if (name === 'expiry' && value.length === 2) {
+        setState((prev) => ({ ...prev, [name]: value + '/' }));
+    } else {
+        setState((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   // Maneja el enfoque en los campos de entrada
