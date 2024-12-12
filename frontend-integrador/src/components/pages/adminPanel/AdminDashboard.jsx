@@ -348,7 +348,7 @@ const AdminDashboard = ({ token, roles }) => {
 
   // Renderizado del componente
   return token ? (
-    <Box  w={"99vw"} h={'auto'} minH={'350px'} mb={10}>
+    <Box  w={"99vw"} h={'auto'} minH={'400px'} mb={10} mt={10}>
       {console.log("AlertSuccess:", showSuccess)}
 
       {showSuccess && (
