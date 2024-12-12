@@ -215,7 +215,7 @@ const ListAdminSales = ({ token, getSales, salesPage, handlePageChange, salesLis
           </VStack>
           <FormControl as="fieldset" mb={4}>
             <FormLabel as="legend">Filtrar por fecha:</FormLabel>
-            <HStack spacing={4}>
+            <HStack spacing={4} alignItems={'end'}>
               <Box>
                 <FormLabel htmlFor="startDate">Desde:</FormLabel>
                 <Input
