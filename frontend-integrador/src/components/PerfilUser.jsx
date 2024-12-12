@@ -29,6 +29,10 @@ import { useProductContext } from "./pages/home/Global.context";
 import { useForm } from "react-hook-form";
 import ChangePassword from "./pages/Perfil/ChangePassword";
 const PerfilUser = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const nameRegex = /^[A-Za-zÀ-ÿ'-]{1,50}$/;
   const lastNameRegex = /^[A-Za-zÀ-ÿ'-]+(?: [A-Za-zÀ-ÿ'-]+)*$/;
   const clientNameRegex = /^[A-Za-z][A-Za-z0-9._]{2,19}$/;

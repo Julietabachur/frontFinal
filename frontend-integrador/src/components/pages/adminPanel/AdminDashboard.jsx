@@ -14,7 +14,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 const AdminDashboard = ({ token, roles }) => {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   useEffect(() => {
     console.log('roles en admindash: ', roles);

@@ -21,7 +21,7 @@ import Succes from "./components/pages/cart/Succes";
 import CheckoutStepper from "./components/pages/cart/Stepper";
 import PerfilUser from "./components/PerfilUser";
 import ResetPassword from "./components/pages/login/ResetPassword";
-import EmailPass from "./components/pages/login/emailPass";
+import EmailPass from "./components/pages/login/EmailPass";
 import UserSales from "./components/pages/userCompras/userSales";
 
 function App() {

@@ -8,7 +8,9 @@ const UserSales = () => {
     const navigate = useNavigate();
   const [media, setMedia] = useState(false);
   const MIN_DESKTOP_WIDTH = 768;
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
     // Efecto para suscribirse al evento de redimensionamiento de la ventana
     useEffect(() => {
         const handleResize = () => {
